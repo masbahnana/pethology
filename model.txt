@@ -1,0 +1,21 @@
+pethology/
+├── index.html                <- Homepage
+├── about.html                <- Sobre o projeto
+├── content.html              <- Conteúdo dos módulos
+├── quiz.html                 <- Página dos quizzes
+├── blog.html                 <- Postagens do time
+├── support.html              <- Doações
+├── contact.html              <- Contato
+├── assets/
+│   ├── css/
+│   │   └── style.css         <- Estilo principal do site
+│   ├── js/
+│   │   ├── main.js           <- Scripts gerais
+│   │   └── quiz/             <- Scripts dos quizzes por disciplina
+│   │       ├── biology.js
+│   │       ├── animal_welfare.js
+│   │       └── ...
+│   └── img/
+│       └── logo.png          <- Logo e outras imagens
+├── README.md
+└── LICENSE

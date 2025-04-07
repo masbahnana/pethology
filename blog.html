@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog - Pethology</title>
+  <style>
+    :root {
+      --bg: #fefefe;
+      --accent: #111;
+      --gray: #666;
+      --border: #e5e5e5;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--accent);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 30px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+
+    nav a {
+      margin-left: 28px;
+      text-decoration: none;
+      color: var(--gray);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    main {
+      max-width: 780px;
+      margin: 80px auto;
+      padding: 0 30px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.3em;
+      letter-spacing: -1px;
+    }
+
+    .post {
+      background: #f0f0f0;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .post h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .post p {
+      color: var(--gray);
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+    }
+
+    .post a {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 60px 0 30px;
+      font-size: 0.9em;
+      color: #aaa;
+      border-top: 1px solid var(--border);
+      margin-top: 100px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 20px;
+      }
+
+      nav a {
+        margin: 10px 10px 0 0;
+        display: inline-block;
+      }
+
+      main {
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">Pethology</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="content.html">Content</a>
+      <a href="quiz.html">Quiz</a>
+      <a href="blog.html">Blog</a>
+      <a href="support.html">Support Us</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Latest Blog Posts</h1>
+
+    <section class="post">
+      <h2>Post 1: Understanding Animal Behavior</h2>
+      <p>Animal behavior is crucial to animal care. In this post, we dive deep into understanding animal instincts and how they affect care practices.</p>
+      <a href="#">Read More</a>
+    </section>
+
+    <section class="post">
+      <h2>Post 2: The Importance of Animal Welfare</h2>
+      <p>Learn about the importance of maintaining high standards for animal welfare. This post covers laws, ethics, and practical care tips.</p>
+      <a href="#">Read More</a>
+    </section>
+
+    <section class="post">
+      <h2>Post 3: Small Animal Care Tips</h2>
+      <p>Caring for small animals like rabbits, guinea pigs, and birds can be rewarding but requires specific knowledge. This post will guide you through the essentials.</p>
+      <a href="#">Read More</a>
+    </section>
+
+  </main>
+
+  <footer>
+    &copy; 2025 Pethology — Built with ❤️ by animal care enthusiasts
+  </footer>
+
+</body>
+</html>

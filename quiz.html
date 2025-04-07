@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pethology | Quiz</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Pethology Logo" class="logo-img" />
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="support.html">Support Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="layout-wrapper">
+    <div class="quiz-container">
+      <h1>Choose a Quiz Topic</h1>
+      <div id="quiz-buttons"></div>
+      <div id="question-container"></div>
+
+      <!-- Botões de navegação das perguntas -->
+      <div class="quiz-navigation">
+        <button onclick="showPrevious()">Previous</button>
+        <button onclick="showNext()">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Pethology. All rights reserved.</p>
+  </footer>
+
+  <script src="assets/js/biology.js"></script>
+</body>
+</html>
