@@ -1,9 +1,16 @@
 // Array com os temas das disciplinas e seus respectivos arquivos JS
-const quizTopics = [
-    { name: "Biology", file: "biology.js" },
-    { name: "Animal Behaviour", file: "animal-behaviour.js" },
-    { name: "Animal Welfare", file: "animal-welfare.js" }
-];
+export const questions = [
+    {
+      question: "What is the powerhouse of the cell?",
+      options: ["Mitochondria", "Nucleus", "Ribosome", "Golgi apparatus"],
+      answer: "Mitochondria"
+    },
+    {
+      question: "Which macromolecule contains genetic information?",
+      options: ["Protein", "Lipid", "Carbohydrate", "DNA"],
+      answer: "DNA"
+    }
+  ];
 
 // Função para carregar os botões de cada disciplina
 function loadQuizButtons() {
@@ -26,7 +33,7 @@ function loadQuiz(file) {
     // Exemplo de como carregar as perguntas dos arquivos JS
     // O arquivo JS deve exportar um array de perguntas
 
-    import(`./assets/js/${file}`).then(module => {
+    import(`./assets/js/quiz/biology.js${file}`).then(module => {
         const questions = module.questions; // Supondo que cada arquivo tenha um array 'questions'
         displayQuiz(questions); // Função para exibir as perguntas na página
     }).catch(error => {
