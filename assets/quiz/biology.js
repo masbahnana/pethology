@@ -1,14 +1,16 @@
 // Array com os temas das disciplinas e seus respectivos arquivos JS
 export const questions = [
     {
-      question: "What is the powerhouse of the cell?",
-      options: ["Mitochondria", "Nucleus", "Ribosome", "Golgi apparatus"],
-      answer: "Mitochondria"
+        question: "What is the powerhouse of the cell?",
+        answer: "Mitochondria"
     },
     {
-      question: "Which macromolecule contains genetic information?",
-      options: ["Protein", "Lipid", "Carbohydrate", "DNA"],
-      answer: "DNA"
+        question: "What is the function of red blood cells?",
+        answer: "Transport oxygen throughout the body."
+    },
+    {
+        question: "Which organ produces insulin?",
+        answer: "Pancreas"
     }
   ];
 
