@@ -24,14 +24,15 @@ const quizTopics = [
   // Carrega o arquivo do quiz e inicializa
   async function loadQuiz(file) {
     try {
-      const module = await import(`../quiz/${file}`);
-      currentQuestions = module.questions;
-      currentQuestionIndex = 0;
-      displayQuiz();
+        const module = await import(`./assets/js/quiz/${file}`);
+        const questions = module.questions;
+        currentQuestions = questions;
+        currentQuestionIndex = 0;
+        displayQuiz(questions);
     } catch (error) {
-      console.error("Erro ao carregar o quiz:", error);
+        console.error("Erro ao carregar o arquivo do quiz:", error);
     }
-  }
+}
   
   // Mostra a interface do quiz e a primeira pergunta
   function displayQuiz() {
