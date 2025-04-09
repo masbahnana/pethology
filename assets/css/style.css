@@ -137,7 +137,7 @@ margin-top: 2rem;
 text-align: center;
 }
 
-.quiz-navigation button {
+button.quiz-navigation  {
 padding: 0.5rem 1.25rem;
 margin: 0 10px;
 background-color: #6c757d;
@@ -148,7 +148,7 @@ cursor: pointer;
 transition: background-color 0.2s ease;
 }
 
-.quiz-navigation button:hover {
+button.quiz-navigation:hover {
 background-color: #5a6268;
 }
 
