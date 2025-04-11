@@ -1,5 +1,12 @@
 const quizTopics = [
   { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
+  { name: "Animal Behaviour", file: "animal-behaviour.js", icon: "assets/img/animal-behaviour.png" },
+  { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
+  { name: "Animal Anatomy and Physiology", file: "animal-physiology.js", icon: "assets/img/animal-anatomy.png" },
+  { name: "Grooming", file: "grooming.js", icon: "assets/img/grooming.png" },
+  { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
+  { name: "Word Processing", file: "word-processing.js", icon: "assets/img/word-processing.png" },
+  { name: "Vet. Assistant Skills", file: "vet-assistant-skills.js", icon: "assets/img/vas.png" },
 ];
 
 let currentQuestions = [];
