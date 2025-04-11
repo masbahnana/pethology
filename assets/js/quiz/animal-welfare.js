@@ -1,4 +1,4 @@
-export const animalWelfareQuiz = [
+export const questions = [
     {
         question: "What is the primary goal of animal welfare?",
         options: [
@@ -155,5 +155,39 @@ export const animalWelfareQuiz = [
         answer: 0,
         explanation: "Evolution is the process by which species change over time through natural selection, leading to diversification of species.",    
     },
+    {
+        question: "Define 'Domestication'.",
+        options: [
+            "Domestication is the process of breeding animals for specific traits.",
+            "Domestication is the study of animal behavior in different environments.",
+            "Domestication is the process of adapting wild animals for human use.",
+            "Domestication is the process of cloning animals."
+        ],
+        answer: 2,
+        explanation: "Domestication is the process of adapting wild animals for human use, leading to changes in behavior and physical traits.",
+    },
+    {
+        question: "What are NOT a domestic animal?",
+        options: [
+            "Dog",
+            "Cat",
+            "Horse",
+            "Wolf"
+        ],
+        answer: 3,
+        explanation: "Wolves are not considered domestic animals; they are wild animals, while dogs, cats, and horses have been domesticated.",
+    },
+    {
+        question: "Name the three types of animal distribution.",
+        options: [
+            "Clumped, uniform, random",
+            "Clumped, scattered, linear",
+            "Uniform, scattered, random",
+            "Random, linear, clumped"
+        ],
+        answer: 0,
+        explanation: "The three types of animal distribution are clumped, uniform, and random, describing how animals are spaced in their environment.",
+    },
+    
 
 ];

@@ -108,6 +108,38 @@
       border-top: 1px solid var(--border);
       margin-top: 100px;
     }
+    .support-button {
+    padding: 8px 16px;
+    font-weight: 600;
+    border: 2px solid;
+    border-image-slice: 1;
+    border-width: 2px;
+    border-image-source: linear-gradient(to right, #32CD32, #00a86b);
+    border-radius: 8px;
+    color: #00a86b;
+    background-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.support-button:hover {
+    background: linear-gradient(to right, #32CD32, #00a86b);
+    color: white;
+}
+
+.black-button {
+    padding: 8px 16px;
+    background-color: #000;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.black-button:hover {
+    background-color: #111;
+    transform: scale(1.05);
+}
 
     @media (max-width: 768px) {
       header {
@@ -138,6 +170,7 @@
       p {
         font-size: 1rem;
       }
+
     }
   </style>
 </head>
@@ -152,9 +185,9 @@
         <li><a href="content.html">Content</a></li>
         <li><a href="quiz.html">Quiz</a></li>
         <li><a href="blog.html">Blog</a></li>
-        <li><a href="support.html">Support Us</a></li>
-        <li><a href="teachers.html">For Teachers</a></li>
-        <li><a href="students.html">For Students</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="teachers.html" class="black-button">For Teachers</a></li>
+        <li><a href="students.html" class="black-button">For Students</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
