@@ -210,6 +210,226 @@ export const questions = [
         ],
         answer: 3,
         explanation: "Active transport requires energy to move substances against their concentration gradient, while passive transport does not."
+    },
+    {
+        question: "What is the role of water in the plant?",
+        options: [
+            "To provide energy",
+            "To transport nutrients",
+            "To maintain turgor pressure",
+            "All of the above"
+        ],
+        answer: 3,
+        explanation: "Water plays a crucial role in plants by providing energy through photosynthesis, transporting nutrients, and maintaining turgor pressure, which keeps the plant upright."
+    },
+    {
+        question: "What is an autotroph?",
+        options: [
+            "An organism that can produce its own food",
+            "An organism that cannot produce its own food",
+            "A type of protein",
+            "An organelle"
+        ],
+        answer: 0,
+        explanation: "An autotroph is an organism that can produce its own food, typically through photosynthesis or chemosynthesis."
+    },  
+    {
+        question: "Discuss how plants take up minerals.",
+        options: [
+            "Through osmosis",
+            "Through diffusion",
+            "Through active transport",
+            "All of the above"
+        ],
+        answer: 3,
+        explanation: "Plants take up minerals through osmosis, diffusion, and active transport, depending on the concentration gradient and energy requirements."
+    },
+    {
+        question: "How minerals are transported in plants?",
+        options: [
+            "Through the xylem",
+            "Through the phloem",
+            "Through the stomata",
+            "All of the above"
+        ],
+        answer: 0,
+        explanation: "Minerals are primarily transported in plants through the xylem, which carries water and dissolved minerals from the roots to the rest of the plant."
+    },
+    {
+        question: "What are the products of photosynthesis?",
+        options: [
+            "Glucose and oxygen",
+            "Carbon dioxide and water",
+            "Glucose and carbon dioxide",
+            "Oxygen and water"
+        ],
+        answer: 0,
+        explanation: "The products of photosynthesis are glucose and oxygen, which are produced from carbon dioxide and water in the presence of sunlight." 
+    },
+    {
+        question: "How leaves, stems, and roots are adapted for their functions?",
+        options: [
+            "Leaves are adapted for photosynthesis, stems for support, and roots for water and nutrient absorption.",
+            "Leaves are adapted for water storage, stems for photosynthesis, and roots for support.",
+            "Leaves are adapted for support, stems for water storage, and roots for photosynthesis.",
+            "All of the above"
+        ],
+        answer: 0,
+        explanation: "Leaves are adapted for photosynthesis with a large surface area and chlorophyll, stems provide support and transport nutrients, and roots are adapted for water and nutrient absorption with a large surface area and root hairs."
+    },
+    {
+        question: "What is the role of stomata in plants?",
+        options: [
+            "To absorb water",
+            "To release oxygen",
+            "To allow gas exchange",
+            "To transport nutrients"
+        ],
+        answer: 2,
+        explanation: "Stomata are small openings on the surface of leaves that allow for gas exchange, enabling the plant to take in carbon dioxide and release oxygen during photosynthesis."
+    },
+    {
+        question: "How do plants respond to light?",
+        options: [
+            "By growing towards the light (phototropism)",
+            "By growing away from the light (negative phototropism)",
+            "By closing their stomata",
+            "By wilting"
+        ],
+        answer: 0,
+        explanation: "Plants respond to light by growing towards it, a phenomenon known as phototropism, which maximizes their exposure to sunlight for photosynthesis."
+    },
+    {
+        question: "What is the Xylem and Phloem?",
+        options: [
+            "Xylem transports water and minerals, while phloem transports sugars and nutrients.",
+            "Xylem transports sugars and nutrients, while phloem transports water and minerals.",
+            "Both transport water and minerals.",
+            "Both transport sugars and nutrients."
+        ],
+        answer: 0,
+        explanation: "Xylem is responsible for transporting water and minerals from the roots to the rest of the plant, while phloem transports sugars and nutrients produced during photosynthesis."
+    },
+    {
+        question: "Desctribe endodermis.",
+        options: [
+            "The outer layer of the root",
+            "The inner layer of the root that regulates water and nutrient uptake",
+            "The layer that transports water and nutrients",
+            "The layer that stores energy"
+        ],
+        answer: 1,
+        explanation: "The endodermis is the inner layer of the root that regulates the uptake of water and nutrients by controlling what enters the vascular system."
+    },
+    {
+        question: "Explain the root pressure.",
+        options: [
+            "The pressure exerted by the roots to absorb water and nutrients",
+            "The pressure exerted by the leaves to release water",
+            "The pressure exerted by the stem to transport nutrients",
+            "The pressure exerted by the soil on the roots"
+        ],
+        answer: 0,
+        explanation: "Root pressure is the pressure exerted by the roots to absorb water and nutrients from the soil, which helps push water up through the plant."
+    },
+    {
+        question: "What is the difference between saprophytic and parasitic plants?",
+        options: [
+            "Saprophytic plants obtain nutrients from dead organic matter, while parasitic plants obtain nutrients from living hosts.",
+            "Saprophytic plants obtain nutrients from living hosts, while parasitic plants obtain nutrients from dead organic matter.",
+            "Both obtain nutrients from dead organic matter.",
+            "Both obtain nutrients from living hosts."
+        ],
+        answer: 0,
+        explanation: "Saprophytic plants obtain nutrients from dead organic matter, while parasitic plants obtain nutrients from living hosts by drawing resources from them."
+    },
+    {
+        question: "Discuss the difference between nutrition form of saprophytic and parasitic plants.",
+        options: [
+            "Saprophytic plants absorb nutrients from dead organic matter, while parasitic plants absorb nutrients from living hosts.",
+            "Saprophytic plants photosynthesize, while parasitic plants do not.",
+            "Both types of plants photosynthesize.",
+            "Both types of plants absorb nutrients from the soil."
+        ],
+        answer: 0,
+        explanation: "Saprophytic plants absorb nutrients from dead organic matter, while parasitic plants absorb nutrients from living hosts by drawing resources from them."
+    },
+    {
+        question: "Describe the role of funngi in the biosphere.",
+        options: [
+            "Producers that photosynthesize",
+            "Consumers that eat plants and animals",
+            "None of the above",
+            "Decomposers that break down dead organic matter",
+        ],
+        answer: 3,
+        explanation: "Fungi play a crucial role in the biosphere as decomposers, breaking down dead organic matter and recycling nutrients back into the ecosystem."
+    },
+    {
+        question: "About the Rhizopus, explain the process of reproduction.",
+        options: [
+            "Asexual reproduction through spores",
+            "Sexual reproduction through gametes",
+            "Both asexual and sexual reproduction",
+            "None of the above"
+        ],
+        answer: 0,
+        explanation: "Rhizopus primarily reproduces asexually through the formation of spores, which can disperse and germinate to form new individuals."
+    },
+    {
+        question: "What are the structure of a yeast cell?",
+        options: [
+            "Cell wall, chloroplasts, nucleus, cytoplasm",
+            "Cell membrane, nucleus, ribosomes, mitochondria",
+            "Cell wall, cell membrane, nucleus, cytoplasm",
+            "All of the above"
+        ],
+        answer: 2,
+        explanation: "Yeast cells have a cell wall, cell membrane, nucleus, and cytoplasm, which are essential for their structure and function."
+    },
+    {
+        question: "Outline the steps involved in the sexual reproduction of a Rhizopus.",
+        options: [
+            "Formation of gametangia, fusion of gametes, formation of zygospore, germination",
+            "Formation of spores, germination, growth, reproduction",
+            "Formation of mycelium, spore production, dispersal",
+            "None of the above"
+        ],
+        answer: 0,
+        explanation: "The sexual reproduction of Rhizopus involves the formation of gametangia, fusion of gametes, formation of a zygospore, and germination to produce new individuals."
+    },
+    {
+        question: "What are the key differences between fungi and plants?",
+        options: [
+            "Fungi have cell walls made of chitin, while plants have cell walls made of cellulose.",
+            "Fungi are heterotrophic, while plants are autotrophic.",
+            "Fungi do not have chlorophyll, while plants do.",
+            "All of the above"
+        ],
+        answer: 3,
+        explanation: "Fungi have cell walls made of chitin, are heterotrophic (obtain nutrients from other organisms), and do not have chlorophyll, while plants have cell walls made of cellulose and are autotrophic (produce their own food through photosynthesis)."
+    },
+    {
+        question: "Which of the following is NOT a characteristic of hyphae in Rhizopus?",
+        options: [
+            "They are thread-like structures.",
+            "They are septate (have a cross-wall).",
+            "They are multinucleate (have multiple nuclei).",
+            "They make up the mycelium."
+        ],
+        answer: 1,
+        explanation: "Hyphae in Rhizopus are typically coenocytic (aseptate) and multinucleate, meaning they do not have cross-walls separating the cells."
+    },
+    {
+        question: "Asexual reproduction in yest is called?",
+        options: [
+            "Sporulation",
+            "Conjugation",
+            "Budding",
+            "Binary fission"
+        ],  
+        answer: 2,
+        explanation: "Asexual reproduction in yeast is called budding, where a new individual develops from a small outgrowth of the parent cell."
     }
 
     // Mais perguntas...
