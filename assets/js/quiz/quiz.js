@@ -1,5 +1,5 @@
 const quizTopics = [
-  { name: "Biology", file: "biology.js" }
+  { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
 ];
 
 let currentQuestions = [];
@@ -50,7 +50,10 @@ function selectAnswer(index) {
     isAnswerCorrect = true;
     feedbackEl.innerHTML = `
       <p style="color:green;">✅<br>${question.explanation}</p>
-      <button class="minimal-button" onclick="nextQuestion()">Next</button>
+      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+        <button class="minimal-button" onclick="goBackToMenu()">Back</button>
+        <button class="minimal-button" onclick="nextQuestion()">Next</button>
+      </div>
     `;
   } else {
     feedbackEl.innerHTML = `<p style="color:red;">Nope! ❌ Are you sure about that?</p>`;
@@ -93,6 +96,7 @@ function loadQuizButtons() {
           onclick="loadQuiz('${topic.file}')"
           class="minimal-button"
         >
+          ${topic.icon ? `<img src="${topic.icon}" alt="${topic.name} icon">` : ""}
           ${topic.name}
         </button>
       `).join('')}

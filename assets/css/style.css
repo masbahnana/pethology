@@ -205,3 +205,32 @@ font-weight: 600;
 width: 20px;
 height: 20px;
 }
+/* Botões alinhados estilo Notion */
+.quiz-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+/* Animação no clique */
+.minimal-button:active {
+transform: scale(0.97);
+background-color: #eaeaea;
+}
+
+/* Ícone opcional */
+.minimal-button img {
+width: 20px;
+height: 20px;
+opacity: 0.8;
+transition: opacity 0.2s ease;
+}
+
+.minimal-button:hover img {
+opacity: 1;
+}
+.minimal-button img {
+width: 20px;
+height: 20px;
+margin-right: 5px;
+}
