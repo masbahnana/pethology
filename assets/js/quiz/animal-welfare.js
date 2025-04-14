@@ -188,6 +188,71 @@ export const questions = [
         answer: 0,
         explanation: "The three types of animal distribution are clumped, uniform, and random, describing how animals are spaced in their environment.",
     },
-    
+    {
+        question: "Give one factor that determines animal distribution.",
+        options: [
+            "Food availability",
+            "Breeding season",
+            "Predator presence",
+            "All of the above"
+        ],
+        answer: 3,
+        explanation: "Food availability, breeding season, and predator presence are all factors that can determine animal distribution in an environment.",
+    },
+    {
+        question: "Why and how did animal diversify?",
+        options: [
+            "Animals diversified due to natural selection, adapting to different environments and niches.",
+            "Animals diversified due to artificial selection by humans.",
+            "Animals diversified due to cloning.",
+            "Animals diversified due to environmental pollution."
+        ],  
+        answer: 0,
+        explanation: "Animals diversified due to natural selection, adapting to different environments and niches, leading to the evolution of various species.",
+    },
+    {
+        question: "What island did Charles Darwin first discover the idea of evolution?",
+        options: [
+            "Hawaii",
+            "Madagascar",
+            "Galapagos Islands",
+            "New Zealand"
+        ],
+        answer: 2,
+        explanation: "Charles Darwin first discovered the idea of evolution during his visit to the Galapagos Islands, where he observed unique species and their adaptations.",
+    },
+    {
+        question: "Give five reasons animal were domesticated.",
+        options: [
+            "Food, companionship, work, protection, and research",
+            "Food, clothing, shelter, entertainment, and research",
+            "Food, clothing, work, protection, and entertainment",
+            "Food, clothing, shelter, protection, and research"
+        ],
+        answer: 0,
+        explanation: "Animals were domesticated for various reasons, including food, companionship, work, protection, and research.",
+    },
+    {
+        questions: "Describe two ways in which domestication has affected animal welfare.",
+        options: [
+            "Domestication leads to animals living in the wild for longer, and they no longer depend on humans.",
+            "Domestication increases animals’ natural survival skills and makes them more independent.",
+            "Domestication results in dependence on humans and health issues from selective breeding, such as hip dysplasia in dogs.",
+            "Domestication causes animals to adapt quickly to wild environments, improving their survival chances."
+        ],
+        answer: 2,
+        explanation: "Domestication results in dependence on humans for care and resources, and selective breeding can lead to health issues, such as hip dysplasia in dogs.",
+    },
+    {
+        question: "What is the difference between natural selection and artificial selection?",
+        options: [
+            "Natural selection is driven by environmental factors, while artificial selection is driven by human intervention.",
+            "Natural selection is a random process, while artificial selection is a deliberate process.",
+            "Natural selection leads to evolution, while artificial selection does not.",
+            "All of the above"
+        ],
+        answer: 3,
+        explanation: "Natural selection is driven by environmental factors, while artificial selection is driven by human intervention, and both can lead to evolution.",
+    }
 
 ];
