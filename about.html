@@ -39,8 +39,24 @@
       letter-spacing: -0.5px;
     }
 
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    nav ul li {
+      margin-left: 20px;
+    }
+
+    nav ul li:first-child {
+      margin-left: 0;
+    }
+
     nav a {
-      margin-left: 28px;
       text-decoration: none;
       color: var(--gray);
       font-weight: 500;
@@ -52,42 +68,53 @@
     }
 
     main {
-      max-width: 780px;
-      margin: 80px auto;
+      max-width: 800px;
+      margin: 60px auto;
       padding: 0 30px;
     }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 0.3em;
-      letter-spacing: -1px;
+    section {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    h1, h2 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5em;
     }
 
     p {
-      font-size: 1.2rem;
       color: var(--gray);
-      max-width: 600px;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
     }
 
-    .highlight {
-      background: #ffefc2;
-      padding: 3px 6px;
-      border-radius: 6px;
+    .school-logo {
+      max-width: 200px;
+      margin: 20px auto;
+      display: block;
     }
 
-    .about-section {
-      margin-top: 50px;
+    .team-container {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 30px;
     }
 
-    .about-section h2 {
-      font-size: 2rem;
-      margin-bottom: 15px;
+    .team-member {
+      flex: 1 1 200px;
+      max-width: 200px;
+      text-align: center;
     }
 
-    .about-section p {
-      font-size: 1.2rem;
-      color: var(--gray);
-      margin-bottom: 30px;
+    .team-member img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-bottom: 10px;
     }
 
     footer {
@@ -98,73 +125,125 @@
       border-top: 1px solid var(--border);
       margin-top: 100px;
     }
+    .support-button {
+      padding: 8px 16px;
+      font-weight: 600;
+      border: 2px solid;
+      border-image-slice: 1;
+      border-width: 2px;
+      border-image-source: linear-gradient(to right, #32CD32, #00a86b);
+      border-radius: 8px;
+      color: #00a86b;
+      background-color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    .support-button:hover {
+      background: linear-gradient(to right, #32CD32, #00a86b);
+      color: white;
+    }
 
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         align-items: flex-start;
-        padding: 20px 20px;
+        padding: 20px;
       }
 
-      nav a {
-        margin: 10px 10px 0 0;
-        display: inline-block;
+      nav ul {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
       }
 
-      main {
-        margin: 40px auto;
-        padding: 0 20px;
+      nav ul li {
+        margin-left: 0;
       }
 
-      h1 {
-        font-size: 2.2rem;
+      h1, h2 {
+        font-size: 1.6rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .team-container {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
-
   <header>
     <div class="logo">Pethology</div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="content.html">Content</a>
-      <a href="quiz.html">Quiz</a>
-      <a href="blog.html">Blog</a>
-      <a href="support.html">Support Us</a>
-      <a href="contact.html">Contact</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </nav>
   </header>
 
   <main>
-    <h1>About Pethology</h1>
-
-    <section class="about-section">
-      <h2>Our Mission</h2>
+    <section>
+      <h2></h2>
+      <img src="./assets/img/college.jpeg" alt="Logo da escola" class="school-logo" />
       <p>
         Pethology was born out of a passion for animal care and a desire to make learning more engaging for students. We offer a platform where individuals can access high-quality study resources tailored to the QQI Level 5 Animal Care course, proudly designed by Animal Care Students from St Conleths Community College to help you succeed in the world of animal welfare and healthcare.
       </p>
     </section>
 
-    <section class="about-section">
-      <h2>What We Offer</h2>
+    <section>
+      <h2>Our Mission</h2>
       <p>
-        Our platform includes detailed course content, interactive quizzes, and blog posts created by fellow students and professionals. Whether you're studying biology, animal behavior, or welfare, Pethology brings all the resources you need to one place.
+        We aim to empower Animal Care learners by offering content that is easy to understand, fun to explore, and rooted in real-life experience from students and professionals in the field.
       </p>
     </section>
 
-    <section class="about-section">
-      <h2>Our Team</h2>
+    <section>
+      <h2>What We Offer</h2>
       <p>
-        We are a team of passionate animal care students and professionals who aim to bring the best of our knowledge to the community. Our goal is to make animal care education more accessible, engaging, and practical.
+        We provide carefully curated learning material, interactive quizzes, and tools for both students and teachers. Our platform is designed to support everyone from beginners to advanced Animal Care students.
       </p>
+    </section>
+
+    <section>
+      <h2>Our Team</h2>
+      <div class="team-container">
+        <div class="team-member">
+          <img src="./assets/img/otter.jpg" alt="Team Member 1">
+          <p><strong>Nana da silva</strong></p>
+          <p class="team-bio">
+            Animal care assistant with a love for veterinary environment.
+          </p>
+        </div>
+        <div class="team-member">
+          <img src="./assets/img/seal.jpeg" alt="Team Member 2">
+          <p><strong>Rebecca Deegan</strong></p>
+          <p class="team-bio">
+            Animal care assistant with a love for wildlife rescue.
+          </p>
+        </div>
+        <div class="team-member">
+          <img src="./assets/img/dog.avif" alt="Team Member 3">
+          <p><strong>Rachael Kane</strong></p>
+          <p class="team-bio">
+            Animal care assistant with a love for animal behaviour.
+          </p>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer>
     &copy; 2025 Pethology — Built with ❤️ by Animal Care Nerds
   </footer>
-
 </body>
 </html>
