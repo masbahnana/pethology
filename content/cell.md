@@ -25,4 +25,4 @@ Cells are the basic units of life in all living organisms.
 
 ### 🔬 Diagram
 
-![Animal vs Plant Cell](https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Animal_Cell_and_Plant_Cell.svg/800px-Animal_Cell_and_Plant_Cell.svg.png)
+![Animal vs Plant Cell](https://cdn1.byjus.com/wp-content/uploads/2017/11/Plant-and-Animal-Cell-Full-min.png)

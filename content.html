@@ -5,59 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Content | Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <style>
-    .page-wrapper {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    .module-nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 40px;
-    }
-
-    .module-nav button {
-      padding: 10px 20px;
-      font-weight: 600;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: #fff;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .module-nav button:hover,
-    .module-nav button.active {
-      background-color: #f0f0f0;
-    }
-
-    .markdown-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.04);
-      line-height: 1.8;
-    }
-
-    .login-message {
-      text-align: center;
-      color: var(--gray);
-      font-style: italic;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 768px) {
-      .module-nav {
-        flex-direction: column;
-        align-items: center;
-      }
-    }
-  </style>
+  <link rel="icon" href="assets/img/pethology-logo.png" type="image/png" />
 </head>
+
 <body>
   <header>
     <div class="logo">Pethology</div>
@@ -74,23 +24,29 @@
     </nav>
   </header>
 
-  <main class="page-wrapper">
-    <h1 style="text-align: center; margin-bottom: 20px;">Explore Our Modules</h1>
+  <main>
+    <div class="page-container">
+      <div class="card">
+        <h1 class="page-title">Explore Our Modules</h1>
+  
+        <div class="quiz-container">
+          <button class="minimal-button" onclick="toggleTopics('biology-topics', this)">
+            Biology <span class="arrow">⌄</span>
+          </button>
+          <ul id="biology-topics" class="topic-list">
+            <li><button class="minimal-button" onclick="loadMarkdown('cell.md')">Cell Structure</button></li>
+          </ul>
 
-    <div class="module-nav">
-      <button onclick="loadMarkdown('biology.md')">Biology</button>
-      <button onclick="loadMarkdown('welfare.md')">Animal Welfare</button>
-      <button onclick="loadMarkdown('behaviour.md')">Animal Behaviour</button>
-      <button onclick="loadMarkdown('anatomy.md')">Anatomy</button>
-      <button onclick="loadMarkdown('husbandry.md')">Husbandry</button>
-    </div>
-
-    <div class="markdown-content" id="markdown-content">
-      <p>Select a module to view its content.</p>
-    </div>
-
-    <div class="login-message">
-      <p>🔒 Log in to view personalized content from your teacher.</p>
+        </div>
+  
+        <div class="markdown-content" id="markdown-content">
+          <p></p>
+        </div>
+  
+        <div class="login-message">
+          <p>🔒 Log in to view personalized content from your teacher.</p>
+        </div>
+      </div>
     </div>
   </main>
 
