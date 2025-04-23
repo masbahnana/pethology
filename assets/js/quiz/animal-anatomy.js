@@ -245,5 +245,91 @@ export const questions = [
         ],
         answer: 1,
         explanation: "The gizzard is a muscular organ that mechanically grinds food, often with the help of swallowed stones or grit."
+    },
+    {
+        question: "What are the 4 chambers of a ruminant stomach?",
+        options: [
+            "Rumen, reticulum, omasum, abomasum",
+            "Stomach, small intestine, large intestine, colon",
+            "Crop, proventriculus, gizzard, cloaca",
+            "Duodenum, jejunum, ileum, caecum"
+    ],
+        answer: 0,
+        explanation: "These are the four compartments of a ruminant's stomach, each with a specific role in breaking down plant-based food, especially cellulose."
+    },
+    {
+        question: "What are the villi?",
+        options: [
+            "Small bones found in the ear",
+            "Tiny projections in the small intestine that increase surface area for absorption",
+            "Structures in the lungs that exchange gases",
+            "Muscles that help with digestion in the stomach"
+            ],
+        answer: 1,
+        explanation: "Villi are finger-like structures lining the small intestine that help absorb nutrients by increasing the surface area."
+    },
+    {
+        question: "What enzyme is responsible for the digestion of carbohydrates?",
+        options: [
+          "Lipase",
+          "Pepsin",
+          "Amylase",
+          "Trypsin"
+        ],
+        answer: 2,
+        explanation: "Amylase is an enzyme that breaks down carbohydrates into simpler sugars, starting in the mouth and continuing in the small intestine."
+    }, 
+    {
+        question: "Where are the adrenal glands located?",
+        options: [
+          "On top of the kidneys",
+          "In the brain",
+          "Behind the stomach",
+          "In the neck"
+        ],
+        answer: 0,
+        explanation: "The adrenal glands sit on top of each kidney and produce hormones like adrenaline and cortisol."
+    },
+    {
+        question: "What are the largest glands in the endocrine system?",
+        options: [
+          "Pituitary glands",
+          "Thyroid glands",
+          "Pancreas",
+          "Adrenal glands"
+        ],
+        answer: 1,
+        explanation: "The thyroid is the largest endocrine gland and plays a key role in regulating metabolism by producing hormones like thyroxine."
+    },
+    {
+        question: "The pituitary gland is split in two parts. What are these parts?",
+        options: [
+          "Anterior and posterior",
+          "Left and right",
+          "Upper and lower",
+          "Internal and external"
+        ],
+        answer: 0,
+        explanation: "The pituitary gland has two parts: the anterior (front) lobe, which produces several key hormones, and the posterior (back) lobe, which stores and releases hormones made by the hypothalamus."
+    },
+    {
+        question: "Where is the hormone thyroxine released?",
+        options: [
+          "Adrenal glands",
+          "Thyroid gland",
+          "Pituitary gland",
+          "Pancreas"
+        ],
+        answer: 1,
+        explanation: "Thyroxine is released by the thyroid gland and helps regulate metabolism, heart rate, and body temperature."
+    },
+    {
+        question: "Do endocrine glands have ducts? True or False?",
+        options: [
+          "True",
+          "False"
+        ],
+        answer: 1,
+        explanation: "Endocrine glands are ductless; they release hormones directly into the bloodstream."
     }
 ]    
