@@ -66,7 +66,7 @@ export const questions = [
         explanation: "The two layers of skin are the epidermis and dermis. The epidermis is the outer layer that provides a barrier to the environment, while the dermis is the inner layer that contains blood vessels, nerves, and connective tissue.",
     },
     {
-        questions: "The special protein deposited in the skin, hair, and nails is called?",
+        question: "The special protein deposited in the skin, hair, and nails is called?",
         options: [
             "Collagen",
             "Keratin",
