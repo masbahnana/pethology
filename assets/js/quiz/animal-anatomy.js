@@ -253,7 +253,7 @@ export const questions = [
             "Stomach, small intestine, large intestine, colon",
             "Crop, proventriculus, gizzard, cloaca",
             "Duodenum, jejunum, ileum, caecum"
-    ],
+        ],
         answer: 0,
         explanation: "These are the four compartments of a ruminant's stomach, each with a specific role in breaking down plant-based food, especially cellulose."
     },
@@ -331,5 +331,192 @@ export const questions = [
         ],
         answer: 1,
         explanation: "Endocrine glands are ductless; they release hormones directly into the bloodstream."
+    },
+    {
+        question: "Where is insulin produced?",
+        options: [
+          "Pancreas",
+          "Liver",
+          "Kidneys",
+          "Thyroid gland"
+        ],
+        answer: 0,
+        explanation: "Insulin is produced by the beta cells in the pancreas and helps regulate blood sugar levels."
+    },
+    {
+        question: "State 2 substances removed from the blood by the kidneys?",
+        options: [
+            "Oxygen and carbon dioxide",
+            "Urea and excess salts",
+            "Glucose and vitamins",
+            "Enzymes and hormones"
+        ],
+        answer: 1,
+        explanation: "The kidneys filter out waste products such as urea and excess salts, which are excreted in urine."
+    },
+    {
+        question: "Where does filtration take place?",
+        options: [
+            "In the glomerulus",
+            "In the collecting duct",
+            "In the renal pelvis",
+            "In the proximal convoluted tubule"
+        ],
+        answer: 0,
+        explanation: "Filtration occurs in the glomerulus, a network of capillaries in the kidney, where blood is filtered to form filtrate."
+    },
+    {
+        question: "What happens in the reabsorption stage?",
+        options: [
+            "Nutrients and water are absorbed back into the blood",
+            "Toxins are removed from the blood",
+            "Waste products are secreted into the urine",
+            "Oxygen is reabsorbed into the blood"
+        ],
+        answer: 0,
+        explanation: "During reabsorption, essential substances like water, glucose, and ions are absorbed back into the bloodstream from the filtrate."
+    },
+    {
+        question: "What is meant by the term excretion?",
+        options: [
+            "The process of filtering blood",
+            "The removal of waste products from the body",
+            "The absorption of nutrients",
+            "The production of urine"
+        ],
+        answer: 1,
+        explanation: "Excretion is the process by which waste products such as urea, carbon dioxide, and excess water are eliminated from the body."
+    },
+    {
+        question: "Name 2 substances secreted by nephron?",
+        options: [
+            "Urea and glucose",
+            "Water and amino acids",
+            "Urea and hydrogen ions",
+            "Salts and oxygen"
+        ],
+        answer: 2,
+        explanation: "The nephron secretes waste products like urea and also hydrogen ions to help regulate blood pH."
+    },
+    {
+        question: "Name 3 types of neuron",
+        options: [
+            "Motor, sensory, and inter neurons",
+            "Brain, spinal, and sensory neurons",
+            "Alpha, beta, and gamma neurons",
+            "Somatic, autonomic, and parasympathetic neurons"
+        ],
+        answer: 0,
+        explanation: "The three main types of neurons are motor neurons (control movement), sensory neurons (detect stimuli), and interneurons (connect motor and sensory neurons)."
+    },
+    {
+        question: "What are the two parts of the nervous system?",
+        options: [
+            "Central and peripheral nervous systems",
+            "Brain and spinal cord",
+            "Sensory and motor systems",
+            "Autonomic and somatic systems"
+        ],
+        answer: 0,
+        explanation: "The nervous system is divided into the central nervous system (CNS), consisting of the brain and spinal cord, and the peripheral nervous system (PNS), which connects the CNS to the body."
+    },
+    {
+        question: "What connects the brain to the peripheral nervous system?",
+        options: [
+            "Spinal cord",
+            "Cranial nerves",
+            "Optic nerve",
+            "Vagus nerve"
+        ],
+        answer: 0,
+        explanation: "The spinal cord connects the brain to the peripheral nervous system, transmitting signals between the body and the brain."
+    },
+    {
+        question: "Where would you find the optic nerve?",
+        options: [
+            "In the eye",
+            "In the brainstem",
+            "In the spinal cord",
+            "In the retina"
+        ],
+        answer: 3,
+        explanation: "The optic nerve carries visual information from the retina in the eye to the brain."
+    },
+    {
+        question: "What are the 4 parts of the cerebrum?",
+        options: [
+            "Frontal, temporal, occipital, and parietal lobes",
+            "Left and right hemispheres",
+            "Cortex, medulla, cerebellum, and pons",
+            "Gray matter, white matter, brainstem, and spinal cord"
+        ],
+        answer: 0,
+        explanation: "The cerebrum is divided into four main lobes: frontal, temporal, occipital, and parietal, each responsible for different functions."
+    },
+    {
+        question: "What is the function of sensory neurons?",
+        options: [
+            "To transmit signals to muscles for movement",
+            "To send sensory information from receptors to the brain",
+            "To connect the brain and spinal cord",
+            "To secrete hormones"
+        ],
+        answer: 1,
+        explanation: "Sensory neurons transmit signals from sensory receptors (like those for touch, sight, and sound) to the brain for processing."
+    },
+    {
+        question: "What is the function of the ciliary muscle?",
+        options: [
+            "To control the size of the pupil",
+            "To focus the lens for near or far vision",
+            "To secrete tears",
+            "To detect light and color"
+        ],
+        answer: 1,
+        explanation: "The ciliary muscle controls the shape of the lens in the eye, allowing for focusing on objects at different distances."
+    },
+    {
+        question: "Where does the ovum/egg develop in the reproductive system?",
+        options: [
+          "Uterus",
+          "Fallopian tube",
+          "Ovary",
+          "Cervix"
+        ],
+        answer: 2,
+        explanation: "The ovum (egg) develops in the ovaries, which are the female reproductive organs responsible for producing eggs and hormones."
+    },
+    {
+        question: "What is meant by the term sexual reproduction?",
+        options: [
+          "Reproduction involving one parent",
+          "Reproduction through budding",
+          "Reproduction involving two parents and the fusion of gametes",
+          "Reproduction by cell division"
+        ],
+        answer: 2,
+        explanation: "Sexual reproduction involves the fusion of a male and female gamete (sperm and egg) to produce offspring with genetic variation."
+    },
+    {
+        question: "What is the function of the uterus?",
+        options: [
+          "To produce eggs",
+          "To fertilize the egg",
+          "To transport sperm",
+          "To support and nourish a developing fetus"
+        ],
+        answer: 3,
+        explanation: "The uterus is the organ where a fertilized egg implants and develops into a fetus during pregnancy."
+    },
+    {
+        question: "What are the functions of the male reproductive system?",
+        options: [
+          "To produce and deliver sperm",
+          "To store eggs and produce estrogen",
+          "To support fetal development",
+          "To control menstruation"
+        ],
+        answer: 0,
+        explanation: "The male reproductive system is responsible for producing sperm and delivering it to the female reproductive system during reproduction."
     }
 ]    
