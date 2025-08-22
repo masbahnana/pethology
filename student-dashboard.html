@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+      background: #fafbfc;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: white;
+      border-right: 1px solid #e8ecef;
+      padding: 40px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar h3 {
+      font-size: 1.1rem;
+      color: #374151;
+      margin: 0 0 20px 24px;
+      font-weight: 600;
+    }
+
+    .module-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 40px 0;
+    }
+
+    .module-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-item:hover {
+      background: #f8fafc;
+      border-left-color: #3b82f6;
+    }
+
+    .module-item.active {
+      background: #eff6ff;
+      border-left-color: #3b82f6;
+      color: #1d4ed8;
+    }
+
+    .module-icon {
+      width: 20px;
+      height: 20px;
+      font-size: 16px;
+    }
+
+    .tool-item {
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #6b7280;
+    }
+
+    .tool-item:hover {
+      background: #f8fafc;
+      color: #374151;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .welcome-text h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 8px 0;
+    }
+
+    .welcome-text p {
+      color: #6b7280;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .continue-btn {
+      background: #111827;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .continue-btn:hover {
+      background: #374151;
+      transform: translateY(-1px);
+    }
+
+    .progress-section {
+      margin-bottom: 40px;
+    }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .progress-circles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .progress-circle {
+      text-align: center;
+    }
+
+    .circle-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 12px;
+    }
+
+    .circle-svg {
+      transform: rotate(-90deg);
+      width: 120px;
+      height: 120px;
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #f3f4f6;
+      stroke-width: 8;
+    }
+
+    .circle-progress {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 314;
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .circle-progress.biology { stroke: #f97316; }
+    .circle-progress.welfare { stroke: #059669; }
+    .circle-progress.anatomy { stroke: #7c3aed; }
+    .circle-progress.husbandry { stroke: #dc2626; }
+
+    .circle-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .module-name {
+      font-size: 0.9rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .animal-illustration {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .animal-avatar {
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      margin: 0 auto 16px;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .feature-icon.smart { background: #fef3c7; }
+    .feature-icon.adaptive { background: #fef9c3; }
+    .feature-icon.exam { background: #dbeafe; }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0;
+    }
+
+    .feature-description {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .feature-btn {
+      background: #111827;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .feature-btn:hover {
+      background: #374151;
+    }
+
+    .bottom-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .glossary-section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 20px 0;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+    }
+
+    .fact-card {
+      background: #fffbeb;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .fact-title {
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+
+    .fact-content {
+      color: #451a03;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .star-icon {
+      float: right;
+      color: #fbbf24;
+      font-size: 1.2rem;
+    }
+
+    .journal-section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .journal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .journal-date {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .journal-tasks {
+      margin-bottom: 24px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .task-checkbox.completed {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .task-checkbox.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .task-text {
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .journal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .journal-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #111827;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-primary:hover {
+      background: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .avatar-section {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 20px 0;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .progress-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .progress-circles {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .circle-wrapper {
+        width: 100px;
+        height: 100px;
+      }
+
+      .circle-svg {
+        width: 100px;
+        height: 100px;
+      }
+
+      .animal-avatar {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+      }
+
+      .feature-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .welcome-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Modules</h3>
+      <ul class="module-list">
+        <li class="module-item active">
+          <span class="module-icon">🧬</span>
+          Biology
+        </li>
+        <li class="module-item">
+          <span class="module-icon">🐾</span>
+          Animal Welfare
+        </li>
+        <li class="module-item">
+          <span class="module-icon">🦴</span>
+          Anatomy
+        </li>
+        <li class="module-item">
+          <span class="module-icon">🏠</span>
+          Husbandry
+        </li>
+        <li class="module-item">
+          <span class="module-icon">✂️</span>
+          Grooming
+        </li>
+        <li class="module-item">
+          <span class="module-icon">🐹</span>
+          Small Animals
+        </li>
+      </ul>
+
+      <h3>Tools</h3>
+      <div class="tool-item">
+        <span class="module-icon">📖</span>
+        Glossary
+      </div>
+      <div class="tool-item">
+        <span class="module-icon">📚</span>
+        Flashcards
+      </div>
+      <div class="tool-item">
+        <span class="module-icon">📝</span>
+        Notes
+      </div>
+      <div class="tool-item">
+        <span class="module-icon">🎯</span>
+        Goals
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="welcome-header">
+        <div class="welcome-text">
+          <h1>Welcome back, <span id="studentName">Charlie!</span></h1>
+          <p>Ready to continue your Animal Care journey?</p>
+        </div>
+        <div class="avatar-section">
+          <img id="studentAvatar" class="user-avatar" src="" alt="Student Avatar" />
+          <span class="user-name" id="displayName">Charlie</span>
+        </div>
+      </div>
+
+      <!-- Progress Overview -->
+      <section class="progress-section">
+        <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Progress Overview</h2>
+        <div class="progress-grid">
+          <div class="progress-circles">
+            <div class="progress-circle">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress biology" cx="60" cy="60" r="50" style="stroke-dashoffset: 47;"></circle>
+                </svg>
+                <div class="circle-text">85%</div>
+              </div>
+              <div class="module-name">Biology</div>
+            </div>
+
+            <div class="progress-circle">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress welfare" cx="60" cy="60" r="50" style="stroke-dashoffset: 126;"></circle>
+                </svg>
+                <div class="circle-text">60%</div>
+              </div>
+              <div class="module-name">Animal Welfare</div>
+            </div>
+
+            <div class="progress-circle">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress anatomy" cx="60" cy="60" r="50" style="stroke-dashoffset: 188;"></circle>
+                </svg>
+                <div class="circle-text">40%</div>
+              </div>
+              <div class="module-name">Anatomy</div>
+            </div>
+
+            <div class="progress-circle">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress husbandry" cx="60" cy="60" r="50" style="stroke-dashoffset: 251;"></circle>
+                </svg>
+                <div class="circle-text">20%</div>
+              </div>
+              <div class="module-name">Husbandry</div>
+            </div>
+          </div>
+
+          <div class="animal-illustration">
+            <div class="animal-avatar">🐕</div>
+            <a href="content.html" class="continue-btn">Continue Biology</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature Cards -->
+      <section class="feature-cards">
+        <div class="feature-card" onclick="startSmartReview()">
+          <div class="feature-header">
+            <div class="feature-icon smart">🧠</div>
+            <h3 class="feature-title">Smart Review</h3>
+          </div>
+          <p class="feature-description">Revisit concepts with spaced repetition based on your performance</p>
+          <a href="#" class="feature-btn">Review</a>
+        </div>
+
+        <div class="feature-card" onclick="startAdaptiveQuiz()">
+          <div class="feature-header">
+            <div class="feature-icon adaptive">⭐</div>
+            <h3 class="feature-title">Adaptive Quiz</h3>
+          </div>
+          <p class="feature-description">Practice questions tailored to your level and learning needs</p>
+          <a href="quiz.html" class="feature-btn">Start Quiz</a>
+        </div>
+
+        <div class="feature-card" onclick="startExamMode()">
+          <div class="feature-header">
+            <div class="feature-icon exam">ℹ️</div>
+            <h3 class="feature-title">Exam Mode</h3>
+          </div>
+          <p class="feature-description">Prepare with timed mock exams that simulate real test conditions</p>
+          <a href="#" class="feature-btn">Take Exam</a>
+        </div>
+      </section>
+
+      <!-- Bottom Section -->
+      <section class="bottom-section">
+        <!-- Veterinary Terms -->
+        <div class="glossary-section">
+          <h3 class="section-title">Veterinary Terms</h3>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search the glossary" id="glossarySearch" />
+          </div>
+          
+          <div class="fact-card">
+            <div class="fact-title">
+              Animal Care Summary
+              <span class="star-icon">⭐</span>
+            </div>
+            <div class="fact-content">
+              Dogs have four chambers in their heart: the left atrium, left ventricle, right atrium, and right ventricle.
+            </div>
+          </div>
+
+          <div class="fact-card">
+            <div class="fact-title">
+              Quick Fact
+              <span class="star-icon">💡</span>
+            </div>
+            <div class="fact-content">
+              The gestation period for dogs is approximately 63 days, though it can range from 58-68 days.
+            </div>
+          </div>
+        </div>
+
+        <!-- Internship Journal -->
+        <div class="journal-section">
+          <div class="journal-header">
+            <h3 class="section-title">Internship Journal</h3>
+            <span class="journal-date">Friday, Apr 12</span>
+          </div>
+
+          <div class="journal-tasks">
+            <div class="task-item">
+              <div class="task-checkbox completed" onclick="toggleTask(this)"></div>
+              <div class="task-text completed">Complete grooming tasks</div>
+            </div>
+            <div class="task-item">
+              <div class="task-checkbox" onclick="toggleTask(this)"></div>
+              <div class="task-text">Review veterinary assistant skills</div>
+            </div>
+            <div class="task-item">
+              <div class="task-checkbox" onclick="toggleTask(this)"></div>
+              <div class="task-text">Practice animal handling techniques</div>
+            </div>
+          </div>
+
+          <div class="journal-actions">
+            <a href="#" class="journal-btn btn-secondary">View Journal</a>
+            <a href="#" class="journal-btn btn-primary">Take Journal</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="assets/js/auth.js"></script>
+  <script>
+    // Load user data on page load
+    window.addEventListener('load', () => {
+      loadUserData();
+      animateProgressCircles();
+    });
+
+    /*
+    function loadUserData() {
+      const userSession = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
+      
+      if (!userSession.name || userSession.role !== 'Student') {
+        // Redirect to login if not authenticated or not a student
+        window.location.href = 'login.html';
+        return;
+      }
+    */    
+
+      const firstName = userSession.name.split(' ')[0];
+      document.getElementById('studentName').textContent = firstName;
+      document.getElementById('displayName').textContent = firstName;
+      
+      // Set avatar
+      const avatar = document.getElementById('studentAvatar');
+      avatar.src = userSession.photo || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%234facfe"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+    }
+
+    function animateProgressCircles() {
+      // Animate progress circles on load
+      setTimeout(() => {
+        document.querySelectorAll('.circle-progress').forEach((circle, index) => {
+          circle.style.transition = 'stroke-dashoffset 1s ease';
+        });
+      }, 500);
+    }
+
+    // Feature functions
+    function startSmartReview() {
+      alert('Smart Review will analyze your past quiz performance and suggest topics to review!');
+    }
+
+    function startAdaptiveQuiz() {
+      window.location.href = 'quiz.html';
+    }
+
+    function startExamMode() {
+      alert('Exam Mode: Timed practice exams coming soon!');
+    }
+
+    // Task management
+    function toggleTask(checkbox) {
+      checkbox.classList.toggle('completed');
+      const taskText = checkbox.nextElementSibling;
+      taskText.classList.toggle('completed');
+      
+      // Save to progress if user is logged in
+      const user = PethologyAuth.getCurrentUser();
+      if (user) {
+        const isCompleted = checkbox.classList.contains('completed');
+        console.log('Task updated:', taskText.textContent, isCompleted);
+      }
+    }
+
+    // Glossary search
+    document.getElementById('glossarySearch').addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      console.log('Searching glossary for:', searchTerm);
+      // Implement glossary search functionality
+    });
+
+    // Module navigation
+    document.querySelectorAll('.module-item').forEach(item => {
+      item.addEventListener('click', function() {
+        // Remove active class from all items
+        document.querySelectorAll('.module-item').forEach(i => i.classList.remove('active'));
+        // Add active class to clicked item
+        this.classList.add('active');
+        
+        const moduleName = this.textContent.trim();
+        console.log('Selected module:', moduleName);
+        
+        // Update content based on selected module
+        // updateModuleContent(moduleName);
+      });
+    });
+
+    // Tool navigation
+    document.querySelectorAll('.tool-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const toolName = this.textContent.trim();
+        console.log('Selected tool:', toolName);
+        
+        switch(toolName) {
+          case 'Glossary':
+            document.querySelector('.glossary-section').scrollIntoView({ behavior: 'smooth' });
+            break;
+          case 'Flashcards':
+            alert('Flashcards feature coming soon!');
+            break;
+          case 'Notes':
+            alert('Notes feature coming soon!');
+            break;
+          case 'Goals':
+            alert('Goals tracking coming soon!');
+            break;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

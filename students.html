@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For Students - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    :root {
+      --bg: #fefefe;
+      --accent: #111;
+      --gray: #666;
+      --border: #e5e5e5;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --orange: #f59e0b;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--accent);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 30px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      padding: 0;
+      margin: 0;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--gray);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 80px 60px;
+      text-align: center;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+
+    .hero-highlight {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: white;
+      color: var(--accent);
+      padding: 16px 32px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary:hover {
+      background: white;
+      color: var(--accent);
+    }
+
+    .problem-section {
+      padding: 80px 60px;
+      background: #f8fafc;
+      text-align: center;
+    }
+
+    .problem-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: var(--accent);
+    }
+
+    .problem-text {
+      font-size: 1.2rem;
+      color: var(--gray);
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--blue);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .benefits-section {
+      padding: 80px 60px;
+      background: white;
+    }
+
+    .benefits-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .benefit-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #f0f0f0;
+      transition: all 0.3s ease;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+
+    .benefit-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .benefit-icon.quiz { background: #dbeafe; }
+    .benefit-icon.progress { background: #d1fae5; }
+    .benefit-icon.content { background: #fef3c7; }
+    .benefit-icon.mobile { background: #f3e8ff; }
+    .benefit-icon.community { background: #fce7f3; }
+    .benefit-icon.future { background: #ecfdf5; }
+
+    .benefit-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .benefit-description {
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .benefit-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .benefit-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .benefit-features li::before {
+      content: '✅';
+      font-size: 14px;
+    }
+
+    .demo-section {
+      padding: 80px 60px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      text-align: center;
+    }
+
+    .demo-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .demo-title {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .demo-text {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      opacity: 0.95;
+    }
+
+    .demo-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .demo-feature {
+      background: rgba(255,255,255,0.1);
+      padding: 24px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .demo-feature-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .demo-feature-title {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .demo-feature-text {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    .testimonial-section {
+      padding: 80px 60px;
+      background: #f8fafc;
+    }
+
+    .testimonial-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .testimonial-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-top: 40px;
+    }
+
+    .testimonial-text {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--gray);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .testimonial-author {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .testimonial-role {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .footer-cta {
+      padding: 60px 60px;
+      background: var(--accent);
+      color: white;
+      text-align: center;
+    }
+
+    .footer-cta-title {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .footer-cta-text {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 20px;
+        gap: 20px;
+      }
+
+      nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .hero-section,
+      .problem-section,
+      .benefits-section,
+      .demo-section,
+      .testimonial-section,
+      .footer-cta {
+        padding: 40px 20px;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .benefits-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Pethology</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Master Animal Care with Ireland's First Digital Platform</h1>
+      <p class="hero-subtitle">
+        Finally, a <span class="hero-highlight">comprehensive study platform</span> designed specifically for Animal Care students in Ireland. No more scattered notes or outdated materials.
+      </p>
+      <div class="cta-buttons">
+        <a href="login.html" class="btn-primary">Start Learning Free</a>
+        <a href="#benefits" class="btn-secondary">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem-section">
+    <div class="problem-content">
+      <h2 class="section-title">The Challenge Irish Animal Care Students Face</h2>
+      <p class="problem-text">
+        Unlike other fields, <strong>Animal Care in Ireland lacks dedicated textbooks and structured study materials</strong>. 
+        Students rely on scattered handouts, online searches, and fragmented resources. 
+        <strong>Pethology changes that</strong> by providing the first comprehensive, curriculum-aligned platform for Irish Animal Care education.
+      </p>
+      
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">0</div>
+          <div class="stat-label">Dedicated Animal Care textbooks in Ireland</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Students rely on scattered materials</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1st</div>
+          <div class="stat-label">Digital platform designed for Irish curriculum</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits-section" id="benefits">
+    <div class="benefits-content">
+      <h2 class="section-title">Why Pethology Students Excel</h2>
+      
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon quiz">🎯</div>
+          <h3 class="benefit-title">Smart Adaptive Quizzes</h3>
+          <p class="benefit-description">
+            Practice with questions that adapt to your learning level and focus on areas where you need improvement.
+          </p>
+          <ul class="benefit-features">
+            <li>Personalized difficulty adjustment</li>
+            <li>Instant feedback with explanations</li>
+            <li>Performance tracking by topic</li>
+            <li>Exam simulation mode</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon progress">📊</div>
+          <h3 class="benefit-title">Visual Progress Tracking</h3>
+          <p class="benefit-description">
+            See exactly where you stand in each module and celebrate your achievements as you progress.
+          </p>
+          <ul class="benefit-features">
+            <li>Module-by-module progress circles</li>
+            <li>Achievement badges and streaks</li>
+            <li>Detailed performance analytics</li>
+            <li>Goal setting and tracking</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon content">📚</div>
+          <h3 class="benefit-title">Structured Content Library</h3>
+          <p class="benefit-description">
+            Access organized, curriculum-aligned content covering all aspects of Animal Care education.
+          </p>
+          <ul class="benefit-features">
+            <li>Biology and anatomy modules</li>
+            <li>Animal welfare guidelines</li>
+            <li>Practical care techniques</li>
+            <li>Veterinary terminology glossary</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon mobile">📱</div>
+          <h3 class="benefit-title">Study Anywhere, Anytime</h3>
+          <p class="benefit-description">
+            Mobile-optimized platform that works offline, perfect for studying during commutes or breaks.
+          </p>
+          <ul class="benefit-features">
+            <li>Responsive design for all devices</li>
+            <li>Offline content access</li>
+            <li>Sync across devices</li>
+            <li>Quick review sessions</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon community">👥</div>
+          <h3 class="benefit-title">Internship Journal</h3>
+          <p class="benefit-description">
+            Document your practical experience with guided journal prompts and reflection tools.
+          </p>
+          <ul class="benefit-features">
+            <li>Daily task tracking</li>
+            <li>Reflection prompts</li>
+            <li>Skill development logs</li>
+            <li>Portfolio building</li>
+          </ul>
+        </div>
+
+        <div class="benefit-card">
+          <div class="benefit-icon future">🚀</div>
+          <h3 class="benefit-title">Always Improving</h3>
+          <p class="benefit-description">
+            Built by students, for students. Regular updates based on feedback from the Animal Care community.
+          </p>
+          <ul class="benefit-features">
+            <li>Student-driven development</li>
+            <li>Regular content updates</li>
+            <li>Community feedback integration</li>
+            <li>Cutting-edge learning features</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Demo Section -->
+  <section class="demo-section">
+    <div class="demo-content">
+      <h2 class="demo-title">Join Our 6-Month Free Trial</h2>
+      <p class="demo-text">
+        We're partnering with Irish colleges to provide <strong>6 months of completely free access</strong>. 
+        Help us prove the value of structured Animal Care education while advancing your own studies.
+      </p>
+      
+      <div class="demo-features">
+        <div class="demo-feature">
+          <div class="demo-feature-icon">🆓</div>
+          <div class="demo-feature-title">Completely Free</div>
+          <div class="demo-feature-text">Full platform access for 6 months at no cost</div>
+        </div>
+        <div class="demo-feature">
+          <div class="demo-feature-icon">🎓</div>
+          <div class="demo-feature-title">College Partnership</div>
+          <div class="demo-feature-text">Integrated with your existing Microsoft Teams setup</div>
+        </div>
+        <div class="demo-feature">
+          <div class="demo-feature-icon">📈</div>
+          <div class="demo-feature-title">Prove the Impact</div>
+          <div class="demo-feature-text">Help demonstrate the value of digital Animal Care education</div>
+        </div>
+      </div>
+
+      <div class="cta-buttons">
+        <a href="login.html" class="btn-primary">Join Free Trial</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial Section -->
+  <section class="testimonial-section">
+    <div class="testimonial-content">
+      <h2 class="section-title">What Students Are Saying</h2>
+      
+      <div class="testimonial-card">
+        <p class="testimonial-text">
+          "Finally, a platform that understands what Animal Care students actually need. The quiz system helped me identify gaps in my knowledge I didn't even know existed."
+        </p>
+        <div class="testimonial-author">Sarah M.</div>
+        <div class="testimonial-role">Animal Care Level 5 Student</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer CTA -->
+  <section class="footer-cta">
+    <h2 class="footer-cta-title">Ready to Transform Your Animal Care Studies?</h2>
+    <p class="footer-cta-text">
+      Join the first generation of Irish Animal Care students using purpose-built digital learning tools.
+    </p>
+    <div class="cta-buttons">
+      <a href="login.html" class="btn-primary">Start Your Free Trial</a>
+      <a href="teachers.html" class="btn-secondary">I'm a Teacher</a>
+    </div>
+  </section>
+
+  <footer style="text-align: center; padding: 40px 0; background: #f8fafc; color: #666; border-top: 1px solid #e5e7eb;">
+    &copy; 2025 Pethology — Built with ❤️ by Animal Care Students
+  </footer>
+</body>
+</html>

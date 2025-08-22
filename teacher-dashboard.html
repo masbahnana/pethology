@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher Dashboard - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding: 30px;
+      background: linear-gradient(135deg, #e9eaed 0%, #977bb3 100%);
+      border-radius: 16px;
+      color: rgb(0, 0, 0);
+    }
+
+    .welcome-section h1 {
+      margin: 0 0 5px 0;
+      font-size: 2rem;
+    }
+
+    .welcome-section p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.3);
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid #f0f0f0;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .card-icon.students { background: #e3f2fd; }
+    .card-icon.quizzes { background: #f3e5f5; }
+    .card-icon.content { background: #e8f5e8; }
+    .card-icon.analytics { background: #fff3e0; }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      padding: 8px 16px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+
+    .action-btn:hover {
+      background: #333;
+    }
+
+    .action-btn.secondary {
+      background: #f8f9fa;
+      color: var(--accent);
+      border: 1px solid #e9ecef;
+    }
+
+    .recent-activity {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .activity-meta {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .class-management {
+      grid-column: 1 / -1;
+    }
+
+    .student-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .student-table th,
+    .student-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .student-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      width: 100px;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4caf50, #8bc34a);
+      transition: width 0.3s ease;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-actions {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Pethology</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="login.html">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="dashboard-container">
+    <div class="dashboard-header">
+      <div class="welcome-section">
+        <h1>Welcome back, <span id="teacherName">Professor!</span></h1>
+        <p>Here's what's happening with your Animal Care classes today</p>
+      </div>
+      <img id="teacherAvatar" class="user-avatar" src="" alt="Teacher Avatar" />
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Students Overview -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon students">👥</div>
+          <h3 class="card-title">Active Students</h3>
+        </div>
+        <div class="stat-number">24</div>
+        <div class="stat-label">Students enrolled this term</div>
+        <div class="quick-actions">
+          <button class="action-btn" onclick="openModal('studentsModal')">View All</button>
+          <button class="action-btn secondary" onclick="exportStudentData()">Export Data</button>
+        </div>
+      </div>
+
+      <!-- Quiz Management -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon quizzes">📝</div>
+          <h3 class="card-title">Quiz Performance</h3>
+        </div>
+        <div class="stat-number">89%</div>
+        <div class="stat-label">Average class score</div>
+        <div class="quick-actions">
+          <button class="action-btn" onclick="openModal('quizModal')">Create Quiz</button>
+          <a href="quiz-analytics.html" class="action-btn secondary">View Analytics</a>
+        </div>
+      </div>
+
+      <!-- Content Management -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon content">📚</div>
+          <h3 class="card-title">Course Content</h3>
+        </div>
+        <div class="stat-number">12</div>
+        <div class="stat-label">Modules published</div>
+        <div class="quick-actions">
+          <button class="action-btn" onclick="openModal('contentModal')">Add Content</button>
+          <a href="content-manager.html" class="action-btn secondary">Manage All</a>
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon analytics">📊</div>
+          <h3 class="card-title">This Week</h3>
+        </div>
+        <div class="stat-number">142</div>
+        <div class="stat-label">Quiz attempts completed</div>
+        <div class="quick-actions">
+          <a href="#" class="action-btn">Full Report</a>
+        </div>
+      </div>
+
+      <!-- Class Management -->
+      <div class="dashboard-card class-management">
+        <div class="card-header">
+          <div class="card-icon students">🎓</div>
+          <h3 class="card-title">Class Overview - Animal Care Level 5</h3>
+        </div>
+        <table class="student-table">
+          <thead>
+            <tr>
+              <th>Student Name</th>
+              <th>Last Activity</th>
+              <th>Progress</th>
+              <th>Quiz Average</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="studentTableBody">
+            <tr>
+              <td>Emma Johnson</td>
+              <td>2 hours ago</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 85%"></div>
+                </div>
+                85%
+              </td>
+              <td>92%</td>
+              <td>
+                <button class="action-btn secondary" onclick="viewStudentDetails('emma')">View</button>
+              </td>
+            </tr>
+            <tr>
+              <td>James Wilson</td>
+              <td>5 hours ago</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 72%"></div>
+                </div>
+                72%
+              </td>
+              <td>87%</td>
+              <td>
+                <button class="action-btn secondary" onclick="viewStudentDetails('james')">View</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Sarah Davis</td>
+              <td>1 day ago</td>
+              <td>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 95%"></div>
+                </div>
+                95%
+              </td>
+              <td>96%</td>
+              <td>
+                <button class="action-btn secondary" onclick="viewStudentDetails('sarah')">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="recent-activity">
+      <h3>Recent Activity</h3>
+      <div class="activity-item">
+        <div class="activity-icon">📝</div>
+        <div class="activity-content">
+          <div class="activity-title">Emma Johnson completed "Animal Welfare" quiz</div>
+          <div class="activity-meta">Score: 92% • 2 hours ago</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">📚</div>
+        <div class="activity-content">
+          <div class="activity-title">New content added: "Cell Structure Module"</div>
+          <div class="activity-meta">By you • 5 hours ago</div>
+        </div>
+      </div>
+      <div class="activity-item">
+        <div class="activity-icon">👥</div>
+        <div class="activity-content">
+          <div class="activity-title">3 new students enrolled in Animal Care Level 5</div>
+          <div class="activity-meta">Yesterday</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div id="studentsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('studentsModal')">&times;</span>
+      <h2>All Students</h2>
+      <p>Complete list of enrolled students with detailed performance metrics.</p>
+      <!-- Add student management interface here -->
+    </div>
+  </div>
+
+  <div id="quizModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('quizModal')">&times;</span>
+      <h2>Create New Quiz</h2>
+      <form id="quizForm">
+        <div style="margin-bottom: 20px;">
+          <label for="quizTitle">Quiz Title:</label>
+          <input type="text" id="quizTitle" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;" />
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="quizModule">Module:</label>
+          <select id="quizModule" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="biology">Biology</option>
+            <option value="animal-welfare">Animal Welfare</option>
+            <option value="anatomy">Animal Anatomy</option>
+            <option value="behavior">Animal Behavior</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="quizDescription">Description:</label>
+          <textarea id="quizDescription" rows="3" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+        </div>
+        <button type="submit" class="action-btn">Create Quiz</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="contentModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contentModal')">&times;</span>
+      <h2>Add New Content</h2>
+      <form id="contentForm">
+        <div style="margin-bottom: 20px;">
+          <label for="contentTitle">Content Title:</label>
+          <input type="text" id="contentTitle" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;" />
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="contentModule">Module:</label>
+          <select id="contentModule" style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px;">
+            <option value="biology">Biology</option>
+            <option value="animal-welfare">Animal Welfare</option>
+            <option value="anatomy">Animal Anatomy</option>
+            <option value="behavior">Animal Behavior</option>
+          </select>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <label for="contentBody">Content (Markdown):</label>
+          <textarea id="contentBody" rows="10" placeholder="# Your content here..." style="width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace;"></textarea>
+        </div>
+        <button type="submit" class="action-btn">Add Content</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Pethology — Built with ❤️ by Animal Care Nerds
+  </footer>
+
+  <script>
+    // Load user data on page load
+    window.addEventListener('load', () => {
+      loadUserData();
+      loadDashboardData();
+    });
+/*
+    function loadUserData() {
+      const userSession = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
+      
+      if (!userSession.name || userSession.role !== 'Teacher') {
+        // Redirect to login if not authenticated or not a teacher
+        window.location.href = 'login.html';
+        return;
+      }
+*/
+      document.getElementById('teacherName').textContent = userSession.name.split(' ')[0];
+      
+      // Set default avatar if none available
+      const avatar = document.getElementById('teacherAvatar');
+      avatar.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="%23667eea"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+    }
+
+    function loadDashboardData() {
+      // In a real app, this would fetch data from your backend
+      // For now, we'll simulate with static data
+      console.log('Loading dashboard data...');
+      
+      // You could add real-time data loading here
+      // fetchStudentProgress();
+      // fetchQuizResults();
+      // fetchRecentActivity();
+    }
+
+    // Modal functions
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+      }
+    }
+
+    // Quiz form submission
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = {
+        title: document.getElementById('quizTitle').value,
+        module: document.getElementById('quizModule').value,
+        description: document.getElementById('quizDescription').value,
+        created: new Date().toISOString(),
+        createdBy: JSON.parse(sessionStorage.getItem('pethologyUser')).name
+      };
+      
+      console.log('Creating quiz:', formData);
+      
+      // In a real app, send this to your backend
+      // createQuiz(formData);
+      
+      alert('Quiz created successfully!');
+      closeModal('quizModal');
+      this.reset();
+    });
+
+    // Content form submission
+    document.getElementById('contentForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = {
+        title: document.getElementById('contentTitle').value,
+        module: document.getElementById('contentModule').value,
+        body: document.getElementById('contentBody').value,
+        created: new Date().toISOString(),
+        createdBy: JSON.parse(sessionStorage.getItem('pethologyUser')).name
+      };
+      
+      console.log('Creating content:', formData);
+      
+      // In a real app, send this to your backend
+      // createContent(formData);
+      
+      alert('Content added successfully!');
+      closeModal('contentModal');
+      this.reset();
+    });
+
+    // Student detail view
+    function viewStudentDetails(studentId) {
+      // In a real app, this would open a detailed student view
+      console.log('Viewing details for student:', studentId);
+      alert(`Opening detailed view for ${studentId}...`);
+    }
+
+    // Export student data
+    function exportStudentData() {
+      // Generate CSV with student data
+      const csvData = [
+        ['Name', 'Email', 'Progress', 'Quiz Average', 'Last Activity'],
+        ['Emma Johnson', 'emma.johnson@student.school.ie', '85%', '92%', '2 hours ago'],
+        ['James Wilson', 'james.wilson@student.school.ie', '72%', '87%', '5 hours ago'],
+        ['Sarah Davis', 'sarah.davis@student.school.ie', '95%', '96%', '1 day ago']
+      ];
+      
+      const csv = csvData.map(row => row.join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'student-data.csv';
+      a.click();
+      
+      window.URL.revokeObjectURL(url);
+    }
+
+    // Real-time updates (simulate)
+    setInterval(() => {
+      // In a real app, this would check for new activities
+      // updateRecentActivity();
+    }, 30000); // Check every 30 seconds
+  </script>
+</body>
+</html>
