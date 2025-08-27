@@ -266,7 +266,7 @@
         <li><a href="quiz.html">Quiz</a></li>
         <li><a href="blog.html">Blog</a></li>
         <li><a href="support.html" class="support-button">Support Us</a></li>
-        <li><a href="login.html">Logout</a></li>
+        <li><a href="auth0-login.html">Logout</a></li>
       </ul>
     </nav>
   </header>
@@ -501,7 +501,7 @@
       loadUserData();
       loadDashboardData();
     });
-/*
+
     function loadUserData() {
       const userSession = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
       
@@ -510,7 +510,7 @@
         window.location.href = 'login.html';
         return;
       }
-*/
+
       document.getElementById('teacherName').textContent = userSession.name.split(' ')[0];
       
       // Set default avatar if none available
