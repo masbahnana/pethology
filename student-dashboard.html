@@ -473,6 +473,28 @@
       color: #111827;
     }
 
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 8px;
+    }
+
+    .logout-btn:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+    }
+
     @media (max-width: 768px) {
       .dashboard-layout {
         flex-direction: column;
@@ -594,6 +616,7 @@
         <div class="avatar-section">
           <img id="studentAvatar" class="user-avatar" src="" alt="Student Avatar" />
           <span class="user-name" id="displayName">Charlie</span>
+          <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
       </div>
 
