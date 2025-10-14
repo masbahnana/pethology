@@ -49,6 +49,30 @@
       text-decoration: none;
       margin-bottom: 10px;
     }
+    
+    .email-login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 15px 20px;
+      background-color: #34a853;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+
+    .email-login-btn:hover {
+      background-color: #2d8e47;
+      transform: translateY(-1px);
+    }
 
     .microsoft-login-btn:hover {
       background-color: #106ebe;
@@ -194,6 +218,13 @@
         Sign in with Microsoft 365
       </button>
 
+      <button class="email-login-btn" onclick="loginWithEmail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+        Sign in with Email
+      </button>
+
       <div class="divider">or</div>
 
       <button class="google-login-btn" onclick="loginWithGoogle()">
@@ -258,11 +289,12 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     window.firebaseDb = db;
+    console.log('✅ Firebase initialized');
 
     // AUTH0 CONFIG
     const auth0Config = {
-      domain: 'dev-itl78pbpxq46x8gh.eu.auth0.com',  // Substituir pelo seu domain
-      clientId: 'uKYMTC50M5fOy3LemUcRnzNYCSgigclj',        // Substituir pelo seu client ID
+      domain: 'dev-itl78pbpxq46x8gh.eu.auth0.com',
+      clientId: 'uKYMTC50M5fOy3LemUcRnzNYCSgigclj',
       authorizationParams: {
         redirect_uri: window.location.origin + '/auth0-login.html'
       }
@@ -272,17 +304,20 @@
 
     // Inicializar Auth0
     async function initAuth0() {
+      console.log('🔄 Initializing Auth0...');
       auth0Client = await window.auth0.createAuth0Client(auth0Config);
+      console.log('✅ Auth0 initialized');
       
       // Verificar se voltou do login
       const query = window.location.search;
       if (query.includes('code=') && query.includes('state=')) {
+        console.log('🔑 Auth callback detected, processing...');
         await auth0Client.handleRedirectCallback();
         window.history.replaceState({}, document.title, '/auth0-login.html');
         await handleAuthCallback();
       }
     }
-
+    
     // Funções de login
     window.loginWithMicrosoft = async function() {
       if (!auth0Client) return;
@@ -291,7 +326,7 @@
       try {
         await auth0Client.loginWithRedirect({
           authorizationParams: {
-            connection: 'windowslive' // Microsoft connection
+            connection: 'windowslive'
           }
         });
       } catch (error) {
@@ -308,7 +343,7 @@
       try {
         await auth0Client.loginWithRedirect({
           authorizationParams: {
-            connection: 'google-oauth2' // Google connection  
+            connection: 'google-oauth2'
           }
         });
       } catch (error) {
@@ -318,13 +353,34 @@
       }
     };
 
+    window.loginWithEmail = async function() {
+      if (!auth0Client) return;
+  
+      showLoading(true);
+      try {
+        await auth0Client.loginWithRedirect({
+          authorizationParams: {
+            connection: 'Username-Password-Authentication'
+          }
+        });
+      } catch (error) {
+        console.error('Email login failed:', error);
+        showError('Email login failed. Please try again.');
+        showLoading(false);
+      }
+    };
+
     // Processar callback do Auth0
     async function handleAuthCallback() {
+      console.log('🔄 handleAuthCallback started');
+      
       try {
         const user = await auth0Client.getUser();
-        console.log('User logged in:', user);
+        console.log('👤 User obtained from Auth0:', user);
 
         if (user) {
+          console.log('✅ User exists, creating session...');
+          
           // Criar sessão do usuário
           const userSession = {
             id: user.sub,
@@ -333,14 +389,20 @@
             role: determineUserRole(user.email),
             photo: user.picture || getDefaultAvatar(),
             loginTime: new Date().toISOString(),
-            provider: user.sub.includes('microsoft') ? 'microsoft' : 'google'
+            provider: user.sub.includes('microsoft') ? 'microsoft' : 
+                      user.sub.includes('google') ? 'google' : 'auth0'
           };
+
+          console.log('💾 UserSession created:', userSession);
 
           // Salvar na sessão
           sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
+          console.log('✅ Session saved to sessionStorage');
 
           // Salvar no Firebase para histórico
+          console.log('🔥 Calling saveUserToFirebase...');
           await saveUserToFirebase(userSession);
+          console.log('✅ After saveUserToFirebase');
 
           // Mostrar sucesso
           showSuccess(`Welcome, ${userSession.name}! Redirecting...`);
@@ -353,24 +415,33 @@
               window.location.href = 'student-dashboard.html';
             }
           }, 1500);
+        } else {
+          console.warn('⚠️ No user data received from Auth0');
         }
       } catch (error) {
-        console.error('Auth callback error:', error);
+        console.error('❌ Auth callback error:', error);
         showError('Login failed. Please try again.');
       }
     }
 
     // Salvar usuário no Firebase
     async function saveUserToFirebase(userSession) {
+      console.log('🔥 saveUserToFirebase called with:', userSession);
+      
       try {
+        console.log('📝 Attempting to save to Firestore...');
+        
         await setDoc(doc(db, 'users', userSession.id), {
           ...userSession,
           lastLogin: new Date(),
           updatedAt: new Date()
         }, { merge: true });
-        console.log('User saved to Firebase');
+        
+        console.log('✅ User successfully saved to Firebase!');
       } catch (error) {
-        console.error('Error saving user to Firebase:', error);
+        console.error('❌ Error saving user to Firebase:', error);
+        console.error('Error details:', error.message);
+        console.error('Error code:', error.code);
       }
     }
 
@@ -379,6 +450,11 @@
       if (!email) return 'Student';
       
       const emailLower = email.toLowerCase();
+      
+      // Estudantes: começam com "plc"
+      if (emailLower.startsWith('plc')) {
+        return 'Student';
+      }
       
       if (emailLower.includes('staff') || 
           emailLower.includes('teacher') || 
@@ -435,11 +511,13 @@
 
     // Verificar se já está logado
     window.addEventListener('load', async () => {
+      console.log('🚀 Page loaded, initializing...');
       await initAuth0();
       
       const user = sessionStorage.getItem('pethologyUser');
       if (user) {
         const userData = JSON.parse(user);
+        console.log('👤 User already logged in:', userData);
         showSuccess(`Already logged in as ${userData.name}. Redirecting...`);
 
         setTimeout(() => {
