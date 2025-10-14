@@ -457,11 +457,6 @@
     .sidebar a:hover h3 {
       color: #3b82f6;
     }
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
 
     .user-avatar {
       width: 40px;
@@ -633,46 +628,46 @@
         <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Progress Overview</h2>
         <div class="progress-grid">
           <div class="progress-circles">
-            <div class="progress-circle">
+            <div class="progress-circle" data-module="biology">
               <div class="circle-wrapper">
                 <svg class="circle-svg">
                   <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress biology" cx="60" cy="60" r="50" style="stroke-dashoffset: 47;"></circle>
+                  <circle class="circle-progress biology" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
                 </svg>
-                <div class="circle-text">85%</div>
+                <div class="circle-text">0%</div>
               </div>
               <div class="module-name">Biology</div>
             </div>
 
-            <div class="progress-circle">
+            <div class="progress-circle" data-module="welfare">
               <div class="circle-wrapper">
                 <svg class="circle-svg">
                   <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress welfare" cx="60" cy="60" r="50" style="stroke-dashoffset: 126;"></circle>
+                  <circle class="circle-progress welfare" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
                 </svg>
-                <div class="circle-text">60%</div>
+                <div class="circle-text">0%</div>
               </div>
               <div class="module-name">Animal Welfare</div>
             </div>
 
-            <div class="progress-circle">
+            <div class="progress-circle" data-module="anatomy">
               <div class="circle-wrapper">
                 <svg class="circle-svg">
                   <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress anatomy" cx="60" cy="60" r="50" style="stroke-dashoffset: 188;"></circle>
+                  <circle class="circle-progress anatomy" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
                 </svg>
-                <div class="circle-text">40%</div>
+                <div class="circle-text">0%</div>
               </div>
               <div class="module-name">Anatomy</div>
             </div>
 
-            <div class="progress-circle">
+            <div class="progress-circle" data-module="husbandry">
               <div class="circle-wrapper">
                 <svg class="circle-svg">
                   <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress husbandry" cx="60" cy="60" r="50" style="stroke-dashoffset: 251;"></circle>
+                  <circle class="circle-progress husbandry" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
                 </svg>
-                <div class="circle-text">20%</div>
+                <div class="circle-text">0%</div>
               </div>
               <div class="module-name">Husbandry</div>
             </div>
@@ -682,6 +677,40 @@
             <div class="animal-avatar">🐕</div>
             <a href="content.html" class="continue-btn">Continue Biology</a>
           </div>
+        </div>
+      </section>
+
+      <!-- Overall Stats -->
+      <section class="stats-section" style="margin-bottom: 40px;">
+        <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Your Statistics</h2>
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+          <div class="stat-card" data-stat="totalQuizzes" style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+            <h3 class="total-quizzes" style="font-size: 2.5rem; font-weight: 700; color: #3b82f6; margin: 0 0 8px 0;">0</h3>
+            <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Quizzes Completed</p>
+          </div>
+
+          <div class="stat-card" data-stat="averageScore" style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+            <h3 class="average-score" style="font-size: 2.5rem; font-weight: 700; color: #10b981; margin: 0 0 8px 0;">0%</h3>
+            <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Average Score</p>
+          </div>
+
+          <div class="stat-card" data-stat="streak" style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+            <h3 class="current-streak" style="font-size: 2.5rem; font-weight: 700; color: #f59e0b; margin: 0 0 8px 0;">0</h3>
+            <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Day Streak</p>
+          </div>
+
+          <div class="stat-card" data-stat="totalTime" style="background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+            <h3 class="total-time" style="font-size: 2.5rem; font-weight: 700; color: #8b5cf6; margin: 0 0 8px 0;">0 min</h3>
+            <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Total Time</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Achievements -->
+      <section class="achievements-section" style="margin-bottom: 40px;">
+        <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Achievements</h2>
+        <div class="achievements-container" data-achievements style="display: flex; gap: 16px; flex-wrap: wrap; min-height: 80px; background: white; border-radius: 16px; padding: 24px; border: 1px solid #e5e7eb;">
+          <p style="color: #999; margin: 0;">Complete quizzes to unlock achievements! 🏆</p>
         </div>
       </section>
 
@@ -777,73 +806,202 @@
     </main>
   </div>
 
-  <script>
-    // Load user data on page load
-    window.addEventListener('load', () => {
-      loadUserData();
-      animateProgressCircles();
-    });
+  <script type="module">
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
 
-    function loadUserData() {
-      const userSession = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
-      
-      if (!userSession.name || userSession.role !== 'Student') {
-        // Redirect to login if not authenticated or not a student
-        window.location.href = 'auth0-login.html';
+    // Função para carregar dados reais do estudante
+    async function loadRealStudentData() {
+      try {
+        console.log('🔄 Loading student data from Firebase...');
+
+        // Pegar usuário da sessão
+        const userSession = sessionStorage.getItem('pethologyUser');
+
+        if (!userSession) {
+          console.warn('⚠️ No user session found, redirecting to login...');
+          window.location.href = 'auth0-login.html';
+          return;
+        }
+
+        const user = JSON.parse(userSession);
+        console.log('👤 User:', user);
+
+        // Carregar progresso do Firebase
+        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+        console.log('📊 Progress loaded:', progress);
+
+        // Atualizar UI
+        updateStudentProfile(user);
+        updateProgressCircles(progress.moduleProgress);
+        updateOverallStats(progress.overallStats);
+        updateAchievements(progress.achievements);
+
+        console.log('✅ Student data loaded successfully!');
+
+      } catch (error) {
+        console.error('❌ Error loading student data:', error);
+        alert('Error loading your data. Please refresh the page.');
+      }
+    }
+
+    // Atualizar perfil do estudante
+    function updateStudentProfile(user) {
+      const firstName = user.name.split(' ')[0];
+
+      // Atualizar nome
+      const nameElements = document.querySelectorAll('.student-name, #studentName, #displayName');
+      nameElements.forEach(el => {
+        if (el) el.textContent = firstName;
+      });
+
+      // Atualizar foto
+      const avatarElements = document.querySelectorAll('.student-avatar, #studentAvatar');
+      avatarElements.forEach(el => {
+        if (el && user.photo) el.src = user.photo;
+      });
+
+      console.log('✅ Profile updated');
+    }
+
+    // Atualizar círculos de progresso
+    function updateProgressCircles(moduleProgress) {
+      console.log('🔄 Updating progress circles...');
+
+      Object.entries(moduleProgress).forEach(([moduleName, data]) => {
+        // Encontrar elemento do círculo de progresso
+        const circleElement = document.querySelector(`[data-module="${moduleName}"]`);
+
+        if (circleElement) {
+          const completion = data.completion || 0;
+
+          // Atualizar círculo SVG (se tiver)
+          const progressCircle = circleElement.querySelector('.circle-progress');
+          if (progressCircle) {
+            const circumference = 2 * Math.PI * 50; // raio 50
+            const offset = circumference - (completion / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+          }
+
+          // Atualizar texto de porcentagem
+          const percentText = circleElement.querySelector('.progress-percent, .circle-text');
+          if (percentText) {
+            percentText.textContent = `${completion}%`;
+          }
+
+          // Atualizar barra de progresso (se tiver)
+          const progressBar = circleElement.querySelector('.progress-fill');
+          if (progressBar) {
+            progressBar.style.width = `${completion}%`;
+          }
+
+          console.log(`✅ ${moduleName}: ${completion}%`);
+        }
+      });
+    }
+
+    // Atualizar estatísticas gerais
+    function updateOverallStats(stats) {
+      console.log('🔄 Updating overall stats...');
+
+      // Total de quizzes
+      const totalQuizzesEl = document.querySelector('.total-quizzes, [data-stat="totalQuizzes"]');
+      if (totalQuizzesEl) {
+        totalQuizzesEl.textContent = stats.totalQuizzes || 0;
+      }
+
+      // Média de score
+      const avgScoreEl = document.querySelector('.average-score, [data-stat="averageScore"]');
+      if (avgScoreEl) {
+        const score = Math.round((stats.averageScore || 0) * 100);
+        avgScoreEl.textContent = `${score}%`;
+      }
+
+      // Streak
+      const streakEl = document.querySelector('.current-streak, [data-stat="streak"]');
+      if (streakEl) {
+        streakEl.textContent = stats.streak || 0;
+      }
+
+      // Tempo total (em minutos)
+      const timeEl = document.querySelector('.total-time, [data-stat="totalTime"]');
+      if (timeEl) {
+        const minutes = Math.round((stats.totalTimeSpent || 0) / 60);
+        timeEl.textContent = `${minutes} min`;
+      }
+
+      console.log('✅ Stats updated:', stats);
+    }
+
+    // Atualizar achievements
+    function updateAchievements(achievements) {
+      const achievementsContainer = document.querySelector('.achievements-container, [data-achievements]');
+
+      if (!achievementsContainer) return;
+
+      if (achievements.length === 0) {
+        achievementsContainer.innerHTML = '<p style="color: #999; margin: 0;">Complete quizzes to unlock achievements! 🏆</p>';
         return;
       }
 
-      const firstName = userSession.name.split(' ')[0];
-      document.getElementById('studentName').textContent = firstName;
-      document.getElementById('displayName').textContent = firstName;
-      
-      // Set avatar
-      const avatar = document.getElementById('studentAvatar');
-      avatar.src = userSession.photo || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="%234facfe"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+      const achievementsList = {
+        'quiz-master': { icon: '🌟', title: 'Quiz Master', desc: 'Complete 10 quizzes' },
+        'perfect-score': { icon: '🎯', title: 'Perfect Score', desc: 'Get 100% on a quiz' },
+        'week-warrior': { icon: '🔥', title: 'Week Warrior', desc: '7 day streak' },
+        'month-master': { icon: '👑', title: 'Month Master', desc: '30 day streak' },
+        'bookworm': { icon: '📚', title: 'Bookworm', desc: 'Read 20 modules' }
+      };
+
+      achievementsContainer.innerHTML = achievements.map(achievementId => {
+        const achievement = achievementsList[achievementId] || { icon: '🏆', title: achievementId };
+        return `
+          <div class="achievement-badge" title="${achievement.desc || ''}" style="background: white; border: 2px solid #fbbf24; border-radius: 12px; padding: 16px; text-align: center; min-width: 100px;">
+            <span class="achievement-icon" style="font-size: 2rem; display: block; margin-bottom: 8px;">${achievement.icon}</span>
+            <span class="achievement-title" style="font-size: 0.85rem; font-weight: 600; color: #374151;">${achievement.title}</span>
+          </div>
+        `;
+      }).join('');
+
+      console.log('✅ Achievements updated:', achievements);
     }
 
+    // Carregar dados quando a página carregar
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Student Dashboard loading...');
+      loadRealStudentData();
+    });
+
+    // Exportar funções para uso global (se necessário)
+    window.updateStudentProgress = loadRealStudentData;
+
     // Logout function
-    function logout() {
+    window.logout = function() {
       if (confirm('Are you sure you want to logout?')) {
         sessionStorage.removeItem('pethologyUser');
         window.location.href = 'auth0-login.html';
       }
     }
 
-    function animateProgressCircles() {
-      // Animate progress circles on load
-      setTimeout(() => {
-        document.querySelectorAll('.circle-progress').forEach((circle, index) => {
-          circle.style.transition = 'stroke-dashoffset 1s ease';
-        });
-      }, 500);
-    }
-
     // Feature functions
-    function startSmartReview() {
+    window.startSmartReview = function() {
       alert('Smart Review will analyze your past quiz performance and suggest topics to review!');
     }
 
-    function startAdaptiveQuiz() {
+    window.startAdaptiveQuiz = function() {
       window.location.href = 'quiz.html';
     }
 
-    function startExamMode() {
+    window.startExamMode = function() {
       alert('Exam Mode: Timed practice exams coming soon!');
     }
 
     // Task management
-    function toggleTask(checkbox) {
+    window.toggleTask = function(checkbox) {
       checkbox.classList.toggle('completed');
       const taskText = checkbox.nextElementSibling;
       taskText.classList.toggle('completed');
-      
-      // Save to progress if user is logged in
-      const user = PethologyAuth.getCurrentUser();
-      if (user) {
-        const isCompleted = checkbox.classList.contains('completed');
-        console.log('Task updated:', taskText.textContent, isCompleted);
-      }
+
+      const isCompleted = checkbox.classList.contains('completed');
+      console.log('Task updated:', taskText.textContent, isCompleted);
     }
 
     // Glossary search
@@ -860,10 +1018,10 @@
         document.querySelectorAll('.module-item').forEach(i => i.classList.remove('active'));
         // Add active class to clicked item
         this.classList.add('active');
-        
+
         const moduleName = this.textContent.trim();
         console.log('Selected module:', moduleName);
-        
+
         // Update content based on selected module
         // updateModuleContent(moduleName);
       });
@@ -874,7 +1032,7 @@
       item.addEventListener('click', function() {
         const toolName = this.textContent.trim();
         console.log('Selected tool:', toolName);
-        
+
         switch(toolName) {
           case 'Glossary':
             document.querySelector('.glossary-section').scrollIntoView({ behavior: 'smooth' });
