@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loading... - Pethology</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #fefefe;
+      margin: 0;
+    }
+    .loader {
+      text-align: center;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #111;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Logging you in...</p>
+  </div>
+
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+  
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYq8xnfL9KPiKYHHvDG1zHDvjd4WAOO3o",
+      authDomain: "pethology-7e9d7.firebaseapp.com",
+      projectId: "pethology-7e9d7",
+      storageBucket: "pethology-7e9d7.firebasestorage.app",
+      messagingSenderId: "485201789422",
+      appId: "1:485201789422:web:309a54ceb82588973f0eff"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Auth0 config
+    const auth0Config = {
+      domain: 'dev-itl78pbpxq46x8gh.eu.auth0.com',
+      clientId: 'uKYMTC50M5fOy3LemUcRnzNYCSgigclj',
+      authorizationParams: {
+        redirect_uri: window.location.origin + '/auth0-callback.html'
+      }
+    };
+
+    async function handleCallback() {
+      try {
+        const auth0Client = await window.auth0.createAuth0Client(auth0Config);
+        await auth0Client.handleRedirectCallback();
+        
+        const user = await auth0Client.getUser();
+        
+        if (!user) {
+          throw new Error('No user data');
+        }
+
+        // Determinar role
+        const email = user.email || '';
+        const role = email.toLowerCase().startsWith('plc') ? 'Student' : 
+                     (email.includes('teacher') || email.includes('staff')) ? 'Teacher' : 'Student';
+
+        const userSession = {
+          id: user.sub,
+          name: user.name || user.email,
+          email: user.email,
+          role: role,
+          photo: user.picture || '',
+          loginTime: new Date().toISOString(),
+          provider: 'auth0'
+        };
+
+        // Salvar no Firebase
+        await setDoc(doc(db, 'users', userSession.id), {
+          ...userSession,
+          lastLogin: new Date(),
+          updatedAt: new Date()
+        }, { merge: true });
+
+        console.log('✅ User saved to Firebase');
+
+        // Salvar na sessão
+        sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
+
+        // Redirecionar
+        window.location.href = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
+
+      } catch (error) {
+        console.error('❌ Callback error:', error);
+        alert('Login failed. Redirecting...');
+        window.location.href = '/auth0-login.html';
+      }
+    }
+
+    handleCallback();
+  </script>
+</body>
+</html>
