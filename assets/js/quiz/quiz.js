@@ -64,7 +64,7 @@ function showQuestion() {
     <ul style="list-style: none; padding: 0;">
       ${question.options.map((opt, i) => `
         <li style="margin-bottom: 10px;">
-          <button class="minimal-button" onclick="selectAnswer(${i})">${opt}</button>
+          <button class="minimal-button answer-button" onclick="selectAnswer(${i})">${opt}</button>
         </li>
       `).join('')}
     </ul>
@@ -80,11 +80,28 @@ function showQuestion() {
 function selectAnswer(index) {
   const question = currentQuestions[currentQuestionIndex];
   const correct = question.answer;
-
   const feedbackEl = document.getElementById("feedback");
 
-  if (index === correct) {
-    isAnswerCorrect = true;
+  // Bloquear todos os botões de resposta (uma tentativa só!)
+  const answerButtons = document.querySelectorAll('.answer-button');
+  answerButtons.forEach(btn => {
+    btn.disabled = true;
+    btn.style.cursor = 'not-allowed';
+    btn.style.opacity = '0.6';
+  });
+
+  // Destacar a resposta clicada
+  const clickedButton = answerButtons[index];
+  if (clickedButton) {
+    clickedButton.style.opacity = '1';
+    clickedButton.style.transform = 'scale(1.02)';
+  }
+
+  // Verificar se está correto
+  const isCorrect = index === correct;
+
+  if (isCorrect) {
+    // RESPOSTA CORRETA ✅
     correctAnswersCount++;
     userAnswers.push({
       question: question.question,
@@ -92,29 +109,84 @@ function selectAnswer(index) {
       correctAnswer: correct,
       isCorrect: true
     });
+
     console.log(`✅ Correct! Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
+
+    // Destacar resposta correta em verde
+    clickedButton.style.background = '#10b981';
+    clickedButton.style.color = 'white';
+    clickedButton.style.borderColor = '#10b981';
+
     feedbackEl.innerHTML = `
-      <p style="color:green;">✅<br>${question.explanation}</p>
-      <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-        <button class="minimal-button" onclick="goBackToMenu()">Back</button>
-        <button class="minimal-button" onclick="nextQuestion()">Next</button>
+      <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-top: 20px;">
+        <p style="color: #065f46; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
+          ✅ Correct!
+        </p>
+        <p style="color: #047857; margin: 0; line-height: 1.6;">
+          ${question.explanation}
+        </p>
       </div>
+      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
+        Moving to next question in 3 seconds... ⏱️
+      </p>
     `;
+
+    // Avançar automaticamente após 3 segundos
+    setTimeout(() => {
+      nextQuestion();
+    }, 3000);
+
   } else {
+    // RESPOSTA ERRADA ❌
     userAnswers.push({
       question: question.question,
       selectedAnswer: index,
       correctAnswer: correct,
       isCorrect: false
     });
+
     console.log(`❌ Wrong answer. Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
-    feedbackEl.innerHTML = `<p style="color:red;">Nope! ❌ Are you sure about that?</p>`;
+
+    // Destacar resposta errada em vermelho
+    clickedButton.style.background = '#ef4444';
+    clickedButton.style.color = 'white';
+    clickedButton.style.borderColor = '#ef4444';
+
+    // Destacar resposta correta em verde
+    const correctButton = answerButtons[correct];
+    if (correctButton) {
+      correctButton.style.background = '#10b981';
+      correctButton.style.color = 'white';
+      correctButton.style.borderColor = '#10b981';
+      correctButton.style.opacity = '1';
+    }
+
+    feedbackEl.innerHTML = `
+      <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin-top: 20px;">
+        <p style="color: #991b1b; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
+          ❌ Incorrect
+        </p>
+        <p style="color: #b91c1c; margin: 0 0 12px 0;">
+          The correct answer is: <strong>${question.options[correct]}</strong>
+        </p>
+        <p style="color: #dc2626; margin: 0; line-height: 1.6;">
+          ${question.explanation}
+        </p>
+      </div>
+      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
+        Moving to next question in 3 seconds... ⏱️
+      </p>
+    `;
+
+    // Avançar automaticamente após 3 segundos (mesmo errado!)
+    setTimeout(() => {
+      nextQuestion();
+    }, 3000);
   }
 }
 
 function nextQuestion() {
-  if (!isAnswerCorrect) return;
-
+  // Avançar independente de estar certo ou errado (modo uma tentativa)
   currentQuestionIndex++;
   if (currentQuestionIndex < currentQuestions.length) {
     showQuestion();
