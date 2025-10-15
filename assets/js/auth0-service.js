@@ -78,8 +78,16 @@ class Auth0Service {
       // Salvar na sessão local
       sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
 
-      // Redirecionar baseado no role
-      this.redirectByRole(userSession);
+      // Verificar se precisa completar perfil
+      const needsProfileCompletion = this.needsProfileCompletion(userSession);
+
+      if (needsProfileCompletion) {
+        console.log('📝 Profile needs completion, redirecting...');
+        window.location.href = '/complete-profile.html';
+      } else {
+        // Redirecionar baseado no role
+        this.redirectByRole(userSession);
+      }
 
       return userSession;
 
@@ -104,8 +112,38 @@ class Auth0Service {
       photo: auth0User.picture || this.getDefaultAvatar(),
       provider: 'auth0',
       loginTime: new Date().toISOString(),
-      emailVerified: auth0User.email_verified || false
+      emailVerified: auth0User.email_verified || false,
+      profileCompleted: false // Será atualizado em complete-profile.html
     };
+  }
+
+  // Verificar se usuário precisa completar perfil
+  static needsProfileCompletion(userSession) {
+    // Se já completou, não precisa
+    if (userSession.profileCompleted) {
+      return false;
+    }
+
+    // Se o nome parece ser um email ou é muito curto, precisa completar
+    const name = userSession.name || '';
+
+    // Verificar se é email
+    if (name.includes('@')) {
+      return true;
+    }
+
+    // Verificar se é muito curto (menos de 3 caracteres)
+    if (name.length < 3) {
+      return true;
+    }
+
+    // Verificar se parece ser o nickname do Auth0 (ex: "auth0|123456")
+    if (name.includes('|') || name.startsWith('auth0')) {
+      return true;
+    }
+
+    // Se passou todas verificações, não precisa completar
+    return false;
   }
 
   // 🎓 Determinar role baseado no email

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Complete Your Profile - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .profile-container {
+      background: white;
+      border-radius: 24px;
+      padding: 48px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .profile-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+    }
+
+    .profile-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 8px 0;
+    }
+
+    .profile-header p {
+      color: #6b7280;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-hint {
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .example-text {
+      background: #f3f4f6;
+      border-left: 4px solid #3b82f6;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+
+    .example-text strong {
+      color: #1e40af;
+    }
+
+    @media (max-width: 600px) {
+      .profile-container {
+        padding: 32px 24px;
+      }
+
+      .profile-header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <div class="profile-header">
+      <div class="profile-icon">👋</div>
+      <h1>Welcome to Pethology!</h1>
+      <p>Let's complete your profile</p>
+    </div>
+
+    <form id="profileForm" onsubmit="saveProfile(event)">
+      <div class="form-group">
+        <label class="form-label" for="fullName">
+          Full Name *
+        </label>
+        <input
+          type="text"
+          id="fullName"
+          class="form-input"
+          placeholder="Enter your first and last name"
+          required
+          minlength="2"
+          autocomplete="name"
+        />
+        <p class="form-hint">This is how you'll appear in the system</p>
+
+        <div class="example-text">
+          <strong>Example:</strong> Natalia Silva
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        Continue to Dashboard →
+      </button>
+    </form>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+
+    // Verificar se usuário já completou perfil
+    window.addEventListener('DOMContentLoaded', async () => {
+      const userSession = sessionStorage.getItem('pethologyUser');
+
+      if (!userSession) {
+        console.warn('⚠️ No user session, redirecting to login');
+        window.location.href = 'auth0-login.html';
+        return;
+      }
+
+      const user = JSON.parse(userSession);
+
+      // Se já tem um nome válido (não é email), redirecionar
+      if (user.name && !user.name.includes('@') && user.name.length > 3) {
+        console.log('✅ Profile already complete, redirecting to dashboard');
+        window.location.href = 'student-dashboard.html';
+        return;
+      }
+
+      // Preencher com sugestão baseada no email
+      const emailName = user.email.split('@')[0].replace(/[._]/g, ' ');
+      const suggestion = emailName.split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .slice(0, 2)
+        .join(' ');
+
+      document.getElementById('fullName').value = suggestion;
+      document.getElementById('fullName').select();
+    });
+
+    // Salvar perfil
+    window.saveProfile = async function(event) {
+      event.preventDefault();
+
+      const fullName = document.getElementById('fullName').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Validar
+      if (fullName.length < 2) {
+        alert('Please enter your full name (at least 2 characters)');
+        return;
+      }
+
+      // Desabilitar botão
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      try {
+        // Obter sessão atual
+        const userSession = sessionStorage.getItem('pethologyUser');
+        if (!userSession) {
+          throw new Error('No user session found');
+        }
+
+        const user = JSON.parse(userSession);
+
+        // Atualizar nome
+        user.name = fullName;
+        user.profileCompleted = true;
+        user.profileCompletedAt = new Date().toISOString();
+
+        // Salvar no sessionStorage
+        sessionStorage.setItem('pethologyUser', JSON.stringify(user));
+
+        // Também salvar no Firebase (opcional, mas recomendado)
+        try {
+          // Você pode criar uma collection 'users' no Firebase
+          console.log('💾 Saving profile to Firebase...', user);
+          // await PethologyFirebaseService.updateUserProfile(user.id, { name: fullName });
+        } catch (firebaseError) {
+          console.warn('⚠️ Could not save to Firebase, but continuing:', firebaseError);
+        }
+
+        console.log('✅ Profile saved!', user);
+
+        // Redirecionar para dashboard
+        submitBtn.textContent = 'Success! Redirecting...';
+        setTimeout(() => {
+          window.location.href = 'student-dashboard.html';
+        }, 500);
+
+      } catch (error) {
+        console.error('❌ Error saving profile:', error);
+        alert('Error saving profile. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Continue to Dashboard →';
+      }
+    };
+  </script>
+</body>
+</html>
