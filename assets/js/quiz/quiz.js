@@ -53,7 +53,7 @@ function showQuestion() {
     <div style="margin-bottom: 24px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <span style="font-weight: 600; color: #374151;">Question ${progress} of ${total}</span>
-        <span style="font-weight: 600; color: #3b82f6;">${percentage}% Complete</span>
+        <span style="font-weight: 600; color: #3b82f6;">${percentage} % Complete</span>
       </div>
       <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden;">
         <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s ease;"></div>
@@ -128,13 +128,45 @@ async function showQuizCompleted() {
 
   // Calculate time spent
   const timeSpent = quizStartTime ? Math.floor((Date.now() - quizStartTime) / 1000) : 0;
+  const scorePercentage = Math.round((correctAnswersCount / currentQuestions.length) * 100);
 
-  // Show completion message
+  // Show completion message with better navigation
   quizContainer.innerHTML = `
-    <h2>Congrats, you completed our quiz! 🎉</h2>
-    <p>Score: ${correctAnswersCount} / ${currentQuestions.length}</p>
-    <p>Time: ${Math.floor(timeSpent / 60)}m ${timeSpent % 60}s</p>
-    <button class="minimal-button" onclick="goBackToMenu()">Back to the beginning</button>
+    <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+      <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+      <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Quiz Completed!</h2>
+
+      <div style="background: #f3f4f6; border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
+          <div>
+            <div style="font-size: 2.5rem; font-weight: 700; color: #3b82f6;">${scorePercentage} %</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Score</div>
+          </div>
+          <div>
+            <div style="font-size: 2.5rem; font-weight: 700; color: #10b981;">${correctAnswersCount}/${currentQuestions.length}</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Correct</div>
+          </div>
+          <div>
+            <div style="font-size: 2.5rem; font-weight: 700; color: #f59e0b;">${Math.floor(timeSpent / 60)}:${String(timeSpent % 60).padStart(2, '0')}</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Time</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="color: #6b7280; margin-bottom: 32px;">Your progress has been saved! 💾</p>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
+        <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+          🏠 Back to Dashboard
+        </button>
+        <button onclick="goBackToMenu()" class="minimal-button" style="background: #10b981; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+          📚 Try Another Quiz
+        </button>
+        <button onclick="location.reload()" class="minimal-button" style="background: #8b5cf6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+          🔄 Retake This Quiz
+        </button>
+      </div>
+    </div>
   `;
 
   // Save to Firebase
@@ -329,9 +361,44 @@ async function saveProgressAndExit() {
 
   await saveQuizToFirebase(quizData);
 
-  alert(`✅ Progress saved!\n\n${correctAnswersCount} correct answers\nTime: ${Math.floor(timeSpent / 60)}m ${timeSpent % 60}s\n\nYou can continue later!`);
+  // Show nice save confirmation screen instead of alert
+  const quizContainer = document.getElementById("quiz-buttons");
+  const scorePercentage = Math.round((correctAnswersCount / (currentQuestionIndex + 1)) * 100);
 
-  goBackToMenu();
+  quizContainer.innerHTML = `
+    <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+      <div style="font-size: 4rem; margin-bottom: 20px;">💾</div>
+      <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Progress Saved!</h2>
+
+      <div style="background: #f3f4f6; border-radius: 16px; padding: 24px; margin: 24px 0;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px;">
+          <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #10b981;">${correctAnswersCount}</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Correct</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">${currentQuestionIndex + 1}</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Answered</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">${Math.floor(timeSpent / 60)}:${String(timeSpent % 60).padStart(2, '0')}</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Time</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="color: #6b7280; margin-bottom: 32px;">You can continue this quiz later! 📚</p>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
+        <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+          🏠 Back to Dashboard
+        </button>
+        <button onclick="goBackToMenu()" class="minimal-button" style="background: #10b981; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+          📚 Try Another Quiz
+        </button>
+      </div>
+    </div>
+  `;
 }
 
 // Finalizar quiz antecipadamente
