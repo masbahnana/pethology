@@ -448,21 +448,35 @@
     // Determinar role do usuário
     function determineUserRole(email) {
       if (!email) return 'Student';
-      
+
       const emailLower = email.toLowerCase();
-      
-      // Estudantes: começam com "plc"
-      if (emailLower.startsWith('plc')) {
-        return 'Student';
+
+      // 👨‍🏫 Lista específica de Teachers (adicione seu email aqui!)
+      const teacherEmails = [
+        'plcnataliadasilvaraythz@plcstconlethcc365.ie', // Seu email!
+        'teacher@demo.com',
+        'nataliadasilvaraythz@outlook.com' // Se usar outlook
+      ];
+
+      if (teacherEmails.includes(emailLower)) {
+        console.log('✅ Email reconhecido como Teacher:', emailLower);
+        return 'Teacher';
       }
-      
-      if (emailLower.includes('staff') || 
-          emailLower.includes('teacher') || 
+
+      // Identificação automática por palavras-chave
+      if (emailLower.includes('staff') ||
+          emailLower.includes('teacher') ||
           emailLower.includes('admin') ||
           emailLower.includes('instructor')) {
         return 'Teacher';
       }
-      
+
+      // Estudantes: começam com "plc" (mas não estão na lista de teachers)
+      if (emailLower.startsWith('plc')) {
+        return 'Student';
+      }
+
+      // Por padrão, assume Student
       return 'Student';
     }
 

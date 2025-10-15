@@ -19,11 +19,28 @@ let correctAnswersCount = 0;
 let userAnswers = [];
 let quizStartTime = null;
 
+// Check if user is logged in
+const userSession = sessionStorage.getItem('pethologyUser');
+const isLoggedIn = !!userSession;
+const VISITOR_QUESTION_LIMIT = 0.3; // 30% for visitors
+
 async function loadQuiz(file, topicName) {
   try {
     console.log('🎯 Loading quiz:', topicName || file);
     const module = await import('./' + file);
-    currentQuestions = module.questions;
+
+    // Limit questions for visitors (30%)
+    const allQuestions = module.questions;
+    if (!isLoggedIn) {
+      const limit = Math.ceil(allQuestions.length * VISITOR_QUESTION_LIMIT);
+      currentQuestions = allQuestions.slice(0, limit);
+      console.log(`⚠️ Visitor mode: Limited to ${currentQuestions.length} of ${allQuestions.length} questions (${Math.round(VISITOR_QUESTION_LIMIT * 100)}%)`);
+      console.log('🔒 Login to access all questions and save your progress!');
+    } else {
+      currentQuestions = allQuestions;
+      console.log(`✅ Logged in: Full access to all ${currentQuestions.length} questions`);
+    }
+
     currentQuestionIndex = 0;
     isAnswerCorrect = false;
     currentQuizModule = topicName || file.replace('.js', '');
@@ -31,7 +48,9 @@ async function loadQuiz(file, topicName) {
     userAnswers = [];
     quizStartTime = Date.now();
     console.log(`✅ Quiz loaded! ${currentQuestions.length} questions available`);
-    console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
+    if (isLoggedIn) {
+      console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
+    }
     showQuestion();
   } catch (error) {
     console.error("❌ ERRO FATAL:", error);
@@ -49,6 +68,17 @@ function showQuestion() {
   const percentage = Math.round((progress / total) * 100);
 
   quizContainer.innerHTML = `
+    ${!isLoggedIn ? `
+    <!-- Visitor Warning Banner -->
+    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px;">🔒</span>
+      <div style="flex: 1;">
+        <div style="font-weight: 700; color: #92400e; margin-bottom: 4px;">Limited Access - Visitor Mode</div>
+        <div style="font-size: 0.9rem; color: #78350f;">You're viewing ${Math.round(VISITOR_QUESTION_LIMIT * 100)}% of this quiz. <a href="auth0-login.html" style="color: #92400e; font-weight: 600; text-decoration: underline;">Login</a> to access all questions and save your progress!</div>
+      </div>
+    </div>
+    ` : ''}
+
     <!-- Progress Bar -->
     <div style="margin-bottom: 24px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -71,8 +101,10 @@ function showQuestion() {
     <div id="feedback"></div>
     <div class="quiz-navigation" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
       <button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>
-      <button onclick="saveProgressAndExit()" class="quiz-navigation" style="background: #f59e0b;">💾 Save Progress & Exit</button>
-      <button onclick="finishQuizEarly()" class="quiz-navigation" style="background: #10b981;">✓ Finish Quiz Now</button>
+      ${isLoggedIn ? `
+        <button onclick="saveProgressAndExit()" class="quiz-navigation" style="background: #f59e0b;">💾 Save Progress & Exit</button>
+        <button onclick="finishQuizEarly()" class="quiz-navigation" style="background: #10b981;">✓ Finish Quiz Now</button>
+      ` : ''}
     </div>
   `;
 }
@@ -225,12 +257,24 @@ async function showQuizCompleted() {
         </div>
       </div>
 
-      <p style="color: #6b7280; margin-bottom: 32px;">Your progress has been saved! 💾</p>
+      ${isLoggedIn ? `
+        <p style="color: #6b7280; margin-bottom: 32px;">Your progress has been saved! 💾</p>
+      ` : `
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; margin-bottom: 32px;">
+          <div style="font-weight: 700; color: #92400e; margin-bottom: 8px;">🔒 Want to see your full potential?</div>
+          <p style="color: #78350f; margin: 0 0 16px 0; font-size: 0.95rem;">You completed ${Math.round(VISITOR_QUESTION_LIMIT * 100)}% of this quiz. Login to access all questions and track your progress!</p>
+          <a href="auth0-login.html" class="minimal-button" style="background: #f59e0b; color: white; padding: 12px 24px; font-size: 1rem; font-weight: 600; text-decoration: none; display: inline-block; border-radius: 8px;">
+            🚀 Login Now
+          </a>
+        </div>
+      `}
 
       <div style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
-        <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
-          🏠 Back to Dashboard
-        </button>
+        ${isLoggedIn ? `
+          <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
+            🏠 Back to Dashboard
+          </button>
+        ` : ''}
         <button onclick="goBackToMenu()" class="minimal-button" style="background: #10b981; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
           📚 Try Another Quiz
         </button>
@@ -241,16 +285,20 @@ async function showQuizCompleted() {
     </div>
   `;
 
-  // Save to Firebase
-  const quizData = {
-    moduleName: currentQuizModule,
-    totalQuestions: currentQuestions.length,
-    correctAnswers: correctAnswersCount,
-    timeSpent: timeSpent,
-    answers: userAnswers
-  };
+  // Save to Firebase (only for logged in users)
+  if (isLoggedIn) {
+    const quizData = {
+      moduleName: currentQuizModule,
+      totalQuestions: currentQuestions.length,
+      correctAnswers: correctAnswersCount,
+      timeSpent: timeSpent,
+      answers: userAnswers
+    };
 
-  await saveQuizToFirebase(quizData);
+    await saveQuizToFirebase(quizData);
+  } else {
+    console.log('⚠️ Visitor mode: Quiz results not saved to Firebase');
+  }
 }
 
 // Normalizar nome do módulo para o formato do Firebase

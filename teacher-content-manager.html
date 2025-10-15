@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Content Manager - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f7f8fa;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #6b7280;
+      border: 1px solid #e5e7eb;
+      margin-right: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 32px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 24px 0;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .form-textarea {
+      min-height: 300px;
+      font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-hint {
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-top: 6px;
+    }
+
+    .preview-card {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 12px;
+      border: 2px dashed #e5e7eb;
+    }
+
+    .preview-title {
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .module-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .content-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .content-item {
+      padding: 16px;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s ease;
+    }
+
+    .content-item:hover {
+      background: #f9fafb;
+    }
+
+    .content-item:last-child {
+      border-bottom: none;
+    }
+
+    .content-info h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 4px 0;
+    }
+
+    .content-meta {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .content-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border-radius: 6px;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background: #fecaca;
+    }
+
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .loading-spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .markdown-guide {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .markdown-guide code {
+      background: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: #6b7280;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>📚 Content Manager</h1>
+      <div>
+        <a href="teacher-dashboard.html" class="btn btn-secondary">
+          ← Back to Dashboard
+        </a>
+        <a href="content.html" class="btn btn-primary">
+          👁️ View as Student
+        </a>
+      </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
+
+    <!-- Main Content Grid -->
+    <div class="content-grid">
+      <!-- Publish Form -->
+      <div class="card">
+        <h2>✍️ Publish New Content</h2>
+
+        <form id="contentForm">
+          <div class="form-group">
+            <label class="form-label" for="contentTitle">Title *</label>
+            <input
+              type="text"
+              id="contentTitle"
+              class="form-input"
+              placeholder="e.g., Cell Structure in Animals"
+              required
+            />
+            <p class="form-hint">A clear, descriptive title for your content</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contentModule">Module *</label>
+            <select id="contentModule" class="form-select" required>
+              <option value="">Select a module...</option>
+              <option value="biology">🧬 Biology</option>
+              <option value="animal-welfare">🐾 Animal Welfare</option>
+              <option value="animal-anatomy">🦴 Animal Anatomy & Physiology</option>
+              <option value="grooming">✂️ Grooming & Husbandry</option>
+              <option value="small-animals">🐹 Small Animals H&H</option>
+              <option value="animal-behaviour">🐕 Animal Behaviour</option>
+              <option value="vet-assistant">🏥 Vet Assistant Skills</option>
+              <option value="word-processing">💻 Word Processing</option>
+            </select>
+            <p class="form-hint">Choose which module this content belongs to</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contentType">Content Type *</label>
+            <select id="contentType" class="form-select" required>
+              <option value="reading">📖 Reading Material</option>
+              <option value="video">🎥 Video Tutorial</option>
+              <option value="exercise">✏️ Exercise</option>
+              <option value="reference">📚 Reference Sheet</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="contentBody">Content (Markdown) *</label>
+            <textarea
+              id="contentBody"
+              class="form-textarea"
+              placeholder="# Your content here...
+
+Use Markdown to format your content:
+- **bold text**
+- *italic text*
+- [link](url)
+- ![image](url)
+"
+              required
+            ></textarea>
+            <div class="markdown-guide">
+              <strong>Markdown Quick Guide:</strong><br>
+              <code># Heading 1</code> | <code>## Heading 2</code> | <code>**bold**</code> | <code>*italic*</code> | <code>[link](url)</code> | <code>- list item</code>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            🚀 Publish Content
+            <span id="publishSpinner" style="display: none;" class="loading-spinner"></span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Published Content List -->
+      <div class="card">
+        <h2>📚 Published Content</h2>
+        <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">
+          Manage your published materials
+        </p>
+
+        <div id="contentListContainer">
+          <div class="empty-state">
+            <div class="empty-state-icon">📄</div>
+            <p>Loading content...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+
+    let currentTeacher = null;
+
+    // Check authentication
+    window.addEventListener('DOMContentLoaded', async () => {
+      const userSession = sessionStorage.getItem('pethologyUser');
+
+      if (!userSession) {
+        console.warn('⚠️ No user session, redirecting to login');
+        alert('Please log in to access the Content Manager 🔒');
+        window.location.href = 'auth0-login.html';
+        return;
+      }
+
+      const user = JSON.parse(userSession);
+
+      // Check if user is a teacher
+      if (user.role !== 'Teacher') {
+        console.warn('⚠️ User is not a teacher, redirecting to student dashboard');
+        alert('This page is only accessible to teachers 👨‍🏫');
+        window.location.href = 'student-dashboard.html';
+        return;
+      }
+
+      currentTeacher = user;
+      console.log('✅ Teacher authenticated:', user.name);
+
+      // Load published content
+      await loadPublishedContent();
+    });
+
+    // Handle form submission
+    document.getElementById('contentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const spinner = document.getElementById('publishSpinner');
+
+      // Disable button and show spinner
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline-block';
+
+      try {
+        const contentData = {
+          title: document.getElementById('contentTitle').value.trim(),
+          module: document.getElementById('contentModule').value,
+          type: document.getElementById('contentType').value,
+          body: document.getElementById('contentBody').value.trim(),
+          author: currentTeacher.name,
+          authorId: currentTeacher.id
+        };
+
+        console.log('📤 Publishing content:', contentData);
+
+        // Save to Firebase
+        const contentId = await PethologyFirebaseService.publishContent(contentData);
+
+        console.log('✅ Content published with ID:', contentId);
+
+        // Show success message
+        showSuccess('Content published successfully! 🎉');
+
+        // Reset form
+        e.target.reset();
+
+        // Reload content list
+        await loadPublishedContent();
+
+      } catch (error) {
+        console.error('❌ Error publishing content:', error);
+        showError('Failed to publish content. Please try again.');
+      } finally {
+        // Re-enable button and hide spinner
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+      }
+    });
+
+    async function loadPublishedContent() {
+      const container = document.getElementById('contentListContainer');
+
+      try {
+        console.log('📚 Loading published content...');
+        const content = await PethologyFirebaseService.getAllContent();
+
+        console.log(`✅ Loaded ${content.length} content items`);
+
+        if (content.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📄</div>
+              <p>No content published yet.<br>Use the form to publish your first article!</p>
+            </div>
+          `;
+          return;
+        }
+
+        const contentHTML = `
+          <ul class="content-list">
+            ${content.map(item => `
+              <li class="content-item">
+                <div class="content-info">
+                  <h3>${item.title}</h3>
+                  <div class="content-meta">
+                    <span class="module-tag">${getModuleName(item.module)}</span>
+                    <span>${formatDate(item.createdAt)}</span>
+                    ${item.author ? `<span> • by ${item.author}</span>` : ''}
+                  </div>
+                </div>
+                <div class="content-actions">
+                  <button class="btn btn-small btn-secondary" onclick="editContent('${item.id}')">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-small btn-danger" onclick="deleteContent('${item.id}', '${item.title}')">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+
+        container.innerHTML = contentHTML;
+      } catch (error) {
+        console.error('❌ Error loading content:', error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>Error loading content. Please refresh the page.</p>
+          </div>
+        `;
+      }
+    }
+
+    // Make delete function global
+    window.deleteContent = async function(contentId, title) {
+      if (!confirm(`Are you sure you want to delete "${title}"?`)) {
+        return;
+      }
+
+      try {
+        console.log('🗑️ Deleting content:', contentId);
+        await PethologyFirebaseService.deleteContent(contentId);
+        showSuccess('Content deleted successfully!');
+        await loadPublishedContent();
+      } catch (error) {
+        console.error('❌ Error deleting content:', error);
+        showError('Failed to delete content. Please try again.');
+      }
+    };
+
+    // Edit function (placeholder for future implementation)
+    window.editContent = function(contentId) {
+      console.log('✏️ Edit content:', contentId);
+      alert('Edit functionality coming soon! 🚧');
+    };
+
+    function showSuccess(message) {
+      const el = document.getElementById('successMessage');
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => {
+        el.style.display = 'none';
+      }, 5000);
+    }
+
+    function showError(message) {
+      const el = document.getElementById('errorMessage');
+      el.textContent = message;
+      el.style.display = 'block';
+      setTimeout(() => {
+        el.style.display = 'none';
+      }, 5000);
+    }
+
+    function getModuleName(moduleKey) {
+      const moduleNames = {
+        'biology': '🧬 Biology',
+        'animal-welfare': '🐾 Animal Welfare',
+        'animal-anatomy': '🦴 Animal Anatomy',
+        'grooming': '✂️ Grooming',
+        'small-animals': '🐹 Small Animals',
+        'animal-behaviour': '🐕 Animal Behaviour',
+        'vet-assistant': '🏥 Vet Assistant',
+        'word-processing': '💻 Word Processing'
+      };
+      return moduleNames[moduleKey] || moduleKey;
+    }
+
+    function formatDate(timestamp) {
+      if (!timestamp) return 'Unknown date';
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+  </script>
+</body>
+</html>
