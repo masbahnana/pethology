@@ -233,7 +233,7 @@ export const questions = [
         explanation: "Animals were domesticated for various reasons, including food, companionship, work, protection, and research.",
     },
     {
-        questions: "Describe two ways in which domestication has affected animal welfare.",
+        question: "Describe two ways in which domestication has affected animal welfare.",
         options: [
             "Domestication leads to animals living in the wild for longer, and they no longer depend on humans.",
             "Domestication increases animals’ natural survival skills and makes them more independent.",
