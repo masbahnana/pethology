@@ -253,6 +253,29 @@ async function showQuizCompleted() {
   await saveQuizToFirebase(quizData);
 }
 
+// Normalizar nome do módulo para o formato do Firebase
+function normalizeModuleName(moduleName) {
+  // Mapeamento de nomes legíveis para nomes do Firebase
+  const moduleNameMap = {
+    'Biology': 'biology',
+    'Animal Welfare': 'animal-welfare',
+    'Animal Behaviour': 'animal-behaviour',
+    'Animal Anatomy and Physiology': 'animal-anatomy',
+    'Grooming': 'grooming',
+    'Small Animals H&H': 'small-animals',
+    'Word Processing': 'word-processing',
+    'Vet. Assistant Skills': 'vet-assistant'
+  };
+
+  // Se existe no mapa, retornar o valor mapeado
+  if (moduleNameMap[moduleName]) {
+    return moduleNameMap[moduleName];
+  }
+
+  // Fallback: converter para lowercase e substituir espaços por hífens
+  return moduleName.toLowerCase().replace(/\s+/g, '-');
+}
+
 // Salvar resultado do quiz no Firebase
 async function saveQuizToFirebase(quizData) {
   try {
@@ -320,10 +343,12 @@ async function updateStudentProgressAfterQuiz(userId, quizData) {
       ((currentAvg * (totalQuizzes - 1)) + newScore) / totalQuizzes;
 
     // Atualizar progresso do módulo específico
-    const moduleName = quizData.moduleName || 'biology';
+    const moduleName = normalizeModuleName(quizData.moduleName || 'biology');
+    console.log(`🔍 Looking for module: "${moduleName}"`);
 
     if (progress.moduleProgress[moduleName]) {
       const moduleData = progress.moduleProgress[moduleName];
+      console.log(`✅ Found module in progress:`, moduleData);
 
       // Atualizar score do módulo
       moduleData.averageScore = newScore;
@@ -333,6 +358,11 @@ async function updateStudentProgressAfterQuiz(userId, quizData) {
 
       // Adicionar tempo gasto
       moduleData.timeSpent = (moduleData.timeSpent || 0) + (quizData.timeSpent || 0);
+
+      console.log(`📈 Updated ${moduleName}: ${moduleData.completion}% complete`);
+    } else {
+      console.warn(`⚠️ Module "${moduleName}" not found in progress.moduleProgress!`);
+      console.log('Available modules:', Object.keys(progress.moduleProgress));
     }
 
     // Verificar achievements
