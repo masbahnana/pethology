@@ -520,6 +520,32 @@ function loadQuizButtons() {
 
 // Auto-load quiz if module parameter is present in URL
 window.onload = function() {
+  // 🔒 PROTEÇÃO: Verificar se usuário está logado
+  const userSession = sessionStorage.getItem('pethologyUser');
+
+  if (!userSession) {
+    console.warn('⚠️ User not logged in, redirecting to login page...');
+    alert('Please log in to access the quizzes! 🔒');
+    window.location.href = 'auth0-login.html';
+    return;
+  }
+
+  // Verificar se é um estudante
+  try {
+    const user = JSON.parse(userSession);
+    if (user.role && user.role !== 'Student') {
+      console.warn('⚠️ Only students can access quizzes');
+      alert('Only students can access quizzes! 🎓');
+      window.location.href = 'index.html';
+      return;
+    }
+    console.log('✅ User authenticated:', user.name);
+  } catch (error) {
+    console.error('❌ Error parsing user session:', error);
+    window.location.href = 'auth0-login.html';
+    return;
+  }
+
   const urlParams = new URLSearchParams(window.location.search);
   const module = urlParams.get('module');
 
