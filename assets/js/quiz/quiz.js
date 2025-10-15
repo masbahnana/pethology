@@ -1,14 +1,16 @@
 import { PethologyFirebaseService } from '../firebase-service.js';
 
 const quizTopics = [
-  { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
-  { name: "Animal Behaviour", file: "animal-behaviour.js", icon: "assets/img/animal-behaviour.png" },
-  { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
   { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
-  { name: "Grooming", file: "grooming.js", icon: "assets/img/grooming.png" },
-  { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
-  { name: "Word Processing", file: "word-processing.js", icon: "assets/img/word-processing.png" },
+  { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
+  { name: "Communications", file: "communications.js", icon: "assets/img/cell.png" },
+  { name: "Work Experience", file: "work-experience.js", icon: "assets/img/cell.png" },
   { name: "Vet. Assistant Skills", file: "vet-assistant-skills.js", icon: "assets/img/vas.png" },
+  { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
+  { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
+  { name: "Grooming", file: "grooming.js", icon: "assets/img/grooming.png" },
+  { name: "Animal Behaviour", file: "animal-behaviour.js", icon: "assets/img/animal-behaviour.png" },
+  { name: "Word Processing", file: "word-processing.js", icon: "assets/img/word-processing.png" },
 ];
 
 let currentQuestions = [];
@@ -24,13 +26,38 @@ const userSession = sessionStorage.getItem('pethologyUser');
 const isLoggedIn = !!userSession;
 const VISITOR_QUESTION_LIMIT = 0.3; // 30% for visitors
 
+// Helper function to shuffle array (Fisher-Yates algorithm)
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 async function loadQuiz(file, topicName) {
   try {
     console.log('🎯 Loading quiz:', topicName || file);
     const module = await import('./' + file);
 
+    // Randomize questions
+    let allQuestions = shuffleArray(module.questions);
+
+    // Randomize answer options for each question
+    allQuestions = allQuestions.map(q => {
+      const correctAnswer = q.options[q.answer];
+      const shuffledOptions = shuffleArray(q.options);
+      const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+
+      return {
+        ...q,
+        options: shuffledOptions,
+        answer: newCorrectIndex
+      };
+    });
+
     // Limit questions for visitors (30%)
-    const allQuestions = module.questions;
     if (!isLoggedIn) {
       const limit = Math.ceil(allQuestions.length * VISITOR_QUESTION_LIMIT);
       currentQuestions = allQuestions.slice(0, limit);
@@ -47,7 +74,7 @@ async function loadQuiz(file, topicName) {
     correctAnswersCount = 0;
     userAnswers = [];
     quizStartTime = Date.now();
-    console.log(`✅ Quiz loaded! ${currentQuestions.length} questions available`);
+    console.log(`✅ Quiz loaded! ${currentQuestions.length} questions available (randomized)`);
     if (isLoggedIn) {
       console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
     }
@@ -598,30 +625,25 @@ function loadQuizButtons() {
 
 // Auto-load quiz if module parameter is present in URL
 window.onload = function() {
-  // 🔒 PROTEÇÃO: Verificar se usuário está logado
+  // Check if user is logged in (but don't force redirect - allow visitors!)
   const userSession = sessionStorage.getItem('pethologyUser');
 
-  if (!userSession) {
-    console.warn('⚠️ User not logged in, redirecting to login page...');
-    alert('Please log in to access the quizzes! 🔒');
-    window.location.href = 'auth0-login.html';
-    return;
-  }
-
-  // Verificar se é um estudante
-  try {
-    const user = JSON.parse(userSession);
-    if (user.role && user.role !== 'Student') {
-      console.warn('⚠️ Only students can access quizzes');
-      alert('Only students can access quizzes! 🎓');
-      window.location.href = 'index.html';
-      return;
+  if (userSession) {
+    // Verificar se é um estudante
+    try {
+      const user = JSON.parse(userSession);
+      if (user.role && user.role !== 'Student') {
+        console.warn('⚠️ Only students can access quizzes');
+        alert('Only students can access quizzes! 🎓');
+        window.location.href = 'index.html';
+        return;
+      }
+      console.log('✅ User authenticated:', user.name);
+    } catch (error) {
+      console.error('❌ Error parsing user session:', error);
     }
-    console.log('✅ User authenticated:', user.name);
-  } catch (error) {
-    console.error('❌ Error parsing user session:', error);
-    window.location.href = 'auth0-login.html';
-    return;
+  } else {
+    console.log('👤 Visitor mode: Access to 30% of quiz questions');
   }
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -637,7 +659,9 @@ window.onload = function() {
       'grooming': { file: 'grooming.js', name: 'Grooming' },
       'small-animals': { file: 'small-animals.js', name: 'Small Animals H&H' },
       'word-processing': { file: 'word-processing.js', name: 'Word Processing' },
-      'vet-assistant': { file: 'vet-assistant-skills.js', name: 'Vet. Assistant Skills' }
+      'vet-assistant': { file: 'vet-assistant-skills.js', name: 'Vet. Assistant Skills' },
+      'communications': { file: 'communications.js', name: 'Communications' },
+      'work-experience': { file: 'work-experience.js', name: 'Work Experience' }
     };
 
     const quizInfo = moduleMap[module.toLowerCase()];

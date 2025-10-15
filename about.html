@@ -34,6 +34,19 @@
     }
 
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
       font-size: 1.8rem;
       font-weight: bold;
       letter-spacing: -0.5px;
@@ -177,7 +190,10 @@
 </head>
 <body>
   <header>
-    <div class="logo">Pethology</div>
+    <a href="index.html" class="logo">
+      <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+      <span class="logo-text">Pethology</span>
+    </a>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>

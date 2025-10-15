@@ -43,6 +43,19 @@
     }
 
     .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
       font-size: 1.8rem;
       font-weight: bold;
       letter-spacing: -0.5px;
@@ -69,15 +82,25 @@
     }
 
     .hero-section {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      background: white;
+      color: var(--accent);
       padding: 80px 60px;
       text-align: center;
+      border-bottom: 1px solid var(--border);
     }
 
     .hero-content {
       max-width: 900px;
       margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .hero-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .hero-title {
@@ -85,20 +108,28 @@
       font-weight: bold;
       margin-bottom: 20px;
       letter-spacing: -1px;
+      text-align: center;
     }
 
     .hero-subtitle {
       font-size: 1.3rem;
       margin-bottom: 30px;
-      opacity: 0.9;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
+      color: var(--gray);
       line-height: 1.5;
+      text-align: center;
+      max-width: 100%;
     }
 
     .hero-highlight {
-      background: rgba(255,255,255,0.2);
+      background: #f3f4f6;
       padding: 4px 12px;
       border-radius: 8px;
       font-weight: 600;
+      color: var(--accent);
+      display: inline;
     }
 
     .cta-buttons {
@@ -110,14 +141,15 @@
     }
 
     .btn-primary {
-      background: white;
-      color: var(--accent);
+      background: var(--accent);
+      color: white;
       padding: 16px 32px;
       border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
       font-size: 1.1rem;
+      display: inline-block;
     }
 
     .btn-primary:hover {
@@ -126,20 +158,21 @@
     }
 
     .btn-secondary {
-      background: transparent;
-      color: white;
-      border: 2px solid white;
+      background: white;
+      color: var(--accent);
+      border: 2px solid var(--border);
       padding: 14px 30px;
       border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
       transition: all 0.3s ease;
       font-size: 1.1rem;
+      display: inline-block;
     }
 
     .btn-secondary:hover {
-      background: white;
-      color: var(--accent);
+      background: #f9fafb;
+      border-color: var(--accent);
     }
 
     .problem-section {
@@ -151,6 +184,15 @@
     .problem-content {
       max-width: 1000px;
       margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .problem-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .section-title {
@@ -158,13 +200,19 @@
       font-weight: bold;
       margin-bottom: 30px;
       color: var(--accent);
+      text-align: center;
     }
 
     .problem-text {
       font-size: 1.2rem;
       color: var(--gray);
       margin-bottom: 40px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
       line-height: 1.7;
+      text-align: center;
+      max-width: 100%;
     }
 
     .challenge-grid {
@@ -206,6 +254,15 @@
     .benefits-content {
       max-width: 1200px;
       margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .benefits-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .benefits-grid {
@@ -282,26 +339,43 @@
 
     .integration-section {
       padding: 80px 60px;
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-      color: white;
+      background: white;
+      color: var(--accent);
       text-align: center;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
     .integration-content {
       max-width: 900px;
       margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .integration-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .integration-title {
       font-size: 2.8rem;
       font-weight: bold;
       margin-bottom: 20px;
+      text-align: center;
     }
 
     .integration-text {
       font-size: 1.2rem;
       margin-bottom: 40px;
-      opacity: 0.95;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
+      color: var(--gray);
+      text-align: center;
+      max-width: 100%;
     }
 
     .integration-features {
@@ -312,10 +386,10 @@
     }
 
     .integration-feature {
-      background: rgba(255,255,255,0.1);
+      background: #f9fafb;
       padding: 24px;
       border-radius: 12px;
-      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
     }
 
     .integration-feature-icon {
@@ -326,11 +400,12 @@
     .integration-feature-title {
       font-weight: 600;
       margin-bottom: 8px;
+      color: var(--accent);
     }
 
     .integration-feature-text {
       font-size: 0.95rem;
-      opacity: 0.9;
+      color: var(--gray);
     }
 
     .demo-section {
@@ -341,7 +416,15 @@
     .demo-content {
       max-width: 1000px;
       margin: 0 auto;
+      padding: 0 20px;
       text-align: center;
+    }
+
+    .demo-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .demo-grid {
@@ -385,71 +468,43 @@
       line-height: 1.6;
     }
 
-    .testimonial-section {
-      padding: 80px 60px;
-      background: white;
-    }
-
-    .testimonial-content {
-      max-width: 1000px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .testimonial-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-      gap: 30px;
-      margin-top: 40px;
-    }
-
-    .testimonial-card {
-      background: #f8fafc;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: left;
-    }
-
-    .testimonial-text {
-      font-size: 1.1rem;
-      font-style: italic;
-      color: var(--gray);
-      margin-bottom: 20px;
-      line-height: 1.6;
-    }
-
-    .testimonial-author {
-      font-weight: 600;
-      color: var(--accent);
-    }
-
-    .testimonial-role {
-      color: var(--gray);
-      font-size: 0.95rem;
-    }
-
     .pricing-section {
       padding: 80px 60px;
-      background: var(--accent);
-      color: white;
+      background: #f9fafb;
+      color: var(--accent);
       text-align: center;
     }
 
     .pricing-content {
       max-width: 800px;
       margin: 0 auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .pricing-content p {
+      margin-left: 0;
+      margin-right: 0;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .pricing-title {
       font-size: 2.5rem;
       font-weight: bold;
       margin-bottom: 20px;
+      text-align: center;
     }
 
     .pricing-text {
       font-size: 1.2rem;
       margin-bottom: 40px;
-      opacity: 0.9;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 0;
+      color: var(--gray);
+      text-align: center;
+      max-width: 100%;
     }
 
     .pricing-card {
@@ -521,7 +576,6 @@
       .benefits-section,
       .integration-section,
       .demo-section,
-      .testimonial-section,
       .pricing-section {
         padding: 40px 20px;
       }
@@ -534,8 +588,7 @@
         font-size: 2rem;
       }
 
-      .benefits-grid,
-      .testimonial-grid {
+      .benefits-grid {
         grid-template-columns: 1fr;
       }
 
@@ -552,7 +605,10 @@
 </head>
 <body>
   <header>
-    <div class="logo">Pethology</div>
+    <a href="index.html" class="logo">
+      <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+      <span class="logo-text">Pethology</span>
+    </a>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
@@ -768,30 +824,6 @@
           <div class="demo-number">3</div>
           <h3 class="demo-card-title">Start Teaching</h3>
           <p class="demo-card-text">Students immediately access structured content and begin their personalized learning journey.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonial Section -->
-  <section class="testimonial-section">
-    <div class="testimonial-content">
-      <h2 class="section-title">What Fellow Educators Are Saying</h2>
-      
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <p class="testimonial-text">
-            "Finally, a platform that understands the unique challenges of teaching Animal Care in Ireland. The progress tracking alone has saved me hours each week."
-          </p>
-          <div class="testimonial-author">Dr. Mary O'Sullivan</div>
-          <div class="testimonial-role">Animal Care Program Coordinator</div>
-        </div>
-        <div class="testimonial-card">
-          <p class="testimonial-text">
-            "My students are more engaged than ever. The adaptive quizzes help them focus on areas where they need improvement, and I can see their progress in real-time."
-          </p>
-          <div class="testimonial-author">James McCarthy</div>
-          <div class="testimonial-role">Animal Care Instructor</div>
         </div>
       </div>
     </div>

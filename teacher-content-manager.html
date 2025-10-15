@@ -295,14 +295,22 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <h1>📚 Content Manager</h1>
-      <div>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+          <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 40px; width: auto;">
+        </a>
+        <h1>📚 Content Manager</h1>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <a href="index.html" class="btn btn-secondary">
+          🏠 Home
+        </a>
         <a href="teacher-dashboard.html" class="btn btn-secondary">
-          ← Back to Dashboard
+          ← Dashboard
         </a>
-        <a href="content.html" class="btn btn-primary">
-          👁️ View as Student
-        </a>
+        <button onclick="logout()" class="btn btn-secondary">
+          🚪 Logout
+        </button>
       </div>
     </div>
 
@@ -600,6 +608,14 @@ Use Markdown to format your content:
         day: 'numeric'
       });
     }
+
+    // Logout function
+    window.logout = function() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('pethologyUser');
+        window.location.href = 'index.html';
+      }
+    };
   </script>
 </body>
 </html>

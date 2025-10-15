@@ -505,6 +505,12 @@
   <div class="dashboard-layout">
     <!-- Sidebar -->
     <aside class="sidebar">
+      <!-- Logo Section -->
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 20px 16px; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827;">
+        <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 32px; width: auto;">
+        <span style="font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px;">Pethology</span>
+      </a>
+
       <!-- User Section -->
       <div style="padding: 20px 16px; border-bottom: 1px solid #e5e7eb;">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
@@ -527,53 +533,73 @@
           <span style="font-size: 0.9rem; font-weight: 500;">Content</span>
         </a>
 
+        <button onclick="logout()" class="nav-item" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px; border: none; background: transparent; color: #6b7280; cursor: pointer; transition: all 0.2s ease; margin-bottom: 4px; font-family: inherit;">
+          <span style="font-size: 18px;">🚪</span>
+          <span style="font-size: 0.9rem; font-weight: 500;">Logout</span>
+        </button>
+
         <!-- Divider -->
         <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
 
-        <!-- Modules Section -->
-        <div style="padding: 8px 12px; margin-bottom: 8px;">
-          <span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #9ca3af; letter-spacing: 0.5px;">Modules</span>
+        <!-- Modules Section (Collapsible) -->
+        <div style="margin-bottom: 8px;">
+          <button id="modulesToggle" onclick="toggleModules()" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease;">
+            <span>Modules</span>
+            <span id="modulesArrow" style="transition: transform 0.2s ease;">›</span>
+          </button>
         </div>
 
-        <a href="quiz.html?module=biology" class="nav-item module-item" data-module-link="biology" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🧬</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Biology</span>
-        </a>
+        <div id="modulesMenu" style="display: block; margin-bottom: 8px;">
+          <a href="quiz.html?module=animal-anatomy" class="nav-item module-item" data-module-link="animal-anatomy" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🦴</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Anatomy & Physiology</span>
+          </a>
 
-        <a href="quiz.html?module=animal-welfare" class="nav-item module-item" data-module-link="animal-welfare" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🐾</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Animal Welfare</span>
-        </a>
+          <a href="quiz.html?module=animal-welfare" class="nav-item module-item" data-module-link="animal-welfare" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐾</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Welfare</span>
+          </a>
 
-        <a href="quiz.html?module=animal-anatomy" class="nav-item module-item" data-module-link="animal-anatomy" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🦴</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Anatomy</span>
-        </a>
+          <a href="quiz.html?module=communications" class="nav-item module-item" data-module-link="communications" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💬</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Communications</span>
+          </a>
 
-        <a href="quiz.html?module=grooming" class="nav-item module-item" data-module-link="grooming" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">✂️</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Grooming</span>
-        </a>
+          <a href="quiz.html?module=work-experience" class="nav-item module-item" data-module-link="work-experience" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💼</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Work Experience</span>
+          </a>
 
-        <a href="quiz.html?module=small-animals" class="nav-item module-item" data-module-link="small-animals" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🐹</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Small Animals</span>
-        </a>
+          <a href="quiz.html?module=vet-assistant" class="nav-item module-item" data-module-link="vet-assistant" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🏥</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Veterinary Assistant Skills</span>
+          </a>
 
-        <a href="quiz.html?module=animal-behaviour" class="nav-item module-item" data-module-link="animal-behaviour" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🐕</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Animal Behaviour</span>
-        </a>
+          <a href="quiz.html?module=small-animals" class="nav-item module-item" data-module-link="small-animals" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐹</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Small Animal Husbandry</span>
+          </a>
 
-        <a href="quiz.html?module=vet-assistant" class="nav-item module-item" data-module-link="vet-assistant" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🏥</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Vet Assistant Skills</span>
-        </a>
+          <a href="quiz.html?module=biology" class="nav-item module-item" data-module-link="biology" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🧬</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Biology</span>
+          </a>
 
-        <a href="quiz.html?module=word-processing" class="nav-item module-item" data-module-link="word-processing" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">💻</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Word Processing</span>
-        </a>
+          <a href="quiz.html?module=grooming" class="nav-item module-item" data-module-link="grooming" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">✂️</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Grooming</span>
+          </a>
+
+          <a href="quiz.html?module=animal-behaviour" class="nav-item module-item" data-module-link="animal-behaviour" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐕</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Behaviour</span>
+          </a>
+
+          <a href="quiz.html?module=word-processing" class="nav-item module-item" data-module-link="word-processing" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💻</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Word Processing</span>
+          </a>
+        </div>
 
         <!-- Divider -->
         <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
@@ -608,14 +634,6 @@
           </a>
         </div>
       </nav>
-
-      <!-- Logout at bottom -->
-      <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; border-top: 1px solid #e5e7eb;">
-        <button onclick="logout()" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px; border: none; background: transparent; color: #6b7280; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem; font-weight: 500;">
-          <span style="font-size: 18px;">🚪</span>
-          <span>Logout</span>
-        </button>
-      </div>
     </aside>
 
     <!-- Main Content -->
@@ -1019,6 +1037,23 @@
       const menu = document.getElementById('toolsMenu');
       const arrow = document.getElementById('toolsArrow');
       const button = document.getElementById('toolsToggle');
+
+      if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        arrow.style.transform = 'rotate(90deg)';
+        button.style.color = '#111827';
+      } else {
+        menu.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+        button.style.color = '#9ca3af';
+      }
+    }
+
+    // Toggle Modules menu
+    window.toggleModules = function() {
+      const menu = document.getElementById('modulesMenu');
+      const arrow = document.getElementById('modulesArrow');
+      const button = document.getElementById('modulesToggle');
 
       if (menu.style.display === 'none') {
         menu.style.display = 'block';
