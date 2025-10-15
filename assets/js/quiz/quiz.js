@@ -53,7 +53,7 @@ function showQuestion() {
     <div style="margin-bottom: 24px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
         <span style="font-weight: 600; color: #374151;">Question ${progress} of ${total}</span>
-        <span style="font-weight: 600; color: #3b82f6;">${percentage} % Complete</span>
+        <span style="font-weight: 600; color: #3b82f6;">${percentage}&nbsp;% Complete</span>
       </div>
       <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden;">
         <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s ease;"></div>
