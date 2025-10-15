@@ -21,6 +21,7 @@ let quizStartTime = null;
 
 async function loadQuiz(file, topicName) {
   try {
+    console.log('🎯 Loading quiz:', topicName || file);
     const module = await import('./' + file);
     currentQuestions = module.questions;
     currentQuestionIndex = 0;
@@ -29,9 +30,11 @@ async function loadQuiz(file, topicName) {
     correctAnswersCount = 0;
     userAnswers = [];
     quizStartTime = Date.now();
+    console.log(`✅ Quiz loaded! ${currentQuestions.length} questions available`);
+    console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
     showQuestion();
   } catch (error) {
-    console.error("ERRO FATAL:", error);
+    console.error("❌ ERRO FATAL:", error);
     alert("Quiz não encontrado! Verifique o console.");
   }
 }
@@ -41,7 +44,22 @@ function showQuestion() {
   const question = currentQuestions[currentQuestionIndex];
   isAnswerCorrect = false;
 
+  const progress = currentQuestionIndex + 1;
+  const total = currentQuestions.length;
+  const percentage = Math.round((progress / total) * 100);
+
   quizContainer.innerHTML = `
+    <!-- Progress Bar -->
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 600; color: #374151;">Question ${progress} of ${total}</span>
+        <span style="font-weight: 600; color: #3b82f6;">${percentage}% Complete</span>
+      </div>
+      <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden;">
+        <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s ease;"></div>
+      </div>
+    </div>
+
     <h2>${question.question}</h2>
     <ul style="list-style: none; padding: 0;">
       ${question.options.map((opt, i) => `
@@ -51,8 +69,10 @@ function showQuestion() {
       `).join('')}
     </ul>
     <div id="feedback"></div>
-    <div class="quiz-navigation">
-      <button onclick="goBackToMenu()" class="quiz-navigation">Back</button>
+    <div class="quiz-navigation" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>
+      <button onclick="saveProgressAndExit()" class="quiz-navigation" style="background: #f59e0b;">💾 Save Progress & Exit</button>
+      <button onclick="finishQuizEarly()" class="quiz-navigation" style="background: #10b981;">✓ Finish Quiz Now</button>
     </div>
   `;
 }
@@ -72,6 +92,7 @@ function selectAnswer(index) {
       correctAnswer: correct,
       isCorrect: true
     });
+    console.log(`✅ Correct! Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
     feedbackEl.innerHTML = `
       <p style="color:green;">✅<br>${question.explanation}</p>
       <div style="display: flex; justify-content: space-between; margin-top: 20px;">
@@ -86,6 +107,7 @@ function selectAnswer(index) {
       correctAnswer: correct,
       isCorrect: false
     });
+    console.log(`❌ Wrong answer. Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
     feedbackEl.innerHTML = `<p style="color:red;">Nope! ❌ Are you sure about that?</p>`;
   }
 }
@@ -284,10 +306,58 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// Salvar progresso parcial e sair
+async function saveProgressAndExit() {
+  if (correctAnswersCount === 0) {
+    if (!confirm('You haven\'t answered any questions correctly yet. Are you sure you want to exit?')) {
+      return;
+    }
+  }
+
+  console.log('💾 Saving partial progress...');
+
+  const timeSpent = quizStartTime ? Math.floor((Date.now() - quizStartTime) / 1000) : 0;
+
+  const quizData = {
+    moduleName: currentQuizModule,
+    totalQuestions: currentQuestionIndex + 1, // Quantas você tentou
+    correctAnswers: correctAnswersCount,
+    timeSpent: timeSpent,
+    answers: userAnswers,
+    isPartial: true
+  };
+
+  await saveQuizToFirebase(quizData);
+
+  alert(`✅ Progress saved!\n\n${correctAnswersCount} correct answers\nTime: ${Math.floor(timeSpent / 60)}m ${timeSpent % 60}s\n\nYou can continue later!`);
+
+  goBackToMenu();
+}
+
+// Finalizar quiz antecipadamente
+async function finishQuizEarly() {
+  if (correctAnswersCount === 0) {
+    alert('⚠️ You need to answer at least one question correctly before finishing.');
+    return;
+  }
+
+  const confirmed = confirm(`Finish quiz now?\n\nYou answered ${correctAnswersCount} out of ${currentQuestionIndex + 1} questions correctly.\n\nThis will be saved as a completed quiz.`);
+
+  if (!confirmed) return;
+
+  console.log('🏁 Finishing quiz early...');
+
+  await showQuizCompleted();
+}
+
 function goBackToMenu() {
   currentQuestions = [];
   currentQuestionIndex = 0;
   isAnswerCorrect = false;
+  currentQuizModule = '';
+  correctAnswersCount = 0;
+  userAnswers = [];
+  quizStartTime = null;
   loadQuizButtons();
 }
 
@@ -343,3 +413,5 @@ window.loadQuiz = loadQuiz;
 window.selectAnswer = selectAnswer;
 window.nextQuestion = nextQuestion;
 window.goBackToMenu = goBackToMenu;
+window.saveProgressAndExit = saveProgressAndExit;
+window.finishQuizEarly = finishQuizEarly;
