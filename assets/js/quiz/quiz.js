@@ -309,7 +309,36 @@ function loadQuizButtons() {
   `;
 }
 
-window.onload = loadQuizButtons;
+// Auto-load quiz if module parameter is present in URL
+window.onload = function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const module = urlParams.get('module');
+
+  if (module) {
+    // Map module names to quiz files
+    const moduleMap = {
+      'biology': { file: 'biology.js', name: 'Biology' },
+      'animal-behaviour': { file: 'animal-behaviour.js', name: 'Animal Behaviour' },
+      'animal-welfare': { file: 'animal-welfare.js', name: 'Animal Welfare' },
+      'animal-anatomy': { file: 'animal-anatomy.js', name: 'Animal Anatomy and Physiology' },
+      'grooming': { file: 'grooming.js', name: 'Grooming' },
+      'small-animals': { file: 'small-animals.js', name: 'Small Animals H&H' },
+      'word-processing': { file: 'word-processing.js', name: 'Word Processing' },
+      'vet-assistant': { file: 'vet-assistant-skills.js', name: 'Vet. Assistant Skills' }
+    };
+
+    const quizInfo = moduleMap[module.toLowerCase()];
+    if (quizInfo) {
+      console.log(`🎯 Auto-loading quiz: ${quizInfo.name}`);
+      loadQuiz(quizInfo.file, quizInfo.name);
+      return;
+    }
+  }
+
+  // Default: load quiz selection menu
+  loadQuizButtons();
+};
+
 window.loadQuiz = loadQuiz;
 window.selectAnswer = selectAnswer;
 window.nextQuestion = nextQuestion;
