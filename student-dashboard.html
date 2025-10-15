@@ -563,27 +563,27 @@
       
       <h3>Modules</h3>
       <ul class="module-list">
-        <li class="module-item active">
+        <li class="module-item active" data-module-link="biology">
           <span class="module-icon">🧬</span>
           Biology
         </li>
-        <li class="module-item">
+        <li class="module-item" data-module-link="animal-welfare">
           <span class="module-icon">🐾</span>
           Animal Welfare
         </li>
-        <li class="module-item">
+        <li class="module-item" data-module-link="animal-anatomy">
           <span class="module-icon">🦴</span>
           Anatomy
         </li>
-        <li class="module-item">
+        <li class="module-item" data-module-link="grooming">
           <span class="module-icon">🏠</span>
           Husbandry
         </li>
-        <li class="module-item">
+        <li class="module-item" data-module-link="grooming">
           <span class="module-icon">✂️</span>
           Grooming
         </li>
-        <li class="module-item">
+        <li class="module-item" data-module-link="small-animals">
           <span class="module-icon">🐹</span>
           Small Animals
         </li>
@@ -1014,16 +1014,15 @@
     // Module navigation
     document.querySelectorAll('.module-item').forEach(item => {
       item.addEventListener('click', function() {
-        // Remove active class from all items
-        document.querySelectorAll('.module-item').forEach(i => i.classList.remove('active'));
-        // Add active class to clicked item
-        this.classList.add('active');
+        const moduleLink = this.getAttribute('data-module-link');
 
-        const moduleName = this.textContent.trim();
-        console.log('Selected module:', moduleName);
-
-        // Update content based on selected module
-        // updateModuleContent(moduleName);
+        if (moduleLink) {
+          // Navigate to quiz with module parameter
+          console.log('Navigating to quiz:', moduleLink);
+          window.location.href = `quiz.html?module=${moduleLink}`;
+        } else {
+          console.log('Module link not configured yet');
+        }
       });
     });
 
