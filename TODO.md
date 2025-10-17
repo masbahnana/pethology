@@ -1521,7 +1521,16 @@ async function onAuth0Signup(user) {
 
 ---
 
-Perguntas futuras: Um kanban para os alunos? faz sentido?
+- Font dos anouncements pode ser preta
+- Nao esquecer de adicionar o content e as tool no menu a esquerda
+- Adicionar (mesmo que zerado) os demais modulos, só pra ver como fica
+- Nos achievements temos all, unlocked, locked. adicionar tambem os filtros rare, common e etc assim como no dashboard que ja temos
+- Colocar pra ver como fica no demo o Smart Review, Adaptative quiz, Exam mode cards
+- Criar uma pasta e colocar os arquivos .md / documentaçao juntos
+- Nao comitar so demos hehehehehe
 
-- Botao home do studendashboard nao volta para a home do site
-- Padrodizer definitivamente o layout (cores dos botoes e trocar emojis por favicons)
+- TODO para um futuro distante:
+ - Criar testes com cypress
+ - Colocar ou nao o repositorio no privado? Porque as chaves tipo do firebase estao todas no meu repositório publico do github mas nao sei o quanto isso implica no netlify depois
+ - Criar um roadmap bonito pra deixar no site
+ - Modelos 3D para estudar anatomia animal

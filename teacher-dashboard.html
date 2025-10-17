@@ -5,11 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Teacher Dashboard - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
-    body {
+    /* Notion-inspired Design System */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f7f8fa;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
       min-height: 100vh;
       padding: 20px;
     }
@@ -19,12 +63,13 @@
       margin: 0 auto;
     }
 
+    /* Header */
     .header {
-      background: white;
+      background: var(--bg-primary);
       border-radius: 8px;
       padding: 32px;
       margin-bottom: 24px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--gray-100);
     }
 
     .header-top {
@@ -41,107 +86,163 @@
     }
 
     .header-title h1 {
-      font-size: 2rem;
+      font-size: 28px;
       font-weight: 700;
-      color: #111827;
-      margin: 0;
+      color: var(--gray-700);
     }
 
     .teacher-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .header-actions {
       display: flex;
-      gap: 12px;
+      gap: 8px;
+      align-items: center;
     }
 
+    .header-subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--gray-700);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Notion-style Buttons */
     .btn {
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
       cursor: pointer;
       border: none;
-      transition: all 0.3s ease;
+      transition: background 150ms ease;
       text-decoration: none;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: var(--blue-primary);
       color: white;
     }
 
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      background: var(--blue-hover);
     }
 
     .btn-secondary {
-      background: white;
-      color: #667eea;
-      border: 2px solid #667eea;
+      background: var(--bg-hover);
+      color: var(--gray-700);
     }
 
     .btn-secondary:hover {
-      background: #f3f4f6;
+      background: rgba(0, 0, 0, 0.06);
     }
 
+    .btn-icon {
+      padding: 8px;
+      min-width: 36px;
+      justify-content: center;
+    }
+
+    .btn-icon svg {
+      margin: 0;
+    }
+
+    /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
       margin-bottom: 24px;
     }
 
     .stat-card {
-      background: white;
+      background: var(--bg-primary);
       border-radius: 8px;
-      padding: 24px;
-      border: 1px solid #e5e7eb;
-      transition: all 0.2s ease;
+      padding: 20px;
+      border: 1px solid var(--gray-100);
+      transition: all 150ms ease;
     }
 
     .stat-card:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    .stat-icon {
-      font-size: 2.5rem;
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 12px;
     }
 
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #111827;
-      margin: 8px 0;
+    .stat-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--gray-500);
     }
 
     .stat-label {
-      color: #6b7280;
-      font-size: 0.95rem;
+      color: var(--gray-500);
+      font-size: 13px;
       font-weight: 500;
     }
 
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-700);
+      line-height: 1;
+    }
+
+    /* Content Grid */
     .content-grid {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 24px;
+      gap: 16px;
       margin-bottom: 24px;
     }
 
     .card {
-      background: white;
+      background: var(--bg-primary);
       border-radius: 8px;
-      padding: 28px;
-      border: 1px solid #e5e7eb;
+      padding: 24px;
+      border: 1px solid var(--gray-100);
     }
 
     .card-header {
@@ -149,17 +250,24 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #f3f4f6;
     }
 
     .card-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #111827;
-      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    /* Tables */
     .table-container {
       overflow-x: auto;
     }
@@ -171,89 +279,82 @@
 
     th {
       text-align: left;
-      padding: 12px;
-      background: #f9fafb;
-      color: #6b7280;
+      padding: 8px 12px;
+      font-size: 12px;
       font-weight: 600;
-      font-size: 0.85rem;
+      color: var(--gray-500);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--gray-100);
     }
 
     td {
-      padding: 16px 12px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #374151;
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+      color: var(--gray-700);
     }
 
     tr:hover {
-      background: #f9fafb;
+      background: var(--bg-hover);
     }
 
     .student-name {
-      font-weight: 600;
-      color: #111827;
+      font-weight: 500;
+      color: var(--gray-700);
     }
 
+    /* Badges */
     .score-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
       display: inline-block;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.85rem;
     }
 
     .score-high {
-      background: #d1fae5;
-      color: #065f46;
+      background: var(--success-bg);
+      color: var(--success);
     }
 
     .score-medium {
-      background: #fef3c7;
-      color: #92400e;
+      background: var(--warning-bg);
+      color: var(--warning);
     }
 
     .score-low {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--error-bg);
+      color: var(--error);
     }
 
     .module-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
     }
 
+    /* Progress Bar */
     .progress-bar {
       width: 100%;
-      height: 8px;
-      background: #e5e7eb;
-      border-radius: 4px;
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
       overflow: hidden;
       margin-top: 8px;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-      transition: width 0.3s ease;
+      background: var(--blue-primary);
+      transition: width 300ms ease;
+      border-radius: 3px;
     }
 
-    .empty-state {
-      text-align: center;
-      padding: 48px 24px;
-      color: #6b7280;
-    }
-
-    .empty-state-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
+    /* Activity List */
     .activity-list {
       list-style: none;
       padding: 0;
@@ -261,15 +362,17 @@
     }
 
     .activity-item {
-      padding: 16px;
-      border-bottom: 1px solid #f3f4f6;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      transition: background 150ms ease;
     }
 
-    .activity-item:last-child {
-      border-bottom: none;
+    .activity-item:hover {
+      background: var(--bg-hover);
     }
 
     .activity-info {
@@ -277,31 +380,164 @@
     }
 
     .activity-student {
-      font-weight: 600;
-      color: #111827;
+      font-weight: 500;
+      color: var(--gray-700);
       margin-bottom: 4px;
+      font-size: 14px;
     }
 
     .activity-detail {
-      font-size: 0.9rem;
-      color: #6b7280;
+      font-size: 13px;
+      color: var(--gray-500);
     }
 
     .activity-time {
-      color: #9ca3af;
-      font-size: 0.85rem;
+      color: var(--gray-400);
+      font-size: 12px;
       white-space: nowrap;
     }
 
+    /* Quick Actions */
+    .quick-actions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .quick-action-item {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quick-action-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .quick-action-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--gray-500);
+    }
+
+    .quick-action-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    /* Module Performance Slider */
+    .modules-slider {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(280px, 1fr));
+      gap: 16px;
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      width: 250%;
+    }
+
+    .module-card {
+      padding: 16px;
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      transition: all 150ms ease;
+    }
+
+    .module-card:hover {
+      border-color: var(--gray-200);
+      background: var(--bg-hover);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .module-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .module-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    .module-name {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .module-score {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .module-stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .module-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label-small {
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .stat-value-small {
+      font-size: 13px;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--gray-500);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    /* Loading */
     .loading {
       text-align: center;
       padding: 48px;
-      color: #6b7280;
+      color: var(--gray-500);
     }
 
     .spinner {
-      border: 4px solid #f3f4f6;
-      border-top: 4px solid #667eea;
+      border: 4px solid var(--gray-100);
+      border-top: 4px solid var(--blue-primary);
       border-radius: 50%;
       width: 48px;
       height: 48px;
@@ -314,6 +550,7 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Responsive */
     @media (max-width: 1024px) {
       .content-grid {
         grid-template-columns: 1fr;
@@ -343,28 +580,35 @@
     <div class="header">
       <div class="header-top">
         <div class="header-title">
-          <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; margin-right: 20px;">
-            <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 40px; width: auto;">
+          <a href="index.html" class="logo">
+            <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
           </a>
           <h1>Teacher Dashboard</h1>
-          <span class="teacher-badge">👨‍🏫 Educator</span>
+          <span class="teacher-badge">
+            <i data-lucide="graduation-cap"></i>
+            Educator
+          </span>
         </div>
         <div class="header-actions">
           <a href="index.html" class="btn btn-secondary">
-            🏠 Home
+            <i data-lucide="home"></i>
+            Home
           </a>
           <a href="import-students.html" class="btn btn-primary">
-            👥 Import Students
+            <i data-lucide="users"></i>
+            Import Students
           </a>
           <a href="teacher-content-manager.html" class="btn btn-secondary">
-            ➕ Publish Content
+            <i data-lucide="plus-circle"></i>
+            Publish Content
           </a>
           <button onclick="logout()" class="btn btn-secondary">
-            🚪 Logout
+            <i data-lucide="log-out"></i>
+            Logout
           </button>
         </div>
       </div>
-      <p style="color: #6b7280; margin: 0;">Welcome back! Here's what's happening with your students.</p>
+      <p class="header-subtitle">Welcome back! Here's what's happening with your students.</p>
     </div>
 
     <!-- Loading State -->
@@ -376,27 +620,35 @@
     <!-- Statistics Overview -->
     <div id="statsContainer" class="stats-grid" style="display: none;">
       <div class="stat-card">
-        <div class="stat-icon">👥</div>
+        <div class="stat-header">
+          <i data-lucide="users" class="stat-icon"></i>
+          <span class="stat-label">Total Students</span>
+        </div>
         <div class="stat-value" id="totalStudents">0</div>
-        <div class="stat-label">Total Students</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon">🟢</div>
+        <div class="stat-header">
+          <i data-lucide="activity" class="stat-icon"></i>
+          <span class="stat-label">Active This Week</span>
+        </div>
         <div class="stat-value" id="activeStudents">0</div>
-        <div class="stat-label">Active This Week</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon">📝</div>
+        <div class="stat-header">
+          <i data-lucide="clipboard-check" class="stat-icon"></i>
+          <span class="stat-label">Total Quiz Attempts</span>
+        </div>
         <div class="stat-value" id="totalQuizzes">0</div>
-        <div class="stat-label">Total Quiz Attempts</div>
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon">📊</div>
+        <div class="stat-header">
+          <i data-lucide="bar-chart-2" class="stat-icon"></i>
+          <span class="stat-label">Average Score</span>
+        </div>
         <div class="stat-value" id="averageScore">0%</div>
-        <div class="stat-label">Average Score</div>
       </div>
     </div>
 
@@ -405,8 +657,11 @@
       <!-- Students Progress Table -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">Student Progress</h2>
-          <span id="studentCount" style="color: #6b7280; font-size: 0.9rem;">0 students</span>
+          <h2 class="card-title">
+            <i data-lucide="users"></i>
+            Student Progress
+          </h2>
+          <span id="studentCount" style="color: var(--gray-500); font-size: 13px;">0 students</span>
         </div>
         <div class="table-container" id="studentsTableContainer">
           <div class="empty-state">
@@ -416,16 +671,39 @@
         </div>
       </div>
 
-      <!-- Recent Activity -->
+      <!-- Quick Actions -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">Recent Activity</h2>
+          <h2 class="card-title">
+            <i data-lucide="zap"></i>
+            Quick Actions
+          </h2>
         </div>
-        <ul class="activity-list" id="activityList">
-          <div class="empty-state">
-            <div class="empty-state-icon">📋</div>
-            <p>No recent activity</p>
-          </div>
+        <ul class="quick-actions">
+          <li class="quick-action-item" onclick="window.location.href='import-students.html'">
+            <i data-lucide="user-plus" class="quick-action-icon"></i>
+            <span class="quick-action-text">Add New Students</span>
+          </li>
+          <li class="quick-action-item">
+            <i data-lucide="megaphone" class="quick-action-icon"></i>
+            <span class="quick-action-text">Create Announcement</span>
+          </li>
+          <li class="quick-action-item">
+            <i data-lucide="file-plus" class="quick-action-icon"></i>
+            <span class="quick-action-text">Create Custom Quiz</span>
+          </li>
+          <li class="quick-action-item">
+            <i data-lucide="calendar" class="quick-action-icon"></i>
+            <span class="quick-action-text">View Calendar</span>
+          </li>
+          <li class="quick-action-item">
+            <i data-lucide="download" class="quick-action-icon"></i>
+            <span class="quick-action-text">Export Grades</span>
+          </li>
+          <li class="quick-action-item">
+            <i data-lucide="settings" class="quick-action-icon"></i>
+            <span class="quick-action-text">Class Settings</span>
+          </li>
         </ul>
       </div>
     </div>
@@ -433,7 +711,18 @@
     <!-- Module Performance -->
     <div id="modulePerformanceCard" class="card" style="display: none;">
       <div class="card-header">
-        <h2 class="card-title">Module Performance</h2>
+        <h2 class="card-title">
+          <i data-lucide="bar-chart"></i>
+          Module Performance
+        </h2>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-icon" onclick="previousModules()" id="prevBtn">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="btn btn-secondary btn-icon" onclick="nextModules()" id="nextBtn">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
       </div>
       <div id="modulePerformanceContainer">
         <div class="empty-state">
@@ -447,13 +736,36 @@
   <script type="module">
     import { PethologyFirebaseService } from './assets/js/firebase-service.js';
 
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Module slider state
+    let currentPage = 0;
+    const modulesPerPage = 4;
+
+    // Module icon mapping
+    const moduleIcons = {
+      'Animal Anatomy and Physiology': 'bone',
+      'Animal Anatomy & Physiology': 'bone',
+      'Animal Welfare': 'heart',
+      'Communications': 'message-circle',
+      'Work Experience': 'briefcase',
+      'Vet. Assistant Skills': 'stethoscope',
+      'Vet Assistant Skills': 'stethoscope',
+      'Small Animals H&H': 'rabbit',
+      'Biology': 'dna',
+      'Grooming': 'scissors',
+      'Animal Behaviour': 'dog',
+      'Word Processing': 'file-text'
+    };
+
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
       const userSession = sessionStorage.getItem('pethologyUser');
 
       if (!userSession) {
         console.warn('⚠️ No user session, redirecting to login');
-        alert('Please log in to access the Teacher Dashboard 🔒');
+        alert('Please log in to access the Teacher Dashboard');
         window.location.href = 'auth0-login.html';
         return;
       }
@@ -463,7 +775,7 @@
       // Check if user is a teacher
       if (user.role !== 'Teacher') {
         console.warn('⚠️ User is not a teacher, redirecting to student dashboard');
-        alert('This page is only accessible to teachers 👨‍🏫');
+        alert('This page is only accessible to teachers');
         window.location.href = 'student-dashboard.html';
         return;
       }
@@ -625,33 +937,119 @@
         return;
       }
 
-      const performanceHTML = modulePerformance.map(module => {
-        const score = Math.round((module.averageScore || 0) * 100);
-        const timeMin = Math.round(module.averageTime / 60);
+      const totalModules = modulePerformance.length;
+      const totalPages = Math.ceil(totalModules / modulesPerPage);
 
-        return `
-          <div style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <div>
-                <span class="module-badge">${module.module}</span>
-                <span style="margin-left: 12px; color: #6b7280; font-size: 0.9rem;">
-                  ${module.attempts} attempt${module.attempts !== 1 ? 's' : ''}
-                </span>
-              </div>
-              <div style="display: flex; gap: 16px; font-size: 0.9rem;">
-                <span>📊 ${score}%</span>
-                <span>⏱️ ${timeMin}m avg</span>
-              </div>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: ${score}%;"></div>
-            </div>
+      const performanceHTML = `
+        <div class="modules-slider">
+          <div class="modules-grid" id="modulesGrid">
+            ${modulePerformance.map(module => {
+              const score = Math.round((module.averageScore || 0) * 100);
+              const timeMin = Math.round(module.averageTime / 60);
+
+              let scoreClass = 'score-medium';
+              if (score >= 80) scoreClass = 'score-high';
+              else if (score < 60) scoreClass = 'score-low';
+
+              const iconName = moduleIcons[module.module] || 'book-open';
+
+              return `
+                <div class="module-card">
+                  <div class="module-header">
+                    <div class="module-info">
+                      <i data-lucide="${iconName}" class="module-icon"></i>
+                      <span class="module-name">${module.module}</span>
+                    </div>
+                    <span class="module-score ${scoreClass}">${score}%</span>
+                  </div>
+                  <div class="module-stats">
+                    <div class="module-stat">
+                      <span class="stat-label-small">Attempts</span>
+                      <span class="stat-value-small">${module.attempts} quiz${module.attempts !== 1 ? 'zes' : ''}</span>
+                    </div>
+                    <div class="module-stat">
+                      <span class="stat-label-small">Avg Time</span>
+                      <span class="stat-value-small">${timeMin}m</span>
+                    </div>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${score}%;"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
-        `;
-      }).join('');
+        </div>
+      `;
 
       container.innerHTML = performanceHTML;
+
+      // Re-initialize Lucide icons for dynamic content
+      lucide.createIcons();
+
+      // Update grid width and slider
+      const grid = document.getElementById('modulesGrid');
+      if (grid) {
+        const widthPercent = (totalModules / modulesPerPage) * 100;
+        grid.style.width = `${widthPercent}%`;
+        grid.style.gridTemplateColumns = `repeat(${totalModules}, minmax(280px, 1fr))`;
+        updateModuleSlider();
+      }
     }
+
+    function updateModuleSlider() {
+      const grid = document.getElementById('modulesGrid');
+      if (!grid) return;
+
+      const totalModules = grid.children.length;
+      const totalPages = Math.ceil(totalModules / modulesPerPage);
+
+      // Calculate offset based on how many modules fit per page
+      // Each page shows 4 modules, so we move by (modulesPerPage / totalModules) * 100%
+      const offsetPercent = currentPage * (modulesPerPage / totalModules) * 100;
+      grid.style.transform = `translateX(-${offsetPercent}%)`;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (prevBtn && nextBtn) {
+        if (currentPage === 0) {
+          prevBtn.style.opacity = '0.5';
+          prevBtn.style.cursor = 'not-allowed';
+        } else {
+          prevBtn.style.opacity = '1';
+          prevBtn.style.cursor = 'pointer';
+        }
+
+        if (currentPage >= totalPages - 1) {
+          nextBtn.style.opacity = '0.5';
+          nextBtn.style.cursor = 'not-allowed';
+        } else {
+          nextBtn.style.opacity = '1';
+          nextBtn.style.cursor = 'pointer';
+        }
+      }
+    }
+
+    window.nextModules = function() {
+      const grid = document.getElementById('modulesGrid');
+      if (!grid) return;
+
+      const totalModules = grid.children.length;
+      const totalPages = Math.ceil(totalModules / modulesPerPage);
+
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        updateModuleSlider();
+      }
+    };
+
+    window.previousModules = function() {
+      if (currentPage > 0) {
+        currentPage--;
+        updateModuleSlider();
+      }
+    };
 
     function formatTimeAgo(date) {
       const now = new Date();
