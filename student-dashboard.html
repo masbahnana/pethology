@@ -117,6 +117,13 @@
     .circle-progress.welfare { stroke: #059669; }
     .circle-progress.anatomy { stroke: #7c3aed; }
     .circle-progress.husbandry { stroke: #dc2626; }
+    .circle-progress.nutrition { stroke: #84cc16; }
+    .circle-progress.parasitology { stroke: #ec4899; }
+    .circle-progress.behaviour { stroke: #3b82f6; }
+    .circle-progress.small-animals { stroke: #f59e0b; }
+    .circle-progress.vet { stroke: #10b981; }
+    .circle-progress.communications { stroke: #8b5cf6; }
+    .circle-progress.word-processing { stroke: #06b6d4; }
 
     .circle-text {
       position: absolute;
@@ -498,6 +505,203 @@
         align-items: flex-start;
         gap: 16px;
       }
+
+      .achievements-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+      }
+
+      .achievement-card {
+        padding: 16px !important;
+      }
+
+      .achievement-emoji {
+        font-size: 2.5rem !important;
+      }
+    }
+
+    /* Achievement Styles */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .achievement-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #e5e5e5;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    .achievement-card.unlocked {
+      border-color: var(--accent, #3b82f6);
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .achievement-card:hover.unlocked {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+    }
+
+    .achievement-emoji {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .achievement-name {
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .achievement-description {
+      color: #6b7280;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .achievement-rarity {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+    }
+
+    .achievement-rarity.common {
+      background: #e5e7eb;
+      color: #6b7280;
+    }
+
+    .achievement-rarity.uncommon {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .achievement-rarity.rare {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .achievement-rarity.legendary {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #78350f;
+    }
+
+    .unlocked-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .achievement-filter {
+      padding: 8px 16px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .achievement-filter:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    .achievement-filter.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    /* Achievement Toast Notification */
+    .achievement-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      transform: translateX(400px);
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 9999;
+      border: 2px solid #10b981;
+      min-width: 300px;
+    }
+
+    .achievement-toast.show {
+      transform: translateX(0);
+    }
+
+    .achievement-content {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .achievement-toast .achievement-emoji {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-toast-title {
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .achievement-toast-name {
+      font-weight: 600;
+      color: #111827;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .achievement-toast-rarity {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -766,6 +970,30 @@
         </div>
       </section>
 
+      <!-- Achievements Section -->
+      <section class="achievements-section" style="margin-bottom: 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 class="section-title" style="margin: 0;">🏆 Achievements</h2>
+          <div id="achievementStats" style="color: #6b7280; font-size: 0.9rem;">
+            <span id="achievementCount">0/19</span> unlocked
+          </div>
+        </div>
+
+        <!-- Achievement Filter -->
+        <div style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="achievement-filter active" data-filter="all" onclick="filterAchievements('all')">All</button>
+          <button class="achievement-filter" data-filter="learning" onclick="filterAchievements('learning')">📚 Learning</button>
+          <button class="achievement-filter" data-filter="consistency" onclick="filterAchievements('consistency')">⚡ Consistency</button>
+          <button class="achievement-filter" data-filter="specialized" onclick="filterAchievements('specialized')">🎯 Specialized</button>
+          <button class="achievement-filter" data-filter="special" onclick="filterAchievements('special')">🌟 Special</button>
+        </div>
+
+        <!-- Achievements Grid -->
+        <div id="achievementsGrid" class="achievements-grid">
+          <!-- Achievements will be loaded dynamically -->
+        </div>
+      </section>
+
       <!-- Bottom Section -->
       <section class="bottom-section">
         <!-- Veterinary Terms -->
@@ -852,9 +1080,13 @@
         const progress = await PethologyFirebaseService.getStudentProgress(user.id);
         console.log('📊 Progress loaded:', progress);
 
+        // Carregar histórico de quizzes para ordenação
+        const quizHistory = await PethologyFirebaseService.getStudentQuizHistory(user.id);
+        console.log('📝 Quiz history loaded:', quizHistory.length);
+
         // Atualizar UI
         updateStudentProfile(user);
-        updateProgressCircles(progress.moduleProgress);
+        updateProgressCircles(progress.moduleProgress, quizHistory);
         updateOverallStats(progress.overallStats);
         updateAchievements(progress.achievements);
 
@@ -906,48 +1138,92 @@
     }
 
     // Atualizar círculos de progresso
-    function updateProgressCircles(moduleProgress) {
+    function updateProgressCircles(moduleProgress, quizHistory = []) {
       console.log('🔄 Updating progress circles...');
       console.log('📊 Module progress data:', moduleProgress);
 
-      Object.entries(moduleProgress).forEach(([moduleName, data]) => {
-        console.log(`🔍 Processing module: ${moduleName}`, data);
+      const moduleNames = {
+        'animal-welfare': { name: 'Animal Welfare', emoji: '🐾', color: 'welfare' },
+        'biology': { name: 'Biology', emoji: '🧬', color: 'biology' },
+        'grooming': { name: 'Grooming', emoji: '✂️', color: 'husbandry' },
+        'animal-anatomy': { name: 'Anatomy', emoji: '🦴', color: 'anatomy' },
+        'nutrition': { name: 'Nutrition', emoji: '🥗', color: 'nutrition' },
+        'parasitology': { name: 'Parasitology', emoji: '🦠', color: 'parasitology' },
+        'animal-behaviour': { name: 'Animal Behaviour', emoji: '🐕', color: 'behaviour' },
+        'small-animals': { name: 'Small Animals', emoji: '🐹', color: 'small-animals' },
+        'vet-assistant': { name: 'Vet Assistant', emoji: '🏥', color: 'vet' },
+        'communications': { name: 'Communications', emoji: '💬', color: 'communications' },
+        'word-processing': { name: 'Word Processing', emoji: '📝', color: 'word-processing' }
+      };
 
-        // Encontrar elemento do círculo de progresso
-        const circleElement = document.querySelector(`[data-module="${moduleName}"]`);
-
-        if (!circleElement) {
-          console.warn(`⚠️ Circle element not found for module: ${moduleName}`);
-          return;
+      // Get last quiz date for each module
+      const moduleLastDate = {};
+      quizHistory.forEach(quiz => {
+        const date = quiz.completedAt?.toDate ? quiz.completedAt.toDate() : new Date(quiz.completedAt);
+        if (!moduleLastDate[quiz.quizId] || date > moduleLastDate[quiz.quizId]) {
+          moduleLastDate[quiz.quizId] = date;
         }
+      });
 
+      console.log('📅 Module last dates:', moduleLastDate);
+
+      // Sort modules: completed (with progress) first by most recent date, then others
+      const sortedModules = Object.entries(moduleProgress)
+        .sort((a, b) => {
+          const [moduleA, dataA] = a;
+          const [moduleB, dataB] = b;
+
+          // Prioritize modules with progress
+          if (dataA.completion > 0 && dataB.completion === 0) return -1;
+          if (dataA.completion === 0 && dataB.completion > 0) return 1;
+
+          // If both have progress, sort by most recent quiz date
+          if (dataA.completion > 0 && dataB.completion > 0) {
+            const dateA = moduleLastDate[moduleA] || new Date(0);
+            const dateB = moduleLastDate[moduleB] || new Date(0);
+            return dateB - dateA; // Most recent first
+          }
+
+          return 0;
+        })
+        .slice(0, 4); // Show only top 4
+
+      console.log('🔄 Sorted modules:', sortedModules.map(([name]) => name));
+
+      // Get the container
+      const circlesContainer = document.querySelector('.progress-circles');
+      if (!circlesContainer) {
+        console.warn('⚠️ Progress circles container not found');
+        return;
+      }
+
+      // Clear and rebuild
+      circlesContainer.innerHTML = '';
+
+      sortedModules.forEach(([moduleName, data]) => {
+        const moduleInfo = moduleNames[moduleName] || { name: moduleName, emoji: '📚', color: 'default' };
         const completion = data.completion || 0;
-        console.log(`📈 ${moduleName} completion: ${completion}%`);
+        const circumference = 2 * Math.PI * 50;
+        const offset = circumference - (completion / 100) * circumference;
 
-        // Atualizar círculo SVG (se tiver)
-        const progressCircle = circleElement.querySelector('.circle-progress');
-        if (progressCircle) {
-          const circumference = 2 * Math.PI * 50; // raio 50
-          const offset = circumference - (completion / 100) * circumference;
-          progressCircle.style.strokeDashoffset = offset;
-          console.log(`✅ Updated SVG circle for ${moduleName}`);
-        }
+        const circleHTML = `
+          <div class="progress-circle" data-module="${moduleName}">
+            <div class="circle-wrapper">
+              <svg class="circle-svg">
+                <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="circle-progress ${moduleInfo.color}" cx="60" cy="60" r="50" style="stroke-dashoffset: ${offset};"></circle>
+              </svg>
+              <div class="circle-text">${completion}%</div>
+            </div>
+            <div class="module-name">${moduleInfo.emoji} ${moduleInfo.name}</div>
+          </div>
+        `;
 
-        // Atualizar texto de porcentagem
-        const percentText = circleElement.querySelector('.progress-percent, .circle-text');
-        if (percentText) {
-          percentText.textContent = `${completion}%`;
-          console.log(`✅ Updated text for ${moduleName}: ${completion}%`);
-        }
-
-        // Atualizar barra de progresso (se tiver)
-        const progressBar = circleElement.querySelector('.progress-fill');
-        if (progressBar) {
-          progressBar.style.width = `${completion}%`;
-        }
-
+        circlesContainer.innerHTML += circleHTML;
         console.log(`✅ ${moduleName}: ${completion}%`);
       });
+
+      console.log('✅ Progress circles updated with most recent modules');
     }
 
     // Atualizar estatísticas gerais
@@ -1133,6 +1409,108 @@
         }
       });
     });
+
+    // ====================================
+    // ACHIEVEMENT SYSTEM
+    // ====================================
+    import { ACHIEVEMENTS, getAchievementsByCategory, getAchievementStats } from './assets/js/achievements.js';
+
+    let currentFilter = 'all';
+    let studentAchievements = [];
+
+    // Filter achievements by category (defined early for onclick handlers)
+    window.filterAchievements = function(category) {
+      currentFilter = category;
+
+      // Update filter buttons
+      document.querySelectorAll('.achievement-filter').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.filter === category) {
+          btn.classList.add('active');
+        }
+      });
+
+      renderAchievements();
+    };
+
+    // Render achievements based on current filter
+    function renderAchievements() {
+      const grid = document.getElementById('achievementsGrid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      const achievementsToShow = Object.values(ACHIEVEMENTS).filter(achievement => {
+        if (currentFilter === 'all') return true;
+        return achievement.category === currentFilter;
+      });
+
+      achievementsToShow.forEach(achievement => {
+        const isUnlocked = studentAchievements.includes(achievement.id);
+
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.dataset.category = achievement.category;
+
+        card.innerHTML = `
+          <div class="achievement-emoji">${achievement.emoji}</div>
+          <div class="achievement-name">${achievement.name}</div>
+          <div class="achievement-description">${achievement.description}</div>
+          <div class="achievement-rarity ${achievement.rarity}">${achievement.rarity}</div>
+          ${isUnlocked ? '<div class="unlocked-badge">✓</div>' : ''}
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Update achievement statistics
+    function updateAchievementStats() {
+      const stats = getAchievementStats(studentAchievements);
+      const countElement = document.getElementById('achievementCount');
+
+      if (countElement) {
+        countElement.textContent = `${stats.unlocked}/${stats.total}`;
+      }
+    }
+
+    // Load and render achievements
+    async function loadAchievements() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        if (!userSession) return;
+
+        const user = JSON.parse(userSession);
+        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+
+        studentAchievements = progress.achievements || [];
+
+        renderAchievements();
+        updateAchievementStats();
+      } catch (error) {
+        console.error('Error loading achievements:', error);
+      }
+    }
+
+    // Override the existing updateAchievements function for achievement system
+    const originalUpdateAchievements = updateAchievements;
+    updateAchievements = function(achievements = []) {
+      studentAchievements = achievements;
+      renderAchievements();
+      updateAchievementStats();
+    };
+
+    // Initialize achievements on page load
+    window.addEventListener('load', () => {
+      loadAchievements();
+    });
+
+    // TEST FUNCTION - Remove in production
+    // Uncomment to test achievement toast
+    // window.testAchievement = async function() {
+    //   const { showAchievementToast, ACHIEVEMENTS } = await import('./assets/js/achievements.js');
+    //   showAchievementToast(ACHIEVEMENTS.first_steps);
+    // };
   </script>
 </body>
 </html>

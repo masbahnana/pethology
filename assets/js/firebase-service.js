@@ -127,9 +127,17 @@ class PethologyFirebaseService {
   // 🎯 QUIZ RESULTS
   static async saveQuizResult(resultData) {
     try {
+      // Remove undefined values from resultData
+      const cleanData = {};
+      Object.keys(resultData).forEach(key => {
+        if (resultData[key] !== undefined) {
+          cleanData[key] = resultData[key];
+        }
+      });
+
       const resultsRef = collection(db, 'quiz_results');
       const docRef = await addDoc(resultsRef, {
-        ...resultData,
+        ...cleanData,
         createdAt: new Date()
       });
       console.log('✅ Quiz result saved with ID:', docRef.id);
@@ -456,6 +464,221 @@ class PethologyFirebaseService {
       console.log('✅ Content deleted (soft delete)');
     } catch (error) {
       console.error('❌ Error deleting content:', error);
+      throw error;
+    }
+  }
+
+  // 🏆 ACHIEVEMENT SYSTEM
+
+  /**
+   * Update student achievements
+   * @param {string} userId - Student ID
+   * @param {Array} newAchievements - Array of achievement objects to add
+   */
+  static async updateStudentAchievements(userId, newAchievements) {
+    try {
+      console.log('🏆 Updating achievements for user:', userId);
+
+      const progressRef = doc(db, 'student_progress', userId);
+      const progressSnap = await getDoc(progressRef);
+
+      let currentAchievements = [];
+      if (progressSnap.exists()) {
+        currentAchievements = progressSnap.data().achievements || [];
+      }
+
+      // Add new achievement IDs (avoid duplicates)
+      const newAchievementIds = newAchievements.map(a => a.id);
+      const updatedAchievements = [...new Set([...currentAchievements, ...newAchievementIds])];
+
+      await updateDoc(progressRef, {
+        achievements: updatedAchievements,
+        lastAchievementUnlocked: new Date()
+      });
+
+      console.log('✅ Achievements updated:', updatedAchievements);
+      return updatedAchievements;
+    } catch (error) {
+      console.error('❌ Error updating achievements:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Save quiz result and check for new achievements
+   * @param {Object} resultData - Quiz result data
+   */
+  static async saveQuizResultWithAchievements(resultData) {
+    try {
+      console.log('🏆 Starting achievement check for user:', resultData.userId);
+
+      // Save quiz result first
+      await this.saveQuizResult(resultData);
+      console.log('✅ Quiz result saved');
+
+      // Import achievements module dynamically
+      const { checkAchievements, calculateStudentStats, showAchievementToast } =
+        await import('./achievements.js');
+      console.log('✅ Achievement module imported');
+
+      // Get updated progress
+      const progress = await this.getStudentProgress(resultData.userId);
+      console.log('📊 Current progress:', progress);
+
+      // Get all quiz results for stats calculation
+      const quizResults = await this.getStudentQuizHistory(resultData.userId);
+      console.log('📝 Quiz history count:', quizResults.length);
+
+      // Calculate comprehensive stats
+      const stats = calculateStudentStats(quizResults, progress.moduleProgress);
+      stats.achievements = progress.achievements || [];
+      console.log('📈 Calculated stats:', stats);
+
+      // Check for new achievements
+      const newAchievements = checkAchievements(resultData.userId, stats);
+      console.log('🔍 New achievements found:', newAchievements.length, newAchievements);
+
+      if (newAchievements.length > 0) {
+        console.log('🎉 New achievements unlocked:', newAchievements);
+
+        // Save new achievements to Firebase
+        await this.updateStudentAchievements(resultData.userId, newAchievements);
+
+        // Show toast notifications for each new achievement
+        newAchievements.forEach((achievement, index) => {
+          setTimeout(() => {
+            showAchievementToast(achievement);
+          }, index * 500); // Stagger notifications by 500ms
+        });
+
+        return { success: true, newAchievements };
+      } else {
+        console.log('ℹ️ No new achievements unlocked this time');
+      }
+
+      return { success: true, newAchievements: [] };
+    } catch (error) {
+      console.error('❌ Error saving quiz result with achievements:', error);
+      console.error('Error stack:', error.stack);
+      throw error;
+    }
+  }
+
+  /**
+   * Get student quiz history for stats calculation
+   * @param {string} userId - Student ID
+   * @returns {Array} Array of quiz results
+   */
+  static async getStudentQuizHistory(userId) {
+    try {
+      // Try with orderBy first (requires index)
+      try {
+        const resultsQuery = query(
+          collection(db, 'quiz_results'),
+          where('userId', '==', userId),
+          orderBy('completedAt', 'desc')
+        );
+
+        const querySnapshot = await getDocs(resultsQuery);
+        const results = [];
+
+        querySnapshot.forEach((doc) => {
+          results.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        return results;
+      } catch (indexError) {
+        // If index doesn't exist, fallback to simple query without orderBy
+        console.warn('⚠️ Firebase index missing, using fallback query. Create index for better performance:', indexError.message);
+
+        const simpleQuery = query(
+          collection(db, 'quiz_results'),
+          where('userId', '==', userId)
+        );
+
+        const querySnapshot = await getDocs(simpleQuery);
+        const results = [];
+
+        querySnapshot.forEach((doc) => {
+          results.push({
+            id: doc.id,
+            ...doc.data()
+          });
+        });
+
+        // Sort manually in JavaScript
+        results.sort((a, b) => {
+          const dateA = a.completedAt?.toDate ? a.completedAt.toDate() : new Date(a.completedAt);
+          const dateB = b.completedAt?.toDate ? b.completedAt.toDate() : new Date(b.completedAt);
+          return dateB - dateA;
+        });
+
+        console.log(`✅ Retrieved ${results.length} quiz results using fallback method`);
+        return results;
+      }
+    } catch (error) {
+      console.error('❌ Error getting quiz history:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Initialize student progress with default achievements array
+   * @param {string} userId - Student ID
+   */
+  static async initializeStudentProgress(userId) {
+    try {
+      const progressRef = doc(db, 'student_progress', userId);
+      const progressSnap = await getDoc(progressRef);
+
+      if (!progressSnap.exists()) {
+        await setDoc(progressRef, {
+          userId,
+          achievements: [],
+          overallStats: {
+            totalQuizzes: 0,
+            averageScore: 0,
+            currentStreak: 0
+          },
+          moduleProgress: {},
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+        console.log('✅ Student progress initialized with achievements');
+      }
+    } catch (error) {
+      console.error('❌ Error initializing student progress:', error);
+      throw error;
+    }
+  }
+
+  // Get current logged in user from session
+  static async getCurrentUser() {
+    try {
+      const userSession = sessionStorage.getItem('pethologyUser');
+      if (!userSession) {
+        return null;
+      }
+
+      const userData = JSON.parse(userSession);
+      return userData;
+    } catch (error) {
+      console.error('❌ Error getting current user:', error);
+      return null;
+    }
+  }
+
+  // Logout user
+  static async logout() {
+    try {
+      sessionStorage.removeItem('pethologyUser');
+      console.log('✅ User logged out successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error logging out:', error);
       throw error;
     }
   }

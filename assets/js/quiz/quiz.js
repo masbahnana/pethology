@@ -108,24 +108,24 @@ function showQuestion() {
 
     <!-- Progress Bar -->
     <div style="margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-        <span style="font-weight: 600; color: #374151;">Question ${progress} of ${total}</span>
-        <span style="font-weight: 600; color: #3b82f6;">${percentage}&nbsp;% Complete</span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 16px;">
+        <span style="font-weight: 600; color: #374151; white-space: nowrap;">Question ${progress} of ${total}</span>
+        <span style="font-weight: 600; color: #3b82f6; white-space: nowrap;">${percentage}&nbsp;% Complete</span>
       </div>
       <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden;">
         <div style="width: ${percentage}%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); transition: width 0.3s ease;"></div>
       </div>
     </div>
 
-    <h2>${question.question}</h2>
-    <ul style="list-style: none; padding: 0;">
+    <h2 style="text-align: center; margin-bottom: 24px;">${question.question}</h2>
+    <ul style="list-style: none; padding: 0; text-align: center;">
       ${question.options.map((opt, i) => `
         <li style="margin-bottom: 10px;">
-          <button class="minimal-button answer-button" onclick="selectAnswer(${i})">${opt}</button>
+          <button class="minimal-button answer-button" onclick="selectAnswer(${i})" style="width: 100%; text-align: center;">${opt}</button>
         </li>
       `).join('')}
     </ul>
-    <div id="feedback"></div>
+    <div id="feedback" style="text-align: center;"></div>
     <div class="quiz-navigation" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
       <button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>
       ${isLoggedIn ? `
@@ -365,9 +365,11 @@ async function saveQuizToFirebase(quizData) {
     const user = JSON.parse(userSession);
 
     // Preparar dados do resultado
+    const normalizedModuleName = normalizeModuleName(quizData.moduleName || 'general-quiz');
+
     const resultData = {
       userId: user.id,
-      quizId: quizData.moduleName || 'general-quiz',
+      quizId: normalizedModuleName,
       type: 'normal',
       score: quizData.correctAnswers / quizData.totalQuestions,
       totalQuestions: quizData.totalQuestions,
@@ -377,18 +379,25 @@ async function saveQuizToFirebase(quizData) {
       answers: quizData.answers || []
     };
 
+    console.log(`📝 Module normalized: "${quizData.moduleName}" → "${normalizedModuleName}"`);
+
     console.log('📝 Result data:', resultData);
 
-    // Salvar resultado
-    const resultId = await PethologyFirebaseService.saveQuizResult(resultData);
-    console.log('✅ Quiz result saved with ID:', resultId);
+    // Salvar resultado com sistema de achievements
+    const achievementResult = await PethologyFirebaseService.saveQuizResultWithAchievements(resultData);
+    console.log('✅ Quiz result saved with achievements check');
 
     // Atualizar progresso do estudante
     await updateStudentProgressAfterQuiz(user.id, quizData);
 
+    // Log new achievements if any
+    if (achievementResult.newAchievements && achievementResult.newAchievements.length > 0) {
+      console.log('🎉 New achievements unlocked:', achievementResult.newAchievements.map(a => a.name).join(', '));
+    }
+
     console.log('✅ All data saved successfully!');
 
-    return resultId;
+    return achievementResult;
 
   } catch (error) {
     console.error('❌ Error saving quiz to Firebase:', error);
@@ -421,24 +430,29 @@ async function updateStudentProgressAfterQuiz(userId, quizData) {
     const moduleName = normalizeModuleName(quizData.moduleName || 'biology');
     console.log(`🔍 Looking for module: "${moduleName}"`);
 
-    if (progress.moduleProgress[moduleName]) {
-      const moduleData = progress.moduleProgress[moduleName];
-      console.log(`✅ Found module in progress:`, moduleData);
-
-      // Atualizar score do módulo
-      moduleData.averageScore = newScore;
-
-      // Incrementar completion (máximo 100%)
-      moduleData.completion = Math.min(100, (moduleData.completion || 0) + 10);
-
-      // Adicionar tempo gasto
-      moduleData.timeSpent = (moduleData.timeSpent || 0) + (quizData.timeSpent || 0);
-
-      console.log(`📈 Updated ${moduleName}: ${moduleData.completion}% complete`);
-    } else {
-      console.warn(`⚠️ Module "${moduleName}" not found in progress.moduleProgress!`);
-      console.log('Available modules:', Object.keys(progress.moduleProgress));
+    // Se o módulo não existe, criar
+    if (!progress.moduleProgress[moduleName]) {
+      console.log(`✨ Creating new module progress for: "${moduleName}"`);
+      progress.moduleProgress[moduleName] = {
+        completion: 0,
+        averageScore: 0,
+        timeSpent: 0
+      };
     }
+
+    const moduleData = progress.moduleProgress[moduleName];
+    console.log(`✅ Found/created module in progress:`, moduleData);
+
+    // Atualizar score do módulo
+    moduleData.averageScore = newScore;
+
+    // Incrementar completion (máximo 100%)
+    moduleData.completion = Math.min(100, (moduleData.completion || 0) + 10);
+
+    // Adicionar tempo gasto
+    moduleData.timeSpent = (moduleData.timeSpent || 0) + (quizData.timeSpent || 0);
+
+    console.log(`📈 Updated ${moduleName}: ${moduleData.completion}% complete`);
 
     // Verificar achievements
     checkAndUnlockAchievements(progress);
@@ -675,6 +689,82 @@ window.onload = function() {
   // Default: load quiz selection menu
   loadQuizButtons();
 };
+
+// Initialize user indicator in header
+async function initUserIndicator() {
+  const userIndicator = document.getElementById('user-indicator');
+  if (!userIndicator) return;
+
+  try {
+    const user = await PethologyFirebaseService.getCurrentUser();
+
+    if (user) {
+      // User is logged in - show avatar
+      const userName = user.name || user.email || 'User';
+      const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+
+      userIndicator.style.display = 'block';
+      userIndicator.innerHTML = `
+        <div class="user-avatar" onclick="toggleUserDropdown()">
+          ${initials}
+        </div>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="user-dropdown-header">
+            <div class="user-dropdown-name">${userName}</div>
+            <div class="user-dropdown-email">${user.email || ''}</div>
+          </div>
+          <a href="student-dashboard.html" class="user-dropdown-item">
+            🏠 Dashboard
+          </a>
+          <div class="user-dropdown-divider"></div>
+          <div class="user-dropdown-item" onclick="logout()">
+            🚪 Logout
+          </div>
+        </div>
+      `;
+
+      console.log('✅ User indicator initialized for:', userName);
+    } else {
+      // Not logged in - hide indicator
+      userIndicator.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error initializing user indicator:', error);
+    userIndicator.style.display = 'none';
+  }
+}
+
+// Toggle user dropdown menu
+window.toggleUserDropdown = function() {
+  const dropdown = document.getElementById('user-dropdown');
+  if (dropdown) {
+    dropdown.classList.toggle('show');
+  }
+};
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const userIndicator = document.getElementById('user-indicator');
+  const dropdown = document.getElementById('user-dropdown');
+
+  if (userIndicator && dropdown && !userIndicator.contains(event.target)) {
+    dropdown.classList.remove('show');
+  }
+});
+
+// Logout function
+window.logout = async function() {
+  try {
+    await PethologyFirebaseService.logout();
+    sessionStorage.removeItem('pethologyUser');
+    window.location.href = 'index.html';
+  } catch (error) {
+    console.error('Error logging out:', error);
+  }
+};
+
+// Initialize on page load
+initUserIndicator();
 
 window.loadQuiz = loadQuiz;
 window.selectAnswer = selectAnswer;
