@@ -1,7 +1,7 @@
 # 🎓 Pethology - TODO List & Roadmap Completo
 
-**Última atualização:** 15 Outubro 2025
-**Status atual:** Quiz System Completo (200 questões) + UI Polido ✅
+**Última atualização:** 17 Outubro 2025
+**Status atual:** Achievement System ✅ + Import Students ✅ + User Indicator ✅
 
 ---
 
@@ -75,9 +75,9 @@ Pode me ajudar a implementar?
 
 ## 🔥 **PRIORIDADE ALTA - Fazer Agora:**
 
-### **🏆 1. ACHIEVEMENT SYSTEM (PRÓXIMA SESSÃO - 3-4 horas)**
+### **🏆 1. ACHIEVEMENT SYSTEM**
 
-**Status:** Pronto para implementar com emojis! 🎯
+**Status:** ✅ IMPLEMENTADO! (17 Out 2025)
 
 **Objetivo:** Sistema de conquistas gamificado para engajar estudantes
 
@@ -275,18 +275,155 @@ async saveQuizResult(resultData) {
 ```
 
 #### **Tarefas Detalhadas:**
-- [ ] Criar `assets/js/achievements.js` com sistema de conquistas
-- [ ] Definir todos os 15+ achievements com emojis
-- [ ] Adicionar seção de Achievements no student dashboard
-- [ ] Implementar check de achievements após cada quiz
-- [ ] Criar toast notification animado
-- [ ] CSS para achievement cards (locked/unlocked states)
-- [ ] Salvar achievements no Firebase (student_progress)
-- [ ] Testar todos os triggers de achievements
+- [x] Criar `assets/js/achievements.js` com sistema de conquistas
+- [x] Definir todos os 19 achievements com emojis
+- [x] Adicionar seção de Achievements no student dashboard
+- [x] Implementar check de achievements após cada quiz
+- [x] Criar toast notification animado
+- [x] CSS para achievement cards (locked/unlocked states)
+- [x] Salvar achievements no Firebase (student_progress)
+- [x] User indicator no header com avatar e dropdown
+- [x] Progress circles dinâmicos (4 mais recentes)
 
 ---
 
-### **2. Student Dashboard - Dados Reais (2-3 horas)**
+### **🔒 2. WHITELIST SIGNUP SYSTEM (PRÓXIMA PRIORIDADE - 2-3 horas)**
+
+**Status:** 🔨 PARCIALMENTE IMPLEMENTADO (Import Students pronto)
+
+**Objetivo:** Sistema fechado - apenas emails pré-registrados podem criar conta
+
+#### **O que já está pronto:**
+- [x] Página `import-students.html` (CSV + manual entry)
+- [x] Firebase methods: `addPreRegisteredStudent()`, `checkPreRegistered()`, `markAsRegistered()`
+- [x] Botão "Import Students" no teacher dashboard
+
+#### **O que falta:**
+- [ ] Modificar `auth0-callback.html` - adicionar whitelist check
+- [ ] Bloquear signup se email não está na whitelist
+- [ ] Mostrar mensagem: "You need an invitation from your teacher"
+- [ ] Auto-assign aluno à turma após signup aprovado
+- [ ] Testar fluxo: Add student → Signup blocked/allowed
+
+**Arquivos a modificar:**
+- `auth0-callback.html` - CRÍTICO (adicionar whitelist check)
+
+**Tempo estimado:** 2-3 horas
+
+---
+
+### **📢 3. ANNOUNCEMENTS SYSTEM (3-4 horas)**
+
+**Status:** 📋 PLANEJADO
+
+**Objetivo:** Professor envia avisos para a turma, alunos veem no dashboard
+
+#### **Teacher Side:**
+- [ ] Botão "📢 New Announcement" no teacher dashboard
+- [ ] Form para criar announcement:
+  - Título
+  - Mensagem
+  - Pin to top? (checkbox)
+  - Send email notification? (checkbox)
+- [ ] Lista de announcements com edit/delete
+
+#### **Student Side:**
+- [ ] Banner no topo do student dashboard
+- [ ] Badge com número de não lidos
+- [ ] Lista de announcements com data
+- [ ] Mark as read quando abrir
+
+#### **Firebase Structure:**
+```javascript
+/announcements/{announcementId}
+{
+  id: "announcement_123",
+  classId: "class_ac2526",
+  createdBy: "teacher_id",
+  title: "Quiz 5 Available This Friday!",
+  message: "Don't forget to complete...",
+  isPinned: true,
+  createdAt: timestamp,
+  readBy: ["student1_id", "student2_id"]
+}
+```
+
+**Arquivos a criar:**
+- `assets/js/announcements.js` - Lógica de announcements
+
+**Arquivos a modificar:**
+- `teacher-dashboard.html` - Adicionar seção de announcements
+- `student-dashboard.html` - Mostrar announcements
+- `firebase-service.js` - Métodos CRUD de announcements
+
+**Tempo estimado:** 3-4 horas
+
+---
+
+### **📅 4. CALENDAR + ASSIGNMENT REMINDERS (3-4 horas)**
+
+**Status:** 📋 PLANEJADO
+
+**Objetivo:** Calendário visual com todas as deadlines e upcoming quizzes
+
+#### **Features:**
+- [ ] Calendar widget no student dashboard
+- [ ] Lista de "Upcoming Deadlines" (próximos 7 dias)
+- [ ] Color coding:
+  - 🎯 Quizzes (blue)
+  - 📝 Assignments (orange)
+  - 📊 Exams (red)
+  - 📢 Announcements (green)
+- [ ] Overdue warnings (vermelho)
+- [ ] Click no item → vai para página do quiz/assignment
+
+#### **Calendar View:**
+```
+╔════════════════════════════════╗
+║ OCTOBER 2025                   ║
+║                                ║
+║ 18  Today                      ║
+║ 20  Quiz: Small Animals 🎯     ║
+║ 22  Assignment: Essay Due 📝   ║
+║ 25  Exam Mode: Midterm 📊      ║
+║ 28  Quiz: Parasitology 🎯     ║
+╚════════════════════════════════╝
+
+Upcoming (next 7 days):
+⚠️ Oct 22: Essay due (OVERDUE)
+🎯 Oct 25: Midterm exam (in 3 days)
+🎯 Oct 28: Quiz available
+```
+
+#### **Firebase Structure:**
+```javascript
+/events/{eventId}
+{
+  id: "event_123",
+  classId: "class_ac2526",
+  type: "quiz" | "assignment" | "exam" | "announcement",
+  title: "Quiz: Small Animals",
+  date: timestamp,
+  dueDate: timestamp,
+  relatedId: "quiz_small_animals"
+}
+```
+
+**Libraries:**
+- Consider using: FullCalendar.js or build custom
+
+**Arquivos a criar:**
+- `assets/js/calendar.js` - Lógica do calendário
+
+**Arquivos a modificar:**
+- `student-dashboard.html` - Adicionar calendar widget
+- `firebase-service.js` - Métodos para buscar events
+
+**Tempo estimado:** 3-4 horas
+
+---
+
+### **3. Student Dashboard - Dados Reais (2-3 horas)**
 
 **Arquivo:** `student-dashboard.html`
 

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Import Students - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    :root {
+      --bg: #fefefe;
+      --accent: #111;
+      --gray: #666;
+      --border: #e5e5e5;
+      --primary: #3b82f6;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--accent);
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 30px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 1.8rem;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--gray);
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+    }
+
+    .btn-back {
+      padding: 10px 20px;
+      background: var(--gray);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background: #555;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 40px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .subtitle {
+      color: var(--gray);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+
+    .import-methods {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .method-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+
+    .method-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+    }
+
+    .method-card h2 {
+      font-size: 1.5rem;
+      margin: 0 0 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method-icon {
+      font-size: 2rem;
+    }
+
+    .method-description {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    .csv-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .csv-upload-area:hover {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .csv-upload-area.dragover {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .upload-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .csv-format {
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+
+    .csv-format-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .manual-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--accent);
+    }
+
+    .form-group input {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-primary {
+      padding: 12px 24px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .students-list {
+      margin-top: 40px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .students-list h2 {
+      margin: 0 0 20px 0;
+      font-size: 1.5rem;
+    }
+
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .student-item:last-child {
+      border-bottom: none;
+    }
+
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .student-email {
+      color: var(--gray);
+      font-size: 14px;
+    }
+
+    .btn-remove {
+      padding: 8px 16px;
+      background: var(--error);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s ease;
+    }
+
+    .btn-remove:hover {
+      background: #dc2626;
+    }
+
+    .alert {
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .alert.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #10b981;
+      display: block;
+    }
+
+    .alert.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+      display: block;
+    }
+
+    .btn-save-all {
+      margin-top: 20px;
+      padding: 14px 28px;
+      background: var(--success);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-save-all:hover {
+      background: #059669;
+    }
+
+    @media (max-width: 768px) {
+      .import-methods {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">
+      <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+      <span class="logo-text">Pethology</span>
+    </a>
+    <nav>
+      <a href="teacher-dashboard.html" class="btn-back">← Back to Dashboard</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h1>Import Students</h1>
+    <p class="subtitle">Add students to your class by uploading a CSV file or entering them manually.</p>
+
+    <div id="alert" class="alert"></div>
+
+    <div class="import-methods">
+      <!-- CSV Upload -->
+      <div class="method-card">
+        <h2>
+          <span class="method-icon">📄</span>
+          CSV Import
+        </h2>
+        <p class="method-description">Upload a CSV file with multiple students at once. Fast and efficient for large classes.</p>
+
+        <div class="csv-upload-area" id="csvUploadArea" onclick="document.getElementById('csvFileInput').click()">
+          <div class="upload-icon">📤</div>
+          <p><strong>Click to upload</strong> or drag and drop</p>
+          <p style="color: var(--gray); font-size: 14px;">CSV file (max 5MB)</p>
+          <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+        </div>
+
+        <div class="csv-format">
+          <div class="csv-format-title">Required CSV Format:</div>
+          <pre>firstName,lastName,email
+John,Doe,john.doe@plc.ie
+Jane,Smith,jane.smith@plc.ie
+Michael,Johnson,michael.johnson@plc.ie</pre>
+        </div>
+      </div>
+
+      <!-- Manual Entry -->
+      <div class="method-card">
+        <h2>
+          <span class="method-icon">✏️</span>
+          Manual Entry
+        </h2>
+        <p class="method-description">Add students one by one. Perfect for small classes or individual additions.</p>
+
+        <form class="manual-form" id="manualForm" onsubmit="addStudentManually(event)">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required placeholder="John">
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" required placeholder="Doe">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required placeholder="john.doe@plc.ie" pattern=".*@plc\.ie$">
+            <small style="color: var(--gray);">Must be a @plc.ie email address</small>
+          </div>
+
+          <button type="submit" class="btn-primary">Add Student</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Students List -->
+    <div class="students-list" id="studentsList" style="display: none;">
+      <h2>Students to Import (<span id="studentCount">0</span>)</h2>
+      <div id="studentsContainer"></div>
+      <button class="btn-save-all" onclick="saveAllStudents()">💾 Save All Students to Class</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+
+    // Global array to store students before saving
+    window.pendingStudents = [];
+
+    // Handle CSV file upload
+    window.handleCSVUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const csv = e.target.result;
+        parseCSV(csv);
+      };
+      reader.readAsText(file);
+    };
+
+    // Parse CSV content
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim());
+
+      // Skip header row
+      const dataLines = lines.slice(1);
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      dataLines.forEach(line => {
+        const [firstName, lastName, email] = line.split(',').map(field => field.trim());
+
+        // Validate
+        if (!firstName || !lastName || !email) {
+          errorCount++;
+          return;
+        }
+
+        if (!email.endsWith('@plc.ie')) {
+          console.warn(`Invalid email domain: ${email}`);
+          errorCount++;
+          return;
+        }
+
+        // Check for duplicates
+        const exists = window.pendingStudents.some(s => s.email === email);
+        if (exists) {
+          console.warn(`Duplicate email: ${email}`);
+          errorCount++;
+          return;
+        }
+
+        // Add to pending list
+        window.pendingStudents.push({ firstName, lastName, email });
+        successCount++;
+      });
+
+      // Update UI
+      updateStudentsList();
+      showAlert(`success`, `✅ ${successCount} students imported successfully!${errorCount > 0 ? ` (${errorCount} errors)` : ''}`);
+    }
+
+    // Add student manually
+    window.addStudentManually = function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const student = {
+        firstName: formData.get('firstName'),
+        lastName: formData.get('lastName'),
+        email: formData.get('email')
+      };
+
+      // Check for duplicate
+      const exists = window.pendingStudents.some(s => s.email === student.email);
+      if (exists) {
+        showAlert('error', '❌ This email is already in the list!');
+        return;
+      }
+
+      // Add to list
+      window.pendingStudents.push(student);
+      updateStudentsList();
+
+      // Reset form
+      event.target.reset();
+      showAlert('success', `✅ ${student.firstName} ${student.lastName} added to the list!`);
+    };
+
+    // Update students list UI
+    function updateStudentsList() {
+      const container = document.getElementById('studentsContainer');
+      const list = document.getElementById('studentsList');
+      const count = document.getElementById('studentCount');
+
+      if (window.pendingStudents.length === 0) {
+        list.style.display = 'none';
+        return;
+      }
+
+      list.style.display = 'block';
+      count.textContent = window.pendingStudents.length;
+
+      container.innerHTML = window.pendingStudents.map((student, index) => `
+        <div class="student-item">
+          <div class="student-info">
+            <div class="student-name">${student.firstName} ${student.lastName}</div>
+            <div class="student-email">${student.email}</div>
+          </div>
+          <button class="btn-remove" onclick="removeStudent(${index})">Remove</button>
+        </div>
+      `).join('');
+    }
+
+    // Remove student from list
+    window.removeStudent = function(index) {
+      window.pendingStudents.splice(index, 1);
+      updateStudentsList();
+      showAlert('success', '✅ Student removed from the list.');
+    };
+
+    // Save all students to Firebase
+    window.saveAllStudents = async function() {
+      if (window.pendingStudents.length === 0) {
+        showAlert('error', '❌ No students to save!');
+        return;
+      }
+
+      try {
+        // Get current user (teacher)
+        const teacher = JSON.parse(sessionStorage.getItem('pethologyUser'));
+
+        if (!teacher || teacher.role !== 'Teacher') {
+          showAlert('error', '❌ You must be logged in as a teacher!');
+          return;
+        }
+
+        // TODO: Get classId from URL or session
+        // For now, we'll use a default class ID
+        const classId = 'class_default'; // This should come from teacher's selected class
+
+        // Save each student to pre_registered_students collection
+        for (const student of window.pendingStudents) {
+          await PethologyFirebaseService.addPreRegisteredStudent({
+            email: student.email,
+            firstName: student.firstName,
+            lastName: student.lastName,
+            classId: classId,
+            addedBy: teacher.id,
+            addedAt: new Date(),
+            registered: false
+          });
+        }
+
+        showAlert('success', `✅ ${window.pendingStudents.length} students saved successfully! They can now sign up.`);
+
+        // Clear the list
+        window.pendingStudents = [];
+        updateStudentsList();
+
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'teacher-dashboard.html';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error saving students:', error);
+        showAlert('error', `❌ Error saving students: ${error.message}`);
+      }
+    };
+
+    // Show alert message
+    function showAlert(type, message) {
+      const alert = document.getElementById('alert');
+      alert.className = `alert ${type}`;
+      alert.textContent = message;
+      alert.style.display = 'block';
+
+      // Hide after 5 seconds
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 5000);
+    }
+
+    // Drag and drop handlers
+    const uploadArea = document.getElementById('csvUploadArea');
+
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+
+      const file = e.dataTransfer.files[0];
+      if (file && file.name.endsWith('.csv')) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          parseCSV(event.target.result);
+        };
+        reader.readAsText(file);
+      } else {
+        showAlert('error', '❌ Please upload a valid CSV file!');
+      }
+    });
+  </script>
+</body>
+</html>

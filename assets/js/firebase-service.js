@@ -682,6 +682,79 @@ class PethologyFirebaseService {
       throw error;
     }
   }
+
+  // 🎓 CLASS MANAGEMENT - Pre-register students
+
+  // Add pre-registered student (whitelist for signup)
+  static async addPreRegisteredStudent(studentData) {
+    try {
+      const preRegRef = doc(db, 'pre_registered_students', studentData.email);
+      await setDoc(preRegRef, studentData);
+      console.log('✅ Pre-registered student added:', studentData.email);
+      return true;
+    } catch (error) {
+      console.error('❌ Error adding pre-registered student:', error);
+      throw error;
+    }
+  }
+
+  // Check if email is pre-registered (whitelist check)
+  static async checkPreRegistered(email) {
+    try {
+      const preRegRef = doc(db, 'pre_registered_students', email);
+      const preRegDoc = await getDoc(preRegRef);
+
+      if (preRegDoc.exists()) {
+        console.log('✅ Email is whitelisted:', email);
+        return preRegDoc.data();
+      } else {
+        console.log('❌ Email not in whitelist:', email);
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Error checking pre-registration:', error);
+      return null;
+    }
+  }
+
+  // Mark student as registered (after signup)
+  static async markAsRegistered(email, userId) {
+    try {
+      const preRegRef = doc(db, 'pre_registered_students', email);
+      await updateDoc(preRegRef, {
+        registered: true,
+        userId: userId,
+        registeredAt: new Date()
+      });
+      console.log('✅ Student marked as registered:', email);
+      return true;
+    } catch (error) {
+      console.error('❌ Error marking as registered:', error);
+      throw error;
+    }
+  }
+
+  // Get all pre-registered students (for teacher dashboard)
+  static async getPreRegisteredStudents(teacherId) {
+    try {
+      const preRegQuery = query(
+        collection(db, 'pre_registered_students'),
+        where('addedBy', '==', teacherId)
+      );
+      const querySnapshot = await getDocs(preRegQuery);
+
+      const students = [];
+      querySnapshot.forEach((doc) => {
+        students.push({ email: doc.id, ...doc.data() });
+      });
+
+      console.log(`✅ Found ${students.length} pre-registered students`);
+      return students;
+    } catch (error) {
+      console.error('❌ Error getting pre-registered students:', error);
+      return [];
+    }
+  }
 }
 
 export { PethologyFirebaseService, db };
