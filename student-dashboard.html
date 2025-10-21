@@ -1274,43 +1274,14 @@
       <div class="announcements-section">
         <h2 class="section-title">Announcements</h2>
 
-        <!-- Pinned Announcement Banner -->
-        <div class="announcement-banner pinned">
-          <i data-lucide="pin" class="announcement-icon"></i>
-          <div class="announcement-content">
-            <div class="announcement-title">📌 New Quiz Available: Animal Nutrition</div>
-            <div class="announcement-body">
-              A new quiz on Animal Nutrition is now available! Complete it before Friday to stay on track with the course schedule.
-            </div>
-            <div class="announcement-meta">
-              <span>👨‍🏫 Posted by Mrs. Smith</span>
-              <span>•</span>
-              <span>📅 Oct 17, 2025</span>
-            </div>
-          </div>
-        </div>
+        <!-- Pinned Announcement Banner (loaded dynamically) -->
+        <div id="announcementBanner" style="display: none;"></div>
 
-        <!-- Recent Announcements -->
-        <div class="announcement-list">
-          <div class="announcement-item unread">
-            <div class="announcement-item-header">
-              <div class="announcement-item-title">📚 Exam Schedule Released</div>
-              <div class="announcement-item-date">2 days ago</div>
-            </div>
-            <div class="announcement-item-body">
-              The midterm exam schedule has been posted. Please review the dates and prepare accordingly.
-            </div>
-          </div>
-
-          <div class="announcement-item">
-            <div class="announcement-item-header">
-              <div class="announcement-item-title">🎉 Congratulations Top Performers</div>
-              <div class="announcement-item-date">5 days ago</div>
-            </div>
-            <div class="announcement-item-body">
-              Well done to everyone who scored above 90% on the Biology quiz last week!
-            </div>
-          </div>
+        <!-- Recent Announcements (loaded dynamically) -->
+        <div id="announcementsList" class="announcement-list">
+          <p style="text-align: center; color: var(--gray-500); padding: 20px;">
+            Loading announcements...
+          </p>
         </div>
       </div>
 
@@ -1820,6 +1791,10 @@
 
   <script type="module">
     import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+    import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements.js';
+
+    // Make markAnnouncementAsRead globally available
+    window.markAnnouncementAsRead = markAnnouncementAsRead;
 
     // Função para carregar dados reais do estudante
     async function loadRealStudentData() {
@@ -1851,6 +1826,9 @@
         updateProgressCircles(progress.moduleProgress, quizHistory);
         updateOverallStats(progress.overallStats);
         updateAchievements(progress.achievements);
+
+        // Carregar announcements
+        await loadStudentAnnouncements();
 
         console.log('✅ Student data loaded successfully!');
 

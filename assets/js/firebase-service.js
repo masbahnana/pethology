@@ -1,18 +1,20 @@
 // Firebase Service for Pethology
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { 
-  getFirestore, 
-  doc, 
-  setDoc, 
-  getDoc, 
-  updateDoc, 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
   collection,
   addDoc,
   query,
   where,
   orderBy,
   getDocs,
-  limit
+  limit,
+  Timestamp
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
 // Suas credenciais Firebase
@@ -753,6 +755,370 @@ class PethologyFirebaseService {
     } catch (error) {
       console.error('❌ Error getting pre-registered students:', error);
       return [];
+    }
+  }
+
+  // =====================================
+  // 📢 ANNOUNCEMENTS MANAGEMENT
+  // =====================================
+
+  /**
+   * Create a new announcement
+   * @param {Object} announcementData - Announcement data
+   * @returns {Object} Created announcement with ID
+   */
+  static async createAnnouncement(announcementData) {
+    try {
+      const announcement = {
+        ...announcementData,
+        createdAt: Timestamp.now(),
+        readBy: [],
+        isPinned: announcementData.isPinned || false
+      };
+
+      const docRef = await addDoc(collection(db, 'announcements'), announcement);
+
+      console.log('✅ Announcement created:', docRef.id);
+      return { id: docRef.id, ...announcement };
+    } catch (error) {
+      console.error('❌ Error creating announcement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all announcements for a class
+   * @param {string} classId - Class ID (optional, for future multi-class support)
+   * @returns {Array} Array of announcements
+   */
+  static async getAnnouncements(classId = null) {
+    try {
+      let announcementsQuery;
+
+      if (classId) {
+        announcementsQuery = query(
+          collection(db, 'announcements'),
+          where('classId', '==', classId),
+          orderBy('createdAt', 'desc')
+        );
+      } else {
+        // Get all announcements (for now, until we have classes)
+        announcementsQuery = query(
+          collection(db, 'announcements'),
+          orderBy('createdAt', 'desc')
+        );
+      }
+
+      const querySnapshot = await getDocs(announcementsQuery);
+      const announcements = [];
+
+      querySnapshot.forEach((doc) => {
+        announcements.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+
+      console.log(`✅ Found ${announcements.length} announcements`);
+      return announcements;
+    } catch (error) {
+      console.error('❌ Error getting announcements:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update an announcement
+   * @param {string} announcementId - Announcement ID
+   * @param {Object} updates - Fields to update
+   */
+  static async updateAnnouncement(announcementId, updates) {
+    try {
+      const announcementRef = doc(db, 'announcements', announcementId);
+      await updateDoc(announcementRef, {
+        ...updates,
+        updatedAt: Timestamp.now()
+      });
+
+      console.log('✅ Announcement updated:', announcementId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error updating announcement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete an announcement
+   * @param {string} announcementId - Announcement ID
+   */
+  static async deleteAnnouncement(announcementId) {
+    try {
+      await deleteDoc(doc(db, 'announcements', announcementId));
+      console.log('✅ Announcement deleted:', announcementId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting announcement:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Mark announcement as read by a student
+   * @param {string} announcementId - Announcement ID
+   * @param {string} userId - Student ID
+   */
+  static async markAnnouncementAsRead(announcementId, userId) {
+    try {
+      const announcementRef = doc(db, 'announcements', announcementId);
+      const announcementDoc = await getDoc(announcementRef);
+
+      if (announcementDoc.exists()) {
+        const readBy = announcementDoc.data().readBy || [];
+
+        if (!readBy.includes(userId)) {
+          readBy.push(userId);
+          await updateDoc(announcementRef, { readBy });
+          console.log('✅ Announcement marked as read:', announcementId);
+        }
+      }
+
+      return true;
+    } catch (error) {
+      console.error('❌ Error marking announcement as read:', error);
+      throw error;
+    }
+  }
+
+  // =====================================
+  // 📅 CALENDAR EVENTS MANAGEMENT
+  // =====================================
+
+  /**
+   * Create a calendar event
+   * @param {Object} eventData - Event data
+   * @returns {Object} Created event with ID
+   */
+  static async createCalendarEvent(eventData) {
+    try {
+      const event = {
+        ...eventData,
+        createdAt: Timestamp.now(),
+        date: eventData.date instanceof Date ? Timestamp.fromDate(eventData.date) : eventData.date
+      };
+
+      const docRef = await addDoc(collection(db, 'calendar_events'), event);
+
+      console.log('✅ Calendar event created:', docRef.id);
+      return { id: docRef.id, ...event };
+    } catch (error) {
+      console.error('❌ Error creating calendar event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get calendar events for a date range
+   * @param {string} classId - Class ID (optional)
+   * @param {Date} startDate - Start date (optional)
+   * @param {Date} endDate - End date (optional)
+   * @returns {Array} Array of events
+   */
+  static async getCalendarEvents(classId = null, startDate = null, endDate = null) {
+    try {
+      let eventsQuery;
+
+      if (classId && startDate && endDate) {
+        eventsQuery = query(
+          collection(db, 'calendar_events'),
+          where('classId', '==', classId),
+          where('date', '>=', Timestamp.fromDate(startDate)),
+          where('date', '<=', Timestamp.fromDate(endDate)),
+          orderBy('date', 'asc')
+        );
+      } else if (classId) {
+        eventsQuery = query(
+          collection(db, 'calendar_events'),
+          where('classId', '==', classId),
+          orderBy('date', 'asc')
+        );
+      } else {
+        // Get all events (for now, until we have classes)
+        eventsQuery = query(
+          collection(db, 'calendar_events'),
+          orderBy('date', 'asc')
+        );
+      }
+
+      const querySnapshot = await getDocs(eventsQuery);
+      const events = [];
+
+      querySnapshot.forEach((doc) => {
+        events.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+
+      console.log(`✅ Found ${events.length} calendar events`);
+      return events;
+    } catch (error) {
+      console.error('❌ Error getting calendar events:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update a calendar event
+   * @param {string} eventId - Event ID
+   * @param {Object} updates - Fields to update
+   */
+  static async updateCalendarEvent(eventId, updates) {
+    try {
+      const eventRef = doc(db, 'calendar_events', eventId);
+      const updateData = { ...updates, updatedAt: Timestamp.now() };
+
+      // Convert date to Timestamp if it's a Date object
+      if (updates.date instanceof Date) {
+        updateData.date = Timestamp.fromDate(updates.date);
+      }
+
+      await updateDoc(eventRef, updateData);
+
+      console.log('✅ Calendar event updated:', eventId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error updating calendar event:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a calendar event
+   * @param {string} eventId - Event ID
+   */
+  static async deleteCalendarEvent(eventId) {
+    try {
+      await deleteDoc(doc(db, 'calendar_events', eventId));
+      console.log('✅ Calendar event deleted:', eventId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting calendar event:', error);
+      throw error;
+    }
+  }
+
+  // =====================================
+  // 📝 DEADLINES MANAGEMENT
+  // =====================================
+
+  /**
+   * Create a deadline
+   * @param {Object} deadlineData - Deadline data
+   * @returns {Object} Created deadline with ID
+   */
+  static async createDeadline(deadlineData) {
+    try {
+      const deadline = {
+        ...deadlineData,
+        createdAt: Timestamp.now(),
+        dueDate: deadlineData.dueDate instanceof Date ? Timestamp.fromDate(deadlineData.dueDate) : deadlineData.dueDate,
+        isOverdue: false
+      };
+
+      const docRef = await addDoc(collection(db, 'deadlines'), deadline);
+
+      console.log('✅ Deadline created:', docRef.id);
+      return { id: docRef.id, ...deadline };
+    } catch (error) {
+      console.error('❌ Error creating deadline:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get deadlines for a class
+   * @param {string} classId - Class ID (optional)
+   * @returns {Array} Array of deadlines
+   */
+  static async getDeadlines(classId = null) {
+    try {
+      let deadlinesQuery;
+
+      if (classId) {
+        deadlinesQuery = query(
+          collection(db, 'deadlines'),
+          where('classId', '==', classId),
+          orderBy('dueDate', 'asc')
+        );
+      } else {
+        // Get all deadlines (for now, until we have classes)
+        deadlinesQuery = query(
+          collection(db, 'deadlines'),
+          orderBy('dueDate', 'asc')
+        );
+      }
+
+      const querySnapshot = await getDocs(deadlinesQuery);
+      const deadlines = [];
+      const now = new Date();
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        const dueDate = data.dueDate.toDate();
+
+        deadlines.push({
+          id: doc.id,
+          ...data,
+          isOverdue: dueDate < now
+        });
+      });
+
+      console.log(`✅ Found ${deadlines.length} deadlines`);
+      return deadlines;
+    } catch (error) {
+      console.error('❌ Error getting deadlines:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Update a deadline
+   * @param {string} deadlineId - Deadline ID
+   * @param {Object} updates - Fields to update
+   */
+  static async updateDeadline(deadlineId, updates) {
+    try {
+      const deadlineRef = doc(db, 'deadlines', deadlineId);
+      const updateData = { ...updates, updatedAt: Timestamp.now() };
+
+      // Convert dueDate to Timestamp if it's a Date object
+      if (updates.dueDate instanceof Date) {
+        updateData.dueDate = Timestamp.fromDate(updates.dueDate);
+      }
+
+      await updateDoc(deadlineRef, updateData);
+
+      console.log('✅ Deadline updated:', deadlineId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error updating deadline:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a deadline
+   * @param {string} deadlineId - Deadline ID
+   */
+  static async deleteDeadline(deadlineId) {
+    try {
+      await deleteDoc(doc(db, 'deadlines', deadlineId));
+      console.log('✅ Deadline deleted:', deadlineId);
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting deadline:', error);
+      throw error;
     }
   }
 }
