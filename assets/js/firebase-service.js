@@ -224,8 +224,7 @@ class PethologyFirebaseService {
       console.log('📋 Fetching all students...');
       const q = query(
         collection(db, 'users'),
-        where('role', '==', 'Student'),
-        orderBy('lastLogin', 'desc')
+        where('role', '==', 'Student')
       );
 
       const querySnapshot = await getDocs(q);
@@ -233,6 +232,13 @@ class PethologyFirebaseService {
         id: doc.id,
         ...doc.data()
       }));
+
+      // Sort by lastLogin client-side to avoid Firebase index requirement
+      students.sort((a, b) => {
+        const dateA = a.lastLogin?.toDate ? a.lastLogin.toDate() : new Date(0);
+        const dateB = b.lastLogin?.toDate ? b.lastLogin.toDate() : new Date(0);
+        return dateB - dateA;
+      });
 
       console.log(`✅ Loaded ${students.length} students`);
       return students;

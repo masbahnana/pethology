@@ -1084,8 +1084,8 @@
         // Update students table
         updateStudentsTable(students);
 
-        // Update recent activity
-        updateRecentActivity(analytics.recentActivity);
+        // Update recent activity (temporarily disabled - HTML element missing)
+        // updateRecentActivity(analytics.recentActivity);
 
         // Update module performance
         updateModulePerformance(analytics.modulePerformance);
@@ -1093,12 +1093,25 @@
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
         console.error('❌ Error loading teacher dashboard:', error);
+        console.error('Error details:', error.message);
+        console.error('Error stack:', error.stack);
+
         document.getElementById('loadingState').innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">⚠️</div>
-            <p>Error loading dashboard. Please refresh the page.</p>
+            <p style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Error loading dashboard</p>
+            <p style="font-size: 14px; color: var(--gray-500); margin-bottom: 16px;">${error.message}</p>
+            <button onclick="window.location.reload()" class="btn btn-primary">
+              <i data-lucide="refresh-cw"></i>
+              Refresh Page
+            </button>
           </div>
         `;
+
+        // Re-initialize icons
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
       }
     }
 
