@@ -535,6 +535,29 @@
       color: var(--gray-500);
     }
 
+    /* Hide content initially */
+    .stats-grid,
+    .content-grid,
+    #modulePerformanceCard {
+      display: none !important;
+    }
+
+    /* Show content when loaded */
+    .stats-grid.loaded,
+    .content-grid.loaded,
+    #modulePerformanceCard.loaded {
+      display: grid !important;
+    }
+
+    #modulePerformanceCard.loaded {
+      display: block !important;
+    }
+
+    /* Hide loading when content is ready */
+    .loading.hidden {
+      display: none !important;
+    }
+
     .spinner {
       border: 4px solid var(--gray-100);
       border-top: 4px solid var(--blue-primary);
@@ -893,7 +916,7 @@
     </div>
 
     <!-- Statistics Overview -->
-    <div id="statsContainer" class="stats-grid" style="display: none;">
+    <div id="statsContainer" class="stats-grid">
       <div class="stat-card">
         <div class="stat-header">
           <i data-lucide="users" class="stat-icon"></i>
@@ -928,7 +951,7 @@
     </div>
 
     <!-- Main Content Grid -->
-    <div id="mainContent" class="content-grid" style="display: none;">
+    <div id="mainContent" class="content-grid">
       <!-- Students Progress Table -->
       <div class="card">
         <div class="card-header">
@@ -984,7 +1007,7 @@
     </div>
 
     <!-- Module Performance -->
-    <div id="modulePerformanceCard" class="card" style="display: none;">
+    <div id="modulePerformanceCard" class="card">
       <div class="card-header">
         <h2 class="card-title">
           <i data-lucide="bar-chart"></i>
@@ -1085,26 +1108,22 @@
           module: !!moduleEl
         });
 
-        // Use setTimeout to ensure DOM is fully ready
-        setTimeout(() => {
-          // Hide loading
-          if (loadingEl) {
-            loadingEl.style.cssText = 'display: none !important;';
-          }
+        // Hide loading and show content using classes
+        if (loadingEl) {
+          loadingEl.classList.add('hidden');
+        }
 
-          // Show content with !important to override inline styles
-          if (statsEl) {
-            statsEl.style.cssText = 'display: grid !important;';
-          }
-          if (contentEl) {
-            contentEl.style.cssText = 'display: grid !important;';
-          }
-          if (moduleEl) {
-            moduleEl.style.cssText = 'display: block !important;';
-          }
+        if (statsEl) {
+          statsEl.classList.add('loaded');
+        }
+        if (contentEl) {
+          contentEl.classList.add('loaded');
+        }
+        if (moduleEl) {
+          moduleEl.classList.add('loaded');
+        }
 
-          console.log('✅ Content visibility toggled!');
-        }, 100);
+        console.log('✅ Content visibility toggled!');
 
         // Update statistics
         updateStatistics(analytics.overview);
