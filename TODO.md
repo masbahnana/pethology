@@ -1,13 +1,13 @@
 # 🎓 Pethology - TODO List & Roadmap Completo
 
-**Última atualização:** 17 Outubro 2025
-**Status atual:** Achievement System ✅ + Import Students ✅ + User Indicator ✅
+**Última atualização:** 21 Outubro 2025
+**Status atual:** Notion Design Applied ✅ + Achievement System ✅ + Import Students ✅
 
 ---
 
 ## 🚀 **QUICK START - PRÓXIMA SESSÃO:**
 
-**Objetivo Principal:** Implementar Achievement System com emojis 🏆
+**Objetivo Principal:** Implementar funcionalidades do Student e Teacher Dashboard
 
 **Copy/Paste este prompt para começar:**
 
@@ -75,7 +75,121 @@ Pode me ajudar a implementar?
 
 ## 🔥 **PRIORIDADE ALTA - Fazer Agora:**
 
-### **🏆 1. ACHIEVEMENT SYSTEM**
+### **🎯 1. STANDALONE PAGES - Dashboard Features (4-6 horas)**
+
+**Status:** 📋 PLANEJADO (21 Out 2025)
+
+**Objetivo:** Criar páginas separadas para Achievements e My Progress que estão atualmente no dashboard
+
+#### **Páginas a Criar:**
+
+**1. Achievements Page (achievements.html):**
+- [ ] Criar página standalone para achievements
+- [ ] Grid de todas as conquistas com filtros (All, Unlocked, Locked, Rare, Common, Epic, Legendary)
+- [ ] Stats de achievements (total unlocked, completion percentage)
+- [ ] Cards bonitos com emojis e descrições
+- [ ] Link no sidebar: Tools → Achievements
+
+**2. My Progress Page (my-progress.html):**
+- [ ] Criar página standalone para progresso detalhado
+- [ ] Gráficos de performance por módulo
+- [ ] Timeline de atividades recentes
+- [ ] Stats completos (quiz history, average scores, streak)
+- [ ] Link no sidebar: Dashboard → My Progress
+
+**Arquivos a Criar:**
+- `achievements.html` - Página de conquistas
+- `my-progress.html` - Página de progresso detalhado
+- `assets/css/achievements.css` - Estilos específicos (opcional)
+- `assets/css/progress.css` - Estilos específicos (opcional)
+
+**Arquivos a Modificar:**
+- `student-dashboard.html` - Adicionar links para as novas páginas
+
+**Tempo estimado:** 4-6 horas
+
+---
+
+### **📊 2. TEACHER DASHBOARD - Quick Actions Functionality (6-8 horas)**
+
+**Status:** 📋 PLANEJADO (21 Out 2025)
+
+**Objetivo:** Implementar funcionalidades completas do Quick Actions no teacher dashboard
+
+#### **Features a Implementar:**
+
+**1. Calendar Functionality:**
+- [ ] Calendar widget interativo no teacher dashboard
+- [ ] Criar/editar eventos no calendário
+- [ ] Visualização mensal/semanal
+- [ ] Color coding por tipo de evento
+- [ ] Sync com deadlines e quizzes
+- [ ] Eventos aparecem no student dashboard também
+
+**2. Deadlines Functionality:**
+- [ ] Sistema de deadlines para assignments/quizzes
+- [ ] Professor define deadline ao criar quiz customizado
+- [ ] Notificações para alunos (upcoming, overdue)
+- [ ] Dashboard widget mostrando próximos deadlines
+- [ ] Filtro por status (all, upcoming, overdue, completed)
+
+**3. Announcements Functionality:**
+- [ ] Sistema completo de announcements (já planejado na linha 313-359)
+- [ ] Professor cria announcements via Quick Actions
+- [ ] Pin to top option
+- [ ] Students veem banner no dashboard
+- [ ] Mark as read functionality
+- [ ] Badge com contador de não lidos
+
+**Arquivos a Criar:**
+- `assets/js/calendar-teacher.js` - Lógica do calendário para professor
+- `assets/js/deadlines.js` - Sistema de deadlines
+- `assets/js/announcements.js` - Sistema de announcements (já mencionado)
+
+**Arquivos a Modificar:**
+- `teacher-dashboard.html` - Implementar Quick Actions funcionais
+- `teacher-dashboard-prototype.html` - Atualizar com funcionalidades
+- `student-dashboard.html` - Receber eventos/deadlines/announcements
+- `firebase-service.js` - Métodos CRUD para calendar/deadlines/announcements
+
+**Firebase Collections:**
+```javascript
+/calendar_events/{eventId}
+{
+  id: "event_123",
+  classId: "class_ac2526",
+  type: "quiz" | "assignment" | "exam" | "announcement",
+  title: "Quiz: Small Animals",
+  date: timestamp,
+  createdBy: "teacher_id"
+}
+
+/deadlines/{deadlineId}
+{
+  id: "deadline_123",
+  classId: "class_ac2526",
+  quizId: "quiz_id" | "assignment_id",
+  dueDate: timestamp,
+  isOverdue: false
+}
+
+/announcements/{announcementId}
+{
+  id: "announcement_123",
+  classId: "class_ac2526",
+  title: "Quiz 5 Available",
+  message: "Don't forget...",
+  isPinned: true,
+  createdAt: timestamp,
+  readBy: ["student1_id"]
+}
+```
+
+**Tempo estimado:** 6-8 horas
+
+---
+
+### **🏆 3. ACHIEVEMENT SYSTEM**
 
 **Status:** ✅ IMPLEMENTADO! (17 Out 2025)
 

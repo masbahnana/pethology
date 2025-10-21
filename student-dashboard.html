@@ -5,17 +5,91 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Dashboard - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
+    /* Notion-inspired Design System */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+
+      /* Module Colors */
+      --module-biology: #10b981;
+      --module-biology-bg: rgba(16, 185, 129, 0.1);
+      --module-welfare: #f59e0b;
+      --module-welfare-bg: rgba(245, 158, 11, 0.1);
+      --module-grooming: #8b5cf6;
+      --module-grooming-bg: rgba(139, 92, 246, 0.1);
+      --module-anatomy: #ef4444;
+      --module-anatomy-bg: rgba(239, 68, 68, 0.1);
+      --module-parasitology: #ec4899;
+      --module-parasitology-bg: rgba(236, 72, 153, 0.1);
+      --module-nutrition: #14b8a6;
+      --module-nutrition-bg: rgba(20, 184, 166, 0.1);
+      --module-behaviour: #6366f1;
+      --module-behaviour-bg: rgba(99, 102, 241, 0.1);
+      --module-small-animals: #f97316;
+      --module-small-animals-bg: rgba(249, 115, 22, 0.1);
+      --module-vet-skills: #06b6d4;
+      --module-vet-skills-bg: rgba(6, 182, 212, 0.1);
+      --module-communications: #84cc16;
+      --module-communications-bg: rgba(132, 204, 22, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+    }
+
+    /* Layout */
     .dashboard-layout {
       display: flex;
       min-height: 100vh;
-      background: #f7f8fa;
     }
 
+    /* Sidebar */
     .sidebar {
       width: 260px;
-      background: white;
-      border-right: 1px solid #e5e7eb;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--gray-100);
       position: sticky;
       top: 0;
       height: 100vh;
@@ -24,503 +98,390 @@
       flex-direction: column;
     }
 
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--gray-700);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* User Section */
+    .user-section {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .user-section:hover {
+      background: var(--bg-hover);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-primary);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    /* Navigation */
+    .nav-section {
+      flex: 1;
+      padding: 12px 8px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      text-decoration: none;
+      color: var(--gray-700);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
     .nav-item:hover {
-      background: #f3f4f6 !important;
-      color: #111827 !important;
+      background: var(--bg-hover);
     }
 
     .nav-item.active {
-      background: #eff6ff !important;
-      color: #2563eb !important;
+      background: var(--blue-light);
+      color: var(--blue-primary);
     }
 
+    .nav-item.active svg {
+      color: var(--blue-primary);
+    }
 
+    .nav-divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 12px 0;
+    }
+
+    .nav-group-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      padding: 8px 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Collapsible Section */
+    .collapsible-section {
+      margin-bottom: 8px;
+    }
+
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .collapsible-header:hover {
+      background: var(--bg-hover);
+    }
+
+    .collapsible-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .collapsible-icon {
+      width: 16px;
+      height: 16px;
+      transition: transform 150ms ease;
+    }
+
+    .collapsible-icon.open {
+      transform: rotate(90deg);
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 300ms ease;
+    }
+
+    .collapsible-content.open {
+      max-height: 1000px;
+    }
+
+    /* Main Content */
     .main-content {
       flex: 1;
       padding: 40px;
       overflow-y: auto;
     }
 
-    .welcome-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 40px;
+    .page-header {
+      margin-bottom: 32px;
     }
 
-    .welcome-text h1 {
-      font-size: 2.25rem;
+    .page-title {
+      font-size: 32px;
       font-weight: 700;
-      color: #111827;
-      margin: 0 0 8px 0;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      max-width: 100%;
+      color: var(--gray-700);
+      margin-bottom: 8px;
     }
 
-    .welcome-text p {
-      color: #6b7280;
-      font-size: 1.1rem;
-      margin: 0;
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--gray-500);
     }
 
-
+    /* Progress Cards */
     .progress-section {
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
-    .progress-grid {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 20px;
     }
 
     .progress-circles {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 32px;
-      width: 100%;
+      gap: 20px;
     }
 
-    .progress-circle {
+    .progress-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
       text-align: center;
+      transition: all 150ms ease;
+    }
+
+    .progress-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .circle-wrapper {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 16px;
       position: relative;
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 12px;
     }
 
     .circle-svg {
       transform: rotate(-90deg);
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      height: 100%;
     }
 
     .circle-bg {
       fill: none;
-      stroke: #f3f4f6;
+      stroke: var(--gray-100);
       stroke-width: 8;
     }
 
     .circle-progress {
       fill: none;
+      stroke: var(--blue-primary);
       stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 314;
-      transition: stroke-dashoffset 1s ease;
+      transition: stroke-dashoffset 0.3s ease;
     }
 
-    .circle-progress.biology { stroke: #f97316; }
-    .circle-progress.welfare { stroke: #059669; }
-    .circle-progress.anatomy { stroke: #7c3aed; }
-    .circle-progress.husbandry { stroke: #dc2626; }
-    .circle-progress.nutrition { stroke: #84cc16; }
-    .circle-progress.parasitology { stroke: #ec4899; }
-    .circle-progress.behaviour { stroke: #3b82f6; }
-    .circle-progress.small-animals { stroke: #f59e0b; }
-    .circle-progress.vet { stroke: #10b981; }
-    .circle-progress.communications { stroke: #8b5cf6; }
-    .circle-progress.word-processing { stroke: #06b6d4; }
+    /* Progress Circle Colors */
+    .progress-card.biology .circle-progress {
+      stroke: var(--module-biology);
+    }
+
+    .progress-card.welfare .circle-progress {
+      stroke: var(--module-welfare);
+    }
+
+    .progress-card.grooming .circle-progress {
+      stroke: var(--module-grooming);
+    }
+
+    .progress-card.anatomy .circle-progress {
+      stroke: var(--module-anatomy);
+    }
 
     .circle-text {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #374151;
-    }
-
-    .module-name {
-      font-size: 0.9rem;
-      color: #6b7280;
-      font-weight: 500;
-    }
-
-
-    .feature-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-
-    .feature-card {
-      background: white;
-      border-radius: 8px;
-      padding: 24px;
-      border: 1px solid #e5e7eb;
-      transition: all 0.2s ease;
-      cursor: pointer;
-    }
-
-    .feature-card:hover {
-      border-color: #d1d5db;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .feature-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .feature-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
     }
 
-    .feature-icon.smart { background: #fef3c7; }
-    .feature-icon.adaptive { background: #fef9c3; }
-    .feature-icon.exam { background: #dbeafe; }
-
-    .feature-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #111827;
-      margin: 0;
+    .progress-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 4px;
     }
 
-    .feature-description {
-      color: #6b7280;
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-      line-height: 1.5;
+    .progress-sublabel {
+      font-size: 12px;
+      color: var(--gray-500);
     }
 
-    .feature-btn {
-      background: #111827;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 600;
-      transition: background 0.3s ease;
-    }
-
-    .feature-btn:hover {
-      background: #374151;
-    }
-
-    .bottom-section {
+    /* Stats Grid */
+    .stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
     }
 
-    .glossary-section {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #111827;
-      margin: 0 0 20px 0;
-    }
-
-    .search-box {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .search-input {
-      width: 100%;
-      padding: 12px 16px 12px 44px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.3s ease;
-    }
-
-    .search-input:focus {
-      border-color: #3b82f6;
-    }
-
-    .search-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #9ca3af;
-    }
-
-    .fact-card {
-      background: #fffbeb;
-      border: 1px solid #fed7aa;
-      border-radius: 12px;
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
       padding: 20px;
-      margin-bottom: 16px;
+      transition: all 150ms ease;
     }
 
-    .fact-title {
-      font-weight: 600;
-      color: #92400e;
-      margin-bottom: 8px;
+    .stat-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    .fact-content {
-      color: #451a03;
-      font-size: 0.95rem;
-      line-height: 1.5;
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .star-icon {
-      float: right;
-      color: #fbbf24;
-      font-size: 1.2rem;
+    .stat-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
     }
 
-    .journal-section {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      border: 1px solid #e5e7eb;
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-500);
     }
 
-    .journal-header {
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .stat-change {
+      font-size: 12px;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Achievements Section */
+    .achievements-section {
+      margin-bottom: 32px;
+    }
+
+    .achievements-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
 
-    .journal-date {
-      color: #6b7280;
-      font-size: 0.9rem;
-    }
-
-    .journal-tasks {
-      margin-bottom: 24px;
-    }
-
-    .task-item {
+    .achievement-filters {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid #f3f4f6;
+      gap: 8px;
     }
 
-    .task-item:last-child {
-      border-bottom: none;
-    }
-
-    .task-checkbox {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #d1d5db;
-      border-radius: 4px;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .task-checkbox.completed {
-      background: #10b981;
-      border-color: #10b981;
-    }
-
-    .task-checkbox.completed::after {
-      content: '✓';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: white;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .task-text {
-      color: #374151;
-      font-size: 0.95rem;
-    }
-
-    .task-text.completed {
-      text-decoration: line-through;
-      color: #9ca3af;
-    }
-
-    .journal-actions {
-      display: flex;
-      gap: 12px;
-    }
-
-    .journal-btn {
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+    .filter-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
       font-weight: 500;
-      text-decoration: none;
-      transition: all 0.3s ease;
-    }
-
-    .btn-primary {
-      background: #111827;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-      border: 1px solid #d1d5db;
-    }
-
-    .btn-primary:hover {
-      background: #374151;
-    }
-
-    .btn-secondary:hover {
-      background: #e5e7eb;
-    }
-
-    .sidebar a:hover h3 {
-      color: #3b82f6;
-    }
-
-    .avatar-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: white;
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 2px solid #3b82f6;
-      object-fit: cover;
-      background: #f3f4f6;
-    }
-
-    .user-name {
-      font-weight: 600;
-      color: #111827;
-      font-size: 0.95rem;
-      white-space: nowrap;
-    }
-
-    .logout-btn {
-      background: #dc2626;
-      color: white;
+      background: var(--bg-hover);
+      color: var(--gray-700);
       border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-left: 8px;
+      transition: all 150ms ease;
     }
 
-    .logout-btn:hover {
-      background: #b91c1c;
-      transform: translateY(-1px);
+    .filter-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
     }
 
-    .logout-btn:active {
-      transform: translateY(0);
+    .filter-btn.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
     }
 
-    @media (max-width: 1200px) {
-      .progress-circles {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-layout {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        padding: 20px 0;
-      }
-
-      .main-content {
-        padding: 20px;
-      }
-
-      .progress-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .progress-circles {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-      }
-
-      .circle-wrapper {
-        width: 100px;
-        height: 100px;
-      }
-
-      .circle-svg {
-        width: 100px;
-        height: 100px;
-      }
-
-      .animal-avatar {
-        width: 120px;
-        height: 120px;
-        font-size: 3rem;
-      }
-
-      .feature-cards {
-        grid-template-columns: 1fr;
-      }
-
-      .bottom-section {
-        grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .welcome-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-      }
-
-      .achievements-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 12px !important;
-      }
-
-      .achievement-card {
-        padding: 16px !important;
-      }
-
-      .achievement-emoji {
-        font-size: 2.5rem !important;
-      }
-    }
-
-    /* Achievement Styles */
     .achievements-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -528,14 +489,18 @@
     }
 
     .achievement-card {
-      background: white;
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
       padding: 20px;
-      border-radius: 12px;
-      border: 2px solid #e5e5e5;
       text-align: center;
-      transition: all 0.3s ease;
+      transition: all 150ms ease;
       position: relative;
-      overflow: hidden;
+    }
+
+    .achievement-card.unlocked {
+      border-color: var(--success);
+      background: linear-gradient(135deg, rgba(15, 123, 108, 0.05) 0%, var(--bg-primary) 100%);
     }
 
     .achievement-card.locked {
@@ -543,517 +508,1314 @@
       filter: grayscale(100%);
     }
 
-    .achievement-card.unlocked {
-      border-color: var(--accent, #3b82f6);
-      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    .achievement-card:hover {
       transform: translateY(-2px);
-    }
-
-    .achievement-card:hover.unlocked {
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .achievement-emoji {
-      font-size: 3rem;
+      font-size: 48px;
       margin-bottom: 12px;
-      display: block;
     }
 
     .achievement-name {
+      font-size: 14px;
       font-weight: 600;
-      color: #111827;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
+      color: var(--gray-700);
+      margin-bottom: 4px;
     }
 
     .achievement-description {
-      color: #6b7280;
-      font-size: 0.85rem;
-      line-height: 1.4;
-      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--gray-500);
     }
 
-    .achievement-rarity {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 8px;
-    }
-
-    .achievement-rarity.common {
-      background: #e5e7eb;
-      color: #6b7280;
-    }
-
-    .achievement-rarity.uncommon {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .achievement-rarity.rare {
-      background: #fce7f3;
-      color: #be185d;
-    }
-
-    .achievement-rarity.legendary {
-      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-      color: #78350f;
-    }
-
-    .unlocked-badge {
+    .achievement-badge {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 24px;
-      height: 24px;
-      background: #10b981;
+      top: 12px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      background: var(--success);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-size: 12px;
-      font-weight: bold;
     }
 
-    .achievement-filter {
-      padding: 8px 16px;
-      border: 1px solid #e5e7eb;
-      background: white;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #6b7280;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .achievement-filter:hover {
-      background: #f9fafb;
-      border-color: #d1d5db;
-    }
-
-    .achievement-filter.active {
-      background: #3b82f6;
-      color: white;
-      border-color: #3b82f6;
-    }
-
-    /* Achievement Toast Notification */
-    .achievement-toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: white;
-      padding: 20px 24px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      transform: translateX(400px);
-      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      z-index: 9999;
-      border: 2px solid #10b981;
-      min-width: 300px;
-    }
-
-    .achievement-toast.show {
-      transform: translateX(0);
-    }
-
-    .achievement-content {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .achievement-toast .achievement-emoji {
-      font-size: 3rem;
-      margin: 0;
-    }
-
-    .achievement-info {
-      flex: 1;
-    }
-
-    .achievement-toast-title {
-      font-weight: 700;
-      color: #10b981;
-      margin-bottom: 4px;
-      font-size: 0.9rem;
+    .achievement-rarity {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
-    .achievement-toast-name {
+    .rarity-common {
+      background: rgba(107, 114, 128, 0.1);
+      color: #6b7280;
+    }
+
+    .rarity-rare {
+      background: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+
+    .rarity-epic {
+      background: rgba(139, 92, 246, 0.1);
+      color: #8b5cf6;
+    }
+
+    .rarity-legendary {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: white;
+    }
+
+    /* Modules Grid */
+    .modules-section {
+      margin-bottom: 32px;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .module-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .module-card:hover {
+      border-color: var(--blue-primary);
+      box-shadow: 0 4px 12px rgba(35, 131, 226, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .module-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .module-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--blue-primary);
+    }
+
+    .module-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Module Color Variants */
+    .module-card.biology .module-icon {
+      background: var(--module-biology-bg);
+      color: var(--module-biology);
+    }
+
+    .module-card.biology .progress-fill {
+      background: var(--module-biology);
+    }
+
+    .module-card.welfare .module-icon {
+      background: var(--module-welfare-bg);
+      color: var(--module-welfare);
+    }
+
+    .module-card.welfare .progress-fill {
+      background: var(--module-welfare);
+    }
+
+    .module-card.grooming .module-icon {
+      background: var(--module-grooming-bg);
+      color: var(--module-grooming);
+    }
+
+    .module-card.grooming .progress-fill {
+      background: var(--module-grooming);
+    }
+
+    .module-card.anatomy .module-icon {
+      background: var(--module-anatomy-bg);
+      color: var(--module-anatomy);
+    }
+
+    .module-card.anatomy .progress-fill {
+      background: var(--module-anatomy);
+    }
+
+    .module-card.parasitology .module-icon {
+      background: var(--module-parasitology-bg);
+      color: var(--module-parasitology);
+    }
+
+    .module-card.parasitology .progress-fill {
+      background: var(--module-parasitology);
+    }
+
+    .module-card.nutrition .module-icon {
+      background: var(--module-nutrition-bg);
+      color: var(--module-nutrition);
+    }
+
+    .module-card.nutrition .progress-fill {
+      background: var(--module-nutrition);
+    }
+
+    .module-card.behaviour .module-icon {
+      background: var(--module-behaviour-bg);
+      color: var(--module-behaviour);
+    }
+
+    .module-card.behaviour .progress-fill {
+      background: var(--module-behaviour);
+    }
+
+    .module-card.small-animals .module-icon {
+      background: var(--module-small-animals-bg);
+      color: var(--module-small-animals);
+    }
+
+    .module-card.small-animals .progress-fill {
+      background: var(--module-small-animals);
+    }
+
+    .module-card.vet-skills .module-icon {
+      background: var(--module-vet-skills-bg);
+      color: var(--module-vet-skills);
+    }
+
+    .module-card.vet-skills .progress-fill {
+      background: var(--module-vet-skills);
+    }
+
+    .module-card.communications .module-icon {
+      background: var(--module-communications-bg);
+      color: var(--module-communications);
+    }
+
+    .module-card.communications .progress-fill {
+      background: var(--module-communications);
+    }
+
+    .module-title {
+      font-size: 16px;
       font-weight: 600;
-      color: #111827;
-      font-size: 1.1rem;
+      color: var(--gray-700);
       margin-bottom: 4px;
     }
 
-    .achievement-toast-rarity {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
+    .module-questions {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .module-progress {
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-primary);
+      transition: width 300ms ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--gray-500);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background 150ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    /* Announcements Section */
+    .announcements-section {
+      margin-bottom: 32px;
+    }
+
+    .announcement-banner {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: start;
+      gap: 16px;
+    }
+
+    .announcement-banner.pinned {
+      background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+      color: var(--gray-700);
+    }
+
+    .announcement-banner.pinned .announcement-icon {
+      color: var(--gray-700);
+    }
+
+    .announcement-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .announcement-content {
+      flex: 1;
+    }
+
+    .announcement-title {
+      font-size: 16px;
       font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .announcement-body {
+      font-size: 14px;
+      opacity: 0.95;
+      margin-bottom: 8px;
+    }
+
+    .announcement-meta {
+      font-size: 12px;
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .announcement-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .announcement-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .announcement-item:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .announcement-item.unread {
+      border-left: 3px solid var(--blue-primary);
+      background: var(--blue-light);
+    }
+
+    .announcement-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .announcement-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .announcement-item-date {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .announcement-item-body {
+      font-size: 13px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* Calendar Section */
+    .calendar-section {
+      margin-bottom: 32px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+
+    .calendar-widget {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .calendar-month {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .calendar-nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: var(--bg-hover);
+      color: var(--gray-700);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms ease;
+    }
+
+    .calendar-nav-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-500);
+      padding: 8px 0;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      color: var(--gray-700);
+    }
+
+    .calendar-day:hover {
+      background: var(--bg-hover);
+    }
+
+    .calendar-day.today {
+      background: var(--blue-primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .calendar-day.has-event {
+      position: relative;
+    }
+
+    .calendar-day.has-event::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      background: var(--blue-primary);
+      border-radius: 50%;
+    }
+
+    .calendar-day.has-event.today::after {
+      background: white;
+    }
+
+    /* Upcoming Deadlines */
+    .deadlines-widget {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .deadline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .deadline-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      background: var(--bg-hover);
+      transition: all 150ms ease;
+    }
+
+    .deadline-item:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .deadline-item.overdue {
+      background: var(--error-bg);
+      border-left: 3px solid var(--error);
+    }
+
+    .deadline-date {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 48px;
+      padding: 8px;
+      background: var(--bg-primary);
+      border-radius: 6px;
+    }
+
+    .deadline-day {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
+      line-height: 1;
+    }
+
+    .deadline-month {
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+    }
+
+    .deadline-content {
+      flex: 1;
+    }
+
+    .deadline-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .deadline-type {
+      font-size: 12px;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .deadline-type svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .progress-circles {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .progress-circles,
+      .stats-grid,
+      .modules-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
   <div class="dashboard-layout">
     <!-- Sidebar -->
-    <aside class="sidebar">
-      <!-- Logo Section -->
-      <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 20px 16px; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827;">
-        <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 32px; width: auto;">
-        <span style="font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px;">Pethology</span>
-      </a>
+    <div class="sidebar">
+      <!-- Logo -->
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        </a>
+      </div>
 
       <!-- User Section -->
-      <div style="padding: 20px 16px; border-bottom: 1px solid #e5e7eb;">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-          <img id="sidebarAvatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" src="" alt="Avatar" />
-          <div style="flex: 1; min-width: 0;">
-            <div id="sidebarName" style="font-weight: 600; color: #111827; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Student</div>
-          </div>
+      <div class="user-section">
+        <div class="user-avatar">JD</div>
+        <div class="user-info">
+          <div class="user-name">John Doe</div>
+          <div class="user-role">Student</div>
         </div>
+        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
       </div>
 
       <!-- Navigation -->
-      <nav style="padding: 16px 8px; flex: 1; overflow-y: auto;">
-        <a href="student-dashboard.html" class="nav-item active" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #111827; transition: background 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">🏠</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Home</span>
+      <div class="nav-section">
+        <a href="#" class="nav-item active">
+          <i data-lucide="home"></i>
+          Dashboard
+        </a>
+        <a href="quiz.html" class="nav-item">
+          <i data-lucide="book-open"></i>
+          Start Quiz
+        </a>
+        <a href="#" class="nav-item">
+          <i data-lucide="trophy"></i>
+          Achievements
+        </a>
+        <a href="#" class="nav-item">
+          <i data-lucide="bar-chart-2"></i>
+          My Progress
         </a>
 
-        <a href="content.html" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-          <span style="font-size: 18px;">📚</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Content</span>
+        <div class="nav-divider"></div>
+        <div class="nav-group-title">Learning</div>
+
+        <a href="content.html" class="nav-item">
+          <i data-lucide="file-text"></i>
+          Content
         </a>
 
-        <button onclick="logout()" class="nav-item" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px; border: none; background: transparent; color: #6b7280; cursor: pointer; transition: all 0.2s ease; margin-bottom: 4px; font-family: inherit;">
-          <span style="font-size: 18px;">🚪</span>
-          <span style="font-size: 0.9rem; font-weight: 500;">Logout</span>
+        <!-- Tools Collapsible -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible('tools')">
+            <div class="collapsible-title">
+              <i data-lucide="chevron-right" id="tools-icon" class="collapsible-icon"></i>
+              Tools
+            </div>
+          </div>
+          <div class="collapsible-content" id="tools-content">
+            <a href="#glossary" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="book-open"></i>
+              Glossary
+            </a>
+            <a href="#flashcards" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="layers"></i>
+              Flashcards
+            </a>
+            <a href="#notes" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="file-edit"></i>
+              Notes
+            </a>
+            <a href="#goals" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="target"></i>
+              Goals
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-group-title">Modules</div>
+
+        <!-- Modules Collapsible -->
+        <div class="collapsible-section">
+          <div class="collapsible-header" onclick="toggleCollapsible('modules')">
+            <div class="collapsible-title">
+              <i data-lucide="chevron-right" id="modules-icon" class="collapsible-icon"></i>
+              Course Modules
+            </div>
+          </div>
+          <div class="collapsible-content" id="modules-content">
+            <a href="quiz.html?module=biology" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="dna"></i>
+              Biology
+            </a>
+            <a href="quiz.html?module=animal-welfare" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="heart"></i>
+              Animal Welfare
+            </a>
+            <a href="quiz.html?module=grooming" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="scissors"></i>
+              Grooming
+            </a>
+            <a href="quiz.html?module=animal-anatomy" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="bone"></i>
+              Animal Anatomy
+            </a>
+            <a href="quiz.html?module=small-animals" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="rabbit"></i>
+              Small Animals H&H
+            </a>
+            <a href="quiz.html?module=vet-assistant" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="stethoscope"></i>
+              Vet Assistant Skills
+            </a>
+            <a href="quiz.html?module=animal-behaviour" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="dog"></i>
+              Animal Behaviour
+            </a>
+            <a href="quiz.html?module=communications" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="message-circle"></i>
+              Communications
+            </a>
+            <a href="quiz.html?module=word-processing" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="file-text"></i>
+              Word Processing
+            </a>
+            <a href="quiz.html?module=work-experience" class="nav-item" style="padding-left: 32px;">
+              <i data-lucide="briefcase"></i>
+              Work Experience
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <a href="index.html" class="nav-item">
+          <i data-lucide="arrow-left"></i>
+          Back to Home
+        </a>
+        <button onclick="logout()" class="nav-item">
+          <i data-lucide="log-out"></i>
+          Logout
         </button>
-
-        <!-- Divider -->
-        <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-
-        <!-- Modules Section (Collapsible) -->
-        <div style="margin-bottom: 8px;">
-          <button id="modulesToggle" onclick="toggleModules()" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease;">
-            <span>Modules</span>
-            <span id="modulesArrow" style="transition: transform 0.2s ease;">›</span>
-          </button>
-        </div>
-
-        <div id="modulesMenu" style="display: block; margin-bottom: 8px;">
-          <a href="quiz.html?module=animal-anatomy" class="nav-item module-item" data-module-link="animal-anatomy" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🦴</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Animal Anatomy & Physiology</span>
-          </a>
-
-          <a href="quiz.html?module=animal-welfare" class="nav-item module-item" data-module-link="animal-welfare" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🐾</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Animal Welfare</span>
-          </a>
-
-          <a href="quiz.html?module=communications" class="nav-item module-item" data-module-link="communications" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">💬</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Communications</span>
-          </a>
-
-          <a href="quiz.html?module=work-experience" class="nav-item module-item" data-module-link="work-experience" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">💼</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Work Experience</span>
-          </a>
-
-          <a href="quiz.html?module=vet-assistant" class="nav-item module-item" data-module-link="vet-assistant" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🏥</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Veterinary Assistant Skills</span>
-          </a>
-
-          <a href="quiz.html?module=small-animals" class="nav-item module-item" data-module-link="small-animals" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🐹</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Small Animal Husbandry</span>
-          </a>
-
-          <a href="quiz.html?module=biology" class="nav-item module-item" data-module-link="biology" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🧬</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Biology</span>
-          </a>
-
-          <a href="quiz.html?module=grooming" class="nav-item module-item" data-module-link="grooming" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">✂️</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Animal Grooming</span>
-          </a>
-
-          <a href="quiz.html?module=animal-behaviour" class="nav-item module-item" data-module-link="animal-behaviour" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🐕</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Animal Behaviour</span>
-          </a>
-
-          <a href="quiz.html?module=word-processing" class="nav-item module-item" data-module-link="word-processing" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">💻</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Word Processing</span>
-          </a>
-        </div>
-
-        <!-- Divider -->
-        <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
-
-        <!-- Tools Section (Collapsible) -->
-        <div style="margin-bottom: 8px;">
-          <button id="toolsToggle" onclick="toggleTools()" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease;">
-            <span>Tools</span>
-            <span id="toolsArrow" style="transition: transform 0.2s ease; font-size: 14px;">›</span>
-          </button>
-        </div>
-
-        <div id="toolsMenu" style="display: none; margin-bottom: 8px;">
-          <a href="#glossary" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">📖</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Glossary</span>
-          </a>
-
-          <a href="#flashcards" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">📚</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Flashcards</span>
-          </a>
-
-          <a href="#notes" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">📝</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Notes</span>
-          </a>
-
-          <a href="#goals" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
-            <span style="font-size: 18px;">🎯</span>
-            <span style="font-size: 0.9rem; font-weight: 500;">Goals</span>
-          </a>
-        </div>
-      </nav>
-    </aside>
+      </div>
+    </div>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <div class="main-content">
       <!-- Header -->
-      <div class="welcome-header" style="margin-bottom: 40px;">
-        <div class="welcome-text">
-          <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Welcome back, <span id="studentName">Charlie!</span></h1>
-          <p style="color: #6b7280; font-size: 1rem; margin: 0;">Ready to continue your Animal Care journey?</p>
+      <div class="page-header">
+        <h1 class="page-title">Welcome back, John! 👋</h1>
+        <p class="page-subtitle">Here's your learning progress</p>
+      </div>
+
+      <!-- Announcements Section -->
+      <div class="announcements-section">
+        <h2 class="section-title">Announcements</h2>
+
+        <!-- Pinned Announcement Banner -->
+        <div class="announcement-banner pinned">
+          <i data-lucide="pin" class="announcement-icon"></i>
+          <div class="announcement-content">
+            <div class="announcement-title">📌 New Quiz Available: Animal Nutrition</div>
+            <div class="announcement-body">
+              A new quiz on Animal Nutrition is now available! Complete it before Friday to stay on track with the course schedule.
+            </div>
+            <div class="announcement-meta">
+              <span>👨‍🏫 Posted by Mrs. Smith</span>
+              <span>•</span>
+              <span>📅 Oct 17, 2025</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Announcements -->
+        <div class="announcement-list">
+          <div class="announcement-item unread">
+            <div class="announcement-item-header">
+              <div class="announcement-item-title">📚 Exam Schedule Released</div>
+              <div class="announcement-item-date">2 days ago</div>
+            </div>
+            <div class="announcement-item-body">
+              The midterm exam schedule has been posted. Please review the dates and prepare accordingly.
+            </div>
+          </div>
+
+          <div class="announcement-item">
+            <div class="announcement-item-header">
+              <div class="announcement-item-title">🎉 Congratulations Top Performers</div>
+              <div class="announcement-item-date">5 days ago</div>
+            </div>
+            <div class="announcement-item-body">
+              Well done to everyone who scored above 90% on the Biology quiz last week!
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Progress Overview -->
-      <section class="progress-section">
-        <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Progress Overview</h2>
-        <div class="progress-grid">
-          <div class="progress-circles">
-            <div class="progress-circle" data-module="biology">
-              <div class="circle-wrapper">
-                <svg class="circle-svg">
-                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress biology" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
-                </svg>
-                <div class="circle-text">0%</div>
+      <!-- Modules & Calendar -->
+      <div class="calendar-section">
+        <h2 class="section-title">Your Modules & Schedule</h2>
+        <div class="calendar-grid">
+          <!-- Left Column: Module Cards -->
+          <div class="modules-section" style="margin-bottom: 0;">
+            <div class="modules-grid">
+              <div class="module-card biology">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="dna"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Biology</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>15/20 completed</span>
+                    <span>75%</span>
+                  </div>
+                </div>
+                <button class="btn btn-primary">
+                  <i data-lucide="play"></i>
+                  Continue
+                </button>
               </div>
-              <div class="module-name">Biology</div>
-            </div>
 
-            <div class="progress-circle" data-module="animal-welfare">
-              <div class="circle-wrapper">
-                <svg class="circle-svg">
-                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress welfare" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
-                </svg>
-                <div class="circle-text">0%</div>
+              <div class="module-card welfare">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="heart"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Animal Welfare</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>12/20 completed</span>
+                    <span>60%</span>
+                  </div>
+                </div>
+                <button class="btn btn-primary">
+                  <i data-lucide="play"></i>
+                  Continue
+                </button>
               </div>
-              <div class="module-name">Animal Welfare</div>
-            </div>
 
-            <div class="progress-circle" data-module="animal-anatomy">
-              <div class="circle-wrapper">
-                <svg class="circle-svg">
-                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress anatomy" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
-                </svg>
-                <div class="circle-text">0%</div>
+              <div class="module-card grooming">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="scissors"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Grooming</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 90%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>18/20 completed</span>
+                    <span>90%</span>
+                  </div>
+                </div>
+                <button class="btn btn-primary">
+                  <i data-lucide="play"></i>
+                  Continue
+                </button>
               </div>
-              <div class="module-name">Anatomy</div>
-            </div>
 
-            <div class="progress-circle" data-module="grooming">
-              <div class="circle-wrapper">
-                <svg class="circle-svg">
-                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                  <circle class="circle-progress husbandry" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
-                </svg>
-                <div class="circle-text">0%</div>
+              <div class="module-card anatomy">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="bone"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Animal Anatomy</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 45%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>9/20 completed</span>
+                    <span>45%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
               </div>
-              <div class="module-name">Grooming</div>
+
+              <div class="module-card small-animals">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="rabbit"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Small Animals H&H</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>0/20 completed</span>
+                    <span>0%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
+              </div>
+
+              <div class="module-card vet-skills">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="stethoscope"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Vet Assistant Skills</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>0/20 completed</span>
+                    <span>0%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
+              </div>
+
+              <div class="module-card behaviour">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="dog"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Animal Behaviour</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>0/20 completed</span>
+                    <span>0%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
+              </div>
+
+              <div class="module-card communications">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="message-circle"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Communications</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>0/20 completed</span>
+                    <span>0%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
+              </div>
+
+              <div class="module-card communications">
+                <div class="module-header">
+                  <div class="module-icon">
+                    <i data-lucide="briefcase"></i>
+                  </div>
+                  <div>
+                    <div class="module-title">Work Experience</div>
+                    <div class="module-questions">20 questions</div>
+                  </div>
+                </div>
+                <div class="module-progress">
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                  </div>
+                  <div class="progress-text">
+                    <span>0/20 completed</span>
+                    <span>0%</span>
+                  </div>
+                </div>
+                <button class="btn btn-secondary">
+                  <i data-lucide="play"></i>
+                  Start
+                </button>
+              </div>
             </div>
           </div>
 
+          <!-- Right Column: Calendar & Deadlines Stacked -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <!-- Calendar Widget -->
+            <div class="calendar-widget">
+            <div class="calendar-header">
+              <div class="calendar-month">October 2025</div>
+              <div class="calendar-nav">
+                <button class="calendar-nav-btn">
+                  <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+                </button>
+                <button class="calendar-nav-btn">
+                  <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Calendar Days Header -->
+            <div class="calendar-days">
+              <div class="calendar-day-header">S</div>
+              <div class="calendar-day-header">M</div>
+              <div class="calendar-day-header">T</div>
+              <div class="calendar-day-header">W</div>
+              <div class="calendar-day-header">T</div>
+              <div class="calendar-day-header">F</div>
+              <div class="calendar-day-header">S</div>
+            </div>
+
+            <!-- Calendar Days -->
+            <div class="calendar-days">
+              <div class="calendar-day"></div>
+              <div class="calendar-day"></div>
+              <div class="calendar-day">1</div>
+              <div class="calendar-day">2</div>
+              <div class="calendar-day">3</div>
+              <div class="calendar-day">4</div>
+              <div class="calendar-day">5</div>
+
+              <div class="calendar-day">6</div>
+              <div class="calendar-day">7</div>
+              <div class="calendar-day">8</div>
+              <div class="calendar-day">9</div>
+              <div class="calendar-day">10</div>
+              <div class="calendar-day">11</div>
+              <div class="calendar-day">12</div>
+
+              <div class="calendar-day">13</div>
+              <div class="calendar-day">14</div>
+              <div class="calendar-day">15</div>
+              <div class="calendar-day">16</div>
+              <div class="calendar-day today">17</div>
+              <div class="calendar-day">18</div>
+              <div class="calendar-day">19</div>
+
+              <div class="calendar-day has-event">20</div>
+              <div class="calendar-day">21</div>
+              <div class="calendar-day has-event">22</div>
+              <div class="calendar-day">23</div>
+              <div class="calendar-day">24</div>
+              <div class="calendar-day has-event">25</div>
+              <div class="calendar-day">26</div>
+
+              <div class="calendar-day">27</div>
+              <div class="calendar-day">28</div>
+              <div class="calendar-day">29</div>
+              <div class="calendar-day">30</div>
+              <div class="calendar-day">31</div>
+            </div>
+            </div>
+
+            <!-- Upcoming Deadlines -->
+            <div class="deadlines-widget">
+              <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px;">Upcoming Deadlines</h3>
+              <div style="text-align: center; padding: 40px 20px;">
+                <i data-lucide="calendar-clock" style="width: 48px; height: 48px; color: var(--gray-300); margin-bottom: 12px;"></i>
+                <p style="font-size: 14px; color: var(--gray-500); font-weight: 500;">Coming Soon</p>
+                <p style="font-size: 12px; color: var(--gray-400); margin-top: 8px;">Deadlines feature will be available soon!</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <!-- Stats & Achievements Grid -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
-        <!-- Overall Stats -->
-        <section class="stats-section">
-          <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Your Statistics</h2>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-            <div class="stat-card" data-stat="totalQuizzes" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
-              <h3 class="total-quizzes" style="font-size: 2.5rem; font-weight: 700; color: #3b82f6; margin: 0 0 8px 0;">0</h3>
-              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Quizzes Completed</p>
-            </div>
-
-            <div class="stat-card" data-stat="averageScore" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
-              <h3 class="average-score" style="font-size: 2.5rem; font-weight: 700; color: #10b981; margin: 0 0 8px 0;">0%</h3>
-              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Average Score</p>
-            </div>
-
-            <div class="stat-card" data-stat="streak" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
-              <h3 class="current-streak" style="font-size: 2.5rem; font-weight: 700; color: #f59e0b; margin: 0 0 8px 0;">0</h3>
-              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Day Streak</p>
-            </div>
-
-            <div class="stat-card" data-stat="totalTime" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
-              <h3 class="total-time" style="font-size: 2.5rem; font-weight: 700; color: #8b5cf6; margin: 0 0 8px 0;">0 min</h3>
-              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Total Time</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Achievements -->
-        <section class="achievements-section">
-          <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Achievements</h2>
-          <div class="achievements-container" data-achievements style="display: flex; gap: 16px; flex-wrap: wrap; min-height: 200px; background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; align-content: flex-start;">
-            <p style="color: #999; margin: 0;">Complete quizzes to unlock achievements! 🏆</p>
-          </div>
-        </section>
       </div>
 
-      <!-- Feature Cards -->
-      <section class="feature-cards">
-        <div class="feature-card" onclick="startSmartReview()">
-          <div class="feature-header">
-            <div class="feature-icon smart">🧠</div>
-            <h3 class="feature-title">Smart Review</h3>
+      <!-- Smart Features Cards -->
+      <div style="margin-bottom: 32px;">
+        <h2 class="section-title">Smart Learning Tools</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+          <!-- Smart Review Card -->
+          <div class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--blue-primary)'" onmouseout="this.style.borderColor='var(--gray-100)'">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--blue-light); display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="brain" style="width: 24px; height: 24px; color: var(--blue-primary);"></i>
+              </div>
+              <div>
+                <div style="font-size: 16px; font-weight: 600; color: var(--gray-700);">Smart Review</div>
+                <div style="font-size: 12px; color: var(--gray-500);">AI-Powered</div>
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6; flex: 1;">
+              Review weak topics with AI-selected questions based on your performance.
+            </p>
+            <button class="btn btn-primary" style="width: 100%;">
+              <i data-lucide="sparkles"></i>
+              Start Review
+            </button>
           </div>
-          <p class="feature-description">Revisit concepts with spaced repetition based on your performance</p>
-          <a href="#" class="feature-btn">Review</a>
+
+          <!-- Adaptive Quiz Card -->
+          <div class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--module-grooming)'" onmouseout="this.style.borderColor='var(--gray-100)'">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--module-grooming-bg); display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="zap" style="width: 24px; height: 24px; color: var(--module-grooming);"></i>
+              </div>
+              <div>
+                <div style="font-size: 16px; font-weight: 600; color: var(--gray-700);">Adaptive Quiz</div>
+                <div style="font-size: 12px; color: var(--gray-500);">Personalized</div>
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6; flex: 1;">
+              Quiz difficulty adjusts in real-time based on your answers.
+            </p>
+            <button class="btn btn-primary" style="width: 100%; background: var(--module-grooming);">
+              <i data-lucide="target"></i>
+              Take Quiz
+            </button>
+          </div>
+
+          <!-- Exam Mode Card -->
+          <div class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--error)'" onmouseout="this.style.borderColor='var(--gray-100)'">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+              <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--error-bg); display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="timer" style="width: 24px; height: 24px; color: var(--error);"></i>
+              </div>
+              <div>
+                <div style="font-size: 16px; font-weight: 600; color: var(--gray-700);">Exam Mode</div>
+                <div style="font-size: 12px; color: var(--gray-500);">Timed Challenge</div>
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6; flex: 1;">
+              Practice under exam conditions with strict time limits.
+            </p>
+            <button class="btn btn-primary" style="width: 100%; background: var(--error);">
+              <i data-lucide="play-circle"></i>
+              Start Exam
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="clipboard-check" class="stat-icon"></i>
+            <span class="stat-label">Quizzes Completed</span>
+          </div>
+          <div class="stat-value">24</div>
+          <div class="stat-change">
+            <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+            +3 this week
+          </div>
         </div>
 
-        <div class="feature-card" onclick="startAdaptiveQuiz()">
-          <div class="feature-header">
-            <div class="feature-icon adaptive">⭐</div>
-            <h3 class="feature-title">Adaptive Quiz</h3>
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="percent" class="stat-icon"></i>
+            <span class="stat-label">Average Score</span>
           </div>
-          <p class="feature-description">Practice questions tailored to your level and learning needs</p>
-          <a href="quiz.html" class="feature-btn">Start Quiz</a>
+          <div class="stat-value">87%</div>
+          <div class="stat-change">
+            <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+            +5% improvement
+          </div>
         </div>
 
-        <div class="feature-card" onclick="startExamMode()">
-          <div class="feature-header">
-            <div class="feature-icon exam">ℹ️</div>
-            <h3 class="feature-title">Exam Mode</h3>
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="flame" class="stat-icon"></i>
+            <span class="stat-label">Current Streak</span>
           </div>
-          <p class="feature-description">Prepare with timed mock exams that simulate real test conditions</p>
-          <a href="#" class="feature-btn">Take Exam</a>
+          <div class="stat-value">7 days</div>
+          <div class="stat-change">
+            <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+            Keep it up!
+          </div>
         </div>
-      </section>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="trophy" class="stat-icon"></i>
+            <span class="stat-label">Achievements</span>
+          </div>
+          <div class="stat-value">12/19</div>
+          <div class="stat-change">
+            <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+            +2 this month
+          </div>
+        </div>
+      </div>
 
       <!-- Achievements Section -->
-      <section class="achievements-section" style="margin-bottom: 40px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h2 class="section-title" style="margin: 0;">🏆 Achievements</h2>
-          <div id="achievementStats" style="color: #6b7280; font-size: 0.9rem;">
-            <span id="achievementCount">0/19</span> unlocked
+      <div class="achievements-section">
+        <div class="achievements-header">
+          <h2 class="section-title">Achievements</h2>
+          <div class="achievement-filters">
+            <button class="filter-btn active" onclick="filterAchievements('all')">All</button>
+            <button class="filter-btn" onclick="filterAchievements('unlocked')">Unlocked</button>
+            <button class="filter-btn" onclick="filterAchievements('locked')">Locked</button>
+            <span style="color: var(--gray-300); margin: 0 4px;">|</span>
+            <button class="filter-btn" onclick="filterAchievements('common')">Common</button>
+            <button class="filter-btn" onclick="filterAchievements('rare')">Rare</button>
+            <button class="filter-btn" onclick="filterAchievements('epic')">Epic</button>
+            <button class="filter-btn" onclick="filterAchievements('legendary')">Legendary</button>
           </div>
         </div>
-
-        <!-- Achievement Filter -->
-        <div style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;">
-          <button class="achievement-filter active" data-filter="all" onclick="filterAchievements('all')">All</button>
-          <button class="achievement-filter" data-filter="learning" onclick="filterAchievements('learning')">📚 Learning</button>
-          <button class="achievement-filter" data-filter="consistency" onclick="filterAchievements('consistency')">⚡ Consistency</button>
-          <button class="achievement-filter" data-filter="specialized" onclick="filterAchievements('specialized')">🎯 Specialized</button>
-          <button class="achievement-filter" data-filter="special" onclick="filterAchievements('special')">🌟 Special</button>
-        </div>
-
-        <!-- Achievements Grid -->
-        <div id="achievementsGrid" class="achievements-grid">
-          <!-- Achievements will be loaded dynamically -->
-        </div>
-      </section>
-
-      <!-- Bottom Section -->
-      <section class="bottom-section">
-        <!-- Veterinary Terms -->
-        <div class="glossary-section">
-          <h3 class="section-title">Veterinary Terms</h3>
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" class="search-input" placeholder="Search the glossary" id="glossarySearch" />
-          </div>
-          
-          <div class="fact-card">
-            <div class="fact-title">
-              Animal Care Summary
-              <span class="star-icon">⭐</span>
-            </div>
-            <div class="fact-content">
-              Dogs have four chambers in their heart: the left atrium, left ventricle, right atrium, and right ventricle.
-            </div>
+        <div class="achievements-grid">
+          <!-- Unlocked Achievement - Common -->
+          <div class="achievement-card unlocked">
+            <span class="achievement-rarity rarity-common">Common</span>
+            <div class="achievement-badge">✓</div>
+            <div class="achievement-emoji">🎓</div>
+            <div class="achievement-name">First Steps</div>
+            <div class="achievement-description">Complete your first quiz</div>
           </div>
 
-          <div class="fact-card">
-            <div class="fact-title">
-              Quick Fact
-              <span class="star-icon">💡</span>
-            </div>
-            <div class="fact-content">
-              The gestation period for dogs is approximately 63 days, though it can range from 58-68 days.
-            </div>
-          </div>
-        </div>
-
-        <!-- Internship Journal -->
-        <div class="journal-section">
-          <div class="journal-header">
-            <h3 class="section-title">Internship Journal</h3>
-            <span class="journal-date">Friday, Apr 12</span>
+          <!-- Unlocked Achievement - Common -->
+          <div class="achievement-card unlocked">
+            <span class="achievement-rarity rarity-common">Common</span>
+            <div class="achievement-badge">✓</div>
+            <div class="achievement-emoji">📖</div>
+            <div class="achievement-name">Knowledge Seeker</div>
+            <div class="achievement-description">Complete 5 quizzes</div>
           </div>
 
-          <div class="journal-tasks">
-            <div class="task-item">
-              <div class="task-checkbox completed" onclick="toggleTask(this)"></div>
-              <div class="task-text completed">Complete grooming tasks</div>
-            </div>
-            <div class="task-item">
-              <div class="task-checkbox" onclick="toggleTask(this)"></div>
-              <div class="task-text">Review veterinary assistant skills</div>
-            </div>
-            <div class="task-item">
-              <div class="task-checkbox" onclick="toggleTask(this)"></div>
-              <div class="task-text">Practice animal handling techniques</div>
-            </div>
+          <!-- Unlocked Achievement - Rare -->
+          <div class="achievement-card unlocked">
+            <span class="achievement-rarity rarity-rare">Rare</span>
+            <div class="achievement-badge">✓</div>
+            <div class="achievement-emoji">🔥</div>
+            <div class="achievement-name">Perfect Score</div>
+            <div class="achievement-description">Score 100% on a quiz</div>
           </div>
 
-          <div class="journal-actions">
-            <a href="#" class="journal-btn btn-secondary">View Journal</a>
-            <a href="#" class="journal-btn btn-primary">Take Journal</a>
+          <!-- Locked Achievement - Legendary -->
+          <div class="achievement-card locked">
+            <span class="achievement-rarity rarity-legendary">Legendary</span>
+            <div class="achievement-emoji">🧠</div>
+            <div class="achievement-name">Brain Master</div>
+            <div class="achievement-description">Complete all 10 modules</div>
+          </div>
+
+          <!-- Locked Achievement - Epic -->
+          <div class="achievement-card locked">
+            <span class="achievement-rarity rarity-epic">Epic</span>
+            <div class="achievement-emoji">⭐</div>
+            <div class="achievement-name">Excellence</div>
+            <div class="achievement-description">Score 90%+ in 5 quizzes</div>
+          </div>
+
+          <!-- Locked Achievement - Rare -->
+          <div class="achievement-card locked">
+            <span class="achievement-rarity rarity-rare">Rare</span>
+            <div class="achievement-emoji">🚀</div>
+            <div class="achievement-name">Speed Demon</div>
+            <div class="achievement-description">Complete quiz in under 5 min with 80%+</div>
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   </div>
 
   <script type="module">
@@ -1137,93 +1899,85 @@
       console.log('✅ Profile updated:', displayName);
     }
 
-    // Atualizar círculos de progresso
+    // Atualizar módulos com cards
     function updateProgressCircles(moduleProgress, quizHistory = []) {
-      console.log('🔄 Updating progress circles...');
+      console.log('🔄 Updating module cards...');
       console.log('📊 Module progress data:', moduleProgress);
 
       const moduleNames = {
-        'animal-welfare': { name: 'Animal Welfare', emoji: '🐾', color: 'welfare' },
-        'biology': { name: 'Biology', emoji: '🧬', color: 'biology' },
-        'grooming': { name: 'Grooming', emoji: '✂️', color: 'husbandry' },
-        'animal-anatomy': { name: 'Anatomy', emoji: '🦴', color: 'anatomy' },
-        'nutrition': { name: 'Nutrition', emoji: '🥗', color: 'nutrition' },
-        'parasitology': { name: 'Parasitology', emoji: '🦠', color: 'parasitology' },
-        'animal-behaviour': { name: 'Animal Behaviour', emoji: '🐕', color: 'behaviour' },
-        'small-animals': { name: 'Small Animals', emoji: '🐹', color: 'small-animals' },
-        'vet-assistant': { name: 'Vet Assistant', emoji: '🏥', color: 'vet' },
-        'communications': { name: 'Communications', emoji: '💬', color: 'communications' },
-        'word-processing': { name: 'Word Processing', emoji: '📝', color: 'word-processing' }
+        'animal-welfare': { name: 'Animal Welfare', icon: 'heart', color: 'welfare' },
+        'biology': { name: 'Biology', icon: 'dna', color: 'biology' },
+        'grooming': { name: 'Grooming', icon: 'scissors', color: 'grooming' },
+        'animal-anatomy': { name: 'Animal Anatomy', icon: 'bone', color: 'anatomy' },
+        'small-animals': { name: 'Small Animals H&H', icon: 'rabbit', color: 'small-animals' },
+        'vet-assistant': { name: 'Vet Assistant Skills', icon: 'stethoscope', color: 'vet-skills' },
+        'animal-behaviour': { name: 'Animal Behaviour', icon: 'dog', color: 'behaviour' },
+        'communications': { name: 'Communications', icon: 'message-circle', color: 'communications' },
+        'word-processing': { name: 'Word Processing', icon: 'file-text', color: 'word-processing' },
+        'work-experience': { name: 'Work Experience', icon: 'briefcase', color: 'communications' }
       };
 
-      // Get last quiz date for each module
-      const moduleLastDate = {};
-      quizHistory.forEach(quiz => {
-        const date = quiz.completedAt?.toDate ? quiz.completedAt.toDate() : new Date(quiz.completedAt);
-        if (!moduleLastDate[quiz.quizId] || date > moduleLastDate[quiz.quizId]) {
-          moduleLastDate[quiz.quizId] = date;
-        }
-      });
-
-      console.log('📅 Module last dates:', moduleLastDate);
-
-      // Sort modules: completed (with progress) first by most recent date, then others
-      const sortedModules = Object.entries(moduleProgress)
-        .sort((a, b) => {
-          const [moduleA, dataA] = a;
-          const [moduleB, dataB] = b;
-
-          // Prioritize modules with progress
-          if (dataA.completion > 0 && dataB.completion === 0) return -1;
-          if (dataA.completion === 0 && dataB.completion > 0) return 1;
-
-          // If both have progress, sort by most recent quiz date
-          if (dataA.completion > 0 && dataB.completion > 0) {
-            const dateA = moduleLastDate[moduleA] || new Date(0);
-            const dateB = moduleLastDate[moduleB] || new Date(0);
-            return dateB - dateA; // Most recent first
-          }
-
-          return 0;
-        })
-        .slice(0, 4); // Show only top 4
-
-      console.log('🔄 Sorted modules:', sortedModules.map(([name]) => name));
-
       // Get the container
-      const circlesContainer = document.querySelector('.progress-circles');
-      if (!circlesContainer) {
-        console.warn('⚠️ Progress circles container not found');
+      const modulesGrid = document.getElementById('modulesGrid');
+      if (!modulesGrid) {
+        console.warn('⚠️ Modules grid container not found');
         return;
       }
 
       // Clear and rebuild
-      circlesContainer.innerHTML = '';
+      modulesGrid.innerHTML = '';
 
-      sortedModules.forEach(([moduleName, data]) => {
-        const moduleInfo = moduleNames[moduleName] || { name: moduleName, emoji: '📚', color: 'default' };
+      // Show ALL modules
+      const allModules = Object.entries(moduleProgress);
+
+      allModules.forEach(([moduleName, data]) => {
+        const moduleInfo = moduleNames[moduleName] || { name: moduleName, icon: 'book-open', color: 'biology' };
         const completion = data.completion || 0;
-        const circumference = 2 * Math.PI * 50;
-        const offset = circumference - (completion / 100) * circumference;
+        const totalQuestions = 20; // Each module has 20 questions
+        const completedQuestions = Math.round((completion / 100) * totalQuestions);
 
-        const circleHTML = `
-          <div class="progress-circle" data-module="${moduleName}">
-            <div class="circle-wrapper">
-              <svg class="circle-svg">
-                <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
-                <circle class="circle-progress ${moduleInfo.color}" cx="60" cy="60" r="50" style="stroke-dashoffset: ${offset};"></circle>
-              </svg>
-              <div class="circle-text">${completion}%</div>
+        const moduleCard = document.createElement('div');
+        moduleCard.className = `module-card ${moduleInfo.color}`;
+        moduleCard.style.cursor = 'pointer';
+        moduleCard.onclick = () => {
+          window.location.href = `quiz.html?module=${moduleName}`;
+        };
+
+        moduleCard.innerHTML = `
+          <div class="module-header">
+            <div class="module-icon">
+              <i data-lucide="${moduleInfo.icon}"></i>
             </div>
-            <div class="module-name">${moduleInfo.emoji} ${moduleInfo.name}</div>
+            <div>
+              <div class="module-title">${moduleInfo.name}</div>
+              <div class="module-questions">${totalQuestions} questions</div>
+            </div>
           </div>
+          <div class="module-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${completion}%"></div>
+            </div>
+            <div class="progress-text">
+              <span>${completedQuestions}/${totalQuestions} completed</span>
+              <span>${completion}%</span>
+            </div>
+          </div>
+          <button class="btn ${completion > 0 ? 'btn-primary' : 'btn-secondary'}" style="width: 100%;">
+            <i data-lucide="play"></i>
+            ${completion > 0 ? 'Continue' : 'Start'}
+          </button>
         `;
 
-        circlesContainer.innerHTML += circleHTML;
+        modulesGrid.appendChild(moduleCard);
         console.log(`✅ ${moduleName}: ${completion}%`);
       });
 
-      console.log('✅ Progress circles updated with most recent modules');
+      // Re-initialize Lucide icons for dynamically added content
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+
+      console.log('✅ Module cards updated');
     }
 
     // Atualizar estatísticas gerais
@@ -1300,6 +2054,13 @@
     // Exportar funções para uso global (se necessário)
     window.updateStudentProgress = loadRealStudentData;
 
+    // Initialize Lucide icons after DOM loads
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+
     // Logout function
     window.logout = function() {
       if (confirm('Are you sure you want to logout?')) {
@@ -1308,107 +2069,19 @@
       }
     }
 
-    // Toggle Tools menu
-    window.toggleTools = function() {
-      const menu = document.getElementById('toolsMenu');
-      const arrow = document.getElementById('toolsArrow');
-      const button = document.getElementById('toolsToggle');
+    // Toggle collapsible sections (NEW - for Notion design)
+    window.toggleCollapsible = function(id) {
+      const content = document.getElementById(id + '-content');
+      const icon = document.getElementById(id + '-icon');
 
-      if (menu.style.display === 'none') {
-        menu.style.display = 'block';
-        arrow.style.transform = 'rotate(90deg)';
-        button.style.color = '#111827';
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        icon.classList.remove('open');
       } else {
-        menu.style.display = 'none';
-        arrow.style.transform = 'rotate(0deg)';
-        button.style.color = '#9ca3af';
+        content.classList.add('open');
+        icon.classList.add('open');
       }
     }
-
-    // Toggle Modules menu
-    window.toggleModules = function() {
-      const menu = document.getElementById('modulesMenu');
-      const arrow = document.getElementById('modulesArrow');
-      const button = document.getElementById('modulesToggle');
-
-      if (menu.style.display === 'none') {
-        menu.style.display = 'block';
-        arrow.style.transform = 'rotate(90deg)';
-        button.style.color = '#111827';
-      } else {
-        menu.style.display = 'none';
-        arrow.style.transform = 'rotate(0deg)';
-        button.style.color = '#9ca3af';
-      }
-    }
-
-    // Feature functions
-    window.startSmartReview = function() {
-      alert('Smart Review will analyze your past quiz performance and suggest topics to review!');
-    }
-
-    window.startAdaptiveQuiz = function() {
-      window.location.href = 'quiz.html';
-    }
-
-    window.startExamMode = function() {
-      alert('Exam Mode: Timed practice exams coming soon!');
-    }
-
-    // Task management
-    window.toggleTask = function(checkbox) {
-      checkbox.classList.toggle('completed');
-      const taskText = checkbox.nextElementSibling;
-      taskText.classList.toggle('completed');
-
-      const isCompleted = checkbox.classList.contains('completed');
-      console.log('Task updated:', taskText.textContent, isCompleted);
-    }
-
-    // Glossary search
-    document.getElementById('glossarySearch').addEventListener('input', function(e) {
-      const searchTerm = e.target.value.toLowerCase();
-      console.log('Searching glossary for:', searchTerm);
-      // Implement glossary search functionality
-    });
-
-    // Module navigation
-    document.querySelectorAll('.module-item').forEach(item => {
-      item.addEventListener('click', function() {
-        const moduleLink = this.getAttribute('data-module-link');
-
-        if (moduleLink) {
-          // Navigate to quiz with module parameter
-          console.log('Navigating to quiz:', moduleLink);
-          window.location.href = `quiz.html?module=${moduleLink}`;
-        } else {
-          console.log('Module link not configured yet');
-        }
-      });
-    });
-
-    // Tool navigation
-    document.querySelectorAll('.tool-item').forEach(item => {
-      item.addEventListener('click', function() {
-        const toolName = this.textContent.trim();
-        console.log('Selected tool:', toolName);
-
-        switch(toolName) {
-          case 'Glossary':
-            document.querySelector('.glossary-section').scrollIntoView({ behavior: 'smooth' });
-            break;
-          case 'Flashcards':
-            alert('Flashcards feature coming soon!');
-            break;
-          case 'Notes':
-            alert('Notes feature coming soon!');
-            break;
-          case 'Goals':
-            alert('Goals tracking coming soon!');
-            break;
-        }
-      });
-    });
 
     // ====================================
     // ACHIEVEMENT SYSTEM
@@ -1418,17 +2091,15 @@
     let currentFilter = 'all';
     let studentAchievements = [];
 
-    // Filter achievements by category (defined early for onclick handlers)
-    window.filterAchievements = function(category) {
-      currentFilter = category;
+    // Filter achievements by category AND rarity (defined early for onclick handlers)
+    window.filterAchievements = function(filter) {
+      currentFilter = filter;
 
       // Update filter buttons
-      document.querySelectorAll('.achievement-filter').forEach(btn => {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.dataset.filter === category) {
-          btn.classList.add('active');
-        }
       });
+      event.target.classList.add('active');
 
       renderAchievements();
     };
@@ -1441,7 +2112,20 @@
       grid.innerHTML = '';
 
       const achievementsToShow = Object.values(ACHIEVEMENTS).filter(achievement => {
+        const isUnlocked = studentAchievements.includes(achievement.id);
+
+        // Filter by unlock status
         if (currentFilter === 'all') return true;
+        if (currentFilter === 'unlocked') return isUnlocked;
+        if (currentFilter === 'locked') return !isUnlocked;
+
+        // Filter by rarity
+        if (currentFilter === 'common' || currentFilter === 'rare' ||
+            currentFilter === 'epic' || currentFilter === 'legendary') {
+          return achievement.rarity === currentFilter;
+        }
+
+        // Filter by category (fallback)
         return achievement.category === currentFilter;
       });
 
@@ -1453,11 +2137,11 @@
         card.dataset.category = achievement.category;
 
         card.innerHTML = `
+          <span class="achievement-rarity rarity-${achievement.rarity}">${achievement.rarity}</span>
+          ${isUnlocked ? '<div class="achievement-badge">✓</div>' : ''}
           <div class="achievement-emoji">${achievement.emoji}</div>
           <div class="achievement-name">${achievement.name}</div>
           <div class="achievement-description">${achievement.description}</div>
-          <div class="achievement-rarity ${achievement.rarity}">${achievement.rarity}</div>
-          ${isUnlocked ? '<div class="unlocked-badge">✓</div>' : ''}
         `;
 
         grid.appendChild(card);
@@ -1511,6 +2195,25 @@
     //   const { showAchievementToast, ACHIEVEMENTS } = await import('./assets/js/achievements.js');
     //   showAchievementToast(ACHIEVEMENTS.first_steps);
     // };
+
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+
+    // Toggle collapsible sections
+    window.toggleCollapsible = function(id) {
+      const content = document.getElementById(id + '-content');
+      const icon = document.getElementById(id + '-icon');
+
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        icon.classList.remove('open');
+      } else {
+        content.classList.add('open');
+        icon.classList.add('open');
+      }
+    };
   </script>
 </body>
 </html>
