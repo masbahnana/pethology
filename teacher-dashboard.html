@@ -535,27 +535,34 @@
       color: var(--gray-500);
     }
 
-    /* Hide content initially */
-    .stats-grid,
-    .content-grid,
-    #modulePerformanceCard {
+    /* Hide content initially - only when NOT loaded */
+    .stats-grid:not(.loaded),
+    .content-grid:not(.loaded) {
+      display: none !important;
+    }
+
+    #modulePerformanceCard:not(.loaded) {
       display: none !important;
     }
 
     /* Show content when loaded */
     .stats-grid.loaded,
-    .content-grid.loaded,
-    #modulePerformanceCard.loaded {
+    .content-grid.loaded {
       display: grid !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
 
     #modulePerformanceCard.loaded {
       display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
     }
 
     /* Hide loading when content is ready */
     .loading.hidden {
       display: none !important;
+      visibility: hidden !important;
     }
 
     .spinner {
@@ -1059,6 +1066,7 @@
 
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
+      console.log('🔥 NEW VERSION LOADED - HYBRID APPROACH (v3 - INLINE STYLES)');
       const userSession = sessionStorage.getItem('pethologyUser');
 
       if (!userSession) {
@@ -1086,20 +1094,13 @@
       try {
         console.log('🚀 Loading teacher dashboard...');
 
-        // Get analytics and students
-        const [analytics, students] = await Promise.all([
-          PethologyFirebaseService.getTeacherAnalytics(),
-          PethologyFirebaseService.getAllStudentsProgress()
-        ]);
-
-        console.log('📊 Analytics:', analytics);
-        console.log('👥 Students:', students);
-
-        // Hide loading, show content
+        // FIRST THING: Hide loading and show content IMMEDIATELY (before data loads)
         const loadingEl = document.getElementById('loadingState');
         const statsEl = document.getElementById('statsContainer');
         const contentEl = document.getElementById('mainContent');
         const moduleEl = document.getElementById('modulePerformanceCard');
+
+        console.log('🎯 HIDING LOADING NOW (BEFORE DATA)!');
 
         console.log('🔍 Elements found:', {
           loading: !!loadingEl,
@@ -1108,34 +1109,83 @@
           module: !!moduleEl
         });
 
-        // Hide loading and show content using classes
+        // Hide loading and show content - FORCE BOTH CLASSES AND INLINE STYLES
         if (loadingEl) {
           loadingEl.classList.add('hidden');
+          loadingEl.style.display = 'none';
+          loadingEl.style.visibility = 'hidden';
+          console.log('✅ Loading hidden, classes:', loadingEl.className);
         }
 
         if (statsEl) {
           statsEl.classList.add('loaded');
+          statsEl.style.display = 'grid';
+          statsEl.style.visibility = 'visible';
+          statsEl.style.opacity = '1';
+          console.log('✅ Stats loaded, classes:', statsEl.className);
         }
         if (contentEl) {
           contentEl.classList.add('loaded');
+          contentEl.style.display = 'grid';
+          contentEl.style.visibility = 'visible';
+          contentEl.style.opacity = '1';
+          console.log('✅ Content loaded, classes:', contentEl.className);
         }
         if (moduleEl) {
           moduleEl.classList.add('loaded');
+          moduleEl.style.display = 'block';
+          moduleEl.style.visibility = 'visible';
+          moduleEl.style.opacity = '1';
+          console.log('✅ Module loaded, classes:', moduleEl.className);
         }
 
         console.log('✅ Content visibility toggled!');
 
+        // NOW get analytics and students (AFTER showing dashboard)
+        console.log('⏳ Now fetching data...');
+        let analytics, students;
+        try {
+          [analytics, students] = await Promise.all([
+            PethologyFirebaseService.getTeacherAnalytics(),
+            PethologyFirebaseService.getAllStudentsProgress()
+          ]);
+          console.log('✅ Promise.all completed!');
+          console.log('📊 Analytics received!');
+          console.log('👥 Students received:', students?.length || 0);
+        } catch (error) {
+          console.error('❌ Promise.all failed:', error);
+          throw error;
+        }
+
         // Update statistics
-        updateStatistics(analytics.overview);
+        try {
+          console.log('📊 Updating statistics...');
+          updateStatistics(analytics.overview);
+          console.log('✅ Statistics updated!');
+        } catch (error) {
+          console.error('❌ Error in updateStatistics:', error);
+        }
 
         // Update students table
-        updateStudentsTable(students);
+        try {
+          console.log('👥 Updating students table...');
+          updateStudentsTable(students);
+          console.log('✅ Students table updated!');
+        } catch (error) {
+          console.error('❌ Error in updateStudentsTable:', error);
+        }
 
         // Update recent activity (temporarily disabled - HTML element missing)
         // updateRecentActivity(analytics.recentActivity);
 
         // Update module performance
-        updateModulePerformance(analytics.modulePerformance);
+        try {
+          console.log('📈 Updating module performance...');
+          updateModulePerformance(analytics.modulePerformance);
+          console.log('✅ Module performance updated!');
+        } catch (error) {
+          console.error('❌ Error in updateModulePerformance:', error);
+        }
 
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
