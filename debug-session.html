@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Session - Pethology</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h1 { margin-top: 0; }
+    h2 {
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    pre {
+      background: #f3f4f6;
+      padding: 16px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    .btn {
+      background: #2563eb;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 8px;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+    }
+    .btn-danger {
+      background: #dc2626;
+    }
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Session Debug Tool</h1>
+
+  <div class="card">
+    <h2>Current Session</h2>
+    <div id="sessionInfo">Loading...</div>
+  </div>
+
+  <div class="card">
+    <h2>Actions</h2>
+    <button class="btn" onclick="clearSession()">Clear Session</button>
+    <button class="btn" onclick="setTeacherSession()">Set Teacher Session (Test)</button>
+    <button class="btn" onclick="setStudentSession()">Set Student Session (Test)</button>
+    <button class="btn btn-danger" onclick="window.location.href='auth0-login.html'">Go to Login</button>
+  </div>
+
+  <div class="card">
+    <h2>Instructions</h2>
+    <ol>
+      <li>Check your current session above</li>
+      <li>If role is "Student" but you want to test Teacher dashboard, click "Set Teacher Session"</li>
+      <li>Then navigate to teacher-dashboard.html</li>
+      <li>To test as student, click "Set Student Session" and go to student-dashboard.html</li>
+    </ol>
+  </div>
+
+  <script>
+    function displaySession() {
+      const userSession = sessionStorage.getItem('pethologyUser');
+      const container = document.getElementById('sessionInfo');
+
+      if (!userSession) {
+        container.innerHTML = `
+          <p style="color: #dc2626; font-weight: 600;">❌ No session found</p>
+          <p>You are not logged in. Click "Go to Login" to authenticate.</p>
+        `;
+        return;
+      }
+
+      try {
+        const user = JSON.parse(userSession);
+        container.innerHTML = `
+          <p style="color: #059669; font-weight: 600;">✅ Session active</p>
+          <pre>${JSON.stringify(user, null, 2)}</pre>
+        `;
+      } catch (e) {
+        container.innerHTML = `
+          <p style="color: #dc2626; font-weight: 600;">❌ Invalid session data</p>
+          <p>Error: ${e.message}</p>
+        `;
+      }
+    }
+
+    function clearSession() {
+      sessionStorage.removeItem('pethologyUser');
+      alert('Session cleared! You will need to login again.');
+      displaySession();
+    }
+
+    function setTeacherSession() {
+      const teacherSession = {
+        id: 'test-teacher-' + Date.now(),
+        name: 'Test Teacher',
+        email: 'teacher@plc.ie',
+        role: 'Teacher',
+        photo: 'https://ui-avatars.com/api/?name=Test+Teacher',
+        provider: 'test',
+        lastLogin: new Date().toISOString()
+      };
+
+      sessionStorage.setItem('pethologyUser', JSON.stringify(teacherSession));
+      alert('Teacher session created! You can now access teacher-dashboard.html');
+      displaySession();
+    }
+
+    function setStudentSession() {
+      const studentSession = {
+        id: 'test-student-' + Date.now(),
+        name: 'Test Student',
+        email: 'student@example.com',
+        role: 'Student',
+        photo: 'https://ui-avatars.com/api/?name=Test+Student',
+        provider: 'test',
+        lastLogin: new Date().toISOString()
+      };
+
+      sessionStorage.setItem('pethologyUser', JSON.stringify(studentSession));
+      alert('Student session created! You can now access student-dashboard.html');
+      displaySession();
+    }
+
+    // Display on load
+    displaySession();
+  </script>
+</body>
+</html>

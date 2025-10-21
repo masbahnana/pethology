@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Teacher Dashboard Demo - Pethology</title>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .teacher-badge {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--gray-700);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Notion-style Buttons */
+    .btn {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background 150ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .btn-icon {
+      padding: 8px;
+      min-width: 36px;
+      justify-content: center;
+    }
+
+    .btn-icon svg {
+      margin: 0;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--gray-100);
+      transition: all 150ms ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--gray-500);
+    }
+
+    .stat-label {
+      color: var(--gray-500);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-700);
+      line-height: 1;
+    }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    tr:hover {
+      background: var(--bg-hover);
+    }
+
+    .student-name {
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .student-email {
+      color: var(--gray-500);
+      font-size: 13px;
+    }
+
+    /* Badges */
+    .score-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .score-high {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .score-medium {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .score-low {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-primary);
+      transition: width 300ms ease;
+      border-radius: 3px;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .quick-action-item {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quick-action-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .quick-action-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--gray-500);
+    }
+
+    .quick-action-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    /* Module Performance Slider */
+    .modules-slider {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(280px, 1fr));
+      gap: 16px;
+      transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      width: 250%;
+    }
+
+    .module-card {
+      padding: 16px;
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      transition: all 150ms ease;
+    }
+
+    .module-card:hover {
+      border-color: var(--gray-200);
+      background: var(--bg-hover);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .module-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .module-icon {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    .module-name {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .module-score {
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .module-stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .module-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-label-small {
+      font-size: 11px;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .stat-value-small {
+      font-size: 13px;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-top">
+        <div class="header-title">
+          <a href="index.html" class="logo">
+            <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+          </a>
+          <h1>Teacher Dashboard</h1>
+          <span class="teacher-badge">
+            <i data-lucide="graduation-cap"></i>
+            Educator
+          </span>
+        </div>
+        <div class="header-actions">
+          <a href="index.html" class="btn btn-secondary">
+            <i data-lucide="home"></i>
+            Home
+          </a>
+          <a href="import-students.html" class="btn btn-primary">
+            <i data-lucide="users"></i>
+            Import Students
+          </a>
+          <a href="teacher-content-manager.html" class="btn btn-secondary">
+            <i data-lucide="plus-circle"></i>
+            Publish Content
+          </a>
+          <button onclick="alert('Logout demo')" class="btn btn-secondary">
+            <i data-lucide="log-out"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+      <p class="header-subtitle">Welcome back! Here's what's happening with your students.</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <i data-lucide="users" class="stat-icon"></i>
+          <span class="stat-label">Total Students</span>
+        </div>
+        <div class="stat-value">42</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <i data-lucide="activity" class="stat-icon"></i>
+          <span class="stat-label">Active This Week</span>
+        </div>
+        <div class="stat-value">28</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <i data-lucide="clipboard-check" class="stat-icon"></i>
+          <span class="stat-label">Total Quiz Attempts</span>
+        </div>
+        <div class="stat-value">287</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <i data-lucide="bar-chart-2" class="stat-icon"></i>
+          <span class="stat-label">Average Score</span>
+        </div>
+        <div class="stat-value">84%</div>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="content-grid">
+      <!-- Students Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i data-lucide="users"></i>
+            Student Progress
+          </h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Quizzes</th>
+              <th>Avg Score</th>
+              <th>Last Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="student-name">John Doe</div>
+                <div class="student-email">john.doe@plc.ie</div>
+              </td>
+              <td>15</td>
+              <td><span class="score-badge score-high">92%</span></td>
+              <td>2h ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="student-name">Jane Smith</div>
+                <div class="student-email">jane.smith@plc.ie</div>
+              </td>
+              <td>12</td>
+              <td><span class="score-badge score-high">87%</span></td>
+              <td>5h ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="student-name">Michael Johnson</div>
+                <div class="student-email">michael.j@plc.ie</div>
+              </td>
+              <td>8</td>
+              <td><span class="score-badge score-medium">78%</span></td>
+              <td>1d ago</td>
+            </tr>
+            <tr>
+              <td>
+                <div class="student-name">Sarah Wilson</div>
+                <div class="student-email">sarah.w@plc.ie</div>
+              </td>
+              <td>18</td>
+              <td><span class="score-badge score-high">95%</span></td>
+              <td>3h ago</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i data-lucide="zap"></i>
+            Quick Actions
+          </h2>
+        </div>
+        <ul class="quick-actions">
+          <li class="quick-action-item" onclick="alert('Add Students')">
+            <i data-lucide="user-plus" class="quick-action-icon"></i>
+            <span class="quick-action-text">Add New Students</span>
+          </li>
+          <li class="quick-action-item" onclick="alert('Create Announcement')">
+            <i data-lucide="megaphone" class="quick-action-icon"></i>
+            <span class="quick-action-text">Create Announcement</span>
+          </li>
+          <li class="quick-action-item" onclick="alert('Create Quiz')">
+            <i data-lucide="file-plus" class="quick-action-icon"></i>
+            <span class="quick-action-text">Create Custom Quiz</span>
+          </li>
+          <li class="quick-action-item" onclick="alert('View Calendar')">
+            <i data-lucide="calendar" class="quick-action-icon"></i>
+            <span class="quick-action-text">View Calendar</span>
+          </li>
+          <li class="quick-action-item" onclick="alert('Export Grades')">
+            <i data-lucide="download" class="quick-action-icon"></i>
+            <span class="quick-action-text">Export Grades</span>
+          </li>
+          <li class="quick-action-item" onclick="alert('Class Settings')">
+            <i data-lucide="settings" class="quick-action-icon"></i>
+            <span class="quick-action-text">Class Settings</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Module Performance -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i data-lucide="bar-chart"></i>
+          Module Performance
+        </h2>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-icon" onclick="previousModules()" id="prevBtn">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="btn btn-secondary btn-icon" onclick="nextModules()" id="nextBtn">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="modules-slider">
+        <div class="modules-grid" id="modulesGrid">
+          <!-- Module 1 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="bone" class="module-icon"></i>
+                <span class="module-name">Animal Anatomy & Physiology</span>
+              </div>
+              <span class="module-score score-high">85%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">24 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">12m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 85%"></div>
+            </div>
+          </div>
+
+          <!-- Module 2 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="heart" class="module-icon"></i>
+                <span class="module-name">Animal Welfare</span>
+              </div>
+              <span class="module-score score-high">92%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">28 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">10m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 92%"></div>
+            </div>
+          </div>
+
+          <!-- Module 3 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="message-circle" class="module-icon"></i>
+                <span class="module-name">Communications</span>
+              </div>
+              <span class="module-score score-medium">78%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">19 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">15m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 78%"></div>
+            </div>
+          </div>
+
+          <!-- Module 4 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="briefcase" class="module-icon"></i>
+                <span class="module-name">Work Experience</span>
+              </div>
+              <span class="module-score score-medium">72%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">15 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">18m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 72%"></div>
+            </div>
+          </div>
+
+          <!-- Module 5 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="stethoscope" class="module-icon"></i>
+                <span class="module-name">Vet Assistant Skills</span>
+              </div>
+              <span class="module-score score-low">64%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">12 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">20m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 64%"></div>
+            </div>
+          </div>
+
+          <!-- Module 6 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="rabbit" class="module-icon"></i>
+                <span class="module-name">Small Animals H&H</span>
+              </div>
+              <span class="module-score score-high">88%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">26 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">11m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 88%"></div>
+            </div>
+          </div>
+
+          <!-- Module 7 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="dna" class="module-icon"></i>
+                <span class="module-name">Biology</span>
+              </div>
+              <span class="module-score score-high">90%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">32 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">9m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 90%"></div>
+            </div>
+          </div>
+
+          <!-- Module 8 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="scissors" class="module-icon"></i>
+                <span class="module-name">Grooming</span>
+              </div>
+              <span class="module-score score-medium">76%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">18 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">14m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 76%"></div>
+            </div>
+          </div>
+
+          <!-- Module 9 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="dog" class="module-icon"></i>
+                <span class="module-name">Animal Behaviour</span>
+              </div>
+              <span class="module-score score-high">82%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">22 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">13m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 82%"></div>
+            </div>
+          </div>
+
+          <!-- Module 10 -->
+          <div class="module-card">
+            <div class="module-header">
+              <div class="module-info">
+                <i data-lucide="file-text" class="module-icon"></i>
+                <span class="module-name">Word Processing</span>
+              </div>
+              <span class="module-score score-medium">74%</span>
+            </div>
+            <div class="module-stats">
+              <div class="module-stat">
+                <span class="stat-label-small">Completed</span>
+                <span class="stat-value-small">16 quizzes</span>
+              </div>
+              <div class="module-stat">
+                <span class="stat-label-small">Avg Time</span>
+                <span class="stat-value-small">16m</span>
+              </div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 74%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Module slider
+    let currentPage = 0;
+    const modulesPerPage = 4;
+    const totalModules = 10;
+    const totalPages = Math.ceil(totalModules / modulesPerPage);
+
+    function updateModuleSlider() {
+      const grid = document.getElementById('modulesGrid');
+      const offsetPercent = currentPage * (modulesPerPage / totalModules) * 100;
+      grid.style.transform = `translateX(-${offsetPercent}%)`;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (currentPage === 0) {
+        prevBtn.style.opacity = '0.5';
+        prevBtn.style.cursor = 'not-allowed';
+      } else {
+        prevBtn.style.opacity = '1';
+        prevBtn.style.cursor = 'pointer';
+      }
+
+      if (currentPage >= totalPages - 1) {
+        nextBtn.style.opacity = '0.5';
+        nextBtn.style.cursor = 'not-allowed';
+      } else {
+        nextBtn.style.opacity = '1';
+        nextBtn.style.cursor = 'pointer';
+      }
+    }
+
+    function nextModules() {
+      if (currentPage < totalPages - 1) {
+        currentPage++;
+        updateModuleSlider();
+      }
+    }
+
+    function previousModules() {
+      if (currentPage > 0) {
+        currentPage--;
+        updateModuleSlider();
+      }
+    }
+
+    // Initialize slider
+    updateModuleSlider();
+  </script>
+</body>
+</html>

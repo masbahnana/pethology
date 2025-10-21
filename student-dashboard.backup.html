@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+      background: #f7f8fa;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-item:hover {
+      background: #f3f4f6 !important;
+      color: #111827 !important;
+    }
+
+    .nav-item.active {
+      background: #eff6ff !important;
+      color: #2563eb !important;
+    }
+
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .welcome-text h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 8px 0;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+    }
+
+    .welcome-text p {
+      color: #6b7280;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+
+    .progress-section {
+      margin-bottom: 40px;
+    }
+
+    .progress-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .progress-circles {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+      width: 100%;
+    }
+
+    .progress-circle {
+      text-align: center;
+    }
+
+    .circle-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 12px;
+    }
+
+    .circle-svg {
+      transform: rotate(-90deg);
+      width: 120px;
+      height: 120px;
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #f3f4f6;
+      stroke-width: 8;
+    }
+
+    .circle-progress {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 314;
+      transition: stroke-dashoffset 1s ease;
+    }
+
+    .circle-progress.biology { stroke: #f97316; }
+    .circle-progress.welfare { stroke: #059669; }
+    .circle-progress.anatomy { stroke: #7c3aed; }
+    .circle-progress.husbandry { stroke: #dc2626; }
+    .circle-progress.nutrition { stroke: #84cc16; }
+    .circle-progress.parasitology { stroke: #ec4899; }
+    .circle-progress.behaviour { stroke: #3b82f6; }
+    .circle-progress.small-animals { stroke: #f59e0b; }
+    .circle-progress.vet { stroke: #10b981; }
+    .circle-progress.communications { stroke: #8b5cf6; }
+    .circle-progress.word-processing { stroke: #06b6d4; }
+
+    .circle-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .module-name {
+      font-size: 0.9rem;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      border-color: #d1d5db;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .feature-icon.smart { background: #fef3c7; }
+    .feature-icon.adaptive { background: #fef9c3; }
+    .feature-icon.exam { background: #dbeafe; }
+
+    .feature-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0;
+    }
+
+    .feature-description {
+      color: #6b7280;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .feature-btn {
+      background: #111827;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+
+    .feature-btn:hover {
+      background: #374151;
+    }
+
+    .bottom-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .glossary-section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+      margin: 0 0 20px 0;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px 12px 44px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+    }
+
+    .fact-card {
+      background: #fffbeb;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .fact-title {
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+
+    .fact-content {
+      color: #451a03;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .star-icon {
+      float: right;
+      color: #fbbf24;
+      font-size: 1.2rem;
+    }
+
+    .journal-section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .journal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .journal-date {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .journal-tasks {
+      margin-bottom: 24px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .task-checkbox.completed {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .task-checkbox.completed::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .task-text {
+      color: #374151;
+      font-size: 0.95rem;
+    }
+
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .journal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .journal-btn {
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #111827;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-primary:hover {
+      background: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    .sidebar a:hover h3 {
+      color: #3b82f6;
+    }
+
+    .avatar-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #3b82f6;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: #111827;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 8px;
+    }
+
+    .logout-btn:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1200px) {
+      .progress-circles {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 20px 0;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .progress-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .progress-circles {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .circle-wrapper {
+        width: 100px;
+        height: 100px;
+      }
+
+      .circle-svg {
+        width: 100px;
+        height: 100px;
+      }
+
+      .animal-avatar {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+      }
+
+      .feature-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .welcome-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .achievements-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+      }
+
+      .achievement-card {
+        padding: 16px !important;
+      }
+
+      .achievement-emoji {
+        font-size: 2.5rem !important;
+      }
+    }
+
+    /* Achievement Styles */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .achievement-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #e5e5e5;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+
+    .achievement-card.unlocked {
+      border-color: var(--accent, #3b82f6);
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .achievement-card:hover.unlocked {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+    }
+
+    .achievement-emoji {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .achievement-name {
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .achievement-description {
+      color: #6b7280;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .achievement-rarity {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+    }
+
+    .achievement-rarity.common {
+      background: #e5e7eb;
+      color: #6b7280;
+    }
+
+    .achievement-rarity.uncommon {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .achievement-rarity.rare {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    .achievement-rarity.legendary {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #78350f;
+    }
+
+    .unlocked-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .achievement-filter {
+      padding: 8px 16px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .achievement-filter:hover {
+      background: #f9fafb;
+      border-color: #d1d5db;
+    }
+
+    .achievement-filter.active {
+      background: #3b82f6;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    /* Achievement Toast Notification */
+    .achievement-toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: white;
+      padding: 20px 24px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      transform: translateX(400px);
+      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 9999;
+      border: 2px solid #10b981;
+      min-width: 300px;
+    }
+
+    .achievement-toast.show {
+      transform: translateX(0);
+    }
+
+    .achievement-content {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .achievement-toast .achievement-emoji {
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-toast-title {
+      font-weight: 700;
+      color: #10b981;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .achievement-toast-name {
+      font-weight: 600;
+      color: #111827;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .achievement-toast-rarity {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Logo Section -->
+      <a href="index.html" style="display: flex; align-items: center; gap: 10px; padding: 20px 16px; border-bottom: 1px solid #e5e7eb; text-decoration: none; color: #111827;">
+        <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 32px; width: auto;">
+        <span style="font-size: 1.2rem; font-weight: 700; letter-spacing: -0.5px;">Pethology</span>
+      </a>
+
+      <!-- User Section -->
+      <div style="padding: 20px 16px; border-bottom: 1px solid #e5e7eb;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <img id="sidebarAvatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" src="" alt="Avatar" />
+          <div style="flex: 1; min-width: 0;">
+            <div id="sidebarName" style="font-weight: 600; color: #111827; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Student</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav style="padding: 16px 8px; flex: 1; overflow-y: auto;">
+        <a href="student-dashboard.html" class="nav-item active" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #111827; transition: background 0.2s ease; margin-bottom: 4px;">
+          <span style="font-size: 18px;">🏠</span>
+          <span style="font-size: 0.9rem; font-weight: 500;">Home</span>
+        </a>
+
+        <a href="content.html" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+          <span style="font-size: 18px;">📚</span>
+          <span style="font-size: 0.9rem; font-weight: 500;">Content</span>
+        </a>
+
+        <button onclick="logout()" class="nav-item" style="display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 12px; border-radius: 6px; border: none; background: transparent; color: #6b7280; cursor: pointer; transition: all 0.2s ease; margin-bottom: 4px; font-family: inherit;">
+          <span style="font-size: 18px;">🚪</span>
+          <span style="font-size: 0.9rem; font-weight: 500;">Logout</span>
+        </button>
+
+        <!-- Divider -->
+        <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
+
+        <!-- Modules Section (Collapsible) -->
+        <div style="margin-bottom: 8px;">
+          <button id="modulesToggle" onclick="toggleModules()" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease;">
+            <span>Modules</span>
+            <span id="modulesArrow" style="transition: transform 0.2s ease;">›</span>
+          </button>
+        </div>
+
+        <div id="modulesMenu" style="display: block; margin-bottom: 8px;">
+          <a href="quiz.html?module=animal-anatomy" class="nav-item module-item" data-module-link="animal-anatomy" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🦴</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Anatomy & Physiology</span>
+          </a>
+
+          <a href="quiz.html?module=animal-welfare" class="nav-item module-item" data-module-link="animal-welfare" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐾</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Welfare</span>
+          </a>
+
+          <a href="quiz.html?module=communications" class="nav-item module-item" data-module-link="communications" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💬</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Communications</span>
+          </a>
+
+          <a href="quiz.html?module=work-experience" class="nav-item module-item" data-module-link="work-experience" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💼</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Work Experience</span>
+          </a>
+
+          <a href="quiz.html?module=vet-assistant" class="nav-item module-item" data-module-link="vet-assistant" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🏥</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Veterinary Assistant Skills</span>
+          </a>
+
+          <a href="quiz.html?module=small-animals" class="nav-item module-item" data-module-link="small-animals" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐹</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Small Animal Husbandry</span>
+          </a>
+
+          <a href="quiz.html?module=biology" class="nav-item module-item" data-module-link="biology" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🧬</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Biology</span>
+          </a>
+
+          <a href="quiz.html?module=grooming" class="nav-item module-item" data-module-link="grooming" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">✂️</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Grooming</span>
+          </a>
+
+          <a href="quiz.html?module=animal-behaviour" class="nav-item module-item" data-module-link="animal-behaviour" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🐕</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Animal Behaviour</span>
+          </a>
+
+          <a href="quiz.html?module=word-processing" class="nav-item module-item" data-module-link="word-processing" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">💻</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Word Processing</span>
+          </a>
+        </div>
+
+        <!-- Divider -->
+        <div style="height: 1px; background: #e5e7eb; margin: 16px 0;"></div>
+
+        <!-- Tools Section (Collapsible) -->
+        <div style="margin-bottom: 8px;">
+          <button id="toolsToggle" onclick="toggleTools()" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s ease;">
+            <span>Tools</span>
+            <span id="toolsArrow" style="transition: transform 0.2s ease; font-size: 14px;">›</span>
+          </button>
+        </div>
+
+        <div id="toolsMenu" style="display: none; margin-bottom: 8px;">
+          <a href="#glossary" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">📖</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Glossary</span>
+          </a>
+
+          <a href="#flashcards" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">📚</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Flashcards</span>
+          </a>
+
+          <a href="#notes" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">📝</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Notes</span>
+          </a>
+
+          <a href="#goals" class="nav-item" style="display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 24px; border-radius: 6px; text-decoration: none; color: #6b7280; transition: all 0.2s ease; margin-bottom: 4px;">
+            <span style="font-size: 18px;">🎯</span>
+            <span style="font-size: 0.9rem; font-weight: 500;">Goals</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <div class="welcome-header" style="margin-bottom: 40px;">
+        <div class="welcome-text">
+          <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0 0 8px 0;">Welcome back, <span id="studentName">Charlie!</span></h1>
+          <p style="color: #6b7280; font-size: 1rem; margin: 0;">Ready to continue your Animal Care journey?</p>
+        </div>
+      </div>
+
+      <!-- Progress Overview -->
+      <section class="progress-section">
+        <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Progress Overview</h2>
+        <div class="progress-grid">
+          <div class="progress-circles">
+            <div class="progress-circle" data-module="biology">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress biology" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
+                </svg>
+                <div class="circle-text">0%</div>
+              </div>
+              <div class="module-name">Biology</div>
+            </div>
+
+            <div class="progress-circle" data-module="animal-welfare">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress welfare" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
+                </svg>
+                <div class="circle-text">0%</div>
+              </div>
+              <div class="module-name">Animal Welfare</div>
+            </div>
+
+            <div class="progress-circle" data-module="animal-anatomy">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress anatomy" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
+                </svg>
+                <div class="circle-text">0%</div>
+              </div>
+              <div class="module-name">Anatomy</div>
+            </div>
+
+            <div class="progress-circle" data-module="grooming">
+              <div class="circle-wrapper">
+                <svg class="circle-svg">
+                  <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                  <circle class="circle-progress husbandry" cx="60" cy="60" r="50" style="stroke-dashoffset: 314;"></circle>
+                </svg>
+                <div class="circle-text">0%</div>
+              </div>
+              <div class="module-name">Grooming</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Stats & Achievements Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
+        <!-- Overall Stats -->
+        <section class="stats-section">
+          <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Your Statistics</h2>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+            <div class="stat-card" data-stat="totalQuizzes" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+              <h3 class="total-quizzes" style="font-size: 2.5rem; font-weight: 700; color: #3b82f6; margin: 0 0 8px 0;">0</h3>
+              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Quizzes Completed</p>
+            </div>
+
+            <div class="stat-card" data-stat="averageScore" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+              <h3 class="average-score" style="font-size: 2.5rem; font-weight: 700; color: #10b981; margin: 0 0 8px 0;">0%</h3>
+              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Average Score</p>
+            </div>
+
+            <div class="stat-card" data-stat="streak" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+              <h3 class="current-streak" style="font-size: 2.5rem; font-weight: 700; color: #f59e0b; margin: 0 0 8px 0;">0</h3>
+              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Day Streak</p>
+            </div>
+
+            <div class="stat-card" data-stat="totalTime" style="background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; text-align: center;">
+              <h3 class="total-time" style="font-size: 2.5rem; font-weight: 700; color: #8b5cf6; margin: 0 0 8px 0;">0 min</h3>
+              <p style="color: #6b7280; margin: 0; font-size: 0.95rem;">Total Time</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Achievements -->
+        <section class="achievements-section">
+          <h2 style="margin-bottom: 24px; font-size: 1.25rem; color: #111827;">Achievements</h2>
+          <div class="achievements-container" data-achievements style="display: flex; gap: 16px; flex-wrap: wrap; min-height: 200px; background: white; border-radius: 8px; padding: 24px; border: 1px solid #e5e7eb; align-content: flex-start;">
+            <p style="color: #999; margin: 0;">Complete quizzes to unlock achievements! 🏆</p>
+          </div>
+        </section>
+      </div>
+
+      <!-- Feature Cards -->
+      <section class="feature-cards">
+        <div class="feature-card" onclick="startSmartReview()">
+          <div class="feature-header">
+            <div class="feature-icon smart">🧠</div>
+            <h3 class="feature-title">Smart Review</h3>
+          </div>
+          <p class="feature-description">Revisit concepts with spaced repetition based on your performance</p>
+          <a href="#" class="feature-btn">Review</a>
+        </div>
+
+        <div class="feature-card" onclick="startAdaptiveQuiz()">
+          <div class="feature-header">
+            <div class="feature-icon adaptive">⭐</div>
+            <h3 class="feature-title">Adaptive Quiz</h3>
+          </div>
+          <p class="feature-description">Practice questions tailored to your level and learning needs</p>
+          <a href="quiz.html" class="feature-btn">Start Quiz</a>
+        </div>
+
+        <div class="feature-card" onclick="startExamMode()">
+          <div class="feature-header">
+            <div class="feature-icon exam">ℹ️</div>
+            <h3 class="feature-title">Exam Mode</h3>
+          </div>
+          <p class="feature-description">Prepare with timed mock exams that simulate real test conditions</p>
+          <a href="#" class="feature-btn">Take Exam</a>
+        </div>
+      </section>
+
+      <!-- Achievements Section -->
+      <section class="achievements-section" style="margin-bottom: 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 class="section-title" style="margin: 0;">🏆 Achievements</h2>
+          <div id="achievementStats" style="color: #6b7280; font-size: 0.9rem;">
+            <span id="achievementCount">0/19</span> unlocked
+          </div>
+        </div>
+
+        <!-- Achievement Filter -->
+        <div style="margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <button class="achievement-filter active" data-filter="all" onclick="filterAchievements('all')">All</button>
+          <button class="achievement-filter" data-filter="learning" onclick="filterAchievements('learning')">📚 Learning</button>
+          <button class="achievement-filter" data-filter="consistency" onclick="filterAchievements('consistency')">⚡ Consistency</button>
+          <button class="achievement-filter" data-filter="specialized" onclick="filterAchievements('specialized')">🎯 Specialized</button>
+          <button class="achievement-filter" data-filter="special" onclick="filterAchievements('special')">🌟 Special</button>
+        </div>
+
+        <!-- Achievements Grid -->
+        <div id="achievementsGrid" class="achievements-grid">
+          <!-- Achievements will be loaded dynamically -->
+        </div>
+      </section>
+
+      <!-- Bottom Section -->
+      <section class="bottom-section">
+        <!-- Veterinary Terms -->
+        <div class="glossary-section">
+          <h3 class="section-title">Veterinary Terms</h3>
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search the glossary" id="glossarySearch" />
+          </div>
+          
+          <div class="fact-card">
+            <div class="fact-title">
+              Animal Care Summary
+              <span class="star-icon">⭐</span>
+            </div>
+            <div class="fact-content">
+              Dogs have four chambers in their heart: the left atrium, left ventricle, right atrium, and right ventricle.
+            </div>
+          </div>
+
+          <div class="fact-card">
+            <div class="fact-title">
+              Quick Fact
+              <span class="star-icon">💡</span>
+            </div>
+            <div class="fact-content">
+              The gestation period for dogs is approximately 63 days, though it can range from 58-68 days.
+            </div>
+          </div>
+        </div>
+
+        <!-- Internship Journal -->
+        <div class="journal-section">
+          <div class="journal-header">
+            <h3 class="section-title">Internship Journal</h3>
+            <span class="journal-date">Friday, Apr 12</span>
+          </div>
+
+          <div class="journal-tasks">
+            <div class="task-item">
+              <div class="task-checkbox completed" onclick="toggleTask(this)"></div>
+              <div class="task-text completed">Complete grooming tasks</div>
+            </div>
+            <div class="task-item">
+              <div class="task-checkbox" onclick="toggleTask(this)"></div>
+              <div class="task-text">Review veterinary assistant skills</div>
+            </div>
+            <div class="task-item">
+              <div class="task-checkbox" onclick="toggleTask(this)"></div>
+              <div class="task-text">Practice animal handling techniques</div>
+            </div>
+          </div>
+
+          <div class="journal-actions">
+            <a href="#" class="journal-btn btn-secondary">View Journal</a>
+            <a href="#" class="journal-btn btn-primary">Take Journal</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+
+    // Função para carregar dados reais do estudante
+    async function loadRealStudentData() {
+      try {
+        console.log('🔄 Loading student data from Firebase...');
+
+        // Pegar usuário da sessão
+        const userSession = sessionStorage.getItem('pethologyUser');
+
+        if (!userSession) {
+          console.warn('⚠️ No user session found, redirecting to login...');
+          window.location.href = 'auth0-login.html';
+          return;
+        }
+
+        const user = JSON.parse(userSession);
+        console.log('👤 User:', user);
+
+        // Carregar progresso do Firebase
+        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+        console.log('📊 Progress loaded:', progress);
+
+        // Carregar histórico de quizzes para ordenação
+        const quizHistory = await PethologyFirebaseService.getStudentQuizHistory(user.id);
+        console.log('📝 Quiz history loaded:', quizHistory.length);
+
+        // Atualizar UI
+        updateStudentProfile(user);
+        updateProgressCircles(progress.moduleProgress, quizHistory);
+        updateOverallStats(progress.overallStats);
+        updateAchievements(progress.achievements);
+
+        console.log('✅ Student data loaded successfully!');
+
+      } catch (error) {
+        console.error('❌ Error loading student data:', error);
+        alert('Error loading your data. Please refresh the page.');
+      }
+    }
+
+    // Atualizar perfil do estudante
+    function updateStudentProfile(user) {
+      // Extrair apenas nome e sobrenome (não o email todo)
+      let displayName = user.name;
+
+      // Se for email, pegar só a parte antes do @
+      if (user.name.includes('@')) {
+        displayName = user.name.split('@')[0];
+      }
+
+      // Se tiver pontos ou underscores, substituir por espaços
+      displayName = displayName.replace(/[._]/g, ' ');
+
+      // Capitalizar primeira letra de cada palavra
+      displayName = displayName.split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+
+      // Pegar apenas primeiro e último nome (máximo 2 palavras)
+      const nameParts = displayName.split(' ');
+      if (nameParts.length > 2) {
+        displayName = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
+      }
+
+      // Atualizar nome
+      const nameElements = document.querySelectorAll('.student-name, #studentName, #displayName, #sidebarName');
+      nameElements.forEach(el => {
+        if (el) el.textContent = displayName;
+      });
+
+      // Atualizar foto
+      const avatarElements = document.querySelectorAll('.student-avatar, #studentAvatar, #sidebarAvatar');
+      avatarElements.forEach(el => {
+        if (el && user.photo) el.src = user.photo;
+      });
+
+      console.log('✅ Profile updated:', displayName);
+    }
+
+    // Atualizar círculos de progresso
+    function updateProgressCircles(moduleProgress, quizHistory = []) {
+      console.log('🔄 Updating progress circles...');
+      console.log('📊 Module progress data:', moduleProgress);
+
+      const moduleNames = {
+        'animal-welfare': { name: 'Animal Welfare', emoji: '🐾', color: 'welfare' },
+        'biology': { name: 'Biology', emoji: '🧬', color: 'biology' },
+        'grooming': { name: 'Grooming', emoji: '✂️', color: 'husbandry' },
+        'animal-anatomy': { name: 'Anatomy', emoji: '🦴', color: 'anatomy' },
+        'nutrition': { name: 'Nutrition', emoji: '🥗', color: 'nutrition' },
+        'parasitology': { name: 'Parasitology', emoji: '🦠', color: 'parasitology' },
+        'animal-behaviour': { name: 'Animal Behaviour', emoji: '🐕', color: 'behaviour' },
+        'small-animals': { name: 'Small Animals', emoji: '🐹', color: 'small-animals' },
+        'vet-assistant': { name: 'Vet Assistant', emoji: '🏥', color: 'vet' },
+        'communications': { name: 'Communications', emoji: '💬', color: 'communications' },
+        'word-processing': { name: 'Word Processing', emoji: '📝', color: 'word-processing' }
+      };
+
+      // Get last quiz date for each module
+      const moduleLastDate = {};
+      quizHistory.forEach(quiz => {
+        const date = quiz.completedAt?.toDate ? quiz.completedAt.toDate() : new Date(quiz.completedAt);
+        if (!moduleLastDate[quiz.quizId] || date > moduleLastDate[quiz.quizId]) {
+          moduleLastDate[quiz.quizId] = date;
+        }
+      });
+
+      console.log('📅 Module last dates:', moduleLastDate);
+
+      // Sort modules: completed (with progress) first by most recent date, then others
+      const sortedModules = Object.entries(moduleProgress)
+        .sort((a, b) => {
+          const [moduleA, dataA] = a;
+          const [moduleB, dataB] = b;
+
+          // Prioritize modules with progress
+          if (dataA.completion > 0 && dataB.completion === 0) return -1;
+          if (dataA.completion === 0 && dataB.completion > 0) return 1;
+
+          // If both have progress, sort by most recent quiz date
+          if (dataA.completion > 0 && dataB.completion > 0) {
+            const dateA = moduleLastDate[moduleA] || new Date(0);
+            const dateB = moduleLastDate[moduleB] || new Date(0);
+            return dateB - dateA; // Most recent first
+          }
+
+          return 0;
+        })
+        .slice(0, 4); // Show only top 4
+
+      console.log('🔄 Sorted modules:', sortedModules.map(([name]) => name));
+
+      // Get the container
+      const circlesContainer = document.querySelector('.progress-circles');
+      if (!circlesContainer) {
+        console.warn('⚠️ Progress circles container not found');
+        return;
+      }
+
+      // Clear and rebuild
+      circlesContainer.innerHTML = '';
+
+      sortedModules.forEach(([moduleName, data]) => {
+        const moduleInfo = moduleNames[moduleName] || { name: moduleName, emoji: '📚', color: 'default' };
+        const completion = data.completion || 0;
+        const circumference = 2 * Math.PI * 50;
+        const offset = circumference - (completion / 100) * circumference;
+
+        const circleHTML = `
+          <div class="progress-circle" data-module="${moduleName}">
+            <div class="circle-wrapper">
+              <svg class="circle-svg">
+                <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                <circle class="circle-progress ${moduleInfo.color}" cx="60" cy="60" r="50" style="stroke-dashoffset: ${offset};"></circle>
+              </svg>
+              <div class="circle-text">${completion}%</div>
+            </div>
+            <div class="module-name">${moduleInfo.emoji} ${moduleInfo.name}</div>
+          </div>
+        `;
+
+        circlesContainer.innerHTML += circleHTML;
+        console.log(`✅ ${moduleName}: ${completion}%`);
+      });
+
+      console.log('✅ Progress circles updated with most recent modules');
+    }
+
+    // Atualizar estatísticas gerais
+    function updateOverallStats(stats) {
+      console.log('🔄 Updating overall stats...');
+
+      // Total de quizzes
+      const totalQuizzesEl = document.querySelector('.total-quizzes, [data-stat="totalQuizzes"]');
+      if (totalQuizzesEl) {
+        totalQuizzesEl.textContent = stats.totalQuizzes || 0;
+      }
+
+      // Média de score
+      const avgScoreEl = document.querySelector('.average-score, [data-stat="averageScore"]');
+      if (avgScoreEl) {
+        const score = Math.round((stats.averageScore || 0) * 100);
+        avgScoreEl.textContent = `${score}%`;
+      }
+
+      // Streak
+      const streakEl = document.querySelector('.current-streak, [data-stat="streak"]');
+      if (streakEl) {
+        streakEl.textContent = stats.streak || 0;
+      }
+
+      // Tempo total (em minutos)
+      const timeEl = document.querySelector('.total-time, [data-stat="totalTime"]');
+      if (timeEl) {
+        const minutes = Math.round((stats.totalTimeSpent || 0) / 60);
+        timeEl.textContent = `${minutes} min`;
+      }
+
+      console.log('✅ Stats updated:', stats);
+    }
+
+    // Atualizar achievements
+    function updateAchievements(achievements) {
+      const achievementsContainer = document.querySelector('.achievements-container, [data-achievements]');
+
+      if (!achievementsContainer) return;
+
+      if (achievements.length === 0) {
+        achievementsContainer.innerHTML = '<p style="color: #999; margin: 0;">Complete quizzes to unlock achievements! 🏆</p>';
+        return;
+      }
+
+      const achievementsList = {
+        'quiz-master': { icon: '🌟', title: 'Quiz Master', desc: 'Complete 10 quizzes' },
+        'perfect-score': { icon: '🎯', title: 'Perfect Score', desc: 'Get 100% on a quiz' },
+        'week-warrior': { icon: '🔥', title: 'Week Warrior', desc: '7 day streak' },
+        'month-master': { icon: '👑', title: 'Month Master', desc: '30 day streak' },
+        'bookworm': { icon: '📚', title: 'Bookworm', desc: 'Read 20 modules' }
+      };
+
+      achievementsContainer.innerHTML = achievements.map(achievementId => {
+        const achievement = achievementsList[achievementId] || { icon: '🏆', title: achievementId };
+        return `
+          <div class="achievement-badge" title="${achievement.desc || ''}" style="background: white; border: 2px solid #fbbf24; border-radius: 12px; padding: 16px; text-align: center; min-width: 100px;">
+            <span class="achievement-icon" style="font-size: 2rem; display: block; margin-bottom: 8px;">${achievement.icon}</span>
+            <span class="achievement-title" style="font-size: 0.85rem; font-weight: 600; color: #374151;">${achievement.title}</span>
+          </div>
+        `;
+      }).join('');
+
+      console.log('✅ Achievements updated:', achievements);
+    }
+
+    // Carregar dados quando a página carregar
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 Student Dashboard loading...');
+      loadRealStudentData();
+    });
+
+    // Exportar funções para uso global (se necessário)
+    window.updateStudentProgress = loadRealStudentData;
+
+    // Logout function
+    window.logout = function() {
+      if (confirm('Are you sure you want to logout?')) {
+        sessionStorage.removeItem('pethologyUser');
+        window.location.href = 'auth0-login.html';
+      }
+    }
+
+    // Toggle Tools menu
+    window.toggleTools = function() {
+      const menu = document.getElementById('toolsMenu');
+      const arrow = document.getElementById('toolsArrow');
+      const button = document.getElementById('toolsToggle');
+
+      if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        arrow.style.transform = 'rotate(90deg)';
+        button.style.color = '#111827';
+      } else {
+        menu.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+        button.style.color = '#9ca3af';
+      }
+    }
+
+    // Toggle Modules menu
+    window.toggleModules = function() {
+      const menu = document.getElementById('modulesMenu');
+      const arrow = document.getElementById('modulesArrow');
+      const button = document.getElementById('modulesToggle');
+
+      if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        arrow.style.transform = 'rotate(90deg)';
+        button.style.color = '#111827';
+      } else {
+        menu.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+        button.style.color = '#9ca3af';
+      }
+    }
+
+    // Feature functions
+    window.startSmartReview = function() {
+      alert('Smart Review will analyze your past quiz performance and suggest topics to review!');
+    }
+
+    window.startAdaptiveQuiz = function() {
+      window.location.href = 'quiz.html';
+    }
+
+    window.startExamMode = function() {
+      alert('Exam Mode: Timed practice exams coming soon!');
+    }
+
+    // Task management
+    window.toggleTask = function(checkbox) {
+      checkbox.classList.toggle('completed');
+      const taskText = checkbox.nextElementSibling;
+      taskText.classList.toggle('completed');
+
+      const isCompleted = checkbox.classList.contains('completed');
+      console.log('Task updated:', taskText.textContent, isCompleted);
+    }
+
+    // Glossary search
+    document.getElementById('glossarySearch').addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      console.log('Searching glossary for:', searchTerm);
+      // Implement glossary search functionality
+    });
+
+    // Module navigation
+    document.querySelectorAll('.module-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const moduleLink = this.getAttribute('data-module-link');
+
+        if (moduleLink) {
+          // Navigate to quiz with module parameter
+          console.log('Navigating to quiz:', moduleLink);
+          window.location.href = `quiz.html?module=${moduleLink}`;
+        } else {
+          console.log('Module link not configured yet');
+        }
+      });
+    });
+
+    // Tool navigation
+    document.querySelectorAll('.tool-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const toolName = this.textContent.trim();
+        console.log('Selected tool:', toolName);
+
+        switch(toolName) {
+          case 'Glossary':
+            document.querySelector('.glossary-section').scrollIntoView({ behavior: 'smooth' });
+            break;
+          case 'Flashcards':
+            alert('Flashcards feature coming soon!');
+            break;
+          case 'Notes':
+            alert('Notes feature coming soon!');
+            break;
+          case 'Goals':
+            alert('Goals tracking coming soon!');
+            break;
+        }
+      });
+    });
+
+    // ====================================
+    // ACHIEVEMENT SYSTEM
+    // ====================================
+    import { ACHIEVEMENTS, getAchievementsByCategory, getAchievementStats } from './assets/js/achievements.js';
+
+    let currentFilter = 'all';
+    let studentAchievements = [];
+
+    // Filter achievements by category (defined early for onclick handlers)
+    window.filterAchievements = function(category) {
+      currentFilter = category;
+
+      // Update filter buttons
+      document.querySelectorAll('.achievement-filter').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.filter === category) {
+          btn.classList.add('active');
+        }
+      });
+
+      renderAchievements();
+    };
+
+    // Render achievements based on current filter
+    function renderAchievements() {
+      const grid = document.getElementById('achievementsGrid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      const achievementsToShow = Object.values(ACHIEVEMENTS).filter(achievement => {
+        if (currentFilter === 'all') return true;
+        return achievement.category === currentFilter;
+      });
+
+      achievementsToShow.forEach(achievement => {
+        const isUnlocked = studentAchievements.includes(achievement.id);
+
+        const card = document.createElement('div');
+        card.className = `achievement-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        card.dataset.category = achievement.category;
+
+        card.innerHTML = `
+          <div class="achievement-emoji">${achievement.emoji}</div>
+          <div class="achievement-name">${achievement.name}</div>
+          <div class="achievement-description">${achievement.description}</div>
+          <div class="achievement-rarity ${achievement.rarity}">${achievement.rarity}</div>
+          ${isUnlocked ? '<div class="unlocked-badge">✓</div>' : ''}
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Update achievement statistics
+    function updateAchievementStats() {
+      const stats = getAchievementStats(studentAchievements);
+      const countElement = document.getElementById('achievementCount');
+
+      if (countElement) {
+        countElement.textContent = `${stats.unlocked}/${stats.total}`;
+      }
+    }
+
+    // Load and render achievements
+    async function loadAchievements() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        if (!userSession) return;
+
+        const user = JSON.parse(userSession);
+        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+
+        studentAchievements = progress.achievements || [];
+
+        renderAchievements();
+        updateAchievementStats();
+      } catch (error) {
+        console.error('Error loading achievements:', error);
+      }
+    }
+
+    // Override the existing updateAchievements function for achievement system
+    const originalUpdateAchievements = updateAchievements;
+    updateAchievements = function(achievements = []) {
+      studentAchievements = achievements;
+      renderAchievements();
+      updateAchievementStats();
+    };
+
+    // Initialize achievements on page load
+    window.addEventListener('load', () => {
+      loadAchievements();
+    });
+
+    // TEST FUNCTION - Remove in production
+    // Uncomment to test achievement toast
+    // window.testAchievement = async function() {
+    //   const { showAchievementToast, ACHIEVEMENTS } = await import('./assets/js/achievements.js');
+    //   showAchievementToast(ACHIEVEMENTS.first_steps);
+    // };
+  </script>
+</body>
+</html>

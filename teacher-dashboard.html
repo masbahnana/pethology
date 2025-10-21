@@ -1073,10 +1073,38 @@
         console.log('👥 Students:', students);
 
         // Hide loading, show content
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('statsContainer').style.display = 'grid';
-        document.getElementById('mainContent').style.display = 'grid';
-        document.getElementById('modulePerformanceCard').style.display = 'block';
+        const loadingEl = document.getElementById('loadingState');
+        const statsEl = document.getElementById('statsContainer');
+        const contentEl = document.getElementById('mainContent');
+        const moduleEl = document.getElementById('modulePerformanceCard');
+
+        console.log('🔍 Elements found:', {
+          loading: !!loadingEl,
+          stats: !!statsEl,
+          content: !!contentEl,
+          module: !!moduleEl
+        });
+
+        // Use setTimeout to ensure DOM is fully ready
+        setTimeout(() => {
+          // Hide loading
+          if (loadingEl) {
+            loadingEl.style.cssText = 'display: none !important;';
+          }
+
+          // Show content with !important to override inline styles
+          if (statsEl) {
+            statsEl.style.cssText = 'display: grid !important;';
+          }
+          if (contentEl) {
+            contentEl.style.cssText = 'display: grid !important;';
+          }
+          if (moduleEl) {
+            moduleEl.style.cssText = 'display: block !important;';
+          }
+
+          console.log('✅ Content visibility toggled!');
+        }, 100);
 
         // Update statistics
         updateStatistics(analytics.overview);

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Announcements - Pethology</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      padding: 40px;
+      background: #f7f6f3;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h1 { margin-bottom: 8px; }
+    .btn {
+      background: #2383E2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    .btn:hover { background: #1a73d1; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.show { display: flex; }
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      padding: 24px;
+    }
+    .form-group { margin-bottom: 16px; }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: inherit;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .modal-footer {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+    }
+    #announcements-list { margin-top: 20px; }
+    .announcement-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .announcement-title { font-weight: 600; margin-bottom: 8px; }
+    .announcement-message { color: #6b7280; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>🧪 Test Announcements System</h1>
+      <p style="color: #6b7280; margin-bottom: 20px;">Simple test page - no complex loading</p>
+
+      <button class="btn" onclick="openModal()">
+        📢 Create Test Announcement
+      </button>
+
+      <div id="announcements-list"></div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2 style="margin-bottom: 20px;">Create Announcement</h2>
+
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="title" placeholder="e.g., New Quiz Available">
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="message" placeholder="Write your message here..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="pinned"> Pin to top
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn" onclick="createAnnouncement()">Publish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, Timestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYq8xnfL9KPiKYHHvDG1zHDvjd4WAOO3o",
+      authDomain: "pethology-7e9d7.firebaseapp.com",
+      projectId: "pethology-7e9d7",
+      storageBucket: "pethology-7e9d7.firebasestorage.app",
+      messagingSenderId: "485201789422",
+      appId: "1:485201789422:web:309a54ceb82588973f0eff"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.openModal = function() {
+      document.getElementById('modal').classList.add('show');
+    };
+
+    window.closeModal = function() {
+      document.getElementById('modal').classList.remove('show');
+    };
+
+    window.createAnnouncement = async function() {
+      const title = document.getElementById('title').value;
+      const message = document.getElementById('message').value;
+      const isPinned = document.getElementById('pinned').checked;
+
+      if (!title || !message) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      try {
+        const announcement = {
+          title,
+          message,
+          isPinned,
+          createdBy: 'test-teacher',
+          createdByName: 'Test Teacher',
+          createdAt: Timestamp.now(),
+          readBy: []
+        };
+
+        await addDoc(collection(db, 'announcements'), announcement);
+
+        alert('✅ Announcement created!');
+        closeModal();
+
+        // Clear form
+        document.getElementById('title').value = '';
+        document.getElementById('message').value = '';
+        document.getElementById('pinned').checked = false;
+
+        // Reload list
+        loadAnnouncements();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error creating announcement: ' + error.message);
+      }
+    };
+
+    async function loadAnnouncements() {
+      try {
+        const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'));
+        const snapshot = await getDocs(q);
+
+        const list = document.getElementById('announcements-list');
+
+        if (snapshot.empty) {
+          list.innerHTML = '<p style="color: #6b7280; margin-top: 20px;">No announcements yet</p>';
+          return;
+        }
+
+        list.innerHTML = '<h3 style="margin-top: 24px; margin-bottom: 12px;">All Announcements:</h3>';
+
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const date = data.createdAt.toDate().toLocaleDateString();
+
+          list.innerHTML += `
+            <div class="announcement-card">
+              <div class="announcement-title">
+                ${data.isPinned ? '📌 ' : ''}${data.title}
+              </div>
+              <div class="announcement-message">${data.message}</div>
+              <div style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
+                ${date} • by ${data.createdByName}
+              </div>
+            </div>
+          `;
+        });
+      } catch (error) {
+        console.error('Error loading:', error);
+      }
+    }
+
+    // Load on page load
+    loadAnnouncements();
+    console.log('✅ Test page loaded!');
+  </script>
+</body>
+</html>
