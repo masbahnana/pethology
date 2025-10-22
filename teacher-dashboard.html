@@ -1342,15 +1342,16 @@
           console.error('❌ Error in updateModulePerformance:', error);
         }
 
-        // Load calendar events
-        try {
-          console.log('📅 Loading calendar events...');
-          if (typeof window.loadCalendarEvents === 'function') {
-            await window.loadCalendarEvents();
-          }
-        } catch (error) {
-          console.error('❌ Error loading calendar events:', error);
-        }
+        // Load calendar events - DISABLED: Firebase WebChannel causes browser freeze
+        // TODO: Revisit calendar implementation with alternative approach
+        // try {
+        //   console.log('📅 Loading calendar events...');
+        //   if (typeof window.loadCalendarEvents === 'function') {
+        //     await window.loadCalendarEvents();
+        //   }
+        // } catch (error) {
+        //   console.error('❌ Error loading calendar events:', error);
+        // }
 
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
@@ -1788,8 +1789,9 @@
     });
   </script>
 
-  <!-- Import Calendar Module -->
-  <script type="module">
+  <!-- Import Calendar Module - DISABLED: Causes browser freeze -->
+  <!-- TODO: Revisit with alternative approach (REST API, simpler queries, etc) -->
+  <!-- <script type="module">
     import {
       showCreateEventModal,
       closeCalendarModal,
@@ -1802,6 +1804,6 @@
     window.closeCalendarModal = closeCalendarModal;
     window.handleCalendarSubmit = handleCalendarSubmit;
     window.loadCalendarEvents = loadCalendarEvents;
-  </script>
+  </script> -->
 </body>
 </html>

@@ -118,13 +118,16 @@ Pode me ajudar a implementar?
 
 #### **Features a Implementar:**
 
-**1. Calendar Functionality:**
-- [ ] Calendar widget interativo no teacher dashboard
-- [ ] Criar/editar eventos no calendário
-- [ ] Visualização mensal/semanal
-- [ ] Color coding por tipo de evento
+**1. Calendar Functionality:** ⚠️ PARCIALMENTE IMPLEMENTADO (DISABLED)
+- [x] Calendar widget interativo no teacher dashboard (implementado mas disabled)
+- [x] Criar eventos no calendário (modal pronto mas disabled)
+- [x] Visualização mensal (implementado mas disabled)
+- [x] Color coding por tipo de evento (implementado)
+- [ ] Editar/deletar eventos
 - [ ] Sync com deadlines e quizzes
-- [ ] Eventos aparecem no student dashboard também
+- [x] Eventos aparecem no student dashboard (implementado mas disabled)
+
+**⚠️ NOTA:** Calendar implementado mas temporariamente desabilitado devido a problema de performance com Firebase WebChannel que causa browser freeze. Precisa revisitar com abordagem alternativa (REST API, queries mais simples, lazy loading, etc)
 
 **2. Deadlines Functionality:**
 - [ ] Sistema de deadlines para assignments/quizzes
@@ -142,9 +145,9 @@ Pode me ajudar a implementar?
 - [ ] Badge com contador de não lidos (FUTURE)
 
 **Arquivos a Criar:**
-- `assets/js/calendar-teacher.js` - Lógica do calendário para professor
+- ⚠️ `assets/js/calendar-teacher.js` - Lógica do calendário (CRIADO mas DISABLED)
 - `assets/js/deadlines.js` - Sistema de deadlines
-- ✅ `assets/js/announcements.js` - Sistema de announcements (CRIADO)
+- ✅ `assets/js/announcements.js` - Sistema de announcements (CRIADO e FUNCIONANDO)
 
 **Arquivos Modificados:** ✅
 - ✅ `teacher-dashboard.html` - Quick Actions funcionais (Announcements)
