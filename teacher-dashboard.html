@@ -1359,16 +1359,15 @@
           console.error('❌ Error in updateModulePerformance:', error);
         }
 
-        // Load calendar events - DISABLED: Firebase WebChannel causes browser freeze
-        // TODO: Revisit calendar implementation with alternative approach
-        // try {
-        //   console.log('📅 Loading calendar events...');
-        //   if (typeof window.loadCalendarEvents === 'function') {
-        //     await window.loadCalendarEvents();
-        //   }
-        // } catch (error) {
-        //   console.error('❌ Error loading calendar events:', error);
-        // }
+        // Load calendar events - NOW USING REST API (no Firebase SDK!)
+        try {
+          console.log('📅 Loading calendar events (REST API)...');
+          if (typeof window.loadCalendarEvents === 'function') {
+            await window.loadCalendarEvents();
+          }
+        } catch (error) {
+          console.error('❌ Error loading calendar events:', error);
+        }
 
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
@@ -1836,21 +1835,20 @@
     */
   </script>
 
-  <!-- Import Calendar Module - DISABLED: Causes browser freeze -->
-  <!-- TODO: Revisit with alternative approach (REST API, simpler queries, etc) -->
-  <!-- <script type="module">
+  <!-- Import Calendar Module - REST VERSION (no Firebase SDK) -->
+  <script type="module">
     import {
       showCreateEventModal,
       closeCalendarModal,
       handleCalendarSubmit,
       loadCalendarEvents
-    } from './assets/js/calendar-teacher.js';
+    } from './assets/js/calendar-rest.js?v=1.0';
 
     // Make functions globally available
     window.showCreateEventModal = showCreateEventModal;
     window.closeCalendarModal = closeCalendarModal;
     window.handleCalendarSubmit = handleCalendarSubmit;
     window.loadCalendarEvents = loadCalendarEvents;
-  </script> -->
+  </script>
 </body>
 </html>
