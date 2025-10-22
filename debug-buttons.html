@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug Buttons - Find What's Blocking</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .box {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #4f46e5;
+    }
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 12px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .error { color: #dc2626; }
+    .success { color: #059669; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Debug Buttons - Find What's Blocking</h1>
+
+  <div class="box">
+    <h2>Test 1: Simple Button Click</h2>
+    <button id="testBtn" onclick="testClick()">Click Me!</button>
+    <p id="clickResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>Test 2: Check for Overlays</h2>
+    <button onclick="checkOverlays()">Find Blocking Elements</button>
+    <p id="overlayResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>Test 3: Inspect Element at Cursor Position</h2>
+    <p>Move your mouse and click anywhere to see what element is there:</p>
+    <button onclick="enableInspector()">Enable Inspector Mode</button>
+    <p id="inspectorResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>📝 Debug Log</h2>
+    <pre id="log"></pre>
+  </div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    const logs = [];
+
+    function log(msg) {
+      logs.push(`[${new Date().toLocaleTimeString()}] ${msg}`);
+      logEl.textContent = logs.join('\n');
+      logEl.scrollTop = logEl.scrollHeight;
+      console.log(msg);
+    }
+
+    function testClick() {
+      log('✅ Button click worked!');
+      document.getElementById('clickResult').innerHTML = '<span class="success">✅ Button is clickable!</span>';
+    }
+
+    function checkOverlays() {
+      log('🔍 Checking for blocking elements...');
+
+      // Find all elements with high z-index
+      const allElements = document.querySelectorAll('*');
+      const highZIndex = [];
+
+      allElements.forEach(el => {
+        const zIndex = window.getComputedStyle(el).zIndex;
+        if (zIndex !== 'auto' && parseInt(zIndex) > 100) {
+          highZIndex.push({
+            element: el.tagName,
+            class: el.className,
+            id: el.id,
+            zIndex: zIndex,
+            position: window.getComputedStyle(el).position
+          });
+        }
+      });
+
+      if (highZIndex.length > 0) {
+        log(`⚠️ Found ${highZIndex.length} elements with high z-index:`);
+        highZIndex.forEach(item => {
+          log(`  - ${item.element} ${item.class ? '.'+item.class : ''} ${item.id ? '#'+item.id : ''} (z-index: ${item.zIndex}, position: ${item.position})`);
+        });
+        document.getElementById('overlayResult').innerHTML = `<span class="error">⚠️ Found ${highZIndex.length} potential blockers (check log)</span>`;
+      } else {
+        log('✅ No high z-index elements found');
+        document.getElementById('overlayResult').innerHTML = '<span class="success">✅ No obvious overlays detected</span>';
+      }
+
+      // Check for pointer-events: none
+      const noPointer = [];
+      allElements.forEach(el => {
+        const pointerEvents = window.getComputedStyle(el).pointerEvents;
+        if (pointerEvents === 'none') {
+          noPointer.push({
+            element: el.tagName,
+            class: el.className,
+            id: el.id
+          });
+        }
+      });
+
+      if (noPointer.length > 0) {
+        log(`ℹ️ Found ${noPointer.length} elements with pointer-events: none (this is usually OK)`);
+      }
+    }
+
+    let inspectorEnabled = false;
+
+    function enableInspector() {
+      inspectorEnabled = !inspectorEnabled;
+
+      if (inspectorEnabled) {
+        log('🎯 Inspector mode ENABLED - click anywhere to see element details');
+        document.getElementById('inspectorResult').innerHTML = '<span class="success">🎯 Inspector active - click anywhere!</span>';
+        document.body.style.cursor = 'crosshair';
+      } else {
+        log('🎯 Inspector mode DISABLED');
+        document.getElementById('inspectorResult').innerHTML = '';
+        document.body.style.cursor = 'default';
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!inspectorEnabled) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const el = e.target;
+      const styles = window.getComputedStyle(el);
+
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      log(`🎯 Clicked on: ${el.tagName} ${el.className ? '.'+el.className : ''} ${el.id ? '#'+el.id : ''}`);
+      log(`  Position: ${styles.position}`);
+      log(`  Z-index: ${styles.zIndex}`);
+      log(`  Pointer-events: ${styles.pointerEvents}`);
+      log(`  Display: ${styles.display}`);
+      log(`  Visibility: ${styles.visibility}`);
+      log(`  Opacity: ${styles.opacity}`);
+      log(`  Cursor: ${styles.cursor}`);
+
+      // Check if there's something on top
+      const rect = el.getBoundingClientRect();
+      const elementAtPoint = document.elementFromPoint(rect.left + rect.width/2, rect.top + rect.height/2);
+
+      if (elementAtPoint !== el) {
+        log(`⚠️ WARNING: Different element at same position!`);
+        log(`  Element on top: ${elementAtPoint.tagName} ${elementAtPoint.className ? '.'+elementAtPoint.className : ''} ${elementAtPoint.id ? '#'+elementAtPoint.id : ''}`);
+      } else {
+        log(`✅ This element is on top (nothing blocking it)`);
+      }
+
+      log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+    }, true);
+
+    log('Debug tool loaded. Click buttons to run tests.');
+  </script>
+</body>
+</html>

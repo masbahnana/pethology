@@ -37,7 +37,7 @@ const db = initializeFirestore(app, {
   useFetchStreams: false // Use XHR for compatibility
 });
 
-console.log('🔥 Firebase initialized with LONG POLLING mode (no WebChannel) - v3.0');
+console.log('🔥 Firebase initialized with LONG POLLING mode (no WebChannel) - v3.1 (no-cache headers)');
 
 class PethologyFirebaseService {
   
