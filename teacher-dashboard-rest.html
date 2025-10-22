@@ -1787,7 +1787,10 @@
     window.handleAnnouncementSubmit = handleAnnouncementSubmit;
     */
 
-    // Initialize Lucide icons when modal content changes
+    // DISABLED: MutationObserver was causing infinite loop / thread blocking
+    // lucide.createIcons() modifies DOM -> triggers observer -> calls createIcons() -> infinite loop
+    // TODO: Use more specific observer or manual icon initialization
+    /*
     const observer = new MutationObserver(() => {
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -1798,6 +1801,7 @@
       childList: true,
       subtree: true
     });
+    */
   </script>
 
   <!-- Import Calendar Module - DISABLED: Causes browser freeze -->
