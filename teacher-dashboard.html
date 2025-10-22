@@ -186,7 +186,30 @@
       margin: 0;
     }
 
-    /* Stats Grid */
+    /* NEW LAYOUT: Dashboard Top Section */
+    .dashboard-top-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr 400px;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stats-left-column {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .calendar-right-column {
+      grid-row: span 2;
+    }
+
+    .quick-actions-bottom {
+      grid-column: span 2;
+    }
+
+    /* Stats Grid (OLD - keep for compatibility) */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -233,10 +256,10 @@
       line-height: 1;
     }
 
-    /* Content Grid */
+    /* Content Grid - Full width for Students Table */
     .content-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 1fr;
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -405,33 +428,58 @@
       list-style: none;
       padding: 0;
       margin: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .quick-action-item {
-      padding: 12px;
+      padding: 16px;
       border-radius: 6px;
-      margin-bottom: 8px;
       cursor: pointer;
-      transition: background 150ms ease;
+      transition: all 150ms ease;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      background: var(--bg-secondary);
+      border: 1px solid transparent;
     }
 
     .quick-action-item:hover {
-      background: var(--bg-hover);
+      background: white;
+      border-color: var(--gray-200);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
     .quick-action-icon {
-      width: 16px;
-      height: 16px;
-      color: var(--gray-500);
+      color: var(--blue-primary);
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
     }
 
     .quick-action-text {
-      font-size: 14px;
       font-weight: 500;
       color: var(--gray-700);
+      font-size: 14px;
+    }
+
+    /* Responsive layout */
+    @media (max-width: 1200px) {
+      .dashboard-top-section {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-left-column,
+      .calendar-right-column,
+      .quick-actions-bottom {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+      }
+
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* Module Performance Slider */
@@ -1061,62 +1109,64 @@
       <p>Loading analytics...</p>
     </div>
 
-    <!-- Statistics Overview -->
-    <div id="statsContainer" class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <i data-lucide="users" class="stat-icon"></i>
-          <span class="stat-label">Total Students</span>
+    <!-- NEW LAYOUT: Dashboard Top Section -->
+    <div id="statsContainer" class="dashboard-top-section">
+      <!-- Stats: 2x2 Grid (Left Column) -->
+      <div class="stats-left-column">
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="users" class="stat-icon"></i>
+            <span class="stat-label">Total Students</span>
+          </div>
+          <div class="stat-value" id="totalStudents">0</div>
         </div>
-        <div class="stat-value" id="totalStudents">0</div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="activity" class="stat-icon"></i>
+            <span class="stat-label">Active This Week</span>
+          </div>
+          <div class="stat-value" id="activeStudents">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="clipboard-check" class="stat-icon"></i>
+            <span class="stat-label">Total Quiz Attempts</span>
+          </div>
+          <div class="stat-value" id="totalQuizzes">0</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="bar-chart-2" class="stat-icon"></i>
+            <span class="stat-label">Average Score</span>
+          </div>
+          <div class="stat-value" id="averageScore">0%</div>
+        </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-header">
-          <i data-lucide="activity" class="stat-icon"></i>
-          <span class="stat-label">Active This Week</span>
-        </div>
-        <div class="stat-value" id="activeStudents">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <i data-lucide="clipboard-check" class="stat-icon"></i>
-          <span class="stat-label">Total Quiz Attempts</span>
-        </div>
-        <div class="stat-value" id="totalQuizzes">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <i data-lucide="bar-chart-2" class="stat-icon"></i>
-          <span class="stat-label">Average Score</span>
-        </div>
-        <div class="stat-value" id="averageScore">0%</div>
-      </div>
-    </div>
-
-    <!-- Main Content Grid -->
-    <div id="mainContent" class="content-grid">
-      <!-- Students Progress Table -->
-      <div class="card">
+      <!-- Calendar (Right Column - spans 2 rows) -->
+      <div class="card calendar-right-column">
         <div class="card-header">
           <h2 class="card-title">
-            <i data-lucide="users"></i>
-            Student Progress
+            <i data-lucide="calendar"></i>
+            Calendar
           </h2>
-          <span id="studentCount" style="color: var(--gray-500); font-size: 13px;">0 students</span>
-        </div>
-        <div class="table-container" id="studentsTableContainer">
-          <div class="empty-state">
-            <div class="empty-state-icon">👥</div>
-            <p>No students yet. They will appear here once they start using the platform.</p>
-          </div>
+          <button class="btn btn-secondary btn-sm" onclick="showCreateEventModal()">
+          <i data-lucide="plus"></i>
+          Add Event
+        </button>
+      </div>
+        <div id="calendarWidget">
+          <p style="text-align: center; color: var(--gray-500); padding: 40px;">
+            Loading calendar...
+          </p>
         </div>
       </div>
 
-      <!-- Quick Actions -->
-      <div class="card">
+      <!-- Quick Actions (Bottom - spans 2 columns) -->
+      <div class="card quick-actions-bottom">
         <div class="card-header">
           <h2 class="card-title">
             <i data-lucide="zap"></i>
@@ -1152,6 +1202,26 @@
       </div>
     </div>
 
+    <!-- Main Content Grid -->
+    <div id="mainContent" class="content-grid">
+      <!-- Students Progress Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i data-lucide="users"></i>
+            Student Progress
+          </h2>
+          <span id="studentCount" style="color: var(--gray-500); font-size: 13px;">0 students</span>
+        </div>
+        <div class="table-container" id="studentsTableContainer">
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <p>No students yet. They will appear here once they start using the platform.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Module Performance -->
     <div id="modulePerformanceCard" class="card">
       <div class="card-header">
@@ -1173,25 +1243,6 @@
           <div class="empty-state-icon">📚</div>
           <p>No quiz data available yet</p>
         </div>
-      </div>
-    </div>
-
-    <!-- 📅 Calendar Widget -->
-    <div class="card">
-      <div class="card-header">
-        <h2 class="card-title">
-          <i data-lucide="calendar"></i>
-          Calendar
-        </h2>
-        <button class="btn btn-secondary btn-sm" onclick="showCreateEventModal()">
-          <i data-lucide="plus"></i>
-          Add Event
-        </button>
-      </div>
-      <div id="calendarWidget">
-        <p style="text-align: center; color: var(--gray-500); padding: 40px;">
-          Loading calendar...
-        </p>
       </div>
     </div>
   </div>
@@ -1516,23 +1567,41 @@
     function updateModulePerformance(modulePerformance) {
       const container = document.getElementById('modulePerformanceContainer');
 
-      if (modulePerformance.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">📚</div>
-            <p>No quiz data available yet</p>
-          </div>
-        `;
-        return;
-      }
+      // Define all modules (even if no data yet)
+      const allModuleNames = [
+        'Animal Anatomy & Physiology',
+        'Animal Welfare',
+        'Communications',
+        'Work Experience',
+        'Vet Assistant Skills',
+        'Small Animals H&H',
+        'Biology',
+        'Grooming',
+        'Animal Behaviour',
+        'Word Processing'
+      ];
 
-      const totalModules = modulePerformance.length;
+      // Create a map of existing data
+      const dataMap = new Map(modulePerformance.map(m => [m.module, m]));
+
+      // Build complete module list with data or defaults
+      const completeModuleList = allModuleNames.map(moduleName => {
+        const existing = dataMap.get(moduleName);
+        return existing || {
+          module: moduleName,
+          averageScore: 0,
+          averageTime: 0,
+          attempts: 0
+        };
+      });
+
+      const totalModules = completeModuleList.length;
       const totalPages = Math.ceil(totalModules / modulesPerPage);
 
       const performanceHTML = `
         <div class="modules-slider">
           <div class="modules-grid" id="modulesGrid">
-            ${modulePerformance.map(module => {
+            ${completeModuleList.map(module => {
               const score = Math.round((module.averageScore || 0) * 100);
               const timeMin = Math.round(module.averageTime / 60);
 
@@ -1558,7 +1627,7 @@
                     </div>
                     <div class="module-stat">
                       <span class="stat-label-small">Avg Time</span>
-                      <span class="stat-value-small">${timeMin}m</span>
+                      <span class="stat-value-small">${timeMin > 0 ? timeMin + 'm' : 'N/A'}</span>
                     </div>
                   </div>
                   <div class="progress-bar">
