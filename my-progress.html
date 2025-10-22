@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Progress - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* Notion-inspired Design System - matching student-dashboard.html */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - matching student-dashboard */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--gray-100);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .user-section:hover {
+      background: var(--bg-hover);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-hover));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--gray-700);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .nav-section {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: var(--gray-600);
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 150ms ease;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .nav-item.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--gray-500);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 150ms ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      font-size: 20px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    /* Charts Section */
+    .section {
+      margin-bottom: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .chart-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 24px;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    /* Module Breakdown */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .module-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 150ms ease;
+    }
+
+    .module-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .module-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .module-stats {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .module-score {
+      font-size: 24px;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-align: center;
+      min-width: 60px;
+    }
+
+    .module-score.excellent {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .module-score.good {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+    }
+
+    .module-score.needs-work {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .module-progress-bar {
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .module-progress-fill {
+      height: 100%;
+      background: var(--blue-primary);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    /* Quiz History Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--gray-200);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 24px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -27px;
+      top: 6px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 2px solid var(--blue-primary);
+      z-index: 1;
+    }
+
+    .timeline-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 16px;
+      transition: all 150ms ease;
+    }
+
+    .timeline-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .timeline-module {
+      font-weight: 600;
+      color: var(--gray-700);
+      font-size: 15px;
+    }
+
+    .timeline-score {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .timeline-score.excellent {
+      color: var(--success);
+    }
+
+    .timeline-score.good {
+      color: var(--blue-primary);
+    }
+
+    .timeline-score.needs-work {
+      color: var(--warning);
+    }
+
+    .timeline-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .timeline-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timeline-meta svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Weak Topics & Recommendations */
+    .recommendations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .recommendation-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid var(--warning);
+    }
+
+    .recommendation-card.weak {
+      border-left-color: var(--error);
+    }
+
+    .recommendation-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .recommendation-icon {
+      font-size: 24px;
+    }
+
+    .recommendation-topic {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .recommendation-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .recommendation-action {
+      padding: 8px 16px;
+      background: var(--blue-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .recommendation-action:hover {
+      background: var(--blue-hover);
+    }
+
+    /* Loading State */
+    .loading-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--gray-500);
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--blue-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .modules-grid,
+      .recommendations-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Logo -->
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        </a>
+      </div>
+
+      <!-- User Section -->
+      <div class="user-section">
+        <div class="user-avatar" id="userAvatar">JD</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Student</div>
+          <div class="user-role">Student</div>
+        </div>
+        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-section">
+        <a href="student-dashboard.html" class="nav-item">
+          <i data-lucide="home"></i>
+          Dashboard
+        </a>
+        <a href="quiz.html" class="nav-item">
+          <i data-lucide="book-open"></i>
+          Start Quiz
+        </a>
+        <a href="achievements.html" class="nav-item">
+          <i data-lucide="trophy"></i>
+          Achievements
+        </a>
+        <a href="my-progress.html" class="nav-item active">
+          <i data-lucide="bar-chart-2"></i>
+          My Progress
+        </a>
+        <a href="#" class="nav-item">
+          <i data-lucide="target"></i>
+          Goals
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">📊 My Progress</h1>
+        <p class="page-subtitle">Track your learning journey and identify areas for improvement</p>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <p>Loading your progress...</p>
+      </div>
+
+      <!-- Content (hidden until loaded) -->
+      <div id="progressContent" style="display: none;">
+        <!-- Overall Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">📝</span>
+              <span class="stat-label">Total Quizzes</span>
+            </div>
+            <div class="stat-value" id="totalQuizzes">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">📊</span>
+              <span class="stat-label">Average Score</span>
+            </div>
+            <div class="stat-value" id="averageScore">0%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">🔥</span>
+              <span class="stat-label">Current Streak</span>
+            </div>
+            <div class="stat-value" id="currentStreak">0 days</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-icon">⏱️</span>
+              <span class="stat-label">Study Time</span>
+            </div>
+            <div class="stat-value" id="studyTime">0h</div>
+          </div>
+        </div>
+
+        <!-- Performance Over Time Chart -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Performance Over Time</h2>
+          </div>
+          <div class="chart-card">
+            <div class="chart-container">
+              <canvas id="performanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Breakdown -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Module Performance</h2>
+          </div>
+          <div class="modules-grid" id="modulesGrid">
+            <!-- Module cards will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Weak Topics & Recommendations -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Areas for Improvement</h2>
+          </div>
+          <div class="recommendations-grid" id="recommendationsGrid">
+            <!-- Recommendations will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Recent Quiz History -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Recent Quiz History</h2>
+          </div>
+          <div class="chart-card">
+            <div class="timeline" id="quizTimeline">
+              <!-- Timeline items will be inserted here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=5.0';
+
+    // Get user session
+    const userSession = sessionStorage.getItem('pethologyUser');
+    if (!userSession) {
+      window.location.href = './login.html';
+    }
+    const user = JSON.parse(userSession);
+
+    // Update user info in sidebar
+    document.getElementById('userName').textContent = user.name;
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('userAvatar').textContent = initials;
+
+    // Module name mapping
+    const MODULE_NAMES = {
+      'anatomy': 'Animal Anatomy & Physiology',
+      'welfare': 'Animal Welfare',
+      'communications': 'Communications',
+      'work-experience': 'Work Experience',
+      'vet-assistant-skills': 'Vet Assistant Skills',
+      'small-animals': 'Small Animals H&H',
+      'biology': 'Biology',
+      'grooming': 'Grooming',
+      'animal-behaviour': 'Animal Behaviour',
+      'word-processing': 'Word Processing'
+    };
+
+    let performanceChart = null;
+
+    // Load progress data
+    async function loadProgress() {
+      try {
+        // Get student progress and quiz history
+        const progress = await PethologyFirebaseREST.getStudentProgress(user.id);
+        const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(user.id);
+
+        console.log('Progress:', progress);
+        console.log('Quiz History:', quizHistory);
+
+        // Update overall stats
+        updateOverallStats(progress, quizHistory);
+
+        // Create performance chart
+        createPerformanceChart(quizHistory);
+
+        // Render module breakdown
+        renderModuleBreakdown(progress.moduleProgress || {});
+
+        // Render recommendations
+        renderRecommendations(progress.moduleProgress || {}, quizHistory);
+
+        // Render quiz timeline
+        renderQuizTimeline(quizHistory);
+
+        // Show content, hide loading
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('progressContent').style.display = 'block';
+
+      } catch (error) {
+        console.error('❌ Failed to load progress:', error);
+        document.getElementById('loadingState').innerHTML = `
+          <i data-lucide="alert-circle" style="width: 48px; height: 48px; color: var(--error); margin-bottom: 16px;"></i>
+          <p style="color: var(--error);">Failed to load progress data</p>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    // Update overall stats
+    function updateOverallStats(progress, quizHistory) {
+      const totalQuizzes = quizHistory.length;
+      const totalScore = quizHistory.reduce((sum, q) => sum + ((q.correctAnswers / q.totalQuestions) * 100), 0);
+      const averageScore = totalQuizzes > 0 ? Math.round(totalScore / totalQuizzes) : 0;
+      const totalTime = quizHistory.reduce((sum, q) => sum + (q.timeSpent || 0), 0);
+      const studyTimeHours = Math.round(totalTime / 3600);
+
+      document.getElementById('totalQuizzes').textContent = totalQuizzes;
+      document.getElementById('averageScore').textContent = `${averageScore}%`;
+      document.getElementById('currentStreak').textContent = `${progress.overallStats?.streak || 0} days`;
+      document.getElementById('studyTime').textContent = `${studyTimeHours}h`;
+    }
+
+    // Create performance over time chart
+    function createPerformanceChart(quizHistory) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+
+      // Sort by date
+      const sorted = [...quizHistory].sort((a, b) =>
+        new Date(a.completedAt) - new Date(b.completedAt)
+      );
+
+      // Get last 20 quizzes
+      const recent = sorted.slice(-20);
+
+      const labels = recent.map((q, i) => `Quiz ${i + 1}`);
+      const scores = recent.map(q => Math.round((q.correctAnswers / q.totalQuestions) * 100));
+
+      performanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Score (%)',
+            data: scores,
+            borderColor: '#2383E2',
+            backgroundColor: 'rgba(35, 131, 226, 0.1)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              backgroundColor: '#37352f',
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              padding: 12,
+              borderRadius: 6,
+              displayColors: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: {
+                callback: (value) => value + '%'
+              },
+              grid: {
+                color: '#ebeae8'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Render module breakdown
+    function renderModuleBreakdown(moduleProgress) {
+      const grid = document.getElementById('modulesGrid');
+
+      const modules = Object.entries(moduleProgress).map(([moduleId, data]) => ({
+        id: moduleId,
+        name: MODULE_NAMES[moduleId] || moduleId,
+        score: data.averageScore || 0,
+        attempts: data.attempts || 0,
+        completion: data.completion || 0
+      }));
+
+      // Sort by score (lowest first for visibility)
+      modules.sort((a, b) => a.score - b.score);
+
+      grid.innerHTML = modules.map(module => {
+        const scoreClass = module.score >= 85 ? 'excellent' : module.score >= 70 ? 'good' : 'needs-work';
+
+        return `
+          <div class="module-card">
+            <div class="module-header">
+              <div>
+                <div class="module-name">${module.name}</div>
+                <div class="module-stats">
+                  <span>${module.attempts} attempts</span>
+                </div>
+              </div>
+              <div class="module-score ${scoreClass}">
+                ${Math.round(module.score)}%
+              </div>
+            </div>
+            <div class="module-progress-bar">
+              <div class="module-progress-fill" style="width: ${module.completion}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Render recommendations
+    function renderRecommendations(moduleProgress, quizHistory) {
+      const grid = document.getElementById('recommendationsGrid');
+
+      // Find weak modules (< 70%)
+      const weakModules = Object.entries(moduleProgress)
+        .filter(([_, data]) => (data.averageScore || 0) < 70 && data.attempts > 0)
+        .map(([moduleId, data]) => ({
+          id: moduleId,
+          name: MODULE_NAMES[moduleId] || moduleId,
+          score: data.averageScore || 0,
+          attempts: data.attempts || 0
+        }))
+        .sort((a, b) => a.score - b.score);
+
+      if (weakModules.length === 0) {
+        grid.innerHTML = `
+          <div class="recommendation-card" style="border-left-color: var(--success);">
+            <div class="recommendation-header">
+              <span class="recommendation-icon">🎉</span>
+              <div class="recommendation-topic">Great job!</div>
+            </div>
+            <p style="color: var(--gray-600); font-size: 14px;">
+              You're performing well across all modules. Keep up the excellent work!
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = weakModules.slice(0, 3).map(module => `
+        <div class="recommendation-card weak">
+          <div class="recommendation-header">
+            <span class="recommendation-icon">⚠️</span>
+            <div class="recommendation-topic">${module.name}</div>
+          </div>
+          <div class="recommendation-stats">
+            <span>Current: ${Math.round(module.score)}%</span>
+            <span>•</span>
+            <span>${module.attempts} attempts</span>
+          </div>
+          <p style="color: var(--gray-600); font-size: 13px; margin-bottom: 12px;">
+            Consider reviewing this module. Take practice quizzes to improve your score.
+          </p>
+          <button class="recommendation-action" onclick="window.location.href='quiz.html?module=${module.id}'">
+            Practice Now
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // Render quiz timeline
+    function renderQuizTimeline(quizHistory) {
+      const timeline = document.getElementById('quizTimeline');
+
+      // Sort by date (most recent first)
+      const recent = [...quizHistory]
+        .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt))
+        .slice(0, 20);
+
+      timeline.innerHTML = recent.map(quiz => {
+        const score = Math.round((quiz.correctAnswers / quiz.totalQuestions) * 100);
+        const scoreClass = score >= 85 ? 'excellent' : score >= 70 ? 'good' : 'needs-work';
+        const date = new Date(quiz.completedAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        const time = new Date(quiz.completedAt).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        return `
+          <div class="timeline-item">
+            <div class="timeline-card">
+              <div class="timeline-header">
+                <div class="timeline-module">${MODULE_NAMES[quiz.module] || quiz.module}</div>
+                <div class="timeline-score ${scoreClass}">${score}%</div>
+              </div>
+              <div class="timeline-meta">
+                <span>
+                  <i data-lucide="calendar"></i>
+                  ${date}
+                </span>
+                <span>
+                  <i data-lucide="clock"></i>
+                  ${time}
+                </span>
+                <span>
+                  <i data-lucide="check-circle"></i>
+                  ${quiz.correctAnswers}/${quiz.totalQuestions}
+                </span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Initialize
+    loadProgress();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

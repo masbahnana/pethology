@@ -298,6 +298,26 @@
       <div id="question-container"></div>
   </main>
 
+  <!-- Quiz Selection Modal -->
+  <div id="quizSelectionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+      <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #111827;">Select a Quiz</h2>
+      <p style="color: #6b7280; margin: 0 0 24px 0; font-size: 14px;">Multiple quizzes are available for this module</p>
+
+      <div id="quizOptions" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+        <!-- Quiz options will be inserted here -->
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="closeQuizModal()" style="padding: 10px 20px; border: 1px solid #d1d5db; background: white; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; color: #374151;">
+          Cancel
+        </button>
+        <button id="startSelectedQuiz" onclick="startSelectedQuiz()" style="padding: 10px 20px; border: none; background: #3b82f6; color: white; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;" disabled>
+          Start Quiz
+        </button>
+      </div>
+    </div>
+  </div>
 
   <footer style="text-align: center; font-size: 12px; margin: 10px 0;">
     <p>&copy; 2025 Pethology. All rights reserved.</p>

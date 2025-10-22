@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Achievements - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System - matching student-dashboard.html */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - matching student-dashboard */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--gray-100);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+
+    .user-section:hover {
+      background: var(--bg-hover);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-primary), var(--blue-hover));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--gray-700);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .nav-section {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: var(--gray-600);
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 150ms ease;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .nav-item.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--gray-500);
+    }
+
+    /* Stats Overview */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 150ms ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      font-size: 20px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    /* Filters */
+    .filters-section {
+      margin-bottom: 24px;
+    }
+
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .search-box {
+      position: relative;
+      width: 280px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      background: var(--bg-primary);
+      transition: border-color 150ms ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--gray-400);
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--gray-200);
+      background: var(--bg-primary);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 150ms ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--gray-300);
+    }
+
+    .filter-btn.active {
+      background: var(--blue-primary);
+      color: white;
+      border-color: var(--blue-primary);
+    }
+
+    .filter-btn .count {
+      background: rgba(0, 0, 0, 0.1);
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .filter-btn.active .count {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Achievements Grid */
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .achievement-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      position: relative;
+    }
+
+    .achievement-card:hover {
+      border-color: var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .achievement-card.unlocked {
+      border-color: var(--success);
+      background: var(--success-bg);
+    }
+
+    .achievement-card.locked {
+      opacity: 0.6;
+    }
+
+    .achievement-card.locked .achievement-emoji {
+      filter: grayscale(100%);
+      opacity: 0.5;
+    }
+
+    .achievement-emoji {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .achievement-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .achievement-description {
+      font-size: 13px;
+      color: var(--gray-500);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .achievement-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .achievement-rarity {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .achievement-rarity.common {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .achievement-rarity.uncommon {
+      background: rgba(16, 185, 129, 0.15);
+      color: #059669;
+    }
+
+    .achievement-rarity.rare {
+      background: rgba(59, 130, 246, 0.15);
+      color: #2563eb;
+    }
+
+    .achievement-rarity.legendary {
+      background: rgba(168, 85, 247, 0.15);
+      color: #9333ea;
+    }
+
+    .achievement-status {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .achievement-status svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .achievement-status.unlocked {
+      color: var(--success);
+    }
+
+    .achievement-status.locked {
+      color: var(--gray-400);
+    }
+
+    /* Loading & Empty States */
+    .loading-state,
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--gray-500);
+    }
+
+    .loading-state svg,
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      color: var(--gray-400);
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--blue-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      position: relative;
+      background: var(--bg-primary);
+      border-radius: 12px;
+      max-width: 480px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: var(--gray-100);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms ease;
+      z-index: 1;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-200);
+    }
+
+    .modal-close svg {
+      width: 16px;
+      height: 16px;
+      color: var(--gray-600);
+    }
+
+    .modal-body {
+      padding: 40px 32px;
+      text-align: center;
+    }
+
+    .achievement-modal-emoji {
+      font-size: 72px;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .achievement-modal-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .achievement-modal-rarity {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .achievement-modal-rarity.common {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .achievement-modal-rarity.uncommon {
+      background: rgba(16, 185, 129, 0.15);
+      color: #059669;
+    }
+
+    .achievement-modal-rarity.rare {
+      background: rgba(59, 130, 246, 0.15);
+      color: #2563eb;
+    }
+
+    .achievement-modal-rarity.legendary {
+      background: rgba(168, 85, 247, 0.15);
+      color: #9333ea;
+    }
+
+    .achievement-modal-description {
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .achievement-modal-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+    }
+
+    .modal-stat {
+      text-align: center;
+    }
+
+    .modal-stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+
+    .modal-stat-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .modal-stat-value svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .modal-stat-value.unlocked {
+      color: var(--success);
+    }
+
+    .modal-stat-value.locked {
+      color: var(--gray-400);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 20px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filters-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .achievements-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Logo -->
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        </a>
+      </div>
+
+      <!-- User Section -->
+      <div class="user-section">
+        <div class="user-avatar" id="userAvatar">JD</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Student</div>
+          <div class="user-role">Student</div>
+        </div>
+        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
+      </div>
+
+      <!-- Navigation -->
+      <div class="nav-section">
+        <a href="student-dashboard.html" class="nav-item">
+          <i data-lucide="home"></i>
+          Dashboard
+        </a>
+        <a href="quiz.html" class="nav-item">
+          <i data-lucide="book-open"></i>
+          Start Quiz
+        </a>
+        <a href="achievements.html" class="nav-item active">
+          <i data-lucide="trophy"></i>
+          Achievements
+        </a>
+        <a href="#" class="nav-item">
+          <i data-lucide="bar-chart-2"></i>
+          My Progress
+        </a>
+        <a href="#" class="nav-item">
+          <i data-lucide="target"></i>
+          Goals
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">🏆 Achievements</h1>
+        <p class="page-subtitle">Track your learning journey and unlock badges</p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-icon">🏆</span>
+            <span class="stat-label">Unlocked</span>
+          </div>
+          <div class="stat-value" id="totalUnlocked">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-icon">📊</span>
+            <span class="stat-label">Completion</span>
+          </div>
+          <div class="stat-value" id="completionPercentage">0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-icon">⭐</span>
+            <span class="stat-label">Rare+</span>
+          </div>
+          <div class="stat-value" id="rareCount">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-icon">👑</span>
+            <span class="stat-label">Legendary</span>
+          </div>
+          <div class="stat-value" id="legendaryCount">0</div>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filters-header">
+          <h2 class="section-title">All Achievements</h2>
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchInput" placeholder="Search achievements...">
+          </div>
+        </div>
+
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-filter="all">
+            All <span class="count" id="countAll">0</span>
+          </button>
+          <button class="filter-btn" data-filter="unlocked">
+            Unlocked <span class="count" id="countUnlocked">0</span>
+          </button>
+          <button class="filter-btn" data-filter="locked">
+            Locked <span class="count" id="countLocked">0</span>
+          </button>
+          <button class="filter-btn" data-filter="common">
+            Common <span class="count" id="countCommon">0</span>
+          </button>
+          <button class="filter-btn" data-filter="uncommon">
+            Uncommon <span class="count" id="countUncommon">0</span>
+          </button>
+          <button class="filter-btn" data-filter="rare">
+            Rare <span class="count" id="countRare">0</span>
+          </button>
+          <button class="filter-btn" data-filter="legendary">
+            Legendary <span class="count" id="countLegendary">0</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Achievements Grid -->
+      <div class="achievements-grid" id="achievementsGrid">
+        <!-- Achievements will be loaded here -->
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i data-lucide="award"></i>
+        <p>No achievements found</p>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <p>Loading achievements...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Achievement Detail Modal -->
+  <div class="modal" id="achievementModal" style="display: none;">
+    <div class="modal-backdrop" onclick="closeAchievementModal()"></div>
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAchievementModal()">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="modal-body">
+        <div class="achievement-modal-emoji" id="modalEmoji">🏆</div>
+        <h2 class="achievement-modal-name" id="modalName">Achievement Name</h2>
+        <div class="achievement-modal-rarity" id="modalRarity">RARE</div>
+        <p class="achievement-modal-description" id="modalDescription">Achievement description goes here</p>
+
+        <div class="achievement-modal-stats">
+          <div class="modal-stat">
+            <div class="modal-stat-label">Category</div>
+            <div class="modal-stat-value" id="modalCategory">Learning</div>
+          </div>
+          <div class="modal-stat">
+            <div class="modal-stat-label">Status</div>
+            <div class="modal-stat-value" id="modalStatus">Locked</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=5.0';
+    import {
+      ACHIEVEMENTS,
+      getAchievementStats,
+      calculateStudentStats
+    } from './assets/js/achievements.js?v=5.0';
+
+    // Get user session
+    const userSession = sessionStorage.getItem('pethologyUser');
+    if (!userSession) {
+      window.location.href = './login.html';
+    }
+    const user = JSON.parse(userSession);
+
+    // Update user info in sidebar
+    document.getElementById('userName').textContent = user.name;
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('userAvatar').textContent = initials;
+
+    // Global state
+    let studentProgress = null;
+    let studentStats = null;
+    let unlockedAchievements = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // Load achievements
+    async function loadAchievements() {
+      try {
+        document.getElementById('loadingState').style.display = 'block';
+        document.getElementById('achievementsGrid').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'none';
+
+        // Get student progress and quiz history
+        studentProgress = await PethologyFirebaseREST.getStudentProgress(user.id);
+        const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(user.id);
+
+        // Calculate stats
+        studentStats = calculateStudentStats(quizHistory, studentProgress.moduleProgress || {});
+        studentStats.achievements = studentProgress.achievements || [];
+        unlockedAchievements = studentStats.achievements;
+
+        // Update stats display
+        updateStatsOverview();
+
+        // Render achievements
+        renderAchievements();
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('achievementsGrid').style.display = 'grid';
+
+      } catch (error) {
+        console.error('❌ Failed to load achievements:', error);
+        document.getElementById('loadingState').innerHTML = `
+          <i data-lucide="alert-circle" style="color: var(--error);"></i>
+          <p style="color: var(--error);">Failed to load achievements</p>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    // Update stats overview
+    function updateStatsOverview() {
+      const stats = getAchievementStats(unlockedAchievements);
+
+      document.getElementById('totalUnlocked').textContent = stats.unlocked;
+      document.getElementById('completionPercentage').textContent = `${stats.percentage}%`;
+      document.getElementById('rareCount').textContent = stats.byRarity.rare + stats.byRarity.legendary;
+      document.getElementById('legendaryCount').textContent = stats.byRarity.legendary;
+
+      // Update filter counts
+      const allAchievements = Object.values(ACHIEVEMENTS);
+      document.getElementById('countAll').textContent = allAchievements.length;
+      document.getElementById('countUnlocked').textContent = stats.unlocked;
+      document.getElementById('countLocked').textContent = allAchievements.length - stats.unlocked;
+
+      const byRarity = { common: 0, uncommon: 0, rare: 0, legendary: 0 };
+      allAchievements.forEach(ach => byRarity[ach.rarity]++);
+      document.getElementById('countCommon').textContent = byRarity.common;
+      document.getElementById('countUncommon').textContent = byRarity.uncommon;
+      document.getElementById('countRare').textContent = byRarity.rare;
+      document.getElementById('countLegendary').textContent = byRarity.legendary;
+    }
+
+    // Render achievements grid
+    function renderAchievements() {
+      const grid = document.getElementById('achievementsGrid');
+      const allAchievements = Object.values(ACHIEVEMENTS);
+
+      // Filter achievements
+      let filtered = allAchievements.filter(ach => {
+        const isUnlocked = unlockedAchievements.includes(ach.id);
+
+        // Filter by status/rarity
+        if (currentFilter === 'unlocked' && !isUnlocked) return false;
+        if (currentFilter === 'locked' && isUnlocked) return false;
+        if (['common', 'uncommon', 'rare', 'legendary'].includes(currentFilter) && ach.rarity !== currentFilter) return false;
+
+        // Filter by search
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          const matchesName = ach.name.toLowerCase().includes(query);
+          const matchesDescription = ach.description.toLowerCase().includes(query);
+          if (!matchesName && !matchesDescription) return false;
+        }
+
+        return true;
+      });
+
+      // Show empty state if no results
+      if (filtered.length === 0) {
+        grid.style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+        lucide.createIcons();
+        return;
+      }
+
+      grid.style.display = 'grid';
+      document.getElementById('emptyState').style.display = 'none';
+
+      // Sort: unlocked first, then by rarity
+      const rarityOrder = { legendary: 4, rare: 3, uncommon: 2, common: 1 };
+      filtered.sort((a, b) => {
+        const aUnlocked = unlockedAchievements.includes(a.id);
+        const bUnlocked = unlockedAchievements.includes(b.id);
+        if (aUnlocked !== bUnlocked) return bUnlocked ? 1 : -1;
+        return rarityOrder[b.rarity] - rarityOrder[a.rarity];
+      });
+
+      // Render cards
+      grid.innerHTML = filtered.map(ach => {
+        const isUnlocked = unlockedAchievements.includes(ach.id);
+
+        return `
+          <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'}"
+               onclick="showAchievementDetail('${ach.id}')">
+            <div class="achievement-emoji">${ach.emoji}</div>
+            <div class="achievement-name">${ach.name}</div>
+            <div class="achievement-description">${ach.description}</div>
+            <div class="achievement-footer">
+              <span class="achievement-rarity ${ach.rarity}">${ach.rarity}</span>
+              ${isUnlocked ?
+                '<span class="achievement-status unlocked"><i data-lucide="check-circle"></i> Unlocked</span>' :
+                '<span class="achievement-status locked"><i data-lucide="lock"></i> Locked</span>'}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Show achievement detail modal
+    window.showAchievementDetail = function(achievementId) {
+      const achievement = ACHIEVEMENTS[achievementId];
+      if (!achievement) return;
+
+      const isUnlocked = unlockedAchievements.includes(achievementId);
+
+      document.getElementById('modalEmoji').textContent = achievement.emoji;
+      document.getElementById('modalName').textContent = achievement.name;
+      document.getElementById('modalDescription').textContent = achievement.description;
+      document.getElementById('modalCategory').textContent = achievement.category.charAt(0).toUpperCase() + achievement.category.slice(1);
+
+      const rarityEl = document.getElementById('modalRarity');
+      rarityEl.textContent = achievement.rarity.toUpperCase();
+      rarityEl.className = `achievement-modal-rarity ${achievement.rarity}`;
+
+      const statusEl = document.getElementById('modalStatus');
+      if (isUnlocked) {
+        statusEl.innerHTML = '<i data-lucide="check-circle"></i> Unlocked';
+        statusEl.className = 'modal-stat-value unlocked';
+      } else {
+        statusEl.innerHTML = '<i data-lucide="lock"></i> Locked';
+        statusEl.className = 'modal-stat-value locked';
+      }
+
+      document.getElementById('achievementModal').style.display = 'flex';
+      lucide.createIcons();
+    };
+
+    window.closeAchievementModal = function() {
+      document.getElementById('achievementModal').style.display = 'none';
+    };
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderAchievements();
+      });
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderAchievements();
+    });
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeAchievementModal();
+      }
+    });
+
+    // Initialize
+    loadAchievements();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

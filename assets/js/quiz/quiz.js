@@ -1,4 +1,5 @@
 import { PethologyFirebaseService } from '../firebase-service.js';
+import { getAvailableQuizzes, showQuizSelectionModal, loadSelectedQuiz } from './quiz-selector.js';
 
 const quizTopics = [
   { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
@@ -619,14 +620,51 @@ function goBackToMenu() {
   loadQuizButtons();
 }
 
+// New function to handle quiz selection (checks for multiple quizzes)
+async function handleQuizSelection(file, topicName, moduleId) {
+  try {
+    // Check for multiple quizzes
+    const availableQuizzes = await getAvailableQuizzes(moduleId, { file, name: topicName });
+
+    if (availableQuizzes.length > 1) {
+      // Show selection modal
+      console.log(`📚 Found ${availableQuizzes.length} quizzes for ${topicName}`);
+      showQuizSelectionModal(availableQuizzes, (selectedQuiz) => {
+        loadSelectedQuiz(selectedQuiz, loadQuiz, (questions, quizName) => {
+          // Custom quiz loader
+          currentQuestions = shuffleArray(questions.map(q => ({
+            ...q,
+            options: shuffleArray(q.options)
+          })));
+          currentQuestionIndex = 0;
+          isAnswerCorrect = false;
+          currentQuizModule = quizName || topicName;
+          correctAnswersCount = 0;
+          userAnswers = [];
+          quizStartTime = Date.now();
+          console.log(`✅ Custom quiz loaded! ${currentQuestions.length} questions`);
+          showQuestion();
+        });
+      });
+    } else {
+      // Only one quiz, load directly
+      await loadQuiz(file, topicName);
+    }
+  } catch (error) {
+    console.error('Error checking quizzes:', error);
+    // Fallback to standard quiz
+    await loadQuiz(file, topicName);
+  }
+}
+
 function loadQuizButtons() {
   const quizContainer = document.getElementById("quiz-buttons");
   quizContainer.innerHTML = `
     <h1></h1>
     <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-      ${quizTopics.map(topic => `
+      ${quizTopics.map((topic, index) => `
         <button
-          onclick="loadQuiz('${topic.file}', '${topic.name}')"
+          onclick="handleQuizSelection('${topic.file}', '${topic.name}', '${getModuleId(topic.file)}')"
           class="minimal-button"
         >
           ${topic.icon ? `<img src="${topic.icon}" alt="${topic.name} icon">` : ""}
@@ -635,6 +673,11 @@ function loadQuizButtons() {
       `).join('')}
     </div>
   `;
+}
+
+// Helper to get module ID from file name
+function getModuleId(file) {
+  return file.replace('.js', '').replace('animal-', '');
 }
 
 // Auto-load quiz if module parameter is present in URL
@@ -767,6 +810,7 @@ window.logout = async function() {
 initUserIndicator();
 
 window.loadQuiz = loadQuiz;
+window.handleQuizSelection = handleQuizSelection;
 window.selectAnswer = selectAnswer;
 window.nextQuestion = nextQuestion;
 window.goBackToMenu = goBackToMenu;
