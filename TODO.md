@@ -1645,8 +1645,117 @@ async function onAuth0Signup(user) {
 - Criar uma pasta e colocar os arquivos .md / documentaçao juntos
 - Nao comitar so demos hehehehehe
 
+---
+
+## 🗺️ **ROADMAP PÚBLICO - Para README e Site**
+
+### **📍 Phase 1: Core Learning Platform** ✅ COMPLETO (Oct 2025)
+- ✅ Auth0 Authentication (Microsoft, Google, Email)
+- ✅ Firebase Backend Integration
+- ✅ 200+ Quiz Questions (10 modules)
+- ✅ Student Dashboard with Progress Tracking
+- ✅ Teacher Dashboard with Analytics
+- ✅ Achievement System (15+ achievements)
+- ✅ Announcements System
+- ✅ Quiz Randomization & Adaptive Learning
+- ✅ Notion-Inspired Modern Design
+- ✅ Responsive Mobile-First UI
+
+### **📍 Phase 2: Enhanced Teaching Tools** 🔄 IN PROGRESS (Nov 2025)
+- ✅ Import Students System
+- ⚠️ Calendar & Events System (implemented, needs optimization)
+- 🚧 Deadlines & Due Dates Management
+- 🚧 Custom Quiz Creator for Teachers
+- 🚧 Gradebook & Export System
+- 🚧 Class Management Tools
+- 📋 Detailed Student Performance Reports
+
+### **📍 Phase 3: Advanced Learning Features** 📋 PLANNED (Dec 2025 - Jan 2026)
+- 📋 Smart Review System (AI-powered weak topics)
+- 📋 Adaptive Quiz Mode (difficulty adjustment)
+- 📋 Exam Simulation Mode
+- 📋 Spaced Repetition Algorithm
+- 📋 Study Streaks & Gamification
+- 📋 Peer Comparison (anonymous)
+- 📋 Flashcards System
+- 📋 Progress Milestones
+
+### **📍 Phase 4: Content Expansion** 📋 PLANNED (Q1 2026)
+- 📋 Video Lessons Integration
+- 📋 Interactive Case Studies
+- 📋 3D Animal Anatomy Models (Three.js/Babylon.js)
+- 📋 Practical Skills Checklists
+- 📋 Work Placement Tracker
+- 📋 Portfolio Builder
+- 📋 Certificate Generation
+
+### **📍 Phase 5: Community & Collaboration** 📋 PLANNED (Q2 2026)
+- 📋 Discussion Forums
+- 📋 Student-to-Student Messaging
+- 📋 Study Groups
+- 📋 Peer Review System
+- 📋 Resource Sharing
+- 📋 Expert Q&A Sessions
+- 📋 Alumni Network
+
+### **📍 Phase 6: Professional Development** 📋 FUTURE
+- 📋 Job Board Integration
+- 📋 CV/Resume Builder
+- 📋 Interview Preparation
+- 📋 Industry Certifications
+- 📋 CPD (Continuing Professional Development) Tracking
+- 📋 Mentorship Program
+- 📋 Career Path Guidance
+
+### **📍 Phase 7: Mobile & Accessibility** 📋 FUTURE
+- 📋 Progressive Web App (PWA)
+- 📋 Native Mobile Apps (iOS/Android)
+- 📋 Offline Mode
+- 📋 Screen Reader Optimization
+- 📋 Multi-language Support
+- 📋 Dark Mode
+- 📋 Accessibility WCAG 2.1 AA Compliance
+
+### **📍 Phase 8: Analytics & Insights** 📋 FUTURE
+- 📋 Predictive Analytics (student success prediction)
+- 📋 Learning Pattern Analysis
+- 📋 Time-to-Competency Metrics
+- 📋 Module Difficulty Analysis
+- 📋 Question Quality Metrics
+- 📋 Teacher Effectiveness Dashboard
+- 📋 Institutional Reporting
+
+---
+
+## 🔧 **TECHNICAL DEBT & IMPROVEMENTS**
+
+### **High Priority:**
+- 🚧 Calendar System Performance (Firebase WebChannel optimization)
+- 📋 Add Cypress E2E Tests
+- 📋 Implement Error Boundaries
+- 📋 Add Loading States for All Async Operations
+- 📋 Optimize Bundle Size (code splitting)
+- 📋 Add Service Worker for Offline Support
+
+### **Medium Priority:**
+- 📋 Refactor CSS to use CSS Modules or Styled Components
+- 📋 Implement Proper State Management (Redux/Zustand)
+- 📋 Add TypeScript for Type Safety
+- 📋 Improve Firebase Security Rules
+- 📋 Add Rate Limiting
+- 📋 Implement Caching Strategy
+
+### **Low Priority:**
+- 📋 Add Storybook for Component Documentation
+- 📋 Implement Design Tokens
+- 📋 Add Animation Library (Framer Motion)
+- 📋 Create Component Library
+- 📋 Add Linting & Formatting Rules
+
+---
+
 - TODO para um futuro distante:
  - Criar testes com cypress
- - Colocar ou nao o repositorio no privado? Porque as chaves tipo do firebase estao todas no meu repositório publico do github mas nao sei o quanto isso implica no netlify depois
- - Criar um roadmap bonito pra deixar no site
- - Modelos 3D para estudar anatomia animal
+ - ✅ Chaves Firebase públicas são OK (protegidas por Security Rules)
+ - ✅ Criar um roadmap bonito pra deixar no site (FEITO ACIMA!)
+ - Modelos 3D para estudar anatomia animal (Phase 4)
