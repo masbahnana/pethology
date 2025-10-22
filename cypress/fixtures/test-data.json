@@ -1,0 +1,58 @@
+{
+  "students": [
+    {
+      "id": "test-student-1",
+      "email": "test1@plc.ie",
+      "name": "Test Student 1",
+      "role": "Student"
+    },
+    {
+      "id": "test-student-2",
+      "email": "test2@plc.ie",
+      "name": "Test Student 2",
+      "role": "Student"
+    }
+  ],
+  "teachers": [
+    {
+      "id": "test-teacher-1",
+      "email": "teacher@school.com",
+      "name": "Test Teacher",
+      "role": "Teacher"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "announcement-1",
+      "title": "Test Announcement",
+      "message": "This is a test announcement message",
+      "isPinned": true,
+      "createdBy": "test-teacher-1",
+      "createdByName": "Test Teacher",
+      "readBy": []
+    }
+  ],
+  "quizResults": [
+    {
+      "id": "result-1",
+      "userId": "test-student-1",
+      "quizId": "biology",
+      "score": 0.85,
+      "totalQuestions": 20,
+      "correctAnswers": 17,
+      "completedAt": "2025-10-22T10:00:00Z"
+    }
+  ],
+  "modules": [
+    "Biology",
+    "Animal Welfare",
+    "Grooming",
+    "Animal Anatomy & Physiology",
+    "Animal Behaviour",
+    "Small Animals H&H",
+    "Vet Assistant Skills",
+    "Communications",
+    "Work Experience",
+    "Word Processing"
+  ]
+}

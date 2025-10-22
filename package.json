@@ -1,0 +1,24 @@
+{
+  "name": "pethology",
+  "version": "4.2.0",
+  "description": "Interactive learning platform for veterinary assistant students",
+  "scripts": {
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "test:chrome": "cypress run --browser chrome",
+    "test:firefox": "cypress run --browser firefox"
+  },
+  "keywords": [
+    "education",
+    "veterinary",
+    "quiz",
+    "e-learning"
+  ],
+  "author": "Pethology Team",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^13.6.0"
+  }
+}
