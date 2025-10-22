@@ -1588,13 +1588,13 @@
             </div>
             </div>
 
-            <!-- Upcoming Deadlines -->
+            <!-- Upcoming Events -->
             <div class="deadlines-widget">
-              <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px;">Upcoming Deadlines</h3>
-              <div style="text-align: center; padding: 40px 20px;">
-                <i data-lucide="calendar-clock" style="width: 48px; height: 48px; color: var(--gray-300); margin-bottom: 12px;"></i>
-                <p style="font-size: 14px; color: var(--gray-500); font-weight: 500;">Coming Soon</p>
-                <p style="font-size: 12px; color: var(--gray-400); margin-top: 8px;">Deadlines feature will be available soon!</p>
+              <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px;">Upcoming Events</h3>
+              <div id="upcomingEvents">
+                <p style="text-align: center; color: var(--gray-500); padding: 20px;">
+                  Loading events...
+                </p>
               </div>
             </div>
           </div>
@@ -1792,8 +1792,9 @@
   <script type="module">
     import { PethologyFirebaseService } from './assets/js/firebase-service.js';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements.js';
+    import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js';
 
-    // Make markAnnouncementAsRead globally available
+    // Make functions globally available
     window.markAnnouncementAsRead = markAnnouncementAsRead;
 
     // Função para carregar dados reais do estudante
@@ -1829,6 +1830,9 @@
 
         // Carregar announcements
         await loadStudentAnnouncements();
+
+        // Carregar calendar events
+        await loadStudentCalendarEvents();
 
         console.log('✅ Student data loaded successfully!');
 

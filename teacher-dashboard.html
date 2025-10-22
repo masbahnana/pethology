@@ -697,6 +697,12 @@
       margin-bottom: 20px;
     }
 
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
     .form-label {
       display: block;
       font-size: 14px;
@@ -823,6 +829,136 @@
     .announcement-actions {
       display: flex;
       gap: 8px;
+    }
+
+    /* 📅 Calendar Styles */
+    .calendar-header {
+      margin-bottom: 20px;
+    }
+
+    .calendar-month {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .calendar-day-header {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      padding: 8px;
+    }
+
+    .calendar-day {
+      min-height: 80px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      padding: 8px;
+      background: white;
+    }
+
+    .calendar-day.empty {
+      background: var(--gray-50);
+      border: none;
+    }
+
+    .calendar-day.today {
+      border-color: var(--blue-primary);
+      background: var(--blue-50);
+    }
+
+    .calendar-day-number {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .calendar-event {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .calendar-event.quiz {
+      background: var(--blue-50);
+      color: var(--blue-primary);
+    }
+
+    .calendar-event.assignment {
+      background: var(--purple-50);
+      color: var(--purple-primary);
+    }
+
+    .calendar-event.exam {
+      background: var(--red-50);
+      color: var(--red-primary);
+    }
+
+    .calendar-event.announcement {
+      background: var(--green-50);
+      color: var(--green-primary);
+    }
+
+    .calendar-event.other {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .event-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .event-title {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Student Calendar Events */
+    .event-item {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      background: var(--gray-50);
+    }
+
+    .event-details {
+      flex: 1;
+    }
+
+    .event-meta {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    .event-description {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-top: 8px;
+      line-height: 1.6;
     }
 
     .btn-icon {
@@ -997,9 +1133,9 @@
             <i data-lucide="file-plus" class="quick-action-icon"></i>
             <span class="quick-action-text">Create Custom Quiz</span>
           </li>
-          <li class="quick-action-item">
-            <i data-lucide="calendar" class="quick-action-icon"></i>
-            <span class="quick-action-text">View Calendar</span>
+          <li class="quick-action-item" onclick="showCreateEventModal()">
+            <i data-lucide="calendar-plus" class="quick-action-icon"></i>
+            <span class="quick-action-text">Schedule Event</span>
           </li>
           <li class="quick-action-item">
             <i data-lucide="download" class="quick-action-icon"></i>
@@ -1034,6 +1170,25 @@
           <div class="empty-state-icon">📚</div>
           <p>No quiz data available yet</p>
         </div>
+      </div>
+    </div>
+
+    <!-- 📅 Calendar Widget -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i data-lucide="calendar"></i>
+          Calendar
+        </h2>
+        <button class="btn btn-secondary btn-sm" onclick="showCreateEventModal()">
+          <i data-lucide="plus"></i>
+          Add Event
+        </button>
+      </div>
+      <div id="calendarWidget">
+        <p style="text-align: center; color: var(--gray-500); padding: 40px;">
+          Loading calendar...
+        </p>
       </div>
     </div>
   </div>
@@ -1186,6 +1341,16 @@
         } catch (error) {
           console.error('❌ Error in updateModulePerformance:', error);
         }
+
+        // Load calendar events - TEMPORARILY DISABLED FOR DEBUGGING
+        // try {
+        //   console.log('📅 Loading calendar events...');
+        //   if (typeof window.loadCalendarEvents === 'function') {
+        //     await window.loadCalendarEvents();
+        //   }
+        // } catch (error) {
+        //   console.error('❌ Error loading calendar events:', error);
+        // }
 
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
@@ -1518,6 +1683,85 @@
     </div>
   </div>
 
+  <!-- 📅 Calendar Modal -->
+  <div id="calendarModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="calendarModalTitle">Schedule Event</h3>
+        <button class="modal-close" onclick="closeCalendarModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="calendarForm" onsubmit="handleCalendarSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="eventTitle" class="form-label">Event Title *</label>
+            <input
+              type="text"
+              id="eventTitle"
+              class="form-input"
+              placeholder="e.g., Quiz: Small Animals"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="eventType" class="form-label">Event Type *</label>
+            <select id="eventType" class="form-input" required>
+              <option value="">Select type...</option>
+              <option value="quiz">Quiz</option>
+              <option value="assignment">Assignment</option>
+              <option value="exam">Exam</option>
+              <option value="announcement">Announcement</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="eventDate" class="form-label">Date *</label>
+              <input
+                type="date"
+                id="eventDate"
+                class="form-input"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="eventTime" class="form-label">Time</label>
+              <input
+                type="time"
+                id="eventTime"
+                class="form-input"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="eventDescription" class="form-label">Description (Optional)</label>
+            <textarea
+              id="eventDescription"
+              class="form-textarea"
+              placeholder="Add any additional details..."
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeCalendarModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="calendar-plus"></i>
+            Schedule Event
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Import Announcements Module -->
   <script type="module">
     import {
@@ -1543,5 +1787,21 @@
       subtree: true
     });
   </script>
+
+  <!-- Import Calendar Module - TEMPORARILY DISABLED FOR DEBUGGING -->
+  <!-- <script type="module">
+    import {
+      showCreateEventModal,
+      closeCalendarModal,
+      handleCalendarSubmit,
+      loadCalendarEvents
+    } from './assets/js/calendar-teacher.js';
+
+    // Make functions globally available
+    window.showCreateEventModal = showCreateEventModal;
+    window.closeCalendarModal = closeCalendarModal;
+    window.handleCalendarSubmit = handleCalendarSubmit;
+    window.loadCalendarEvents = loadCalendarEvents;
+  </script> -->
 </body>
 </html>
