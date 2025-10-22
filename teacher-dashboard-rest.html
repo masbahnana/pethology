@@ -1226,8 +1226,18 @@
       'Word Processing': 'file-text'
     };
 
+    // Prevent multiple executions (BFCache protection)
+    let dashboardInitialized = false;
+
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
+      if (dashboardInitialized) {
+        console.log('⚠️ Dashboard already initialized, reloading to prevent multiple instances...');
+        window.location.reload();
+        return;
+      }
+      dashboardInitialized = true;
+
       console.log('🔥 NEW VERSION LOADED - HYBRID APPROACH (v3 - INLINE STYLES)');
       const userSession = sessionStorage.getItem('pethologyUser');
 
@@ -1383,7 +1393,15 @@
           lucide.createIcons();
         }
       }
-    }
+    });
+
+    // Detect when page is restored from BFCache (back button)
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted && dashboardInitialized) {
+        console.log('⚠️ Page restored from BFCache, reloading...');
+        window.location.reload();
+      }
+    });
 
     function updateStatistics(overview) {
       document.getElementById('totalStudents').textContent = overview.totalStudents;
