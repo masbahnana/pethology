@@ -1772,6 +1772,9 @@
 
   <!-- Import Announcements Module -->
   <script type="module">
+    // DISABLED: announcements.js imports old Firebase SDK which causes freezing
+    // TODO: Create announcements-rest.js that uses REST API
+    /*
     import {
       showCreateAnnouncementModal,
       closeAnnouncementModal,
@@ -1782,6 +1785,7 @@
     window.showCreateAnnouncementModal = showCreateAnnouncementModal;
     window.closeAnnouncementModal = closeAnnouncementModal;
     window.handleAnnouncementSubmit = handleAnnouncementSubmit;
+    */
 
     // Initialize Lucide icons when modal content changes
     const observer = new MutationObserver(() => {
