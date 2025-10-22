@@ -1,13 +1,14 @@
-# 🎓 Pethology - Complete Roadmap & TODO
+# 🎓 Pethology - FINAL Roadmap v5.0
 
 **Última atualização:** 22 Outubro 2025
 **Versão Atual:** v4.2 - 100% REST API ✅
+**Próxima Release:** v5.0 - Complete Platform 🚀
 
 ---
 
-## 🏆 **ACHIEVEMENTS UNLOCKED:**
+## 🏆 **WHAT'S DONE (v4.2):**
 
-### ✅ **v4.2 - Production Ready System**
+### ✅ **Core System:**
 - [x] 100% REST API (zero Firebase SDK)
 - [x] Teacher Whitelist System
 - [x] Student Whitelist System (pre-registration)
@@ -23,489 +24,601 @@
 
 ---
 
-## 🎯 **ROADMAP - PRIORITY ORDER:**
+## 🎯 **v5.0 - COMPLETE DELIVERY (15-21h)**
+
+**DECISION:** Opção 2 - Foco no Diferencial!
+**GOAL:** Sistema completo com features únicas que competidores não têm
 
 ---
 
-### 🟢 **PRIORITY 1: POLISH & LAUNCH READY (2-4h)**
+### **FASE 1: STUDENT EXPERIENCE ENHANCEMENT (4-6h)**
 
-#### **1.1 Loading States & Error Handling (1-2h)**
-- [ ] Add loading spinners to all async operations
-- [ ] Skeleton screens for dashboard/lists
-- [ ] User-friendly error messages
-- [ ] Retry logic for failed API calls
-- [ ] Offline detection with message
+#### **1.1 Achievements Page (2-3h)** 🏆
+**Status:** 📋 TODO
+**Priority:** HIGH
 
-**Files:**
-- All dashboard files
-- firebase-rest.js (add retry logic)
+**Features:**
+- [ ] Create standalone `/achievements.html`
+- [ ] Full achievements grid with all 19 achievements
+- [ ] Filters: All, Unlocked, Locked, Rare, Common, Epic, Legendary
+- [ ] Search achievements by name
+- [ ] Stats section (total unlocked, completion %, by rarity)
+- [ ] Visual animations on hover
+- [ ] Share achievement (optional)
+- [ ] Link from dashboard sidebar
 
-**Impact:** Professional UX, fewer support questions
-
----
-
-#### **1.2 Mobile Optimization (1h)**
-- [ ] Test all pages on mobile viewport
-- [ ] Fix responsive issues
-- [ ] Touch-friendly buttons
-- [ ] Mobile menu improvements
-
-**Testing:**
-- Use Cypress with mobile viewport
-- Test on real devices
-
-**Impact:** Accessible from anywhere
-
----
-
-#### **1.3 Final Polish (1h)**
-- [ ] Fix any console warnings
-- [ ] Optimize images
-- [ ] Check all links work
-- [ ] Spell check
-- [ ] Test all user flows
-
-**Impact:** Professional quality
-
----
-
-### 🟢 **PRIORITY 2: TEACHER TOOLS - HIGH VALUE (6-10h)**
-
-#### **2.1 Glossary System (2-3h)** ⭐ NEW
-Teacher adds veterinary terms with definitions.
-
-**Teacher Side:**
-- [ ] "Glossary" page in teacher dashboard
-- [ ] Add term: name, definition, category (optional image)
-- [ ] Edit/delete terms
-- [ ] Categories: Anatomy, Diseases, Tools, Procedures, etc.
-
-**Student Side:**
-- [ ] "Glossary" page accessible from sidebar
-- [ ] Search functionality
-- [ ] Filter by category
-- [ ] Alphabetical sorting
-- [ ] Card-based display with definitions
-
-**Database:**
-```javascript
-/glossary/{termId}
-{
-  term: "Auscultation",
-  definition: "The act of listening to sounds from the heart, lungs...",
-  category: "Procedures",
-  imageUrl: "optional",
-  createdBy: "teacher_id",
-  createdAt: timestamp
-}
+**UI Mockup:**
+```
+┌────────────────────────────────────────────────┐
+│ 🏆 Achievements                    [Search 🔍] │
+├────────────────────────────────────────────────┤
+│ Stats:                                          │
+│ ━━━━━━━━━━━━━━━━━ 52% (10/19)                  │
+│ Common: 5/8 • Rare: 3/6 • Epic: 2/4 • Legendary: 0/1 │
+├────────────────────────────────────────────────┤
+│ [All] [Unlocked] [Locked] [Rare] [Epic] [Legendary] │
+├────────────────────────────────────────────────┤
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐           │
+│ │ 🎓      │ │ 📖      │ │ 🧠      │           │
+│ │ First   │ │ Knowledge│ │ Brain   │ [LOCKED] │
+│ │ Steps   │ │ Seeker  │ │ Master  │           │
+│ │ UNLOCKED│ │ UNLOCKED│ │ 6/10    │           │
+│ └─────────┘ └─────────┘ └─────────┘           │
+└────────────────────────────────────────────────┘
 ```
 
-**Impact:** Study resource, reduces questions
+**Files to Create:**
+- `achievements.html`
+- Optional: `assets/css/achievements.css`
+
+**Files to Modify:**
+- `student-dashboard.html` - Add "View All" link
+
+**Database:** (already exists in student_progress)
+
+**Impact:** ⭐⭐⭐⭐⭐ Students love achievements!
 
 ---
 
-#### **2.2 Skills Demos Checklist (2-3h)** ⭐ NEW
-Teacher publishes checklist to prepare students for practical demonstrations.
+#### **1.2 My Progress Page (2-3h)** 📊
+**Status:** 📋 TODO
+**Priority:** HIGH
 
-**Teacher Side:**
-- [ ] "Skills Demos" management page
-- [ ] Create demo: title, description, checklist items
-- [ ] Each item: task description, completion criteria
-- [ ] Publish to students
-- [ ] See student completion progress
+**Features:**
+- [ ] Create standalone `/my-progress.html`
+- [ ] Performance graphs (Chart.js) - score over time
+- [ ] Module-by-module breakdown with charts
+- [ ] Quiz history timeline (recent 20 quizzes)
+- [ ] Weak topics identification
+- [ ] Study recommendations
+- [ ] Export progress (PDF/CSV - optional)
+- [ ] Link from dashboard sidebar
 
-**Student Side:**
-- [ ] "Skills Demos" page in dashboard
-- [ ] View published checklists
-- [ ] Check off completed items
-- [ ] Progress bar per demo
-- [ ] Mark demo as "Ready for Assessment"
+**UI Mockup:**
+```
+┌────────────────────────────────────────────────┐
+│ 📊 My Progress                                  │
+├────────────────────────────────────────────────┤
+│ Overview Stats:                                 │
+│ Total Quizzes: 45 • Avg Score: 82% • Streak: 7 │
+│                                                 │
+│ ┌────────────────────────────────────────────┐ │
+│ │     Performance Over Time                  │ │
+│ │ 100%┤                              ╱─╲     │ │
+│ │  80%┤           ╱─╲  ╱──╲    ╱───╱   ╲    │ │
+│ │  60%┤    ╱───╲╱   ╲╱    ╲──╱           ╲  │ │
+│ │  40%┤   ╱                                  │ │
+│ │     └──────────────────────────────────────│ │
+│ │       Oct 1      Oct 10      Oct 20       │ │
+│ └────────────────────────────────────────────┘ │
+│                                                 │
+│ Module Performance:                             │
+│ Biology          ━━━━━━━━━━━━━━━ 92% (A+)      │
+│ Animal Welfare   ━━━━━━━━━━━─── 78% (B+)      │
+│ Grooming         ━━━━━━━━────── 65% (C) ⚠️    │
+│                                                 │
+│ Recent Quiz History:                            │
+│ ┌──────────────────────────────────────────┐  │
+│ │ Oct 22 • Biology        85% ⭐⭐⭐⭐      │  │
+│ │ Oct 21 • Animal Welfare 92% ⭐⭐⭐⭐⭐    │  │
+│ │ Oct 20 • Grooming       65% ⭐⭐⭐        │  │
+│ └──────────────────────────────────────────┘  │
+│                                                 │
+│ 💡 Recommendations:                             │
+│ • Practice more on Grooming (65%)              │
+│ • Review weak topic: Coat types               │
+└────────────────────────────────────────────────┘
+```
 
-**Database:**
+**Files to Create:**
+- `my-progress.html`
+- Optional: `assets/css/progress.css`
+
+**Files to Modify:**
+- `student-dashboard.html` - Add "Detailed Progress" link
+
+**Libraries:**
+- Chart.js CDN
+
+**Impact:** ⭐⭐⭐⭐ Helps students track improvement
+
+---
+
+### **FASE 2: TEACHER POWER TOOLS (5-7h)**
+
+#### **2.1 Quiz Import CSV (3-4h)** 📄
+**Status:** 📋 TODO
+**Priority:** CRITICAL (Game Changer!)
+
+**Features:**
+- [ ] Upload CSV file interface in teacher dashboard
+- [ ] Parse CSV with validation
+- [ ] Preview questions before import
+- [ ] Edit questions in preview
+- [ ] Validation checks (4 options, correct answer, etc)
+- [ ] Save as custom quiz with metadata
+- [ ] Assign to module/category
+- [ ] Set deadline (optional)
+- [ ] Test imported quiz
+
+**CSV Format:**
+```csv
+question,optionA,optionB,optionC,optionD,correctAnswer,explanation,module
+"What is normal dog temperature?","36-37°C","38-39°C","40-41°C","42-43°C",1,"Normal is 38-39°C","Biology"
+"How many teeth does adult dog have?","32","42","52","62",1,"Adult dogs have 42 teeth","Animal Anatomy"
+```
+
+**UI Flow:**
+```
+Teacher Dashboard → Quick Actions → Import Quiz
+
+┌────────────────────────────────────────────────┐
+│ 📄 Import Quiz from CSV                         │
+├────────────────────────────────────────────────┤
+│                                                 │
+│ Step 1: Upload File                             │
+│ ┌─────────────────────────────────────────┐   │
+│ │   Drag & Drop CSV here                  │   │
+│ │   or [Browse Files]                     │   │
+│ └─────────────────────────────────────────┘   │
+│                                                 │
+│ [Download CSV Template]                         │
+│                                                 │
+│ ──────────────────────────────────────────────│
+│                                                 │
+│ Step 2: Preview & Validate                     │
+│ ✓ 25 questions found                           │
+│ ✓ All questions have 4 options                 │
+│ ⚠ 2 questions missing explanations             │
+│                                                 │
+│ ┌─────────────────────────────────────────┐   │
+│ │ Q1: What is normal dog temperature?     │   │
+│ │ A: 36-37°C  B: 38-39°C ✓                │   │
+│ │ C: 40-41°C  D: 42-43°C                  │   │
+│ │ Explanation: Normal is 38-39°C          │   │
+│ │ [Edit] [Delete]                         │   │
+│ └─────────────────────────────────────────┘   │
+│                                                 │
+│ ──────────────────────────────────────────────│
+│                                                 │
+│ Step 3: Quiz Details                            │
+│ Quiz Title: [___________________________]      │
+│ Module: [Biology ▾]                            │
+│ Deadline: [Optional - Pick Date]               │
+│                                                 │
+│ [Cancel]                      [Import Quiz →]  │
+└────────────────────────────────────────────────┘
+```
+
+**Files to Create:**
+- `import-quiz.html` (or modal in teacher dashboard)
+- `assets/js/quiz-import.js`
+
+**Files to Modify:**
+- `teacher-dashboard.html` - Add "Import Quiz" to Quick Actions
+- `firebase-rest.js` - Add quiz CRUD methods
+
+**Database Structure:**
 ```javascript
-/skills_demos/{demoId}
+/custom_quizzes/{quizId}
 {
-  title: "Canine Physical Examination",
-  description: "Prepare for your practical demo...",
-  items: [
+  id: "quiz_biology_week3",
+  title: "Week 3 - Biology Review",
+  module: "Biology",
+  createdBy: "teacher_id",
+  createdByName: "Mrs. Smith",
+  createdAt: timestamp,
+  deadline: timestamp (optional),
+  questions: [
     {
-      id: "item1",
-      task: "Prepare examination area",
-      criteria: "Clean, organized, tools ready",
-      order: 1
+      question: "What is...",
+      options: ["A", "B", "C", "D"],
+      correctAnswer: 1,
+      explanation: "..."
     }
   ],
-  createdBy: "teacher_id",
-  publishedAt: timestamp
-}
-
-/student_demos/{studentId}/{demoId}
-{
-  completedItems: ["item1", "item2"],
-  status: "in_progress" | "ready" | "assessed",
-  lastUpdated: timestamp
+  metadata: {
+    totalQuestions: 25,
+    importedFrom: "csv",
+    estimatedTime: 15
+  }
 }
 ```
 
-**Impact:** Better practical preparation, less anxiety
+**Impact:** ⭐⭐⭐⭐⭐ HUGE! Teachers reuse existing content!
 
 ---
 
-#### **2.3 Quiz Import System (4-6h)** ⭐ HIGH PRIORITY
-Import quizzes from **Microsoft Forms OR CSV**.
+#### **2.2 Multiple Quizzes per Module - Modal Selection (2-3h)** 🎯
+**Status:** 📋 TODO
+**Priority:** HIGH
 
-**Option A: Microsoft Forms Import**
-- [ ] Microsoft Graph API integration
-- [ ] OAuth authentication
-- [ ] List teacher's Forms
-- [ ] Preview questions
-- [ ] Convert to Pethology format
-- [ ] Save as custom quiz
+**Features:**
+- [ ] Detect if module has multiple quizzes (standard + custom)
+- [ ] Show modal when module clicked
+- [ ] List all available quizzes for that module
+- [ ] Show deadline badge if exists
+- [ ] Show "overdue" warning
+- [ ] Radio selection + Start button
+- [ ] If only 1 quiz → go direct (no modal)
 
-**Option B: CSV Import** (EASIER, DO THIS FIRST)
-- [ ] Upload CSV file
-- [ ] Parse format: Question, OptionA, OptionB, OptionC, OptionD, CorrectAnswer, Explanation
-- [ ] Preview before import
-- [ ] Validate data
-- [ ] Save as custom quiz
+**UI:**
+```
+Student clicks "Biology" module →
 
-**CSV Format Example:**
-```csv
-question,optionA,optionB,optionC,optionD,correctAnswer,explanation,category
-"What is the normal body temperature of a dog?","36-37°C","38-39°C","40-41°C","42-43°C",1,"Normal canine temperature is 38-39°C","Biology"
+┌────────────────────────────────────────────────┐
+│ × Biology - Choose Quiz                         │
+├────────────────────────────────────────────────┤
+│                                                 │
+│ ● Standard Quiz                                │
+│   20 questions • No deadline                   │
+│   Your best: 85%                               │
+│                                                 │
+│ ○ Week 3 Review (Teacher)                      │
+│   15 questions • Due: Oct 25                   │
+│   🔥 2 days overdue                            │
+│                                                 │
+│ ○ Midterm Practice (Teacher)                   │
+│   10 questions • No deadline                   │
+│   Not attempted                                │
+│                                                 │
+│ [Cancel]                   [Start Selected →]  │
+└────────────────────────────────────────────────┘
+```
+
+**Logic:**
+```javascript
+// On module click
+async function onModuleClick(moduleName) {
+  const standardQuiz = getStandardQuiz(moduleName);
+  const customQuizzes = await getCustomQuizzes(moduleName);
+
+  const allQuizzes = [standardQuiz, ...customQuizzes];
+
+  if (allQuizzes.length === 1) {
+    // Go direct to quiz
+    startQuiz(allQuizzes[0]);
+  } else {
+    // Show modal
+    showQuizSelectionModal(allQuizzes);
+  }
+}
+```
+
+**Files to Modify:**
+- `student-dashboard.html` - Add modal + click handler
+- `firebase-rest.js` - Method to get custom quizzes by module
+
+**Impact:** ⭐⭐⭐⭐ Essential for custom quizzes!
+
+---
+
+### **FASE 3: ADAPTIVE LEARNING (4-5h) 🤖**
+
+#### **3.1 Adaptive Quiz Integration (4-5h)** ⭐ THE DIFFERENTIATOR!
+**Status:** 📋 TODO
+**Priority:** HIGH (Competitive Advantage!)
+
+**What is it:** Quiz that adjusts difficulty based on student performance.
+
+**Algorithm:** Already exists in `adaptive-quiz-ai.js` ✅
+
+**Features:**
+- [ ] Load student adaptive profile from Firebase
+- [ ] Calculate confidence scores per topic
+- [ ] Select questions based on performance (weak topics get more questions)
+- [ ] Adjust difficulty dynamically
+- [ ] Save adaptive metadata after quiz
+- [ ] UI badge "🤖 Adaptive Quiz"
+- [ ] Special results page showing improvement areas
+
+**How it Works:**
+```
+1. Student clicks "Adaptive Quiz" mode
+2. System loads their quiz history
+3. Identifies weak topics (e.g., "Grooming: 65%")
+4. Generates custom question set:
+   - 60% questions from weak topics
+   - 30% questions from medium topics
+   - 10% questions from strong topics
+5. Shows results with recommendations
 ```
 
 **UI:**
 ```
-┌─────────────────────────────────────┐
-│ Import Quiz                          │
-│                                      │
-│ [Upload CSV] or [Import from Forms] │
-│                                      │
-│ Preview:                             │
-│ ✓ 25 questions found                │
-│ ✓ All questions have 4 options      │
-│ ⚠ 2 questions missing explanations  │
-│                                      │
-│ Quiz Title: _____________________   │
-│ Category: [dropdown]                │
-│                                      │
-│ [Cancel]  [Import Quiz]             │
-└─────────────────────────────────────┘
+Student Dashboard → Module Card
+
+┌────────────────────────────────────────────────┐
+│ Biology                                        │
+│ ━━━━━━━━━━━━━━━ 85%                            │
+│                                                 │
+│ [Standard Quiz] [🤖 Adaptive Quiz]             │
+└────────────────────────────────────────────────┘
+
+After Adaptive Quiz:
+
+┌────────────────────────────────────────────────┐
+│ 🤖 Adaptive Quiz Results                        │
+├────────────────────────────────────────────────┤
+│ Score: 78% (11/14 correct)                     │
+│                                                 │
+│ Focus Areas Tested:                             │
+│ • Cell Biology: 4/5 ✓ Improved!               │
+│ • Organ Systems: 3/5 ⚠️ Needs review          │
+│ • Genetics: 4/4 ✓ Strong!                      │
+│                                                 │
+│ 💡 Recommendation:                              │
+│ Practice more on "Organ Systems"               │
+│                                                 │
+│ [Review Mistakes] [Take Another Adaptive Quiz] │
+└────────────────────────────────────────────────┘
 ```
 
-**Impact:** HUGE - teachers can reuse existing content
+**Files to Create:**
+- `adaptive-quiz.html` (or reuse quiz.html with mode flag)
+- `assets/js/adaptive-quiz-integration.js`
 
----
+**Files to Modify:**
+- `student-dashboard.html` - Add "Adaptive Quiz" button
+- `assets/js/adaptive-quiz-ai.js` - Already exists, integrate it!
+- `firebase-rest.js` - Save/load adaptive profile
 
-#### **2.4 Deadlines System (2-3h)**
-- [ ] Teacher sets deadline for custom quiz
-- [ ] Deadline shown in student dashboard
-- [ ] Notifications (upcoming, overdue)
-- [ ] Filter by status (upcoming/overdue/completed)
-
-**Impact:** Organization, accountability
-
----
-
-### 🟡 **PRIORITY 3: STUDENT EXPERIENCE (6-8h)**
-
-#### **3.1 Standalone Pages (4-6h)**
-Move dashboard sections to dedicated pages.
-
-**Achievements Page:**
-- [ ] Full-screen achievements grid
-- [ ] Filters: All, Unlocked, Locked, Rare, Common, Epic, Legendary
-- [ ] Search achievements
-- [ ] Completion stats
-- [ ] Share achievements (optional)
-
-**My Progress Page:**
-- [ ] Detailed performance graphs (Chart.js)
-- [ ] Timeline of quiz completions
-- [ ] Module-by-module breakdown
-- [ ] Weak topics identification
-- [ ] Study recommendations
-
-**Impact:** Better UX, less cluttered dashboard
-
----
-
-#### **3.2 Adaptive Quiz Integration (4-5h)**
-Algorithm exists, needs integration.
-
-- [ ] Load student adaptive profile
-- [ ] Select questions based on performance
-- [ ] Adjust difficulty dynamically
-- [ ] Save adaptive metadata
-- [ ] UI badge "Adaptive Quiz"
-
-**Impact:** Personalized learning, competitive advantage
-
----
-
-#### **3.3 Smart Review System (3-4h)**
-- [ ] Identify weak topics from quiz history
-- [ ] Generate personalized review quiz
-- [ ] Spaced repetition algorithm
-- [ ] Notify when it's time to review
-
-**Impact:** Better retention, exam preparation
-
----
-
-#### **3.4 Exam Mode (2-3h)**
-- [ ] Strict timer
-- [ ] No hints/explanations during quiz
-- [ ] Randomized questions
-- [ ] Fullscreen mode
-- [ ] Results at end only
-
-**Impact:** Realistic exam practice
-
----
-
-### 🔵 **PRIORITY 4: SCALING FEATURES (8-12h)**
-
-#### **4.1 Class Management System (8-10h)** - BIG FEATURE
-- [ ] Teacher creates multiple classes
-- [ ] Assign students to classes
-- [ ] Custom quizzes per class
-- [ ] Class-specific announcements
-- [ ] Per-class analytics
-- [ ] Co-teachers support
-
-**Impact:** Scale to multiple classes
-
----
-
-#### **4.2 Advanced Gamification (4-6h)**
-- [ ] XP and Levels system
-- [ ] Leaderboards (anonymous option)
-- [ ] Custom badges
-- [ ] Streak rewards
-- [ ] Weekly challenges
-
-**Impact:** Student engagement
-
----
-
-### 🟣 **PRIORITY 5: NICE TO HAVE (Future)**
-
-#### **5.1 Internship Journal**
-- [ ] Students log work experience
-- [ ] Photo uploads
-- [ ] Timeline view
-- [ ] Share with teacher
-
-#### **5.2 Flashcards**
-- [ ] Auto-generate from quiz questions
-- [ ] Spaced repetition
-- [ ] Study mode
-
-#### **5.3 PWA & Offline**
-- [ ] Service Worker
-- [ ] Offline quiz taking
-- [ ] Sync when online
-- [ ] Install prompt
-
-#### **5.4 Content Manager Migration**
-- [ ] Migrate to REST API
-- [ ] Fix index errors
-- [ ] Publish content feature
-
----
-
-## 📋 **FEATURE SPECIFICATIONS:**
-
-### **Glossary System - Detailed Spec**
-
-**Teacher Dashboard:**
-```
-Tools → Glossary Management
-
-┌────────────────────────────────────────┐
-│ Glossary Terms               [+ Add]   │
-├────────────────────────────────────────┤
-│ Search: [_________]  Filter: [All ▾]  │
-├────────────────────────────────────────┤
-│                                         │
-│ 📚 Auscultation                    [✏️🗑️]│
-│    Category: Procedures                │
-│    "The act of listening to sounds..." │
-│                                         │
-│ 🔬 Zoonotic Disease               [✏️🗑️]│
-│    Category: Diseases                  │
-│    "Disease that can be transmitted..." │
-│                                         │
-└────────────────────────────────────────┘
+**Database:**
+```javascript
+/student_progress/{userId}
+{
+  // ... existing fields ...
+  adaptiveProfile: {
+    biology: {
+      cellBiology: { confidence: 0.85, lastPracticed: timestamp },
+      organSystems: { confidence: 0.65, lastPracticed: timestamp },
+      genetics: { confidence: 0.92, lastPracticed: timestamp }
+    },
+    // ... other modules
+  }
+}
 ```
 
-**Student Dashboard:**
-```
-Tools → Glossary
-
-┌────────────────────────────────────────┐
-│ Veterinary Glossary                    │
-├────────────────────────────────────────┤
-│ Search: [_________]                    │
-│ Filter: [All Categories ▾]            │
-│ Sort: [A-Z ▾]                          │
-├────────────────────────────────────────┤
-│                                         │
-│ A                                       │
-│ ┌─────────────────────────────────┐   │
-│ │ 📚 Auscultation                  │   │
-│ │ Procedures                        │   │
-│ │                                   │   │
-│ │ The act of listening to sounds   │   │
-│ │ from the heart, lungs, or other  │   │
-│ │ organs using a stethoscope...    │   │
-│ └─────────────────────────────────┘   │
-│                                         │
-│ B                                       │
-│ ...                                     │
-└────────────────────────────────────────┘
-```
+**Impact:** ⭐⭐⭐⭐⭐ MASSIVE! No competitor has this!
 
 ---
 
-### **Skills Demos - Detailed Spec**
+### **FASE 4: POLISH & PRODUCTION READY (2-3h)**
 
-**Teacher Dashboard:**
-```
-Quick Actions → Skills Demos
+#### **4.1 Loading States (1h)** ⏳
+**Status:** 📋 TODO
+**Priority:** MEDIUM
 
-┌────────────────────────────────────────┐
-│ Skills Demonstration Checklists [+ New]│
-├────────────────────────────────────────┤
-│                                         │
-│ ✓ Canine Physical Examination          │
-│   Published: Oct 20, 2025              │
-│   15/23 students ready                 │
-│   [View] [Edit]                        │
-│                                         │
-│ 📝 Feline Restraint Techniques         │
-│   Draft                                │
-│   [Edit] [Publish]                     │
-│                                         │
-└────────────────────────────────────────┘
+**Features:**
+- [ ] Add spinners to all async operations
+- [ ] Skeleton screens for dashboards
+- [ ] Loading text ("Loading quizzes...", "Analyzing performance...")
+- [ ] Disable buttons while loading
+- [ ] Progress bars for long operations
 
-Create/Edit Demo:
-┌────────────────────────────────────────┐
-│ Title: Canine Physical Examination     │
-│ Description:                            │
-│ [Text area for instructions]           │
-│                                         │
-│ Checklist Items:                        │
-│                                         │
-│ 1. ☐ Prepare examination area          │
-│      Criteria: Clean, organized...     │
-│      [Edit] [Delete] [Move ↕]          │
-│                                         │
-│ 2. ☐ Gather necessary equipment        │
-│      Criteria: Stethoscope, thermom... │
-│      [Edit] [Delete] [Move ↕]          │
-│                                         │
-│ [+ Add Item]                            │
-│                                         │
-│ [Cancel] [Save Draft] [Publish]        │
-└────────────────────────────────────────┘
+**Files to Modify:**
+- All dashboard files
+- All pages with async data loading
+
+**Implementation:**
+```javascript
+// Before fetch
+showLoadingSpinner('loadingContainer');
+
+// After fetch
+hideLoadingSpinner('loadingContainer');
+showContent('contentContainer');
 ```
 
-**Student Dashboard:**
-```
-Tools → Skills Demos
+**CSS:**
+```css
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #2563eb;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
 
-┌────────────────────────────────────────┐
-│ Skills Demonstration Prep              │
-├────────────────────────────────────────┤
-│                                         │
-│ Canine Physical Examination            │
-│ ━━━━━━━━━━━━━━━━━━ 60% (6/10)         │
-│                                         │
-│ Preparation Checklist:                 │
-│ ✓ 1. Prepare examination area          │
-│ ✓ 2. Gather necessary equipment        │
-│ ✓ 3. Review anatomy charts             │
-│ ✓ 4. Practice restraint techniques     │
-│ ✓ 5. Memorize normal vital signs       │
-│ ✓ 6. Watch demonstration video         │
-│ ☐ 7. Practice temperature taking       │
-│ ☐ 8. Practice auscultation             │
-│ ☐ 9. Practice palpation techniques     │
-│ ☐ 10. Complete self-assessment quiz    │
-│                                         │
-│ [✓ Mark as Ready for Assessment]       │
-│                                         │
-└────────────────────────────────────────┘
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  animation: shimmer 1.5s infinite;
+}
 ```
+
+**Impact:** ⭐⭐⭐⭐ Professional UX
 
 ---
 
-## 🚀 **RECOMMENDED NEXT SESSION:**
+#### **4.2 Error Handling (1h)** ❌
+**Status:** 📋 TODO
+**Priority:** MEDIUM
 
-### **Option A: Quick Launch (2-3h)**
-1. Loading States (1h)
-2. Mobile Testing (1h)
-3. Polish (1h)
-→ **LAUNCH!** 🚀
+**Features:**
+- [ ] User-friendly error messages
+- [ ] Retry buttons for failed requests
+- [ ] Fallback content when data fails
+- [ ] Toast notifications for errors
+- [ ] Log errors to console (keep detailed logs)
 
-### **Option B: Teacher Power Tools (6-8h)**
-1. CSV Quiz Import (3-4h) ⭐
-2. Glossary System (2-3h)
-3. Skills Demos (2-3h)
-→ Launch with unique features!
+**Examples:**
+```javascript
+// Bad
+alert("Error: Firebase request failed with status 500")
 
-### **Option C: Complete Student Experience (8-10h)**
-1. Standalone Pages (4-6h)
-2. Adaptive Quiz (4-5h)
-3. Polish (1h)
-→ Launch with polished UX!
+// Good
+showErrorToast("Couldn't load quizzes. Please check your connection and try again.");
+```
 
----
+**Files to Modify:**
+- `firebase-rest.js` - Add retry logic
+- All pages with error handling
 
-## 📊 **CURRENT STATUS:**
-
-### **What Works:**
-- ✅ Authentication (Auth0 + Whitelist)
-- ✅ Dashboards (Teacher + Student)
-- ✅ Quiz System (200 questions, 10 modules)
-- ✅ Announcements
-- ✅ Achievements
-- ✅ Progress Tracking
-- ✅ Analytics
-- ✅ Import Students
-- ✅ Calendar
-- ✅ 100% REST API
-- ✅ E2E Testing Structure
-
-### **What's Missing:**
-- ⏳ Loading states
-- ⏳ Error handling polish
-- ⏳ Glossary
-- ⏳ Skills Demos
-- ⏳ Quiz Import (CSV/Forms)
-- ⏳ Standalone pages
-- ⏳ Adaptive quiz integration
+**Impact:** ⭐⭐⭐ Fewer support requests
 
 ---
 
-## 💡 **MINHA RECOMENDAÇÃO:**
+#### **4.3 Mobile Testing & Fixes (30min-1h)** 📱
+**Status:** 📋 TODO
+**Priority:** MEDIUM
 
-**Para próxima sessão, fazer nesta ordem:**
+**Features:**
+- [ ] Test all pages on mobile viewport (375px)
+- [ ] Fix responsive issues
+- [ ] Touch-friendly buttons (min 44px)
+- [ ] Test on real device (iPhone/Android)
+- [ ] Fix text overflow
+- [ ] Test horizontal scroll
 
-1. **CSV Quiz Import** (3-4h) - GAME CHANGER para professores
-2. **Glossary** (2-3h) - Rápido e muito útil
-3. **Skills Demos** (2-3h) - Diferencial único
+**Test in Cypress:**
+```javascript
+cy.viewport('iphone-x')
+cy.visit('/student-dashboard.html')
+cy.get('.module-card').should('be.visible')
+```
 
-**Total: 7-10h para features INCRÍVEIS**
-
-Ou se quiser lançar logo:
-1. **Polish** (2-3h)
-2. **Launch** 🚀
-3. **Iterar** com feedback real
+**Impact:** ⭐⭐⭐⭐ Accessible anywhere
 
 ---
 
-**Fim do TODO - Organizado por Pantster que Virou Plotter! 😄**
+## 📊 **FINAL TIMELINE:**
+
+### **Total Estimate: 15-21 hours**
+
+**Breakdown:**
+- Achievements Page: 2-3h
+- Progress Page: 2-3h
+- Quiz Import CSV: 3-4h
+- Multiple Quizzes Modal: 2-3h
+- Adaptive Quiz: 4-5h
+- Polish (Loading + Errors + Mobile): 2-3h
+
+**Suggested Schedule:**
+
+**Session 1 (5-6h): Student Experience**
+- Achievements Page (2-3h)
+- Progress Page (2-3h)
+- Break
+- Test & Polish
+
+**Session 2 (5-6h): Teacher Tools**
+- Quiz Import CSV (3-4h)
+- Multiple Quizzes Modal (2-3h)
+- Break
+- Test & Polish
+
+**Session 3 (5-6h): Adaptive & Polish**
+- Adaptive Quiz Integration (4-5h)
+- Break
+- Loading States + Error Handling (1-2h)
+
+**Session 4 (2-3h): Final Polish**
+- Mobile Testing & Fixes (1h)
+- End-to-end testing all features (1h)
+- Bug fixes (1h)
+- Deploy! 🚀
+
+---
+
+## ✅ **FEATURES NOT INCLUDED IN v5.0:**
+
+These go to v6.0 (Future):
+
+### **Postponed to v6.0:**
+- ❌ Smart Review System (3-4h) - Great but less impact than Adaptive
+- ❌ Exam Mode (2-3h) - Nice to have, not critical
+- ❌ Glossary System (2-3h) - Useful but not core
+- ❌ Skills Demos Checklist (2-3h) - Can reuse Goals later
+- ❌ Class Management System (8-10h) - Big feature for scaling
+- ❌ Microsoft Forms Import (4-6h) - CSV covers 80% of use case
+- ❌ Advanced Gamification (4-6h) - Already have achievements
+- ❌ Standalone pages for other features
+
+### **Why Postpone?**
+- Focus on the **BIGGEST differentiators**
+- Avoid burnout
+- Ship v5.0 sooner
+- Iterate based on user feedback
+
+---
+
+## 🎯 **SUCCESS CRITERIA FOR v5.0:**
+
+### **Must Have (All Working):**
+- ✅ Achievements page with all filters
+- ✅ Progress page with graphs
+- ✅ CSV quiz import working end-to-end
+- ✅ Multiple quizzes per module with modal
+- ✅ Adaptive quiz fully functional
+- ✅ Loading states everywhere
+- ✅ Error handling with friendly messages
+- ✅ Mobile responsive
+
+### **Quality Checks:**
+- ✅ No console errors
+- ✅ All links work
+- ✅ All buttons clickable
+- ✅ Fast page loads (<2s)
+- ✅ Works on mobile
+- ✅ Cypress tests passing
+
+### **Ready to Launch When:**
+1. All "Must Have" features working
+2. Tested by at least 2 users (teacher + student)
+3. No critical bugs
+4. Documentation updated
+5. Deployed to Netlify
+
+---
+
+## 📝 **NOTES:**
+
+### **Development Tips:**
+- Commit after each feature
+- Test each feature before moving to next
+- Take breaks every 2h
+- Don't skip polish!
+
+### **If Running Out of Time:**
+**Priority Order (must → optional):**
+1. 🔴 MUST: Achievements Page, Progress Page, CSV Import, Multiple Quizzes
+2. 🟡 SHOULD: Adaptive Quiz, Loading States
+3. 🟢 NICE: Error Handling, Mobile Polish
+
+### **Communication:**
+- Update TODO.md after each session
+- Mark features as DONE when complete
+- Note any blockers or issues
+
+---
+
+## 🚀 **LET'S DO THIS!**
+
+**Ready to start with Achievements Page?** 💪🔥
+
+---
+
+**End of TODO-FINAL.md**
+
+*Updated: 22 Oct 2025 - Decision: Opção 2 (Cenário C)*
