@@ -104,8 +104,8 @@
         // Salvar na sessão
         sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
 
-        // Redirecionar
-        window.location.href = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
+        // Redirecionar (TEMPORARY: using REST version for testing)
+        window.location.href = role === 'Teacher' ? '/teacher-dashboard-rest.html' : '/student-dashboard.html';
 
       } catch (error) {
         console.error('❌ Callback error:', error);

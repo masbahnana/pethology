@@ -406,7 +406,7 @@
           // Redirecionar
           setTimeout(() => {
             if (userSession.role === 'Teacher') {
-              window.location.href = 'teacher-dashboard.html';
+              window.location.href = 'teacher-dashboard-rest.html'; // TEMPORARY: REST version
             } else {
               window.location.href = 'student-dashboard.html';
             }
@@ -515,7 +515,7 @@
       showSuccess(`Demo ${type} created! Redirecting...`);
 
       setTimeout(() => {
-        window.location.href = type === 'teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
+        window.location.href = type === 'teacher' ? 'teacher-dashboard-rest.html' : 'student-dashboard.html'; // TEMPORARY: REST version
       }, 1000);
     };
 
@@ -531,7 +531,7 @@
         showSuccess(`Already logged in as ${userData.name}. Redirecting...`);
 
         setTimeout(() => {
-          window.location.href = userData.role === 'Teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
+          window.location.href = userData.role === 'Teacher' ? 'teacher-dashboard-rest.html' : 'student-dashboard.html'; // TEMPORARY: REST version
         }, 1500);
       }
     });
