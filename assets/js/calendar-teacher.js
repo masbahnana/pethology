@@ -111,12 +111,21 @@ export async function loadCalendarEvents() {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
 
-    const events = await PethologyFirebaseService.getCalendarEvents(null, startOfMonth, endOfMonth);
+    // Add timeout to prevent infinite hanging
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Calendar loading timeout')), 5000)
+    );
+
+    const eventsPromise = PethologyFirebaseService.getCalendarEvents(null, startOfMonth, endOfMonth);
+
+    const events = await Promise.race([eventsPromise, timeoutPromise]);
     console.log(`✅ Loaded ${events.length} calendar events`);
 
     renderCalendar(events);
   } catch (error) {
     console.error('❌ Error loading calendar events:', error);
+    // Render empty calendar on error
+    renderCalendar([]);
   }
 }
 
