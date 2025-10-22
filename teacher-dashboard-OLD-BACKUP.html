@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-  <title>Teacher Dashboard - Pethology v4.0</title>
+  <title>Teacher Dashboard - Pethology v3.1</title>
   <link rel="stylesheet" href="assets/css/style.css" />
 
   <!-- Lucide Icons -->
@@ -1197,11 +1197,8 @@
   </div>
 
   <script type="module">
-    // USE REST API instead of Firebase SDK to avoid WebChannel issues
-    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.0';
-
-    // Alias for compatibility
-    const PethologyFirebaseService = PethologyFirebaseREST;
+    // Force cache bust - update version number when firebase-service.js changes
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js?v=3.1';
 
     // Initialize Lucide icons
     lucide.createIcons();
@@ -1226,18 +1223,8 @@
       'Word Processing': 'file-text'
     };
 
-    // Prevent multiple executions (BFCache protection)
-    let dashboardInitialized = false;
-
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
-      if (dashboardInitialized) {
-        console.log('⚠️ Dashboard already initialized, reloading to prevent multiple instances...');
-        window.location.reload();
-        return;
-      }
-      dashboardInitialized = true;
-
       console.log('🔥 NEW VERSION LOADED - HYBRID APPROACH (v3 - INLINE STYLES)');
       const userSession = sessionStorage.getItem('pethologyUser');
 
@@ -1394,28 +1381,6 @@
         }
       }
     }
-
-    // Detect when page is restored from BFCache (back button)
-    window.addEventListener('pageshow', (event) => {
-      console.log('📄 pageshow event:', { persisted: event.persisted, initialized: dashboardInitialized });
-      if (event.persisted) {
-        console.log('⚠️ Page restored from BFCache, forcing reload...');
-        window.location.reload();
-      }
-    });
-
-    // Force browser to NOT cache this page (prevents BFCache issues)
-    window.addEventListener('beforeunload', () => {
-      // Empty handler prevents BFCache in some browsers
-    });
-
-    // Alternative: Use pagehide to detect navigation away
-    window.addEventListener('pagehide', (event) => {
-      console.log('👋 Navigating away from dashboard');
-      if (event.persisted) {
-        console.log('⚠️ Page will be cached by browser');
-      }
-    });
 
     function updateStatistics(overview) {
       document.getElementById('totalStudents').textContent = overview.totalStudents;
@@ -1804,9 +1769,6 @@
 
   <!-- Import Announcements Module -->
   <script type="module">
-    // DISABLED: announcements.js imports old Firebase SDK which causes freezing
-    // TODO: Create announcements-rest.js that uses REST API
-    /*
     import {
       showCreateAnnouncementModal,
       closeAnnouncementModal,
@@ -1817,12 +1779,8 @@
     window.showCreateAnnouncementModal = showCreateAnnouncementModal;
     window.closeAnnouncementModal = closeAnnouncementModal;
     window.handleAnnouncementSubmit = handleAnnouncementSubmit;
-    */
 
-    // DISABLED: MutationObserver was causing infinite loop / thread blocking
-    // lucide.createIcons() modifies DOM -> triggers observer -> calls createIcons() -> infinite loop
-    // TODO: Use more specific observer or manual icon initialization
-    /*
+    // Initialize Lucide icons when modal content changes
     const observer = new MutationObserver(() => {
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -1833,7 +1791,6 @@
       childList: true,
       subtree: true
     });
-    */
   </script>
 
   <!-- Import Calendar Module - DISABLED: Causes browser freeze -->
