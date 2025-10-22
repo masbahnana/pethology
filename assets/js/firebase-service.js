@@ -932,38 +932,36 @@ class PethologyFirebaseService {
    */
   static async getCalendarEvents(classId = null, startDate = null, endDate = null) {
     try {
-      let eventsQuery;
-
-      if (classId && startDate && endDate) {
-        eventsQuery = query(
-          collection(db, 'calendar_events'),
-          where('classId', '==', classId),
-          where('date', '>=', Timestamp.fromDate(startDate)),
-          where('date', '<=', Timestamp.fromDate(endDate)),
-          orderBy('date', 'asc')
-        );
-      } else if (classId) {
-        eventsQuery = query(
-          collection(db, 'calendar_events'),
-          where('classId', '==', classId),
-          orderBy('date', 'asc')
-        );
-      } else {
-        // Get all events (for now, until we have classes)
-        eventsQuery = query(
-          collection(db, 'calendar_events'),
-          orderBy('date', 'asc')
-        );
-      }
-
+      // Simple query without orderBy to avoid Firebase index issues
+      const eventsQuery = query(collection(db, 'calendar_events'));
       const querySnapshot = await getDocs(eventsQuery);
-      const events = [];
+      let events = [];
 
       querySnapshot.forEach((doc) => {
         events.push({
           id: doc.id,
           ...doc.data()
         });
+      });
+
+      // Filter by classId if provided
+      if (classId) {
+        events = events.filter(e => e.classId === classId);
+      }
+
+      // Filter by date range if provided
+      if (startDate && endDate) {
+        events = events.filter(e => {
+          const eventDate = e.date?.toDate ? e.date.toDate() : new Date(e.date);
+          return eventDate >= startDate && eventDate <= endDate;
+        });
+      }
+
+      // Sort client-side by date ascending
+      events.sort((a, b) => {
+        const dateA = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+        const dateB = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+        return dateA - dateB;
       });
 
       console.log(`✅ Found ${events.length} calendar events`);

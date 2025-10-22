@@ -1342,15 +1342,15 @@
           console.error('❌ Error in updateModulePerformance:', error);
         }
 
-        // Load calendar events - TEMPORARILY DISABLED FOR DEBUGGING
-        // try {
-        //   console.log('📅 Loading calendar events...');
-        //   if (typeof window.loadCalendarEvents === 'function') {
-        //     await window.loadCalendarEvents();
-        //   }
-        // } catch (error) {
-        //   console.error('❌ Error loading calendar events:', error);
-        // }
+        // Load calendar events
+        try {
+          console.log('📅 Loading calendar events...');
+          if (typeof window.loadCalendarEvents === 'function') {
+            await window.loadCalendarEvents();
+          }
+        } catch (error) {
+          console.error('❌ Error loading calendar events:', error);
+        }
 
         console.log('✅ Teacher dashboard loaded successfully!');
       } catch (error) {
@@ -1788,8 +1788,8 @@
     });
   </script>
 
-  <!-- Import Calendar Module - TEMPORARILY DISABLED FOR DEBUGGING -->
-  <!-- <script type="module">
+  <!-- Import Calendar Module -->
+  <script type="module">
     import {
       showCreateEventModal,
       closeCalendarModal,
@@ -1802,6 +1802,6 @@
     window.closeCalendarModal = closeCalendarModal;
     window.handleCalendarSubmit = handleCalendarSubmit;
     window.loadCalendarEvents = loadCalendarEvents;
-  </script> -->
+  </script>
 </body>
 </html>
