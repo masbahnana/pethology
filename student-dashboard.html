@@ -1790,8 +1790,8 @@
   </div>
 
   <script type="module">
-    // Force cache bust - update version number when firebase-service.js changes
-    import { PethologyFirebaseService } from './assets/js/firebase-service.js?v=3.1';
+    // ✅ 100% REST API - No Firebase SDK!
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements-rest.js?v=4.1';
     import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js?v=2.0';
 
@@ -1801,7 +1801,7 @@
     // Função para carregar dados reais do estudante
     async function loadRealStudentData() {
       try {
-        console.log('🔄 Loading student data from Firebase...');
+        console.log('🔄 Loading student data from Firebase (REST API)...');
 
         // Pegar usuário da sessão
         const userSession = sessionStorage.getItem('pethologyUser');
@@ -1815,12 +1815,12 @@
         const user = JSON.parse(userSession);
         console.log('👤 User:', user);
 
-        // Carregar progresso do Firebase
-        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+        // Carregar progresso do Firebase usando REST API
+        const progress = await PethologyFirebaseREST.getStudentProgress(user.id);
         console.log('📊 Progress loaded:', progress);
 
-        // Carregar histórico de quizzes para ordenação
-        const quizHistory = await PethologyFirebaseService.getStudentQuizHistory(user.id);
+        // Carregar histórico de quizzes para ordenação usando REST API
+        const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(user.id);
         console.log('📝 Quiz history loaded:', quizHistory.length);
 
         // Atualizar UI
@@ -2148,7 +2148,7 @@
         if (!userSession) return;
 
         const user = JSON.parse(userSession);
-        const progress = await PethologyFirebaseService.getStudentProgress(user.id);
+        const progress = await PethologyFirebaseREST.getStudentProgress(user.id);
 
         studentAchievements = progress.achievements || [];
 

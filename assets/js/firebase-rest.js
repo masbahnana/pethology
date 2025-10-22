@@ -191,6 +191,64 @@ export class PethologyFirebaseREST {
     }
   }
 
+  // Get student progress (alias for getUserProgress with default structure)
+  static async getStudentProgress(userId) {
+    try {
+      console.log(`📊 Fetching student progress for: ${userId}`);
+
+      const progress = await this.getUserProgress(userId);
+
+      if (!progress) {
+        // Return default empty progress structure
+        console.log('⚠️ No progress found, returning empty structure');
+        return {
+          overallStats: {
+            totalQuizzes: 0,
+            averageScore: 0,
+            streak: 0
+          },
+          moduleProgress: {},
+          achievements: []
+        };
+      }
+
+      console.log('✅ Student progress loaded');
+      return progress;
+    } catch (error) {
+      console.error('❌ Error getting student progress:', error);
+      return {
+        overallStats: { totalQuizzes: 0, averageScore: 0, streak: 0 },
+        moduleProgress: {},
+        achievements: []
+      };
+    }
+  }
+
+  // Get student quiz history
+  static async getStudentQuizHistory(userId) {
+    try {
+      console.log(`📝 Fetching quiz history for: ${userId}`);
+
+      const allResults = await this.getAllQuizResults();
+
+      // Filter results for this user
+      const userResults = allResults.filter(result => result.userId === userId);
+
+      // Sort by date (most recent first)
+      userResults.sort((a, b) => {
+        const dateA = a.completedAt || new Date(0);
+        const dateB = b.completedAt || new Date(0);
+        return dateB - dateA;
+      });
+
+      console.log(`✅ Loaded ${userResults.length} quiz results for student`);
+      return userResults;
+    } catch (error) {
+      console.error('❌ Error getting student quiz history:', error);
+      return [];
+    }
+  }
+
   // ============================================
   // STUDENT WHITELIST METHODS
   // ============================================
