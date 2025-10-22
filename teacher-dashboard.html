@@ -1194,7 +1194,8 @@
   </div>
 
   <script type="module">
-    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+    // Force cache bust - update version number when firebase-service.js changes
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js?v=2.0';
 
     // Initialize Lucide icons
     lucide.createIcons();

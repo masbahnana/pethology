@@ -37,7 +37,7 @@ const db = initializeFirestore(app, {
   useFetchStreams: false // Use XHR instead of fetch for better compatibility
 });
 
-console.log('🔥 Firebase initialized with REST mode (no WebChannel)');
+console.log('🔥 Firebase initialized with REST mode (no WebChannel) - v2.0');
 
 class PethologyFirebaseService {
   

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Firebase Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .box {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #4f46e5;
+    }
+    pre {
+      background: #1f2937;
+      color: #f3f4f6;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 13px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .success { color: #059669; font-weight: bold; }
+    .error { color: #dc2626; font-weight: bold; }
+    .warning { color: #d97706; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🔥 Simple Firebase Connection Test</h1>
+
+  <div class="box">
+    <h2>Step 1: Test Button Click</h2>
+    <p>First, let's verify buttons work:</p>
+    <button onclick="testButton()">Click Me!</button>
+    <p id="buttonResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>Step 2: Test Firebase Connection</h2>
+    <button onclick="testFirebase()">Test Firebase</button>
+    <p id="firebaseResult"></p>
+  </div>
+
+  <div class="box">
+    <h2>📝 Console Log</h2>
+    <pre id="log"></pre>
+  </div>
+
+  <script type="module">
+    const logEl = document.getElementById('log');
+    const logs = [];
+
+    function log(msg, type = 'info') {
+      const timestamp = new Date().toLocaleTimeString();
+      const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+      const logMsg = `[${timestamp}] ${prefix} ${msg}`;
+
+      logs.push(logMsg);
+      logEl.textContent = logs.join('\n');
+      logEl.scrollTop = logEl.scrollHeight;
+
+      if (type === 'error') console.error(msg);
+      else if (type === 'warning') console.warn(msg);
+      else console.log(msg);
+    }
+
+    window.testButton = function() {
+      log('Button clicked!', 'success');
+      document.getElementById('buttonResult').innerHTML = '<span class="success">✅ Button works!</span>';
+    };
+
+    window.testFirebase = async function() {
+      const resultEl = document.getElementById('firebaseResult');
+      resultEl.innerHTML = '<span class="warning">⏳ Testing Firebase...</span>';
+
+      try {
+        log('Starting Firebase test...', 'info');
+
+        // Import Firebase modules
+        log('Importing Firebase SDK...', 'info');
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { initializeFirestore, collection, getDocs, query, where, limit } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+        log('✅ Firebase SDK imported', 'success');
+
+        // Firebase config
+        const firebaseConfig = {
+          apiKey: "AIzaSyDYq8xnfL9KPiKYHHvDG1zHDvjd4WAOO3o",
+          authDomain: "pethology-7e9d7.firebaseapp.com",
+          projectId: "pethology-7e9d7",
+          storageBucket: "pethology-7e9d7.firebasestorage.app",
+          messagingSenderId: "485201789422",
+          appId: "1:485201789422:web:309a54ceb82588973f0eff"
+        };
+
+        log('Initializing Firebase app...', 'info');
+        const app = initializeApp(firebaseConfig);
+        log('✅ Firebase app initialized', 'success');
+
+        log('Configuring Firestore (REST mode, no WebChannel)...', 'info');
+        const db = initializeFirestore(app, {
+          experimentalForceLongPolling: false,
+          experimentalAutoDetectLongPolling: false,
+          useFetchStreams: false
+        });
+        log('✅ Firestore configured with REST mode', 'success');
+
+        // Try a simple query with timeout
+        log('Testing simple query (get 1 user)...', 'info');
+        const startTime = Date.now();
+
+        const usersQuery = query(collection(db, 'users'), limit(1));
+
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Query timeout after 10 seconds')), 10000)
+        );
+
+        const querySnapshot = await Promise.race([
+          getDocs(usersQuery),
+          timeoutPromise
+        ]);
+
+        const elapsed = Date.now() - startTime;
+        const count = querySnapshot.size;
+
+        log(`✅ Query successful! Got ${count} document(s) in ${elapsed}ms`, 'success');
+
+        resultEl.innerHTML = `<span class="success">✅ Firebase works! Query took ${elapsed}ms</span>`;
+
+        // Check for CORS errors
+        log('Checking for CORS errors in console...', 'warning');
+        log('If you see any errors mentioning "firestore.googleapis.com/Listen/channel" or "CORS", report them!', 'warning');
+
+      } catch (error) {
+        log(`❌ Firebase test failed: ${error.message}`, 'error');
+        log(`Error stack: ${error.stack}`, 'error');
+
+        if (error.message.includes('CORS')) {
+          log('🚨 CORS ERROR DETECTED! This means cache is still active.', 'error');
+          resultEl.innerHTML = '<span class="error">❌ CORS Error - Cache problem!</span>';
+        } else if (error.message.includes('timeout')) {
+          log('🚨 TIMEOUT! Firebase query is hanging.', 'error');
+          resultEl.innerHTML = '<span class="error">❌ Timeout - Firebase hanging!</span>';
+        } else {
+          resultEl.innerHTML = `<span class="error">❌ Error: ${error.message}</span>`;
+        }
+      }
+    };
+
+    log('Page loaded. Click buttons to test.', 'info');
+    log('Remember: Clear cache and do hard refresh (Cmd+Shift+R) if needed!', 'warning');
+
+  </script>
+</body>
+</html>

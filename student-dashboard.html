@@ -1790,9 +1790,10 @@
   </div>
 
   <script type="module">
-    import { PethologyFirebaseService } from './assets/js/firebase-service.js';
-    import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements.js';
-    import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js';
+    // Force cache bust - update version number when firebase-service.js changes
+    import { PethologyFirebaseService } from './assets/js/firebase-service.js?v=2.0';
+    import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements.js?v=2.0';
+    import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js?v=2.0';
 
     // Make functions globally available
     window.markAnnouncementAsRead = markAnnouncementAsRead;
