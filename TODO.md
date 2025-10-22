@@ -1,7 +1,7 @@
 # 🎓 Pethology - TODO List & Roadmap Completo
 
-**Última atualização:** 21 Outubro 2025
-**Status atual:** Notion Design Applied ✅ + Achievement System ✅ + Import Students ✅
+**Última atualização:** 22 Outubro 2025
+**Status atual:** v4.0 Dashboard Redesign ✅ + Whitelist System ✅ + REST API Migration ✅
 
 ---
 
@@ -403,28 +403,65 @@ async saveQuizResult(resultData) {
 
 ---
 
-### **🔒 2. WHITELIST SIGNUP SYSTEM (PRÓXIMA PRIORIDADE - 2-3 horas)**
+### **🔒 2. TEACHER WHITELIST SYSTEM** ✅ COMPLETO (22 Out 2025)
+
+**Status:** ✅ IMPLEMENTADO E FUNCIONANDO
+
+**Objetivo:** Sistema de controle de acesso - apenas professores autorizados podem fazer login
+
+#### **O que foi implementado:**
+- [x] Página `admin-whitelist.html` - Interface administrativa completa
+- [x] Add/remove emails de professores autorizados
+- [x] Estatísticas (total, adicionados esta semana)
+- [x] Notas opcionais para cada professor
+- [x] Página `access-denied.html` - Bloqueio elegante para não autorizados
+- [x] Modificado `auth0-callback.html` - Verificação automática de whitelist
+- [x] Migrado callback para REST API (eliminando Firebase SDK)
+- [x] Bloqueio automático de professores não autorizados
+- [x] Alunos não afetados (só teachers são verificados)
+
+**Arquivos criados:**
+- ✅ `admin-whitelist.html` - Interface de gerenciamento
+- ✅ `access-denied.html` - Página de acesso negado
+
+**Arquivos modificados:**
+- ✅ `auth0-callback.html` - Whitelist check + REST API migration
+
+**Firebase Collection:**
+- `/teacher_whitelist/{docId}` - emails, notes, addedAt, addedBy
+
+**Como funciona:**
+1. Admin acessa `/admin-whitelist.html` e adiciona emails autorizados
+2. Quando professor faz login → sistema verifica whitelist
+3. Se NÃO autorizado → redireciona para `/access-denied.html`
+4. Se autorizado → acessa dashboard normalmente
+
+**Tempo gasto:** 2-3 horas
+
+---
+
+### **📋 3. STUDENT WHITELIST SYSTEM (PRÓXIMA PRIORIDADE - 2-3 horas)**
 
 **Status:** 🔨 PARCIALMENTE IMPLEMENTADO (Import Students pronto)
 
-**Objetivo:** Sistema fechado - apenas emails pré-registrados podem criar conta
+**Objetivo:** Sistema fechado - apenas alunos pré-registrados podem criar conta
 
 #### **O que já está pronto:**
 - [x] Página `import-students.html` (CSV + manual entry)
-- [x] Firebase methods: `addPreRegisteredStudent()`, `checkPreRegistered()`, `markAsRegistered()`
+- [x] Firebase methods para gerenciar estudantes
 - [x] Botão "Import Students" no teacher dashboard
 
 #### **O que falta:**
-- [ ] Modificar `auth0-callback.html` - adicionar whitelist check
-- [ ] Bloquear signup se email não está na whitelist
+- [ ] Adicionar student whitelist check no `auth0-callback.html`
+- [ ] Bloquear signup de students se email não está pré-registrado
 - [ ] Mostrar mensagem: "You need an invitation from your teacher"
 - [ ] Auto-assign aluno à turma após signup aprovado
-- [ ] Testar fluxo: Add student → Signup blocked/allowed
+- [ ] Testar fluxo completo: Add student → Signup blocked/allowed
 
 **Arquivos a modificar:**
-- `auth0-callback.html` - CRÍTICO (adicionar whitelist check)
+- `auth0-callback.html` - Adicionar lógica similar ao teacher whitelist
 
-**Tempo estimado:** 2-3 horas
+**Tempo estimado:** 1-2 horas (já temos a estrutura do teacher whitelist)
 
 ---
 
@@ -963,33 +1000,49 @@ Total: 10 modules × 20 questions = 200 questions
 
 *Mantenha este documento atualizado a cada sessão!*
 
-## 📋 **NOTAS DA ÚLTIMA SESSÃO (15 OUT 2025):**
+## 📋 **NOTAS DA ÚLTIMA SESSÃO (22 OUT 2025):**
 
-**✅ Completado:**
-- [x] Logo system implementado (todas as páginas)
-- [x] Header consistency estabelecida (padding 30px 60px)
-- [x] 5 novos módulos de quiz criados (100 novas questões)
-- [x] Quiz randomization implementado (Fisher-Yates)
-- [x] Módulos menu collapsible no student dashboard
-- [x] Teacher content manager com Home/Logout buttons
+**✅ v4.0 - Dashboard Redesign + Whitelist System Completado:**
+
+**1. Dashboard Layout Redesign:**
+- [x] Layout redesenhado: 2x2 stats grid + calendar + quick actions
+- [x] Student Progress table em largura total
+- [x] Module Performance mostra todos os 10 módulos (mesmo zerados)
+- [x] Quick actions em grid 2-colunas com hover effects
+- [x] CSS responsivo melhorado
+
+**2. Firebase REST API Migration:**
+- [x] Dashboard migrado de Firebase SDK para REST API
+- [x] Eliminado problema de WebChannel/CORS que causava freeze
+- [x] Calendar re-habilitado com REST API (calendar-rest.js)
+- [x] MutationObserver infinite loop resolvido
+- [x] BFCache detection implementado
+- [x] auth0-callback migrado para REST API
+
+**3. Teacher Whitelist System:**
+- [x] Admin interface (admin-whitelist.html) completa
+- [x] Verificação automática no login
+- [x] Página de access denied elegante
+- [x] REST API completo para whitelist
+- [x] Security: fail-secure (nega acesso em erro)
 
 **📊 Métricas da Sessão:**
-- Arquivos modificados: 15+
-- Novas questões criadas: 100
-- Total questões no sistema: 200
-- Módulos completos: 10/10
-- Features implementados: Logo system, Randomização, Collapsible menus
+- Arquivos criados: 5+ (firebase-rest.js, calendar-rest.js, admin-whitelist.html, access-denied.html)
+- Arquivos modificados: 10+ (teacher-dashboard.html, auth0-callback.html, etc)
+- Bugs críticos resolvidos: Dashboard freeze, CORS errors, navigation issues
+- Features implementados: REST API wrapper, Whitelist system, Dashboard redesign
 
 **🎯 Próxima Sessão - FOCO:**
-1. **Achievement System** (usar emojis inicialmente)
-2. Depois: Adaptive Quiz, Smart Review, Test Mode, Import via Forms
+1. **Student Whitelist** (bloquear signup de alunos não pré-registrados)
+2. **Announcements migration** para REST API
+3. **Content Manager migration** para REST API (lower priority)
 
-**💡 Ideias Futuras Anotadas:** DONE
-- Quiz sem login: adicionar aviso e reduzir questões
-- Student dashboard: logout no content
-- Login page: Student/Teacher login buttons (simplificar)
-- For Students page: ajustar layout
-- For Teachers page: ajustar layout
+**💡 Issues Resolvidos:**
+- ✅ Dashboard freeze (WebChannel CORS) → REST API
+- ✅ Buttons não clicáveis → MutationObserver desabilitado
+- ✅ Navigation back freeze → BFCache detection
+- ✅ Teacher access control → Whitelist system
+- ✅ Module Performance empty → Mostra todos agora
 
 ---
 
