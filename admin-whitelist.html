@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Whitelist Management - Pethology Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --blue-primary: #2563eb;
+      --blue-hover: #1d4ed8;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --green-500: #10b981;
+      --green-600: #059669;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--gray-700);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 150ms;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-danger {
+      background: var(--red-500);
+      color: white;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-danger:hover {
+      background: var(--red-600);
+    }
+
+    .whitelist-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .whitelist-table thead {
+      background: var(--gray-50);
+    }
+
+    .whitelist-table th {
+      text-align: left;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .whitelist-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 14px;
+    }
+
+    .whitelist-table tbody tr:hover {
+      background: var(--gray-50);
+    }
+
+    .email-cell {
+      font-family: 'Courier New', monospace;
+      color: var(--gray-900);
+    }
+
+    .date-cell {
+      color: var(--gray-500);
+      font-size: 13px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--gray-500);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      color: var(--green-600);
+      border: 1px solid var(--green-500);
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      color: var(--red-600);
+      border: 1px solid var(--red-500);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: var(--gray-500);
+    }
+
+    .spinner {
+      border: 3px solid var(--gray-200);
+      border-top: 3px solid var(--blue-primary);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .stats {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: var(--gray-50);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--blue-primary);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔐 Teacher Whitelist Management</h1>
+      <p>Control which email addresses are authorized to register as teachers</p>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <div class="card">
+      <div class="card-title">➕ Add Email to Whitelist</div>
+
+      <form id="addEmailForm">
+        <div class="form-group">
+          <label class="form-label" for="emailInput">Teacher Email Address</label>
+          <input
+            type="email"
+            id="emailInput"
+            class="form-input"
+            placeholder="teacher@example.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="notesInput">Notes (optional)</label>
+          <input
+            type="text"
+            id="notesInput"
+            class="form-input"
+            placeholder="E.g., Biology teacher, approved by principal"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add to Whitelist</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value" id="totalCount">-</div>
+          <div class="stat-label">Authorized Emails</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="recentCount">-</div>
+          <div class="stat-label">Added This Week</div>
+        </div>
+      </div>
+
+      <div class="card-title">📋 Authorized Teachers</div>
+
+      <div id="whitelistContent">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading whitelist...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.0';
+
+    let whitelist = [];
+
+    // Load whitelist on page load
+    async function loadWhitelist() {
+      try {
+        const response = await PethologyFirebaseREST.request('/teacher_whitelist');
+
+        if (!response.documents || response.documents.length === 0) {
+          whitelist = [];
+        } else {
+          whitelist = response.documents
+            .map(doc => PethologyFirebaseREST.convertDocument(doc))
+            .sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+        }
+
+        renderWhitelist();
+        updateStats();
+      } catch (error) {
+        console.error('Error loading whitelist:', error);
+        showAlert('Failed to load whitelist: ' + error.message, 'error');
+        document.getElementById('whitelistContent').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>Failed to load whitelist</p>
+          </div>
+        `;
+      }
+    }
+
+    // Render whitelist table
+    function renderWhitelist() {
+      const container = document.getElementById('whitelistContent');
+
+      if (whitelist.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p>No emails in whitelist yet</p>
+          </div>
+        `;
+        return;
+      }
+
+      const tableHTML = `
+        <table class="whitelist-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Notes</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${whitelist.map(entry => `
+              <tr>
+                <td class="email-cell">${entry.email}</td>
+                <td>${entry.notes || '-'}</td>
+                <td class="date-cell">${formatDate(entry.addedAt)}</td>
+                <td>
+                  <button class="btn btn-danger" onclick="removeEmail('${entry.id}')">Remove</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = tableHTML;
+    }
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('totalCount').textContent = whitelist.length;
+
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const recentCount = whitelist.filter(entry =>
+        new Date(entry.addedAt) > oneWeekAgo
+      ).length;
+
+      document.getElementById('recentCount').textContent = recentCount;
+    }
+
+    // Add email to whitelist
+    document.getElementById('addEmailForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('emailInput').value.trim().toLowerCase();
+      const notes = document.getElementById('notesInput').value.trim();
+
+      if (!email) {
+        showAlert('Please enter a valid email address', 'error');
+        return;
+      }
+
+      // Check if already exists
+      if (whitelist.some(entry => entry.email === email)) {
+        showAlert('This email is already in the whitelist', 'error');
+        return;
+      }
+
+      try {
+        const firestoreData = {
+          fields: {
+            email: { stringValue: email },
+            notes: { stringValue: notes },
+            addedAt: { timestampValue: new Date().toISOString() },
+            addedBy: { stringValue: 'admin' }
+          }
+        };
+
+        await PethologyFirebaseREST.request('/teacher_whitelist', 'POST', firestoreData);
+
+        showAlert(`✅ Added ${email} to whitelist`, 'success');
+
+        // Clear form
+        document.getElementById('emailInput').value = '';
+        document.getElementById('notesInput').value = '';
+
+        // Reload whitelist
+        await loadWhitelist();
+      } catch (error) {
+        console.error('Error adding email:', error);
+        showAlert('Failed to add email: ' + error.message, 'error');
+      }
+    });
+
+    // Remove email from whitelist
+    window.removeEmail = async function(docId) {
+      if (!confirm('Are you sure you want to remove this email from the whitelist?')) {
+        return;
+      }
+
+      try {
+        await PethologyFirebaseREST.request(`/teacher_whitelist/${docId}`, 'DELETE');
+        showAlert('Email removed from whitelist', 'success');
+        await loadWhitelist();
+      } catch (error) {
+        console.error('Error removing email:', error);
+        showAlert('Failed to remove email: ' + error.message, 'error');
+      }
+    };
+
+    // Show alert message
+    function showAlert(message, type) {
+      const container = document.getElementById('alertContainer');
+      const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+
+      container.innerHTML = `
+        <div class="alert ${alertClass}">
+          ${message}
+        </div>
+      `;
+
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 5000);
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 0) return 'Today';
+      if (diffDays === 1) return 'Yesterday';
+      if (diffDays < 7) return `${diffDays} days ago`;
+
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    }
+
+    // Initialize
+    loadWhitelist();
+  </script>
+</body>
+</html>

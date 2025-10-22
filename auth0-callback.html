@@ -41,21 +41,33 @@
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
   
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.1';
 
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyDYq8xnfL9KPiKYHHvDG1zHDvjd4WAOO3o",
-      authDomain: "pethology-7e9d7.firebaseapp.com",
-      projectId: "pethology-7e9d7",
-      storageBucket: "pethology-7e9d7.firebasestorage.app",
-      messagingSenderId: "485201789422",
-      appId: "1:485201789422:web:309a54ceb82588973f0eff"
-    };
+    // Check if email is in teacher whitelist
+    async function isEmailWhitelisted(email) {
+      try {
+        const response = await PethologyFirebaseREST.request('/teacher_whitelist');
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        if (!response.documents || response.documents.length === 0) {
+          console.log('⚠️ No whitelist found - denying teacher access');
+          return false;
+        }
+
+        const whitelist = response.documents.map(doc =>
+          PethologyFirebaseREST.convertDocument(doc)
+        );
+
+        const isAllowed = whitelist.some(entry =>
+          entry.email.toLowerCase() === email.toLowerCase()
+        );
+
+        console.log(`🔐 Whitelist check for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
+        return isAllowed;
+      } catch (error) {
+        console.error('❌ Error checking whitelist:', error);
+        return false; // Deny access if we can't verify
+      }
+    }
 
     // Auth0 config
     const auth0Config = {
@@ -70,17 +82,30 @@
       try {
         const auth0Client = await window.auth0.createAuth0Client(auth0Config);
         await auth0Client.handleRedirectCallback();
-        
+
         const user = await auth0Client.getUser();
-        
+
         if (!user) {
           throw new Error('No user data');
         }
 
         // Determinar role
         const email = user.email || '';
-        const role = email.toLowerCase().startsWith('plc') ? 'Student' : 
-                     (email.includes('teacher') || email.includes('staff')) ? 'Teacher' : 'Student';
+        let role = email.toLowerCase().startsWith('plc') ? 'Student' :
+                   (email.includes('teacher') || email.includes('staff')) ? 'Teacher' : 'Student';
+
+        // 🔐 WHITELIST CHECK: If role is Teacher, verify they're authorized
+        if (role === 'Teacher') {
+          const isAuthorized = await isEmailWhitelisted(email);
+
+          if (!isAuthorized) {
+            console.log('🚫 Teacher access denied - not in whitelist');
+            window.location.href = `/access-denied.html?email=${encodeURIComponent(email)}`;
+            return;
+          }
+
+          console.log('✅ Teacher whitelisted - access granted');
+        }
 
         const userSession = {
           id: user.sub,
@@ -92,19 +117,33 @@
           provider: 'auth0'
         };
 
-        // Salvar no Firebase
-        await setDoc(doc(db, 'users', userSession.id), {
-          ...userSession,
-          lastLogin: new Date(),
-          updatedAt: new Date()
-        }, { merge: true });
+        // Salvar no Firebase usando REST API
+        const firestoreData = {
+          fields: {
+            id: { stringValue: userSession.id },
+            name: { stringValue: userSession.name },
+            email: { stringValue: userSession.email },
+            role: { stringValue: userSession.role },
+            photo: { stringValue: userSession.photo },
+            loginTime: { stringValue: userSession.loginTime },
+            provider: { stringValue: userSession.provider },
+            lastLogin: { timestampValue: new Date().toISOString() },
+            updatedAt: { timestampValue: new Date().toISOString() }
+          }
+        };
+
+        await PethologyFirebaseREST.request(
+          `/users/${userSession.id}`,
+          'PATCH',
+          firestoreData
+        );
 
         console.log('✅ User saved to Firebase');
 
         // Salvar na sessão
         sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
 
-        // Redirecionar (TEMPORARY: using REST version for testing)
+        // Redirecionar
         window.location.href = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
 
       } catch (error) {
