@@ -30,14 +30,14 @@ const firebaseConfig = {
 // Inicializar Firebase com configurações para evitar WebChannel/CORS issues
 const app = initializeApp(firebaseConfig);
 
-// Use initializeFirestore instead of getFirestore to configure settings
+// Use initializeFirestore with LONG POLLING to avoid WebChannel completely
 const db = initializeFirestore(app, {
-  experimentalForceLongPolling: false, // Disable WebChannel
-  experimentalAutoDetectLongPolling: false, // Prevent auto-detection
-  useFetchStreams: false // Use XHR instead of fetch for better compatibility
+  experimentalForceLongPolling: true, // FORCE long polling (no WebChannel!)
+  experimentalAutoDetectLongPolling: false, // Don't auto-detect, stay in long polling
+  useFetchStreams: false // Use XHR for compatibility
 });
 
-console.log('🔥 Firebase initialized with REST mode (no WebChannel) - v2.0');
+console.log('🔥 Firebase initialized with LONG POLLING mode (no WebChannel) - v3.0');
 
 class PethologyFirebaseService {
   
