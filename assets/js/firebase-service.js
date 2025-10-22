@@ -1,7 +1,7 @@
 // Firebase Service for Pethology
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import {
-  getFirestore,
+  initializeFirestore,
   doc,
   setDoc,
   getDoc,
@@ -27,9 +27,17 @@ const firebaseConfig = {
   appId: "1:485201789422:web:309a54ceb82588973f0eff"
 };
 
-// Inicializar Firebase
+// Inicializar Firebase com configurações para evitar WebChannel/CORS issues
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+
+// Use initializeFirestore instead of getFirestore to configure settings
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: false, // Disable WebChannel
+  experimentalAutoDetectLongPolling: false, // Prevent auto-detection
+  useFetchStreams: false // Use XHR instead of fetch for better compatibility
+});
+
+console.log('🔥 Firebase initialized with REST mode (no WebChannel)');
 
 class PethologyFirebaseService {
   
