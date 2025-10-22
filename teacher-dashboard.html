@@ -1870,22 +1870,19 @@
     </div>
   </div>
 
-  <!-- Import Announcements Module -->
+  <!-- Import Announcements Module - REST API Version -->
   <script type="module">
-    // DISABLED: announcements.js imports old Firebase SDK which causes freezing
-    // TODO: Create announcements-rest.js that uses REST API
-    /*
+    // ✅ ENABLED: Using REST API version (no Firebase SDK)
     import {
       showCreateAnnouncementModal,
       closeAnnouncementModal,
       handleAnnouncementSubmit
-    } from './assets/js/announcements.js';
+    } from './assets/js/announcements-rest.js?v=4.1';
 
     // Make functions globally available
     window.showCreateAnnouncementModal = showCreateAnnouncementModal;
     window.closeAnnouncementModal = closeAnnouncementModal;
     window.handleAnnouncementSubmit = handleAnnouncementSubmit;
-    */
 
     // DISABLED: MutationObserver was causing infinite loop / thread blocking
     // lucide.createIcons() modifies DOM -> triggers observer -> calls createIcons() -> infinite loop

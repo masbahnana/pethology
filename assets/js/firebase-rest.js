@@ -275,6 +275,161 @@ export class PethologyFirebaseREST {
       return [];
     }
   }
+
+  // ============================================
+  // ANNOUNCEMENTS METHODS
+  // ============================================
+
+  // Get all announcements
+  static async getAnnouncements() {
+    try {
+      console.log('📢 Fetching announcements (REST API)...');
+
+      const response = await this.request('/announcements');
+
+      if (!response.documents) {
+        console.log('✅ No announcements found');
+        return [];
+      }
+
+      const announcements = response.documents
+        .map(doc => this.convertDocument(doc))
+        .sort((a, b) => {
+          // Pinned first, then by date
+          if (a.isPinned && !b.isPinned) return -1;
+          if (!a.isPinned && b.isPinned) return 1;
+
+          const dateA = a.createdAt || new Date(0);
+          const dateB = b.createdAt || new Date(0);
+          return dateB - dateA;
+        });
+
+      console.log(`✅ Loaded ${announcements.length} announcements`);
+      return announcements;
+    } catch (error) {
+      console.error('❌ Error getting announcements:', error);
+      return [];
+    }
+  }
+
+  // Create announcement
+  static async createAnnouncement(announcementData) {
+    try {
+      console.log('📢 Creating announcement:', announcementData.title);
+
+      const firestoreData = {
+        fields: {
+          title: { stringValue: announcementData.title },
+          message: { stringValue: announcementData.message },
+          isPinned: { booleanValue: announcementData.isPinned || false },
+          createdBy: { stringValue: announcementData.createdBy },
+          createdByName: { stringValue: announcementData.createdByName || 'Teacher' },
+          createdAt: { timestampValue: new Date().toISOString() },
+          readBy: { arrayValue: { values: [] } }
+        }
+      };
+
+      const response = await this.request('/announcements', 'POST', firestoreData);
+      console.log('✅ Announcement created successfully');
+      return this.convertDocument(response);
+    } catch (error) {
+      console.error('❌ Error creating announcement:', error);
+      throw error;
+    }
+  }
+
+  // Update announcement
+  static async updateAnnouncement(announcementId, updates) {
+    try {
+      console.log('📢 Updating announcement:', announcementId);
+
+      const fields = {};
+      const updateMask = [];
+
+      if (updates.title !== undefined) {
+        fields.title = { stringValue: updates.title };
+        updateMask.push('title');
+      }
+      if (updates.message !== undefined) {
+        fields.message = { stringValue: updates.message };
+        updateMask.push('message');
+      }
+      if (updates.isPinned !== undefined) {
+        fields.isPinned = { booleanValue: updates.isPinned };
+        updateMask.push('isPinned');
+      }
+
+      const updateData = { fields };
+      const maskQuery = updateMask.map(field => `updateMask.fieldPaths=${field}`).join('&');
+
+      await this.request(
+        `/announcements/${announcementId}?${maskQuery}`,
+        'PATCH',
+        updateData
+      );
+
+      console.log('✅ Announcement updated successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error updating announcement:', error);
+      throw error;
+    }
+  }
+
+  // Delete announcement
+  static async deleteAnnouncement(announcementId) {
+    try {
+      console.log('📢 Deleting announcement:', announcementId);
+
+      await this.request(`/announcements/${announcementId}`, 'DELETE');
+
+      console.log('✅ Announcement deleted successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting announcement:', error);
+      throw error;
+    }
+  }
+
+  // Mark announcement as read
+  static async markAnnouncementAsRead(announcementId, userId) {
+    try {
+      console.log(`📢 Marking announcement as read: ${announcementId} by ${userId}`);
+
+      // Get current announcement
+      const response = await this.request(`/announcements/${announcementId}`);
+      const announcement = this.convertDocument(response);
+
+      // Add userId to readBy array if not already there
+      const readBy = announcement.readBy || [];
+      if (!readBy.includes(userId)) {
+        readBy.push(userId);
+
+        const updateData = {
+          fields: {
+            readBy: {
+              arrayValue: {
+                values: readBy.map(id => ({ stringValue: id }))
+              }
+            }
+          }
+        };
+
+        await this.request(
+          `/announcements/${announcementId}?updateMask.fieldPaths=readBy`,
+          'PATCH',
+          updateData
+        );
+
+        console.log('✅ Announcement marked as read');
+      }
+
+      return true;
+    } catch (error) {
+      console.error('❌ Error marking announcement as read:', error);
+      throw error;
+    }
+  }
 }
 
 // Make it globally available
