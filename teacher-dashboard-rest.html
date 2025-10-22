@@ -1397,9 +1397,23 @@
 
     // Detect when page is restored from BFCache (back button)
     window.addEventListener('pageshow', (event) => {
-      if (event.persisted && dashboardInitialized) {
-        console.log('⚠️ Page restored from BFCache, reloading...');
+      console.log('📄 pageshow event:', { persisted: event.persisted, initialized: dashboardInitialized });
+      if (event.persisted) {
+        console.log('⚠️ Page restored from BFCache, forcing reload...');
         window.location.reload();
+      }
+    });
+
+    // Force browser to NOT cache this page (prevents BFCache issues)
+    window.addEventListener('beforeunload', () => {
+      // Empty handler prevents BFCache in some browsers
+    });
+
+    // Alternative: Use pagehide to detect navigation away
+    window.addEventListener('pagehide', (event) => {
+      console.log('👋 Navigating away from dashboard');
+      if (event.persisted) {
+        console.log('⚠️ Page will be cached by browser');
       }
     });
 
