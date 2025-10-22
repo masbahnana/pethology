@@ -190,6 +190,91 @@ export class PethologyFirebaseREST {
       return null;
     }
   }
+
+  // ============================================
+  // STUDENT WHITELIST METHODS
+  // ============================================
+
+  // Check if student email is pre-registered (whitelist check)
+  static async checkStudentWhitelisted(email) {
+    try {
+      console.log(`🔍 Checking student whitelist for: ${email}`);
+
+      const response = await this.request(`/pre_registered_students/${email}`);
+
+      if (response && response.fields) {
+        const studentData = this.convertDocument(response);
+        console.log(`✅ Student is whitelisted:`, studentData);
+        return studentData;
+      }
+
+      console.log(`❌ Student NOT in whitelist: ${email}`);
+      return null;
+    } catch (error) {
+      // 404 means not found (not whitelisted)
+      if (error.message.includes('404')) {
+        console.log(`❌ Student NOT in whitelist: ${email}`);
+        return null;
+      }
+      console.error('❌ Error checking student whitelist:', error);
+      return null;
+    }
+  }
+
+  // Mark student as registered (after signup)
+  static async markStudentAsRegistered(email, userId) {
+    try {
+      console.log(`✅ Marking student as registered: ${email} → ${userId}`);
+
+      const updateData = {
+        fields: {
+          registered: { booleanValue: true },
+          userId: { stringValue: userId },
+          registeredAt: { timestampValue: new Date().toISOString() }
+        }
+      };
+
+      await this.request(
+        `/pre_registered_students/${email}?updateMask.fieldPaths=registered&updateMask.fieldPaths=userId&updateMask.fieldPaths=registeredAt`,
+        'PATCH',
+        updateData
+      );
+
+      console.log(`✅ Student marked as registered: ${email}`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error marking student as registered:', error);
+      return false;
+    }
+  }
+
+  // Get all pre-registered students (for admin/teacher dashboard)
+  static async getAllPreRegisteredStudents() {
+    try {
+      console.log('📋 Fetching all pre-registered students...');
+
+      const response = await this.request('/pre_registered_students');
+
+      if (!response.documents) {
+        console.log('✅ No pre-registered students found');
+        return [];
+      }
+
+      const students = response.documents
+        .map(doc => this.convertDocument(doc))
+        .sort((a, b) => {
+          const dateA = a.addedAt || new Date(0);
+          const dateB = b.addedAt || new Date(0);
+          return dateB - dateA;
+        });
+
+      console.log(`✅ Loaded ${students.length} pre-registered students`);
+      return students;
+    } catch (error) {
+      console.error('❌ Error getting pre-registered students:', error);
+      return [];
+    }
+  }
 }
 
 // Make it globally available

@@ -94,17 +94,34 @@
         let role = email.toLowerCase().startsWith('plc') ? 'Student' :
                    (email.includes('teacher') || email.includes('staff')) ? 'Teacher' : 'Student';
 
-        // 🔐 WHITELIST CHECK: If role is Teacher, verify they're authorized
+        // 🔐 TEACHER WHITELIST CHECK: Verify teachers are authorized
         if (role === 'Teacher') {
           const isAuthorized = await isEmailWhitelisted(email);
 
           if (!isAuthorized) {
             console.log('🚫 Teacher access denied - not in whitelist');
-            window.location.href = `/access-denied.html?email=${encodeURIComponent(email)}`;
+            window.location.href = `/access-denied.html?email=${encodeURIComponent(email)}&type=teacher`;
             return;
           }
 
           console.log('✅ Teacher whitelisted - access granted');
+        }
+
+        // 🔐 STUDENT WHITELIST CHECK: Verify students are pre-registered
+        let studentData = null;
+        if (role === 'Student') {
+          studentData = await PethologyFirebaseREST.checkStudentWhitelisted(email);
+
+          if (!studentData) {
+            console.log('🚫 Student access denied - not pre-registered');
+            window.location.href = `/access-denied.html?email=${encodeURIComponent(email)}&type=student`;
+            return;
+          }
+
+          console.log('✅ Student pre-registered - access granted');
+
+          // Mark student as registered
+          await PethologyFirebaseREST.markStudentAsRegistered(email, user.sub);
         }
 
         const userSession = {
@@ -114,7 +131,8 @@
           role: role,
           photo: user.picture || '',
           loginTime: new Date().toISOString(),
-          provider: 'auth0'
+          provider: 'auth0',
+          ...(studentData && studentData.classId ? { classId: studentData.classId } : {})
         };
 
         // Salvar no Firebase usando REST API

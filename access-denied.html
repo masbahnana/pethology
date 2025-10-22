@@ -91,26 +91,24 @@
 <body>
   <div class="container">
     <div class="icon">🚫</div>
-    <h1>Access Denied</h1>
-    <p>
-      Your email address is not authorized to access the teacher dashboard.
-      Only whitelisted teachers can log in to this system.
+    <h1 id="pageTitle">Access Denied</h1>
+    <p id="pageDescription">
+      Loading...
     </p>
 
     <div class="email-info" id="emailDisplay">
       Loading...
     </div>
 
-    <p style="font-size: 14px;">
-      If you believe this is an error, please contact your system administrator
-      to request access to the teacher portal.
+    <p style="font-size: 14px;" id="contactMessage">
+      If you believe this is an error, please contact your administrator.
     </p>
 
     <a href="/auth0-login.html" class="btn">Back to Login</a>
 
-    <div class="contact-info">
+    <div class="contact-info" id="contactInfo">
       <strong>Need help?</strong><br>
-      Contact the Pethology admin team to request teacher access.
+      <span id="contactDetails">Contact the Pethology admin team for access.</span>
     </div>
   </div>
 
@@ -118,6 +116,29 @@
     // Display the email that was denied
     const urlParams = new URLSearchParams(window.location.search);
     const email = urlParams.get('email');
+    const type = urlParams.get('type'); // 'teacher' or 'student'
+
+    // Customize message based on type
+    if (type === 'teacher') {
+      document.getElementById('pageTitle').textContent = 'Teacher Access Denied';
+      document.getElementById('pageDescription').textContent =
+        'Your email address is not authorized to access the teacher dashboard. Only whitelisted teachers can log in to this system.';
+      document.getElementById('contactMessage').textContent =
+        'If you believe this is an error, please contact your system administrator to request access to the teacher portal.';
+      document.getElementById('contactDetails').textContent =
+        'Contact the Pethology admin team to request teacher access.';
+    } else if (type === 'student') {
+      document.getElementById('pageTitle').textContent = 'Student Access Denied';
+      document.getElementById('pageDescription').textContent =
+        'Your email address has not been pre-registered by your teacher. Only invited students can access the system.';
+      document.getElementById('contactMessage').textContent =
+        'Please ask your teacher to add you to their class before attempting to log in.';
+      document.getElementById('contactDetails').textContent =
+        'Contact your teacher to request an invitation to join Pethology.';
+    } else {
+      document.getElementById('pageDescription').textContent =
+        'Your email address is not authorized to access this system.';
+    }
 
     if (email) {
       document.getElementById('emailDisplay').textContent = `Attempted login: ${email}`;
