@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css?v=5.1" />
   <style>
     .login-container {
       max-width: 400px;
@@ -192,17 +192,24 @@
   </style>
 </head>
 <body>
-  <header style="padding: 30px 60px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e5e5; background: white;">
-    <a href="index.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #111;">
-      <img src="assets/img/pethology-logo.png" alt="Pethology Logo" style="height: 40px; width: auto;">
-      <span style="font-size: 1.8rem; font-weight: bold; letter-spacing: -0.5px;">Pethology</span>
-    </a>
+  <header>
+    <div>
+      <a href="index.html" class="logo">
+        <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        <span class="logo-text">Pethology</span>
+      </a>
+    </div>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="blog.html">Blog</a></li>
         <li><a href="students.html">For Students</a></li>
         <li><a href="teachers.html">For Teachers</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
   </header>
@@ -239,9 +246,10 @@
       <div class="info-section">
         <h3>✅ How to Login</h3>
         <ul>
-          <li><strong>Students:</strong> Use your school email (@stconlethcc365.ie) or personal account</li>
-          <li><strong>Teachers:</strong> Use your staff email to access teacher dashboard</li>
-          <li><strong>Supported:</strong> Microsoft, Google, Outlook, Hotmail, and more</li>
+          <li><strong>Students:</strong> You must be pre-registered by your teacher. Use the email address your teacher added to the system.</li>
+          <li><strong>Teachers:</strong> Contact the administrator to be added to the teacher whitelist.</li>
+          <li><strong>Supported Accounts:</strong> Microsoft, Google, Outlook, and other email providers.</li>
+          <li><strong>First Time?</strong> After login, you'll be redirected to the appropriate dashboard based on your role.</li>
         </ul>
       </div>
 

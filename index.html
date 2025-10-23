@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css?v=5.1" />
   <style>
     :root {
       --bg: #fefefe;
@@ -27,30 +27,28 @@
     }
 
     header {
-      padding: 30px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 40px 60px 24px 60px;
+      text-align: center;
       border-bottom: 1px solid var(--border);
-      flex-wrap: wrap;
     }
 
     .logo {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 12px;
       text-decoration: none;
       color: var(--accent);
+      margin-bottom: 20px;
     }
 
     .logo img {
-      height: 40px;
+      height: 32px;
       width: auto;
     }
 
     .logo-text {
       font-size: 1.8rem;
-      font-weight: bold;
+      font-weight: 700;
       letter-spacing: -0.5px;
     }
 
@@ -58,27 +56,30 @@
       list-style: none;
       display: flex;
       flex-wrap: wrap;
+      justify-content: center;
       align-items: center;
       padding: 0;
       margin: 0;
+      gap: 8px;
     }
 
     nav ul li {
-      margin-left: 20px;
-    }
-
-    nav ul li:first-child {
-      margin-left: 0;
+      margin: 0;
     }
 
     nav a {
       text-decoration: none;
       color: var(--gray);
       font-weight: 500;
-      transition: color 0.3s ease;
+      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: block;
     }
 
     nav a:hover {
+      background: #f7f6f3;
       color: var(--accent);
     }
 
@@ -133,21 +134,19 @@
     }
 
     .support-button {
-      padding: 8px 16px;
+      padding: 8px 16px !important;
       font-weight: 600;
-      
-      border-image-slice: 1;
-      border-width: 2px;
-      border-image-source: linear-gradient(to right, #32CD32, #00a86b);
+      border: 2px solid #00a86b;
       border-radius: 8px;
-      color: #00a86b;
-      background-color: transparent;
+      color: #00a86b !important;
+      background-color: transparent !important;
       transition: all 0.3s ease;
     }
 
     .support-button:hover {
-      background: linear-gradient(to right, #32CD32, #00a86b);
-      color: white;
+      background: linear-gradient(to right, #32CD32, #00a86b) !important;
+      color: white !important;
+      border-color: transparent;
     }
 
     .black-button {
@@ -167,15 +166,17 @@
 
     @media (max-width: 768px) {
       header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px 20px;
+        padding: 30px 20px 20px 20px;
       }
 
       nav ul {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
+        gap: 4px;
+      }
+
+      nav a {
+        width: 100%;
+        text-align: center;
       }
 
       nav ul li {
@@ -205,10 +206,12 @@
 <body>
 
   <header>
-    <a href="index.html" class="logo">
-      <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
-      <span class="logo-text">Pethology</span>
-    </a>
+    <div>
+      <a href="index.html" class="logo">
+        <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        <span class="logo-text">Pethology</span>
+      </a>
+    </div>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>

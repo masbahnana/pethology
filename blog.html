@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Blog - Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/style.css?v=5.1" />
   <style>
     :root {
       --bg: #fefefe;
@@ -26,44 +26,7 @@
       line-height: 1.6;
     }
 
-    header {
-      padding: 30px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--accent);
-    }
-
-    .logo img {
-      height: 40px;
-      width: auto;
-    }
-
-    .logo-text {
-      font-size: 1.8rem;
-      font-weight: bold;
-      letter-spacing: -0.5px;
-    }
-
-    nav a {
-      margin-left: 28px;
-      text-decoration: none;
-      color: var(--gray);
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    nav a:hover {
-      color: var(--accent);
-    }
+    /* Header styles moved to style.css */
 
     main {
       max-width: 780px;
@@ -137,18 +100,23 @@
 <body>
 
   <header>
-    <a href="index.html" class="logo">
-      <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
-      <span class="logo-text">Pethology</span>
-    </a>
+    <div>
+      <a href="index.html" class="logo">
+        <img src="assets/img/pethology-logo.png" alt="Pethology Logo">
+        <span class="logo-text">Pethology</span>
+      </a>
+    </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="content.html">Content</a>
-      <a href="quiz.html">Quiz</a>
-      <a href="blog.html">Blog</a>
-      <a href="support.html" class="support-button">Support Us</a>
-      <a href="contact.html">Contact</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="content.html">Content</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="auth0-login.html">Login</a></li>
+        <li><a href="support.html" class="support-button">Support Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
     </nav>
   </header>
 

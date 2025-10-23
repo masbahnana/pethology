@@ -1,5 +1,7 @@
 import { PethologyFirebaseService } from '../firebase-service.js';
 import { getAvailableQuizzes, showQuizSelectionModal, loadSelectedQuiz } from './quiz-selector.js';
+import { calculateConfidenceScores, categorizeModules, selectAdaptiveQuestions, saveAdaptiveMetadata } from '../adaptive-quiz-ai.js';
+import { PethologyFirebaseREST } from '../firebase-rest.js';
 
 const quizTopics = [
   { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
@@ -21,6 +23,8 @@ let currentQuizModule = '';
 let correctAnswersCount = 0;
 let userAnswers = [];
 let quizStartTime = null;
+let isAdaptiveMode = false; // Track if in adaptive quiz mode
+let adaptiveMetadata = null; // Store adaptive quiz metadata
 
 // Check if user is logged in
 const userSession = sessionStorage.getItem('pethologyUser');
@@ -96,7 +100,16 @@ function showQuestion() {
   const percentage = Math.round((progress / total) * 100);
 
   quizContainer.innerHTML = `
-    ${!isLoggedIn ? `
+    ${isAdaptiveMode ? `
+    <!-- Adaptive Quiz Badge -->
+    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px;">🤖</span>
+      <div style="flex: 1;">
+        <div style="font-weight: 700; color: #1e40af; margin-bottom: 4px;">Adaptive Quiz Mode</div>
+        <div style="font-size: 0.9rem; color: #2563eb;">AI-powered quiz personalized to your learning needs. Focus on your weak areas!</div>
+      </div>
+    </div>
+    ` : !isLoggedIn ? `
     <!-- Visitor Warning Banner -->
     <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
       <span style="font-size: 24px;">🔒</span>
@@ -324,6 +337,25 @@ async function showQuizCompleted() {
     };
 
     await saveQuizToFirebase(quizData);
+
+    // Save adaptive metadata if in adaptive mode
+    if (isAdaptiveMode && adaptiveMetadata) {
+      try {
+        const user = JSON.parse(userSession);
+        await saveAdaptiveMetadata(user.id, {
+          module: 'adaptive',
+          score: scorePercentage,
+          totalQuestions: currentQuestions.length
+        }, {
+          weakTopics: adaptiveMetadata.weakTopics,
+          strongTopics: adaptiveMetadata.strongTopics,
+          recommendations: [] // Can add more later
+        });
+        console.log('✅ Adaptive metadata saved');
+      } catch (error) {
+        console.error('❌ Failed to save adaptive metadata:', error);
+      }
+    }
   } else {
     console.log('⚠️ Visitor mode: Quiz results not saved to Firebase');
   }
@@ -705,6 +737,14 @@ window.onload = function() {
 
   const urlParams = new URLSearchParams(window.location.search);
   const module = urlParams.get('module');
+  const mode = urlParams.get('mode');
+
+  // Check for adaptive mode
+  if (mode === 'adaptive') {
+    console.log('🤖 Adaptive Quiz Mode activated');
+    loadAdaptiveQuiz();
+    return;
+  }
 
   if (module) {
     // Map module names to quiz files
@@ -806,6 +846,97 @@ window.logout = async function() {
   }
 };
 
+// Load Adaptive Quiz
+async function loadAdaptiveQuiz() {
+  try {
+    if (!isLoggedIn) {
+      alert('Please login to use Adaptive Quiz');
+      window.location.href = 'auth0-login.html';
+      return;
+    }
+
+    const user = JSON.parse(userSession);
+    console.log('🤖 Loading adaptive quiz for:', user.name);
+
+    // Get quiz history
+    const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(user.id);
+
+    if (quizHistory.length === 0) {
+      alert('Please complete at least one standard quiz before using Adaptive Quiz');
+      window.location.href = 'quiz.html';
+      return;
+    }
+
+    // Calculate confidence scores
+    const confidenceScores = calculateConfidenceScores(quizHistory);
+    const categorized = categorizeModules(confidenceScores);
+
+    console.log('📊 Confidence analysis:', categorized);
+
+    // Load ALL questions from ALL modules
+    const allQuestions = [];
+    for (const topic of quizTopics) {
+      try {
+        const module = await import('./' + topic.file);
+        const questionsWithModule = module.questions.map(q => ({
+          ...q,
+          module: topic.file.replace('.js', ''),
+          category: topic.name
+        }));
+        allQuestions.push(...questionsWithModule);
+      } catch (error) {
+        console.warn(`Could not load ${topic.file}:`, error);
+      }
+    }
+
+    console.log(`📚 Loaded ${allQuestions.length} total questions from all modules`);
+
+    // Select adaptive questions (15 questions)
+    const adaptiveQuestions = selectAdaptiveQuestions(allQuestions, confidenceScores, 15);
+
+    console.log(`✅ Selected ${adaptiveQuestions.length} adaptive questions`);
+
+    // Randomize answer options for each question
+    const processedQuestions = adaptiveQuestions.map(q => {
+      const correctAnswer = q.options[q.answer];
+      const shuffledOptions = shuffleArray(q.options);
+      const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+
+      return {
+        ...q,
+        options: shuffledOptions,
+        answer: newCorrectIndex
+      };
+    });
+
+    // Set up quiz
+    currentQuestions = processedQuestions;
+    currentQuestionIndex = 0;
+    isAnswerCorrect = false;
+    currentQuizModule = 'Adaptive Quiz';
+    correctAnswersCount = 0;
+    userAnswers = [];
+    quizStartTime = Date.now();
+    isAdaptiveMode = true;
+
+    // Store metadata for results
+    adaptiveMetadata = {
+      weakTopics: categorized.weak.map(t => t.module),
+      mediumTopics: categorized.medium.map(t => t.module),
+      strongTopics: categorized.strong.map(t => t.module),
+      confidenceScores
+    };
+
+    console.log('🎯 Adaptive quiz ready!');
+    showQuestion();
+
+  } catch (error) {
+    console.error('❌ Error loading adaptive quiz:', error);
+    alert('Failed to load adaptive quiz. Please try again.');
+    window.location.href = 'quiz.html';
+  }
+}
+
 // Initialize on page load
 initUserIndicator();
 
@@ -816,3 +947,4 @@ window.nextQuestion = nextQuestion;
 window.goBackToMenu = goBackToMenu;
 window.saveProgressAndExit = saveProgressAndExit;
 window.finishQuizEarly = finishQuizEarly;
+window.loadAdaptiveQuiz = loadAdaptiveQuiz;

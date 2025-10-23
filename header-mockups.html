@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Header Mockups - Pethology</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f6f3;
+      padding: 40px 20px;
+    }
+
+    .mockup-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 32px;
+      color: #37352f;
+    }
+
+    .mockup {
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .mockup-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2563eb;
+      margin-bottom: 24px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .mockup-description {
+      font-size: 13px;
+      color: #5f5e5b;
+      margin-bottom: 24px;
+      padding: 12px;
+      background: #f7f6f3;
+      border-radius: 6px;
+    }
+
+    /* Option 1: Current Style (Baseline) */
+    .header-current {
+      text-align: left;
+      padding: 20px 0;
+    }
+
+    .header-current .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #37352f;
+      margin-bottom: 8px;
+    }
+
+    .header-current nav {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .header-current nav a {
+      color: #5f5e5b;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .header-current nav a:hover {
+      color: #37352f;
+    }
+
+    /* Option 2: Centered Notion Style */
+    .header-centered {
+      text-align: center;
+      padding: 32px 0;
+    }
+
+    .header-centered .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #37352f;
+      margin-bottom: 16px;
+    }
+
+    .header-centered nav {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 20px;
+    }
+
+    .header-centered nav a {
+      color: #5f5e5b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-centered nav a:hover {
+      color: #37352f;
+    }
+
+    /* Option 3: Notion-Like with Subtle Divider */
+    .header-notion {
+      text-align: center;
+      padding: 24px 0;
+      border-bottom: 1px solid #ebeae8;
+    }
+
+    .header-notion .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #37352f;
+      margin-bottom: 12px;
+    }
+
+    .header-notion .tagline {
+      font-size: 13px;
+      color: #9b9a97;
+      margin-bottom: 16px;
+    }
+
+    .header-notion nav {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .header-notion nav a {
+      color: #5f5e5b;
+      text-decoration: none;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .header-notion nav a:hover {
+      background: #f7f6f3;
+      color: #37352f;
+    }
+
+    /* Option 4: Minimalist Centered with Spacing */
+    .header-minimal {
+      text-align: center;
+      padding: 48px 0 32px 0;
+    }
+
+    .header-minimal .logo {
+      font-size: 32px;
+      font-weight: 700;
+      color: #37352f;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+
+    .header-minimal nav {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 24px;
+    }
+
+    .header-minimal nav a {
+      color: #787774;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-minimal nav a:hover {
+      color: #37352f;
+    }
+
+    /* Option 5: Split Header (Logo Left, Nav Right) - Centered Container */
+    .header-split {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header-split .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #37352f;
+    }
+
+    .header-split nav {
+      display: flex;
+      gap: 32px;
+    }
+
+    .header-split nav a {
+      color: #5f5e5b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .header-split nav a:hover {
+      color: #37352f;
+    }
+
+    /* Option 6: Notion-Inspired with Icon */
+    .header-icon {
+      text-align: center;
+      padding: 40px 0 24px 0;
+    }
+
+    .header-icon .logo-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .header-icon .logo-icon {
+      font-size: 32px;
+    }
+
+    .header-icon .logo {
+      font-size: 28px;
+      font-weight: 700;
+      color: #37352f;
+    }
+
+    .header-icon nav {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 20px;
+    }
+
+    .header-icon nav a {
+      color: #5f5e5b;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .header-icon nav a:hover {
+      background: #f7f6f3;
+      color: #37352f;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .note {
+      margin-top: 20px;
+      padding: 12px;
+      background: #fef3c7;
+      border-left: 3px solid #f59e0b;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div class="mockup-container">
+    <h1>🎨 Header Mockups - Pethology</h1>
+
+    <!-- Option 1: Current -->
+    <div class="mockup">
+      <div class="mockup-title">Option 1: Current Style (Baseline)</div>
+      <div class="mockup-description">
+        ✨ Your current header style - left-aligned logo with navigation below
+      </div>
+      <div class="header-current">
+        <div class="logo">🐾 Pethology</div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Familiar, simple | ⚠️ Cons: Not very "Notion-like"
+      </div>
+    </div>
+
+    <!-- Option 2: Centered -->
+    <div class="mockup">
+      <div class="mockup-title">Option 2: Centered Notion Style</div>
+      <div class="mockup-description">
+        ✨ Everything centered - cleaner, more balanced, very Notion-inspired
+      </div>
+      <div class="header-centered">
+        <div class="logo">🐾 Pethology</div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Clean, balanced, Notion-like | ⚠️ Cons: Takes more vertical space
+      </div>
+    </div>
+
+    <!-- Option 3: Notion with Divider -->
+    <div class="mockup">
+      <div class="mockup-title">Option 3: Notion-Like with Subtle Divider</div>
+      <div class="mockup-description">
+        ✨ Centered with subtle bottom border and tagline - very professional
+      </div>
+      <div class="header-notion">
+        <div class="logo">🐾 Pethology</div>
+        <div class="tagline">Irish Animal Care Education Platform</div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Professional, clean separation | ⚠️ Cons: Adds tagline (more content)
+      </div>
+    </div>
+
+    <!-- Option 4: Minimalist -->
+    <div class="mockup">
+      <div class="mockup-title">Option 4: Minimalist Centered with Spacing</div>
+      <div class="mockup-description">
+        ✨ Maximum breathing room - logo larger, more space between elements
+      </div>
+      <div class="header-minimal">
+        <div class="logo">🐾 Pethology</div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Very clean, lots of breathing room | ⚠️ Cons: Takes most vertical space
+      </div>
+    </div>
+
+    <!-- Option 5: Split -->
+    <div class="mockup">
+      <div class="mockup-title">Option 5: Split Header (Logo Left, Nav Right)</div>
+      <div class="mockup-description">
+        ✨ Classic layout - logo left, navigation right - centered container
+      </div>
+      <div class="header-split">
+        <div class="logo">🐾 Pethology</div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Space-efficient, familiar pattern | ⚠️ Cons: Less "Notion-like"
+      </div>
+    </div>
+
+    <!-- Option 6: With Icon -->
+    <div class="mockup">
+      <div class="mockup-title">Option 6: Notion-Inspired with Icon ⭐ RECOMMENDED</div>
+      <div class="mockup-description">
+        ✨ Centered with icon + logo combo, rounded button backgrounds on hover
+      </div>
+      <div class="header-icon">
+        <div class="logo-container">
+          <div class="logo-icon">🐾</div>
+          <div class="logo">Pethology</div>
+        </div>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">For Students</a>
+          <a href="#">For Teachers</a>
+          <a href="#">About</a>
+          <a href="#" class="btn-primary">Login</a>
+        </nav>
+      </div>
+      <div class="note">
+        ⚡ Pros: Most Notion-like, clean, professional | ⚠️ Cons: None really! This is the sweet spot.
+      </div>
+    </div>
+
+    <!-- Comparison Summary -->
+    <div class="mockup" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+      <div class="mockup-title" style="color: white; opacity: 0.9;">📊 Quick Comparison</div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
+        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+          <div style="font-weight: 600; margin-bottom: 8px;">Most Notion-Like</div>
+          <div style="font-size: 13px; opacity: 0.9;">Option 6 (Icon) > Option 3 (Divider)</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+          <div style="font-weight: 600; margin-bottom: 8px;">Most Space-Efficient</div>
+          <div style="font-size: 13px; opacity: 0.9;">Option 5 (Split) > Option 1 (Current)</div>
+        </div>
+        <div style="background: rgba(255,255,255,0.1); padding: 16px; border-radius: 8px;">
+          <div style="font-weight: 600; margin-bottom: 8px;">Best Balance</div>
+          <div style="font-size: 13px; opacity: 0.9;">Option 6 (Icon) ⭐</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding: 20px; background: white; border-radius: 12px;">
+      <h2 style="margin-bottom: 12px; color: #37352f;">Which one do you prefer?</h2>
+      <p style="color: #5f5e5b; font-size: 14px;">Let me know the option number and I'll implement it! 🚀</p>
+    </div>
+  </div>
+</body>
+</html>

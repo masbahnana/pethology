@@ -32,32 +32,31 @@ body {
 /* === HEADER === */
 header {
     background-color: #fff;
-    padding: 30px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 40px 60px 24px 60px;
+    text-align: center;
     border-bottom: 1px solid var(--border);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 12px;
     text-decoration: none;
     color: var(--accent);
     font-size: 1.8rem;
-    font-weight: bold;
+    font-weight: 700;
     letter-spacing: -0.5px;
+    margin-bottom: 20px;
 }
 
 .logo img {
-    height: 40px;
+    height: 32px;
     width: auto;
 }
 
 .logo-text {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
 }
 
@@ -71,37 +70,49 @@ header {
 nav ul {
     list-style: none;
     display: flex;
-    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    gap: 8px;
+}
+
+nav ul li {
+    margin: 0;
 }
 
 nav a {
     text-decoration: none;
     color: var(--gray);
     font-weight: 500;
-    transition: color 0.3s ease;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    display: block;
 }
 
 nav a:hover {
+    background: #f7f6f3;
     color: var(--accent);
 }
 
 /* === BOTÕES ESPECIAIS === */
 .support-button {
-    padding: 8px 16px;
+    padding: 8px 16px !important;
     font-weight: 600;
-    
-    border-image-slice: 1;
-    border-width: 2px;
-    border-image-source: linear-gradient(to right, #32CD32, #00a86b);
-    border-radius: 20px;
-    color: #00a86b;
-    background-color: transparent;
+    border: 2px solid #00a86b;
+    border-radius: 8px;
+    color: #00a86b !important;
+    background-color: transparent !important;
     transition: all 0.3s ease;
 }
 
 .support-button:hover {
-    background: linear-gradient(to right, #32CD32, #00a86b);
-    color: white;
+    background: linear-gradient(to right, #32CD32, #00a86b) !important;
+    color: white !important;
+    border-color: transparent;
 }
 
 .black-button {

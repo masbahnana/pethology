@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Student Dashboard - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -1264,11 +1265,19 @@
 
     <!-- Main Content -->
     <div class="main-content">
-      <!-- Header -->
-      <div class="page-header">
-        <h1 class="page-title">Welcome back, John! 👋</h1>
-        <p class="page-subtitle">Here's your learning progress</p>
+      <!-- Loading State (shown initially) -->
+      <div id="dashboardLoading" class="loading-state" style="padding: 80px 20px;">
+        <div class="spinner spinner-lg"></div>
+        <p style="font-size: 16px; margin-top: 16px;">Loading your dashboard...</p>
       </div>
+
+      <!-- Dashboard Content (hidden initially) -->
+      <div id="dashboardContent" style="display: none;">
+        <!-- Header -->
+        <div class="page-header">
+          <h1 class="page-title">Welcome back, John! 👋</h1>
+          <p class="page-subtitle">Here's your learning progress</p>
+        </div>
 
       <!-- Announcements Section -->
       <div class="announcements-section">
@@ -1626,7 +1635,7 @@
           </div>
 
           <!-- Adaptive Quiz Card -->
-          <div class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--module-grooming)'" onmouseout="this.style.borderColor='var(--gray-100)'">
+          <div class="card" onclick="window.location.href='adaptive-quiz.html'" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--module-grooming)'" onmouseout="this.style.borderColor='var(--gray-100)'">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
               <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--module-grooming-bg); display: flex; align-items: center; justify-content: center;">
                 <i data-lucide="zap" style="width: 24px; height: 24px; color: var(--module-grooming);"></i>
@@ -1640,7 +1649,7 @@
               Quiz difficulty adjusts in real-time based on your answers.
             </p>
             <button class="btn btn-primary" style="width: 100%; background: var(--module-grooming);">
-              <i data-lucide="target"></i>
+              <i data-lucide="play-circle"></i>
               Take Quiz
             </button>
           </div>
@@ -1786,6 +1795,8 @@
           </div>
         </div>
       </div>
+      </div>
+      <!-- End Dashboard Content -->
     </div>
   </div>
 
@@ -1802,6 +1813,10 @@
     async function loadRealStudentData() {
       try {
         console.log('🔄 Loading student data from Firebase (REST API)...');
+
+        // Show loading, hide content
+        document.getElementById('dashboardLoading').style.display = 'flex';
+        document.getElementById('dashboardContent').style.display = 'none';
 
         // Pegar usuário da sessão
         const userSession = sessionStorage.getItem('pethologyUser');
@@ -1837,9 +1852,33 @@
 
         console.log('✅ Student data loaded successfully!');
 
+        // Hide loading, show content
+        document.getElementById('dashboardLoading').style.display = 'none';
+        document.getElementById('dashboardContent').style.display = 'block';
+
       } catch (error) {
         console.error('❌ Error loading student data:', error);
-        alert('Error loading your data. Please refresh the page.');
+
+        // Hide loading
+        document.getElementById('dashboardLoading').style.display = 'none';
+
+        // Show error message
+        document.getElementById('dashboardContent').innerHTML = `
+          <div class="loading-state">
+            <i data-lucide="alert-circle" style="width: 48px; height: 48px; color: var(--error);"></i>
+            <p style="font-size: 16px; color: var(--gray-700);">Error loading your data</p>
+            <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 16px;">
+              <i data-lucide="refresh-cw"></i>
+              Retry
+            </button>
+          </div>
+        `;
+        document.getElementById('dashboardContent').style.display = 'block';
+
+        // Reinitialize lucide icons for error state
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
       }
     }
 

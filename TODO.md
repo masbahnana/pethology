@@ -622,3 +622,17 @@ These go to v6.0 (Future):
 **End of TODO-FINAL.md**
 
 *Updated: 22 Oct 2025 - Decision: Opção 2 (Cenário C)*
+
+
+23 oct
+teste manual/visual
+pagina inicial:
+    - Talvez melhorar um pouco os header pra ficar mais centralizado tipo Notion? Ou ta muito muito copy do notion?
+    - Nas paginas for teacher e for students deixar mais realista com o contesto atual e sem o free trial (talvez explicar que ainda nao temos subscription)
+    - Na pagina about gostaria de adicionar um roadmap (algo similar mas visual)
+
+pagina quiz:
+    - tentar usar o mesmo layout que temos nos dashboards se possível (icons por exemplo)
+
+pagina de login: 
+    - Ajustar o how to login para a nossa realidade
