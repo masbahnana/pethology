@@ -158,6 +158,101 @@
       color: white;
     }
 
+    /* Roadmap Styles - Soft & Minimal */
+    .roadmap {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .roadmap-phase {
+      margin-bottom: 32px;
+    }
+
+    .phase-content {
+      background: #fafafa;
+      padding: 28px 32px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+
+    .phase-content:hover {
+      background: white;
+      border-color: #d1d5db;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .phase-content h3 {
+      margin: 0 0 6px 0;
+      font-size: 1.15rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .phase-period {
+      margin: 0 0 20px 0;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .phase-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .phase-features li {
+      font-size: 0.9rem;
+      color: #6b7280;
+      line-height: 1.6;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .phase-features li::before {
+      position: absolute;
+      left: 0;
+    }
+
+    .roadmap-phase.completed .phase-content {
+      background: linear-gradient(135deg, #f0fdf4 0%, #fafafa 100%);
+      border-left: 3px solid #10b981;
+    }
+
+    .roadmap-phase.completed .phase-features li::before {
+      content: '✓';
+      color: #10b981;
+      font-weight: 600;
+    }
+
+    .roadmap-phase.upcoming .phase-content {
+      background: linear-gradient(135deg, #eff6ff 0%, #fafafa 100%);
+      border-left: 3px solid #3b82f6;
+    }
+
+    .roadmap-phase.upcoming .phase-features li::before {
+      content: '→';
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .roadmap-phase.future .phase-content {
+      background: linear-gradient(135deg, #f5f3ff 0%, #fafafa 100%);
+      border-left: 3px solid #d1d5db;
+      opacity: 0.75;
+    }
+
+    .roadmap-phase.future .phase-features li::before {
+      content: '○';
+      color: #9ca3af;
+      font-weight: 600;
+    }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -186,6 +281,18 @@
       .team-container {
         flex-direction: column;
         align-items: center;
+      }
+
+      .phase-content {
+        padding: 20px 24px;
+      }
+
+      .phase-content h3 {
+        font-size: 1rem;
+      }
+
+      .phase-features li {
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -230,6 +337,112 @@
       <p>
         We provide carefully curated learning material, interactive quizzes, and tools for both students and teachers. Our platform is designed to support everyone from beginners to advanced Animal Care students.
       </p>
+    </section>
+
+    <section>
+      <h2>🗺️ Our Roadmap</h2>
+      <p style="text-align: center; color: var(--gray); margin-bottom: 40px;">
+        Track our journey from concept to comprehensive learning platform
+      </p>
+
+      <div class="roadmap">
+        <!-- Phase 1: Foundation -->
+        <div class="roadmap-phase completed">
+          <div class="phase-content">
+            <h3>Phase 1: Foundation (v1.0 - v2.0)</h3>
+            <p class="phase-period">April 2025 - June 2025</p>
+            <ul class="phase-features">
+              <li>Initial platform launch</li>
+              <li>Basic quiz system with 200+ questions</li>
+              <li>10 module coverage (Biology, Anatomy, Grooming, etc.)</li>
+              <li>Simple progress tracking</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 2: Authentication & Infrastructure -->
+        <div class="roadmap-phase completed">
+          <div class="phase-content">
+            <h3>Phase 2: Authentication & Infrastructure (v3.0 - v4.0)</h3>
+            <p class="phase-period">July 2025 - September 2025</p>
+            <ul class="phase-features">
+              <li>Auth0 integration for secure login</li>
+              <li>Teacher whitelist system</li>
+              <li>Student pre-registration</li>
+              <li>100% REST API (no Firebase SDK)</li>
+              <li>Dashboard redesign with stats</li>
+              <li>Announcements system</li>
+              <li>Calendar integration</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 3: Student Experience -->
+        <div class="roadmap-phase completed">
+          <div class="phase-content">
+            <h3>Phase 3: Student Experience (v5.0 - Current)</h3>
+            <p class="phase-period">October 2025 - Present</p>
+            <ul class="phase-features">
+              <li>Achievements system (19 badges)</li>
+              <li>My Progress page with Chart.js graphs</li>
+              <li>Adaptive Quiz with AI algorithm</li>
+              <li>Performance analytics</li>
+              <li>Weak topic identification</li>
+              <li>Notion-inspired UI refresh</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 4: Teacher Tools -->
+        <div class="roadmap-phase completed">
+          <div class="phase-content">
+            <h3>Phase 4: Teacher Tools (v5.0)</h3>
+            <p class="phase-period">October 2025</p>
+            <ul class="phase-features">
+              <li>CSV quiz import system</li>
+              <li>Multiple quizzes per module</li>
+              <li>Student import (CSV + manual)</li>
+              <li>Real-time progress monitoring</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 5: Coming Soon -->
+        <div class="roadmap-phase upcoming">
+          <div class="phase-content">
+            <h3>Phase 5: Advanced Features (v6.0)</h3>
+            <p class="phase-period">Q1 2026</p>
+            <ul class="phase-features">
+              <li>Smart Review system</li>
+              <li>Exam mode with strict timing</li>
+              <li>Glossary & study materials</li>
+              <li>Skills demonstration checklist</li>
+              <li>Class management tools</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Phase 6: Scale -->
+        <div class="roadmap-phase future">
+          <div class="phase-content">
+            <h3>Phase 6: Scale & Expand (v7.0+)</h3>
+            <p class="phase-period">Q2-Q3 2026</p>
+            <ul class="phase-features">
+              <li>Multi-college support</li>
+              <li>Mobile app (iOS/Android)</li>
+              <li>Advanced gamification</li>
+              <li>Video content library</li>
+              <li>Community features</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px; padding: 24px; background: #f7f6f3; border-radius: 12px;">
+        <p style="margin: 0; color: var(--gray); font-size: 14px;">
+          💡 <strong>Currently at v5.0</strong> - The platform is free while in active development. Help us shape the future of Animal Care education!
+        </p>
+      </div>
     </section>
 
     <section>
