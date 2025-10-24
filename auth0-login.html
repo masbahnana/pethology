@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=5.1" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/mobile-nav.css?v=5.1" />
   <style>
     .login-container {
       max-width: 400px;
@@ -200,7 +201,8 @@
       </a>
     </div>
     <nav>
-      <ul>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+      <ul id="nav-menu">
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="content.html">Content</a></li>
@@ -544,5 +546,6 @@
       }
     });
   </script>
+  <script src="assets/js/mobile-nav.js"></script>
 </body>
 </html>
