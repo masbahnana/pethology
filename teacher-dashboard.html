@@ -1468,16 +1468,37 @@
         console.log('⏳ Now fetching data...');
         let analytics, students;
         try {
-          [analytics, students] = await Promise.all([
-            PethologyFirebaseService.getTeacherAnalytics(),
-            PethologyFirebaseService.getAllStudentsProgress()
+          // Add timeout to Promise.all (10 seconds max)
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Timeout: Data fetch took too long')), 10000)
+          );
+
+          [analytics, students] = await Promise.race([
+            Promise.all([
+              PethologyFirebaseService.getTeacherAnalytics(),
+              PethologyFirebaseService.getAllStudentsProgress()
+            ]),
+            timeoutPromise
           ]);
           console.log('✅ Promise.all completed!');
-          console.log('📊 Analytics received!');
+          console.log('📊 Analytics received:', analytics);
           console.log('👥 Students received:', students?.length || 0);
         } catch (error) {
           console.error('❌ Promise.all failed:', error);
-          throw error;
+
+          // Fallback: Use empty data if Firebase fails
+          console.log('⚠️ Using empty fallback data...');
+          analytics = {
+            overview: {
+              totalStudents: 0,
+              activeStudents: 0,
+              totalQuizzes: 0,
+              averageScore: 0
+            },
+            modulePerformance: [],
+            recentActivity: []
+          };
+          students = [];
         }
 
         // Update statistics
