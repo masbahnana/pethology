@@ -738,11 +738,19 @@ window.onload = function() {
   const urlParams = new URLSearchParams(window.location.search);
   const module = urlParams.get('module');
   const mode = urlParams.get('mode');
+  const customQuizId = urlParams.get('customQuizId');
 
   // Check for adaptive mode
   if (mode === 'adaptive') {
     console.log('🤖 Adaptive Quiz Mode activated');
     loadAdaptiveQuiz();
+    return;
+  }
+
+  // Check for custom quiz ID (teacher-created quiz)
+  if (customQuizId) {
+    console.log('📚 Custom Quiz Mode activated, ID:', customQuizId);
+    loadCustomQuiz(customQuizId);
     return;
   }
 
@@ -845,6 +853,88 @@ window.logout = async function() {
     console.error('Error logging out:', error);
   }
 };
+
+// Load Custom Quiz (Teacher-created from CSV)
+async function loadCustomQuiz(quizId) {
+  try {
+    console.log('📚 Loading custom quiz:', quizId);
+
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      alert('Please login to take custom quizzes');
+      window.location.href = 'auth0-login.html';
+      return;
+    }
+
+    // Fetch quiz from Firebase
+    const response = await PethologyFirebaseREST.request(`/custom_quizzes/${quizId}`);
+
+    if (!response.fields) {
+      throw new Error('Custom quiz not found');
+    }
+
+    // Convert Firestore format to quiz format
+    const quiz = PethologyFirebaseREST.convertDocument({ name: quizId, fields: response.fields });
+
+    console.log('✅ Custom quiz loaded:', quiz.name);
+
+    // Set quiz metadata
+    currentQuizModule = quiz.module || quiz.name;
+
+    // Convert questions from Firebase format to quiz.js format
+    currentQuestions = quiz.questions.map((q, index) => ({
+      question: q.question,
+      options: [q.optionA, q.optionB, q.optionC, q.optionD],
+      answer: q.correctAnswer,
+      explanation: q.explanation || '',
+      id: `${quizId}_q${index}`
+    }));
+
+    // Randomize questions
+    currentQuestions = shuffleArray(currentQuestions);
+
+    // Randomize answer options for each question
+    currentQuestions = currentQuestions.map(q => {
+      const correctAnswer = q.options[q.answer];
+      const shuffledOptions = shuffleArray(q.options);
+      const newCorrectIndex = shuffledOptions.indexOf(correctAnswer);
+
+      return {
+        ...q,
+        options: shuffledOptions,
+        answer: newCorrectIndex
+      };
+    });
+
+    console.log(`✅ Custom quiz ready! ${currentQuestions.length} questions`);
+
+    // Show deadline warning if quiz is overdue
+    if (quiz.deadline) {
+      const deadline = new Date(quiz.deadline);
+      const now = new Date();
+      if (deadline < now) {
+        const daysOverdue = Math.ceil((now - deadline) / (1000 * 60 * 60 * 24));
+        alert(`⚠️ This quiz is ${daysOverdue} day${daysOverdue !== 1 ? 's' : ''} overdue!`);
+      }
+    }
+
+    // Reset quiz state
+    currentQuestionIndex = 0;
+    isAnswerCorrect = false;
+    correctAnswersCount = 0;
+    userAnswers = [];
+    quizStartTime = Date.now();
+    isAdaptiveMode = false;
+
+    // Show first question
+    showQuestion();
+
+  } catch (error) {
+    console.error('❌ Error loading custom quiz:', error);
+    alert('Failed to load quiz. Please try again.');
+    window.location.href = 'student-dashboard.html';
+  }
+}
 
 // Load Adaptive Quiz
 async function loadAdaptiveQuiz() {

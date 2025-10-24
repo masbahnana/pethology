@@ -2,6 +2,7 @@
 // Auth0 Authentication + Firebase Integration for Pethology
 
 import { PethologyFirebaseService } from './firebase-service.js';
+import { PethologyFirebaseREST } from './firebase-rest.js';
 
 class Auth0Service {
   static auth0Client = null;
@@ -64,8 +65,8 @@ class Auth0Service {
         throw new Error('No user data received from Auth0');
       }
 
-      // Criar sessão do usuário
-      const userSession = this.createUserSession(user);
+      // Criar sessão do usuário (AWAIT!)
+      const userSession = await this.createUserSession(user);
 
       // 🔥 Salvar no Firebase
       try {
@@ -99,10 +100,10 @@ class Auth0Service {
     }
   }
 
-  // Criar sessão do usuário a partir dos dados Auth0
-  static createUserSession(auth0User) {
+  // Criar sessão do usuário a partir dos dados Auth0 (ASYNC now!)
+  static async createUserSession(auth0User) {
     const email = auth0User.email || '';
-    const role = this.determineUserRole(email);
+    const role = await this.determineUserRole(email); // AWAIT agora!
 
     return {
       id: auth0User.sub,
@@ -146,28 +147,59 @@ class Auth0Service {
     return false;
   }
 
-  // 🎓 Determinar role baseado no email
-  static determineUserRole(email) {
+  // 🔐 Verificar se email está no teacher whitelist
+  static async checkTeacherWhitelist(email) {
+    try {
+      const response = await PethologyFirebaseREST.request('/teacher_whitelist');
+
+      if (!response.documents || response.documents.length === 0) {
+        return false;
+      }
+
+      const whitelist = response.documents
+        .map(doc => PethologyFirebaseREST.convertDocument(doc))
+        .map(entry => entry.email.toLowerCase());
+
+      return whitelist.includes(email.toLowerCase());
+    } catch (error) {
+      console.error('❌ Error checking teacher whitelist:', error);
+      return false;
+    }
+  }
+
+  // 🎓 Determinar role baseado no email (ASYNC agora!)
+  static async determineUserRole(email) {
     const emailLower = email.toLowerCase();
 
-    // REGRA St Conleth's College:
-    // Estudantes: email começa com "plc"
-    // Professores: email NÃO começa com "plc"
+    // PRIORITY 1: Check teacher whitelist (REAL verification!)
+    const isInWhitelist = await this.checkTeacherWhitelist(emailLower);
+    if (isInWhitelist) {
+      console.log('✅ Email found in teacher whitelist:', emailLower);
+      return 'Teacher';
+    }
 
+    // PRIORITY 2: Check if student (St Conleth's College rule)
+    // Estudantes: email começa com "plc"
     if (emailLower.startsWith('plc')) {
       return 'Student';
     }
 
-    // Verificar indicadores de professor
+    // PRIORITY 3: Verificar indicadores de professor (fallback)
     const teacherIndicators = [
       'teacher', 'staff', 'faculty', 'instructor', 'professor', 'educator'
     ];
 
-    const isTeacher = teacherIndicators.some(indicator => 
+    const hasTeacherIndicator = teacherIndicators.some(indicator =>
       emailLower.includes(indicator)
     );
 
-    return isTeacher ? 'Teacher' : 'Student';
+    if (hasTeacherIndicator) {
+      console.log('⚠️ Teacher detected by keyword, but NOT in whitelist:', emailLower);
+      console.log('💡 Add this email to whitelist via admin-whitelist.html');
+    }
+
+    // Default to Student
+    return 'Student';
   }
 
   // Verificar se usuário está autenticado
