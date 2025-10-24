@@ -170,17 +170,22 @@ class Auth0Service {
   // 🎓 Determinar role baseado no email (ASYNC agora!)
   static async determineUserRole(email) {
     const emailLower = email.toLowerCase();
+    console.log('🔍 [DEBUG] Determining role for email:', email, '→ lowercase:', emailLower);
 
     // PRIORITY 1: Check teacher whitelist (REAL verification!)
     const isInWhitelist = await this.checkTeacherWhitelist(emailLower);
+    console.log('🔍 [DEBUG] Whitelist check result:', isInWhitelist);
+
     if (isInWhitelist) {
       console.log('✅ Email found in teacher whitelist:', emailLower);
+      console.log('👨‍🏫 [DEBUG] Returning role: Teacher');
       return 'Teacher';
     }
 
     // PRIORITY 2: Check if student (St Conleth's College rule)
     // Estudantes: email começa com "plc"
     if (emailLower.startsWith('plc')) {
+      console.log('📚 [DEBUG] Email starts with "plc" - assigning Student role');
       return 'Student';
     }
 
@@ -299,9 +304,14 @@ class Auth0Service {
 
   // Redirecionar baseado no role
   static redirectByRole(user) {
+    console.log('🔍 [DEBUG] redirectByRole called with user:', user);
+    console.log('🔍 [DEBUG] User role:', user.role);
+
     if (user.role === 'Teacher') {
+      console.log('👨‍🏫 [DEBUG] Redirecting to teacher-dashboard.html');
       window.location.href = '/teacher-dashboard.html';
     } else {
+      console.log('📚 [DEBUG] Redirecting to student-dashboard.html');
       window.location.href = '/student-dashboard.html';
     }
   }
