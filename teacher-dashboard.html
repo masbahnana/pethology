@@ -1280,6 +1280,33 @@
           </h2>
           <span id="studentCount" style="color: var(--gray-500); font-size: 13px;">0 students</span>
         </div>
+
+        <!-- Filter/Sort Controls -->
+        <div style="padding: 16px; border-bottom: 1px solid var(--gray-100); display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <div style="flex: 1; min-width: 200px;">
+            <input
+              type="text"
+              id="studentSearchInput"
+              placeholder="🔍 Search by name..."
+              style="width: 100%; padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px;"
+              oninput="filterAndSortStudents()"
+            >
+          </div>
+          <div>
+            <select
+              id="scoreFilterSelect"
+              style="padding: 8px 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-size: 14px; background: white; cursor: pointer;"
+              onchange="filterAndSortStudents()"
+            >
+              <option value="all">All Students</option>
+              <option value="high">High Performers (≥80%)</option>
+              <option value="medium">Medium (60-79%)</option>
+              <option value="low">Need Help (<60%)</option>
+            </select>
+          </div>
+          <div style="color: var(--gray-500); font-size: 13px;" id="filteredCount"></div>
+        </div>
+
         <div class="table-container" id="studentsTableContainer">
           <div class="empty-state">
             <div class="empty-state-icon">👥</div>
@@ -1547,7 +1574,15 @@
       document.getElementById('averageScore').textContent = overview.averageScore + '%';
     }
 
+    // Global state for sorting and filtering
+    let allStudents = [];
+    let currentSortColumn = 'name';
+    let currentSortDirection = 'asc';
+
     function updateStudentsTable(students) {
+      // Store all students globally for filtering/sorting
+      allStudents = students;
+
       const container = document.getElementById('studentsTableContainer');
       const countLabel = document.getElementById('studentCount');
 
@@ -1564,14 +1599,34 @@
 
       countLabel.textContent = `${students.length} student${students.length !== 1 ? 's' : ''}`;
 
+      // Apply initial filter/sort
+      filterAndSortStudents();
+    }
+
+    function renderStudentsTable(students) {
+      const container = document.getElementById('studentsTableContainer');
+
+      const getSortIcon = (column) => {
+        if (currentSortColumn !== column) return '↕️';
+        return currentSortDirection === 'asc' ? '↑' : '↓';
+      };
+
       const tableHTML = `
         <table>
           <thead>
             <tr>
-              <th>Student Name</th>
-              <th>Quizzes Completed</th>
-              <th>Average Score</th>
-              <th>Last Active</th>
+              <th onclick="sortStudentsBy('name')" style="cursor: pointer; user-select: none;">
+                Student Name ${getSortIcon('name')}
+              </th>
+              <th onclick="sortStudentsBy('quizzes')" style="cursor: pointer; user-select: none;">
+                Quizzes Completed ${getSortIcon('quizzes')}
+              </th>
+              <th onclick="sortStudentsBy('score')" style="cursor: pointer; user-select: none;">
+                Average Score ${getSortIcon('score')}
+              </th>
+              <th onclick="sortStudentsBy('lastActive')" style="cursor: pointer; user-select: none;">
+                Last Active ${getSortIcon('lastActive')}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -1588,7 +1643,9 @@
 
               return `
                 <tr>
-                  <td class="student-name">${student.name || student.email}</td>
+                  <td class="student-name" onclick="viewStudentDetail('${student.id}')" style="cursor: pointer; color: var(--blue-primary); text-decoration: underline;">
+                    ${student.name || student.email}
+                  </td>
                   <td>${stats.totalQuizzes || 0}</td>
                   <td><span class="score-badge ${scoreClass}">${score}%</span></td>
                   <td>${lastActiveText}</td>
@@ -1983,11 +2040,398 @@
       loadCalendarEvents
     } from './assets/js/calendar-rest.js?v=1.0';
 
+    // Filter and Sort Functions
+    window.filterAndSortStudents = function() {
+      if (allStudents.length === 0) return;
+
+      let filtered = [...allStudents];
+
+      // Apply search filter
+      const searchTerm = document.getElementById('studentSearchInput').value.toLowerCase();
+      if (searchTerm) {
+        filtered = filtered.filter(student => {
+          const name = (student.name || student.email || '').toLowerCase();
+          return name.includes(searchTerm);
+        });
+      }
+
+      // Apply score filter
+      const scoreFilter = document.getElementById('scoreFilterSelect').value;
+      if (scoreFilter !== 'all') {
+        filtered = filtered.filter(student => {
+          const progress = student.progress || {};
+          const stats = progress.overallStats || {};
+          const score = Math.round((stats.averageScore || 0) * 100);
+
+          if (scoreFilter === 'high') return score >= 80;
+          if (scoreFilter === 'medium') return score >= 60 && score < 80;
+          if (scoreFilter === 'low') return score < 60;
+          return true;
+        });
+      }
+
+      // Apply sorting
+      filtered.sort((a, b) => {
+        const aProgress = a.progress || {};
+        const bProgress = b.progress || {};
+        const aStats = aProgress.overallStats || {};
+        const bStats = bProgress.overallStats || {};
+
+        let comparison = 0;
+
+        if (currentSortColumn === 'name') {
+          const aName = (a.name || a.email || '').toLowerCase();
+          const bName = (b.name || b.email || '').toLowerCase();
+          comparison = aName.localeCompare(bName);
+        } else if (currentSortColumn === 'quizzes') {
+          comparison = (aStats.totalQuizzes || 0) - (bStats.totalQuizzes || 0);
+        } else if (currentSortColumn === 'score') {
+          comparison = (aStats.averageScore || 0) - (bStats.averageScore || 0);
+        } else if (currentSortColumn === 'lastActive') {
+          const aLogin = a.lastLogin?.toDate ? a.lastLogin.toDate() : new Date(a.lastLogin);
+          const bLogin = b.lastLogin?.toDate ? b.lastLogin.toDate() : new Date(b.lastLogin);
+          comparison = aLogin - bLogin;
+        }
+
+        return currentSortDirection === 'asc' ? comparison : -comparison;
+      });
+
+      // Update filtered count
+      const filteredCountEl = document.getElementById('filteredCount');
+      if (filtered.length !== allStudents.length) {
+        filteredCountEl.textContent = `Showing ${filtered.length} of ${allStudents.length}`;
+      } else {
+        filteredCountEl.textContent = '';
+      }
+
+      // Render table
+      renderStudentsTable(filtered);
+    };
+
+    window.sortStudentsBy = function(column) {
+      if (currentSortColumn === column) {
+        // Toggle direction
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortColumn = column;
+        currentSortDirection = 'asc';
+      }
+
+      filterAndSortStudents();
+    };
+
+    // Student Detail Modal Functions
+    window.viewStudentDetail = async function(studentId) {
+      const modal = document.getElementById('studentDetailModal');
+      const body = document.getElementById('studentDetailBody');
+
+      // Show modal with loading
+      modal.style.display = 'flex';
+      body.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading student data...</p>
+        </div>
+      `;
+
+      try {
+        // Find student in allStudents array
+        const student = allStudents.find(s => s.id === studentId);
+        if (!student) {
+          throw new Error('Student not found');
+        }
+
+        // Get quiz history
+        const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(studentId);
+
+        // Render detail view
+        renderStudentDetail(student, quizHistory);
+
+      } catch (error) {
+        console.error('Error loading student detail:', error);
+        body.innerHTML = `
+          <div class="loading-state">
+            <i data-lucide="alert-circle" style="width: 48px; height: 48px; color: var(--error);"></i>
+            <p style="margin-top: 16px;">Failed to load student data</p>
+            <button onclick="closeStudentDetailModal()" class="btn btn-primary" style="margin-top: 16px;">Close</button>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+    };
+
+    function renderStudentDetail(student, quizHistory) {
+      const body = document.getElementById('studentDetailBody');
+      const progress = student.progress || {};
+      const stats = progress.overallStats || {};
+      const score = Math.round((stats.averageScore || 0) * 100);
+      const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : new Date(student.lastLogin);
+
+      // Calculate weak topics (avg score < 70%)
+      const moduleProgress = progress.moduleProgress || {};
+      const weakTopics = Object.entries(moduleProgress)
+        .filter(([module, data]) => (data.averageScore || 0) * 100 < 70)
+        .sort((a, b) => (a[1].averageScore || 0) - (b[1].averageScore || 0))
+        .slice(0, 5);
+
+      // Get recent quizzes (last 10)
+      const recentQuizzes = quizHistory.slice(0, 10);
+
+      body.innerHTML = `
+        <!-- Header -->
+        <div class="student-detail-header">
+          <div class="student-detail-name">${student.name || 'Unknown'}</div>
+          <div class="student-detail-email">${student.email || ''}</div>
+          <div class="student-detail-meta">
+            <span>📅 Joined: ${new Date(student.createdAt || Date.now()).toLocaleDateString()}</span>
+            <span>🕐 Last active: ${formatTimeAgo(lastLogin)}</span>
+          </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i data-lucide="bar-chart-2"></i>
+            Performance Overview
+          </div>
+          <div class="stats-mini-grid">
+            <div class="stat-mini-card">
+              <div class="stat-mini-value">${stats.totalQuizzes || 0}</div>
+              <div class="stat-mini-label">Quizzes Completed</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-value">${score}%</div>
+              <div class="stat-mini-label">Average Score</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-value">${stats.totalQuestions || 0}</div>
+              <div class="stat-mini-label">Questions Answered</div>
+            </div>
+            <div class="stat-mini-card">
+              <div class="stat-mini-value">${stats.correctAnswers || 0}</div>
+              <div class="stat-mini-label">Correct Answers</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weak Topics -->
+        ${weakTopics.length > 0 ? `
+          <div class="detail-section">
+            <div class="detail-section-title">
+              <i data-lucide="alert-triangle"></i>
+              Topics Needing Attention
+            </div>
+            ${weakTopics.map(([module, data]) => `
+              <div class="weak-topic-card">
+                <div class="weak-topic-name">${module}</div>
+                <div class="weak-topic-score">
+                  Average: ${Math.round((data.averageScore || 0) * 100)}% •
+                  ${data.quizzesCompleted || 0} quiz${data.quizzesCompleted !== 1 ? 'zes' : ''} completed
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <!-- Quiz History -->
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i data-lucide="list"></i>
+            Recent Quiz History
+          </div>
+          ${recentQuizzes.length > 0 ? `
+            <table class="quiz-history-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Module</th>
+                  <th>Score</th>
+                  <th>Questions</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recentQuizzes.map(quiz => {
+                  const quizScore = Math.round((quiz.score || 0) * 100);
+                  const date = quiz.completedAt?.toDate ? quiz.completedAt.toDate() : new Date(quiz.completedAt);
+                  const timeSpent = quiz.timeSpent ? Math.round(quiz.timeSpent / 60) : '-';
+
+                  let scoreClass = 'score-medium';
+                  if (quizScore >= 80) scoreClass = 'score-high';
+                  else if (quizScore < 60) scoreClass = 'score-low';
+
+                  return `
+                    <tr>
+                      <td>${date.toLocaleDateString()}</td>
+                      <td>${quiz.quizId || 'Unknown'}</td>
+                      <td><span class="score-badge ${scoreClass}">${quizScore}%</span></td>
+                      <td>${quiz.correctAnswers || 0}/${quiz.totalQuestions || 0}</td>
+                      <td>${timeSpent} min</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          ` : '<p style="color: var(--gray-600); text-align: center;">No quiz history yet</p>'}
+        </div>
+      `;
+
+      lucide.createIcons();
+    }
+
+    window.closeStudentDetailModal = function() {
+      document.getElementById('studentDetailModal').style.display = 'none';
+    };
+
     // Make functions globally available
     window.showCreateEventModal = showCreateEventModal;
     window.closeCalendarModal = closeCalendarModal;
     window.handleCalendarSubmit = handleCalendarSubmit;
     window.loadCalendarEvents = loadCalendarEvents;
   </script>
+
+  <!-- Student Detail Modal -->
+  <div id="studentDetailModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeStudentDetailModal()"></div>
+    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h2 id="studentDetailName">Student Profile</h2>
+        <button class="modal-close" onclick="closeStudentDetailModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="studentDetailBody">
+        <!-- Loading state -->
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading student data...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Student Detail Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+
+    .student-detail-header {
+      padding: 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px 12px 0 0;
+      margin: -24px -24px 24px -24px;
+    }
+
+    .student-detail-name {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .student-detail-email {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .student-detail-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .detail-section {
+      margin-bottom: 32px;
+    }
+
+    .detail-section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gray-700);
+    }
+
+    .stats-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-mini-card {
+      background: var(--gray-50);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-mini-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--blue-primary);
+    }
+
+    .stat-mini-label {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: 4px;
+    }
+
+    .chart-container {
+      height: 300px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .quiz-history-table th {
+      text-align: left;
+      padding: 12px;
+      background: var(--gray-50);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .quiz-history-table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+    }
+
+    .weak-topic-card {
+      background: var(--warning-bg);
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .weak-topic-name {
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .weak-topic-score {
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+  </style>
+
 </body>
 </html>
