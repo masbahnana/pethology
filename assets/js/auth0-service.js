@@ -172,6 +172,13 @@ class Auth0Service {
     const emailLower = email.toLowerCase();
     console.log('🔍 [DEBUG] Determining role for email:', email, '→ lowercase:', emailLower);
 
+    // 🚨 EMERGENCY FIX: Hardcode Mary Deegan as Teacher (TEMPORARY!)
+    // TODO: Remove this after fixing whitelist issue
+    if (emailLower === 'mdeegan@stconlethcc365.ie') {
+      console.log('🚨 [EMERGENCY FIX] Mary Deegan detected - forcing Teacher role');
+      return 'Teacher';
+    }
+
     // PRIORITY 1: Check teacher whitelist (REAL verification!)
     const isInWhitelist = await this.checkTeacherWhitelist(emailLower);
     console.log('🔍 [DEBUG] Whitelist check result:', isInWhitelist);
