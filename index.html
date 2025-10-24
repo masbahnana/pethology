@@ -57,6 +57,24 @@
       width: 100%;
     }
 
+    /* Hamburger menu button - hidden on desktop */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-size: 24px;
+      padding: 8px 12px;
+      cursor: pointer;
+      color: var(--accent);
+      transition: all 0.2s ease;
+    }
+
+    .menu-toggle:hover {
+      border-color: var(--accent);
+      background: #f7f6f3;
+    }
+
     nav ul {
       list-style: none;
       display: flex;
@@ -171,21 +189,46 @@
 
     @media (max-width: 768px) {
       header {
-        padding: 30px 20px 20px 20px;
+        padding: 20px 20px 16px 20px;
       }
 
+      .logo {
+        margin-bottom: 12px;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      /* Show hamburger button on mobile */
+      .menu-toggle {
+        display: block;
+        margin: 0 auto 12px auto;
+      }
+
+      /* Hide menu by default on mobile */
       nav ul {
+        display: none;
         flex-direction: column;
-        gap: 4px;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      /* Show menu when open */
+      nav ul.open {
+        display: flex;
       }
 
       nav a {
+        font-size: 14px;
+        padding: 10px 20px;
         width: 100%;
         text-align: center;
       }
 
       nav ul li {
         margin-left: 0;
+        width: 100%;
       }
 
       main {
@@ -218,7 +261,8 @@
       </a>
     </div>
     <nav>
-      <ul>
+      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
+      <ul id="nav-menu">
         <li><a href="index.html">Home</a></li>
         <li><a href="about.html">About</a></li>
         <li><a href="for-teachers.html">For Teachers</a></li>
@@ -252,6 +296,28 @@
   <footer>
     &copy; 2025 Pethology — Built with ❤️ by Animal Care Nerds
   </footer>
+
+  <script>
+    // Toggle mobile menu
+    function toggleMenu() {
+      const menu = document.getElementById('nav-menu');
+      menu.classList.toggle('open');
+
+      // Change icon between hamburger and X
+      const button = document.querySelector('.menu-toggle');
+      button.textContent = menu.classList.contains('open') ? '✕' : '☰';
+    }
+
+    // Close menu when clicking a link (better UX)
+    document.querySelectorAll('#nav-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        const menu = document.getElementById('nav-menu');
+        if (menu.classList.contains('open')) {
+          toggleMenu();
+        }
+      });
+    });
+  </script>
 
   <script type="module" src="/assets/js/quiz/quiz.js"></script>
 </body>
