@@ -1354,9 +1354,6 @@
     window.toast = toast;
     window.errorHandler = errorHandler;
 
-    // Initialize Lucide icons
-    lucide.createIcons();
-
     // Module slider state
     let currentPage = 0;
     const modulesPerPage = 4;
@@ -1388,6 +1385,16 @@
         return;
       }
       dashboardInitialized = true;
+
+      // Initialize Lucide icons NOW (after DOM is ready)
+      if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        try {
+          lucide.createIcons();
+          console.log('✅ Lucide icons initialized');
+        } catch (error) {
+          console.warn('⚠️ Lucide icons failed to initialize:', error);
+        }
+      }
 
       console.log('🔥 NEW VERSION LOADED - HYBRID APPROACH (v3 - INLINE STYLES)');
       const userSession = sessionStorage.getItem('pethologyUser');
