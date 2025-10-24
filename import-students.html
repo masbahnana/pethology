@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Import Students - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
   <style>
     :root {
       --bg: #fefefe;
@@ -429,6 +430,12 @@ Michael,Johnson,michael.johnson@plc.ie</pre>
 
   <script type="module">
     import { PethologyFirebaseService } from './assets/js/firebase-service.js';
+    import toast from './assets/js/toast.js';
+    import errorHandler from './assets/js/error-handler.js';
+
+    // Make globally available
+    window.toast = toast;
+    window.errorHandler = errorHandler;
 
     // Global array to store students before saving
     window.pendingStudents = [];

@@ -2050,7 +2050,7 @@
         moduleCard.className = `module-card ${moduleInfo.color}`;
         moduleCard.style.cursor = 'pointer';
         moduleCard.onclick = () => {
-          window.location.href = `quiz.html?module=${moduleName}`;
+          openQuizModal(moduleName, moduleInfo.name);
         };
 
         moduleCard.innerHTML = `
@@ -2324,6 +2324,423 @@
         icon.classList.add('open');
       }
     };
+  </script>
+
+  <!-- Quiz Selection Modal -->
+  <div id="quizSelectionModal" class="quiz-modal" style="display: none;">
+    <div class="quiz-modal-overlay" onclick="closeQuizModal()"></div>
+    <div class="quiz-modal-content">
+      <div class="quiz-modal-header">
+        <h3 id="modalModuleTitle">Choose Quiz</h3>
+        <button class="quiz-modal-close" onclick="closeQuizModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="quiz-modal-body" id="quizOptionsContainer">
+        <!-- Quiz options will be inserted here -->
+      </div>
+      <div class="quiz-modal-footer">
+        <button class="btn btn-secondary" onclick="closeQuizModal()">Cancel</button>
+        <button class="btn btn-primary" id="startSelectedQuizBtn" onclick="startSelectedQuiz()">
+          <i data-lucide="play-circle"></i>
+          Start Selected Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Quiz Selection Modal */
+    .quiz-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .quiz-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .quiz-modal-content {
+      position: relative;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+
+    .quiz-modal-header {
+      padding: 24px 24px 16px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .quiz-modal-header h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .quiz-modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .quiz-modal-close:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .quiz-modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .quiz-option {
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--blue-primary);
+      background: var(--blue-light);
+    }
+
+    .quiz-option.selected {
+      border-color: var(--blue-primary);
+      background: var(--blue-light);
+      box-shadow: 0 0 0 3px rgba(35, 131, 226, 0.1);
+    }
+
+    .quiz-option input[type="radio"] {
+      margin-top: 4px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .quiz-option-content {
+      flex: 1;
+    }
+
+    .quiz-option-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-option-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .quiz-option-badge.standard {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .quiz-option-badge.teacher {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+    }
+
+    .quiz-option-badge.overdue {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    .quiz-option-meta {
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 4px;
+    }
+
+    .quiz-option-stats {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .quiz-option-deadline {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      background: var(--warning-bg);
+      color: var(--warning);
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .quiz-modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .quiz-modal-content {
+        width: 95%;
+        max-height: 90vh;
+      }
+
+      .quiz-modal-header,
+      .quiz-modal-body,
+      .quiz-modal-footer {
+        padding: 16px;
+      }
+
+      .quiz-modal-footer {
+        flex-direction: column;
+      }
+
+      .quiz-modal-footer button {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <script>
+    // Quiz selection modal functions
+    let selectedQuizId = null;
+    let currentModuleName = null;
+
+    window.openQuizModal = async function(moduleName, moduleDisplayName) {
+      currentModuleName = moduleName;
+      document.getElementById('modalModuleTitle').textContent = `${moduleDisplayName} - Choose Quiz`;
+
+      // Show loading
+      document.getElementById('quizOptionsContainer').innerHTML = `
+        <div class="loading-state" style="padding: 40px 20px;">
+          <div class="spinner"></div>
+          <p style="margin-top: 16px; color: var(--gray-600);">Loading available quizzes...</p>
+        </div>
+      `;
+
+      document.getElementById('quizSelectionModal').style.display = 'flex';
+
+      try {
+        // Load available quizzes for this module
+        const quizzes = await loadQuizzesForModule(moduleName);
+        renderQuizOptions(quizzes);
+      } catch (error) {
+        console.error('Error loading quizzes:', error);
+        errorHandler.handle(error, { context: 'Loading quizzes', module: moduleName });
+        closeQuizModal();
+      }
+    };
+
+    window.closeQuizModal = function() {
+      document.getElementById('quizSelectionModal').style.display = 'none';
+      selectedQuizId = null;
+      currentModuleName = null;
+    };
+
+    async function loadQuizzesForModule(moduleName) {
+      const quizzes = [];
+
+      // 1. Add standard quiz
+      quizzes.push({
+        id: `standard-${moduleName}`,
+        title: 'Standard Quiz',
+        type: 'standard',
+        module: moduleName,
+        questionCount: 20,
+        deadline: null,
+        createdBy: 'System'
+      });
+
+      // 2. Load custom quizzes from Firebase
+      try {
+        const response = await PethologyFirebaseREST.request('/custom_quizzes');
+        if (response.documents && response.documents.length > 0) {
+          const customQuizzes = response.documents
+            .map(doc => PethologyFirebaseREST.convertDocument(doc))
+            .filter(quiz => quiz.module === moduleName || quiz.module === getModuleDisplayName(moduleName));
+
+          quizzes.push(...customQuizzes.map(q => ({
+            id: q.id,
+            title: q.name,
+            type: 'custom',
+            module: moduleName,
+            questionCount: q.questions ? q.questions.length : 0,
+            deadline: q.deadline,
+            createdBy: q.createdByName || 'Teacher',
+            createdByTeacher: true
+          })));
+        }
+      } catch (error) {
+        console.error('Error loading custom quizzes:', error);
+      }
+
+      return quizzes;
+    }
+
+    function renderQuizOptions(quizzes) {
+      const container = document.getElementById('quizOptionsContainer');
+
+      if (quizzes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p style="color: var(--gray-600);">No quizzes available for this module</p>
+          </div>
+        `;
+        return;
+      }
+
+      // If only one quiz, auto-select and start
+      if (quizzes.length === 1) {
+        window.location.href = `quiz.html?module=${currentModuleName}`;
+        return;
+      }
+
+      container.innerHTML = quizzes.map((quiz, index) => {
+        const isOverdue = quiz.deadline && new Date(quiz.deadline) < new Date();
+        const daysUntilDeadline = quiz.deadline ?
+          Math.ceil((new Date(quiz.deadline) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+
+        return `
+          <div class="quiz-option ${index === 0 ? 'selected' : ''}" onclick="selectQuiz('${quiz.id}', this)">
+            <input type="radio" name="quiz" value="${quiz.id}" ${index === 0 ? 'checked' : ''}>
+            <div class="quiz-option-content">
+              <div class="quiz-option-title">
+                ${quiz.title}
+                <span class="quiz-option-badge ${quiz.type}">${quiz.type === 'standard' ? 'Standard' : 'Teacher'}</span>
+                ${isOverdue ? '<span class="quiz-option-badge overdue">Overdue</span>' : ''}
+              </div>
+              <div class="quiz-option-meta">
+                ${quiz.questionCount} questions • ${quiz.createdByTeacher ? 'Created by ' + quiz.createdBy : 'System quiz'}
+              </div>
+              ${quiz.deadline ? `
+                <div class="quiz-option-deadline">
+                  <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                  ${isOverdue ?
+                    `<span style="color: var(--error);">${Math.abs(daysUntilDeadline)} days overdue</span>` :
+                    `Due in ${daysUntilDeadline} day${daysUntilDeadline !== 1 ? 's' : ''}`
+                  }
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Auto-select first quiz
+      selectedQuizId = quizzes[0].id;
+
+      // Reinitialize lucide icons
+      lucide.createIcons();
+    }
+
+    window.selectQuiz = function(quizId, element) {
+      selectedQuizId = quizId;
+
+      // Remove selected class from all options
+      document.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+
+      // Add selected class to clicked option
+      element.classList.add('selected');
+
+      // Check radio
+      element.querySelector('input[type="radio"]').checked = true;
+    };
+
+    window.startSelectedQuiz = function() {
+      if (!selectedQuizId) {
+        toast.warning('Please select a quiz to start', 'No Quiz Selected');
+        return;
+      }
+
+      if (selectedQuizId.startsWith('standard-')) {
+        // Standard quiz
+        window.location.href = `quiz.html?module=${currentModuleName}`;
+      } else {
+        // Custom quiz
+        window.location.href = `quiz.html?customQuizId=${selectedQuizId}`;
+      }
+    };
+
+    function getModuleDisplayName(moduleName) {
+      const moduleNames = {
+        'biology': 'Biology',
+        'animal-welfare': 'Animal Welfare',
+        'grooming': 'Grooming',
+        'animal-anatomy': 'Animal Anatomy & Physiology',
+        'parasitology': 'Parasitology',
+        'nutrition': 'Nutrition',
+        'animal-behaviour': 'Animal Behaviour',
+        'small-animals': 'Small Animals',
+        'vet-assistant': 'Vet Assistant Skills',
+        'communications': 'Communications'
+      };
+      return moduleNames[moduleName] || moduleName;
+    }
   </script>
 </body>
 </html>
