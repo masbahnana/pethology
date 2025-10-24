@@ -6,6 +6,7 @@
   <title>My Progress - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -689,6 +690,12 @@
 
   <script type="module">
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=5.0';
+    import toast from './assets/js/toast.js';
+    import errorHandler from './assets/js/error-handler.js';
+
+    // Make globally available
+    window.toast = toast;
+    window.errorHandler = errorHandler;
 
     // Get user session
     const userSession = sessionStorage.getItem('pethologyUser');

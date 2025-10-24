@@ -764,3 +764,194 @@ font-size: 0.95em;
         display: inline-block;
     }
 }
+
+/* === MOBILE ENHANCEMENTS (Phase 4 Polish) === */
+
+/* Small devices (phones, 375px - 767px) */
+@media (max-width: 767px) {
+    /* Header mobile improvements */
+    header {
+        padding: 24px 20px 16px 20px;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+    }
+
+    .logo img {
+        height: 28px;
+    }
+
+    .logo-text {
+        font-size: 1.5rem;
+    }
+
+    /* Navigation mobile */
+    nav ul {
+        gap: 4px;
+    }
+
+    nav a {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    /* Touch-friendly buttons (min 44px height) */
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    button,
+    a.button {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    /* Layout wrapper mobile */
+    .layout-wrapper {
+        padding: 0 16px;
+    }
+
+    /* Container mobile */
+    .container {
+        padding: 20px 16px;
+    }
+
+    /* Cards mobile */
+    .card {
+        padding: 16px;
+        margin-bottom: 12px;
+    }
+
+    /* Text scaling */
+    h1 {
+        font-size: 1.75rem;
+        line-height: 1.2;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+        line-height: 1.4;
+    }
+
+    p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* Form elements mobile */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+        padding: 12px;
+        min-height: 44px;
+    }
+
+    /* Tables mobile - make scrollable */
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+    /* Grid layouts - stack on mobile */
+    .grid,
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Modal mobile */
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: 20px auto;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* Toast mobile (already handled in toast.css) */
+    /* Loading states - ensure proper spacing */
+    .loading-state {
+        padding: 40px 20px;
+    }
+
+    .spinner-lg {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* Extra small devices (phones, less than 375px) */
+@media (max-width: 374px) {
+    header {
+        padding: 20px 16px 12px 16px;
+    }
+
+    .logo {
+        font-size: 1.3rem;
+    }
+
+    .logo img {
+        height: 24px;
+    }
+
+    .logo-text {
+        font-size: 1.3rem;
+    }
+
+    nav a {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .btn,
+    .btn-primary,
+    .btn-secondary {
+        font-size: 13px;
+        padding: 10px 16px;
+    }
+}
+
+/* Landscape orientation on small devices */
+@media (max-height: 500px) and (orientation: landscape) {
+    header {
+        padding: 16px 20px 12px 20px;
+    }
+
+    .logo {
+        margin-bottom: 12px;
+    }
+
+    nav ul {
+        gap: 4px;
+    }
+
+    nav a {
+        padding: 6px 12px;
+    }
+}

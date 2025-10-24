@@ -9,6 +9,7 @@
   <title>Teacher Dashboard - Pethology v4.0</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -640,6 +641,11 @@
     }
 
     @media (max-width: 768px) {
+      /* Container mobile */
+      .container {
+        padding: 16px;
+      }
+
       .header-top {
         flex-direction: column;
         align-items: flex-start;
@@ -648,10 +654,70 @@
 
       .stats-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
       }
 
+      /* Touch-friendly module cards */
+      .module-card {
+        min-height: 80px;
+        padding: 16px;
+      }
+
+      /* Touch-friendly buttons */
+      .btn,
+      .btn-primary,
+      .btn-secondary,
+      button {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      /* Tables scrollable */
       .table-container {
-        overflow-x: scroll;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        font-size: 13px;
+      }
+
+      /* Modal full width on mobile */
+      .modal-content {
+        width: 95%;
+        max-width: none;
+        margin: 20px auto;
+        padding: 20px;
+      }
+
+      /* Form inputs touch-friendly */
+      input,
+      select,
+      textarea {
+        font-size: 16px; /* Prevents iOS zoom */
+        min-height: 44px;
+        padding: 12px;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 374px) {
+      .container {
+        padding: 12px;
+      }
+
+      .module-card {
+        padding: 12px;
+        min-height: 60px;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
+      }
+
+      table {
+        font-size: 12px;
       }
     }
 
@@ -1251,9 +1317,15 @@
   <script type="module">
     // USE REST API instead of Firebase SDK to avoid WebChannel issues
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.0';
+    import toast from './assets/js/toast.js';
+    import errorHandler from './assets/js/error-handler.js';
 
     // Alias for compatibility
     const PethologyFirebaseService = PethologyFirebaseREST;
+
+    // Make globally available
+    window.toast = toast;
+    window.errorHandler = errorHandler;
 
     // Initialize Lucide icons
     lucide.createIcons();

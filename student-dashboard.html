@@ -6,6 +6,7 @@
   <title>Student Dashboard - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -1108,13 +1109,80 @@
       }
 
       .main-content {
-        padding: 20px;
+        padding: 16px;
+        width: 100%;
       }
 
       .progress-circles,
       .stats-grid,
       .modules-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      /* Touch-friendly cards */
+      .card {
+        padding: 16px;
+        margin-bottom: 12px;
+        min-height: 44px; /* Touch target */
+      }
+
+      /* Adaptive quiz card on mobile */
+      .card[onclick] {
+        min-height: 120px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(139, 92, 246, 0.1);
+      }
+
+      /* Buttons touch-friendly */
+      .btn,
+      .btn-primary,
+      button {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      /* Stats smaller on mobile */
+      .stat-number {
+        font-size: 1.75rem;
+      }
+
+      /* Progress circles smaller */
+      .progress-circle {
+        width: 100px;
+        height: 100px;
+      }
+
+      /* Module grid full width */
+      .module-card {
+        width: 100%;
+      }
+
+      /* Announcements stack */
+      .announcements-grid,
+      .calendar-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 374px) {
+      .main-content {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 12px;
+      }
+
+      .stat-number {
+        font-size: 1.5rem;
+      }
+
+      .progress-circle {
+        width: 80px;
+        height: 80px;
       }
     }
   </style>
@@ -1805,9 +1873,13 @@
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements-rest.js?v=4.1';
     import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js?v=2.0';
+    import toast from './assets/js/toast.js';
+    import errorHandler from './assets/js/error-handler.js';
 
     // Make functions globally available
     window.markAnnouncementAsRead = markAnnouncementAsRead;
+    window.toast = toast;
+    window.errorHandler = errorHandler;
 
     // Função para carregar dados reais do estudante
     async function loadRealStudentData() {
@@ -1859,18 +1931,34 @@
       } catch (error) {
         console.error('❌ Error loading student data:', error);
 
+        // Handle error with user-friendly message
+        const errorInfo = errorHandler.handle(error, {
+          context: 'Loading student dashboard',
+          action: 'loadRealStudentData'
+        });
+
         // Hide loading
         document.getElementById('dashboardLoading').style.display = 'none';
 
-        // Show error message
+        // Show error message with retry button
         document.getElementById('dashboardContent').innerHTML = `
           <div class="loading-state">
             <i data-lucide="alert-circle" style="width: 48px; height: 48px; color: var(--error);"></i>
-            <p style="font-size: 16px; color: var(--gray-700);">Error loading your data</p>
-            <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 16px;">
-              <i data-lucide="refresh-cw"></i>
-              Retry
-            </button>
+            <p style="font-size: 16px; color: var(--gray-700); font-weight: 600;">Failed to Load Dashboard</p>
+            <p style="font-size: 14px; color: var(--gray-600); margin-top: 8px;">
+              ${errorInfo.message || 'Unable to load your dashboard data. Please try again.'}
+            </p>
+            ${errorInfo.canRetry ? `
+              <button onclick="location.reload()" class="btn btn-primary" style="margin-top: 20px;">
+                <i data-lucide="refresh-cw"></i>
+                Retry
+              </button>
+            ` : `
+              <a href="index.html" class="btn btn-primary" style="margin-top: 20px;">
+                <i data-lucide="home"></i>
+                Go to Home
+              </a>
+            `}
           </div>
         `;
         document.getElementById('dashboardContent').style.display = 'block';
