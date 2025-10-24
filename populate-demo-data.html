@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Populate Demo Data | Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --primary: #667eea;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f6f3;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+      color: #111827;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      margin: 0 0 32px 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: var(--gradient);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .log {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .log-entry {
+      margin: 4px 0;
+    }
+
+    .log-success { color: #10b981; }
+    .log-error { color: #ef4444; }
+    .log-info { color: #3b82f6; }
+    .log-warn { color: #f59e0b; }
+
+    .student-list {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .student-list h3 {
+      margin: 0 0 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .student-item {
+      padding: 12px;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .student-name {
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .student-email {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .student-stats {
+      text-align: right;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .warning-box {
+      background: #fef3c7;
+      border: 2px solid #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .warning-box strong {
+      color: #92400e;
+      display: block;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎭 Populate Demo Data</h1>
+    <p class="subtitle">Generate realistic student data for teacher dashboard demo</p>
+
+    <div class="warning-box">
+      <strong>⚠️ Warning:</strong>
+      This will create 5 fake students with quiz history in your Firebase database. Use this for demo/testing purposes only!
+    </div>
+
+    <div class="student-list">
+      <h3>📚 Students to be Created:</h3>
+      <div class="student-item">
+        <div>
+          <div class="student-name">1. John Smith</div>
+          <div class="student-email">PLCJohnSmith@stconlethcc365.ie</div>
+        </div>
+        <div class="student-stats">High Performer<br>3 quizzes, 89% avg</div>
+      </div>
+      <div class="student-item">
+        <div>
+          <div class="student-name">2. Emma Brown</div>
+          <div class="student-email">PLCEmmaBrown@stconlethcc365.ie</div>
+        </div>
+        <div class="student-stats">Medium<br>2 quizzes, 72% avg</div>
+      </div>
+      <div class="student-item">
+        <div>
+          <div class="student-name">3. Lucas Green</div>
+          <div class="student-email">PLCLucasGreen@stconlethcc365.ie</div>
+        </div>
+        <div class="student-stats">Needs Help<br>2 quizzes, 58% avg</div>
+      </div>
+      <div class="student-item">
+        <div>
+          <div class="student-name">4. Sophia White</div>
+          <div class="student-email">PLCSophiaWhite@stconlethcc365.ie</div>
+        </div>
+        <div class="student-stats">High Performer<br>3 quizzes, 92% avg</div>
+      </div>
+      <div class="student-item">
+        <div>
+          <div class="student-name">5. Oliver Black</div>
+          <div class="student-email">PLCOliverBlack@stconlethcc365.ie</div>
+        </div>
+        <div class="student-stats">Medium<br>2 quizzes, 68% avg</div>
+      </div>
+    </div>
+
+    <button id="generateBtn" class="btn" onclick="generateDemoData()">
+      <i data-lucide="play"></i>
+      Generate Demo Data
+    </button>
+
+    <div id="log" class="log" style="display: none;"></div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+
+    const demoStudents = [
+      {
+        name: 'John Smith',
+        email: 'PLCJohnSmith@stconlethcc365.ie',
+        quizzes: [
+          { module: 'Grooming', score: 0.85, questions: 20, correct: 17 },
+          { module: 'Animal Welfare', score: 0.90, questions: 20, correct: 18 },
+          { module: 'Animal Anatomy', score: 0.92, questions: 20, correct: 18 }
+        ]
+      },
+      {
+        name: 'Emma Brown',
+        email: 'PLCEmmaBrown@stconlethcc365.ie',
+        quizzes: [
+          { module: 'Grooming', score: 0.70, questions: 20, correct: 14 },
+          { module: 'Animal Welfare', score: 0.75, questions: 20, correct: 15 }
+        ]
+      },
+      {
+        name: 'Lucas Green',
+        email: 'PLCLucasGreen@stconlethcc365.ie',
+        quizzes: [
+          { module: 'Grooming', score: 0.55, questions: 20, correct: 11 },
+          { module: 'Animal Anatomy', score: 0.60, questions: 20, correct: 12 }
+        ]
+      },
+      {
+        name: 'Sophia White',
+        email: 'PLCSophiaWhite@stconlethcc365.ie',
+        quizzes: [
+          { module: 'Animal Welfare', score: 0.95, questions: 20, correct: 19 },
+          { module: 'Grooming', score: 0.90, questions: 20, correct: 18 },
+          { module: 'Animal Anatomy', score: 0.92, questions: 20, correct: 18 }
+        ]
+      },
+      {
+        name: 'Oliver Black',
+        email: 'PLCOliverBlack@stconlethcc365.ie',
+        quizzes: [
+          { module: 'Animal Welfare', score: 0.65, questions: 20, correct: 13 },
+          { module: 'Grooming', score: 0.70, questions: 20, correct: 14 }
+        ]
+      }
+    ];
+
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      logDiv.style.display = 'block';
+
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+      logDiv.appendChild(entry);
+
+      // Auto scroll to bottom
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    window.generateDemoData = async function() {
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> Generating...';
+
+      log('Starting demo data generation...', 'info');
+
+      try {
+        for (const student of demoStudents) {
+          log(`Creating student: ${student.name}`, 'info');
+
+          // Generate user ID (simulating Auth0 format)
+          const userId = `demo|${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+          // Create student user
+          const userData = {
+            id: userId,
+            name: student.name,
+            email: student.email,
+            role: 'Student',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+          };
+
+          await PethologyFirebaseREST.createOrUpdateUser(userData);
+          log(`✓ User created: ${student.email}`, 'success');
+
+          // Calculate overall stats
+          const totalQuizzes = student.quizzes.length;
+          const averageScore = student.quizzes.reduce((sum, q) => sum + q.score, 0) / totalQuizzes;
+          const totalQuestions = student.quizzes.reduce((sum, q) => sum + q.questions, 0);
+          const correctAnswers = student.quizzes.reduce((sum, q) => sum + q.correct, 0);
+
+          // Create module progress
+          const moduleProgress = {};
+          student.quizzes.forEach(quiz => {
+            const moduleName = quiz.module.toLowerCase().replace(/\s+/g, '-');
+            if (!moduleProgress[moduleName]) {
+              moduleProgress[moduleName] = {
+                quizzesCompleted: 0,
+                averageScore: 0,
+                totalQuestions: 0,
+                correctAnswers: 0
+              };
+            }
+            moduleProgress[moduleName].quizzesCompleted++;
+            moduleProgress[moduleName].averageScore = quiz.score;
+            moduleProgress[moduleName].totalQuestions += quiz.questions;
+            moduleProgress[moduleName].correctAnswers += quiz.correct;
+          });
+
+          // Create student progress
+          const progressData = {
+            userId: userId,
+            overallStats: {
+              totalQuizzes: totalQuizzes,
+              averageScore: averageScore,
+              totalQuestions: totalQuestions,
+              correctAnswers: correctAnswers,
+              lastActivity: new Date().toISOString()
+            },
+            moduleProgress: moduleProgress,
+            achievements: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+
+          await PethologyFirebaseREST.updateStudentProgress(userId, progressData);
+          log(`✓ Progress created: ${totalQuizzes} quizzes, ${Math.round(averageScore * 100)}% avg`, 'success');
+
+          // Create quiz results
+          for (let i = 0; i < student.quizzes.length; i++) {
+            const quiz = student.quizzes[i];
+            const daysAgo = student.quizzes.length - i; // Most recent = smallest daysAgo
+            const completedAt = new Date();
+            completedAt.setDate(completedAt.getDate() - daysAgo);
+
+            const quizResult = {
+              userId: userId,
+              quizId: quiz.module,
+              module: quiz.module,
+              score: quiz.score,
+              totalQuestions: quiz.questions,
+              correctAnswers: quiz.correct,
+              timeSpent: 300 + Math.random() * 300, // 5-10 minutes
+              completedAt: completedAt.toISOString(),
+              answers: [] // Empty for demo
+            };
+
+            await PethologyFirebaseREST.saveQuizResult(quizResult);
+            log(`  ✓ Quiz result saved: ${quiz.module} (${Math.round(quiz.score * 100)}%)`, 'success');
+          }
+
+          log(`✅ Completed: ${student.name}`, 'success');
+          log('---', 'info');
+        }
+
+        log('🎉 ALL DEMO DATA GENERATED SUCCESSFULLY!', 'success');
+        log('You can now view the Teacher Dashboard to see the populated data.', 'info');
+
+        btn.innerHTML = '✅ Demo Data Generated!';
+
+        setTimeout(() => {
+          if (confirm('Demo data created! Open Teacher Dashboard now?')) {
+            window.location.href = 'teacher-dashboard.html';
+          }
+        }, 1000);
+
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        console.error('Full error:', error);
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="play"></i> Retry Generation';
+        lucide.createIcons();
+      }
+    };
+
+    // Initialize Lucide icons
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>
