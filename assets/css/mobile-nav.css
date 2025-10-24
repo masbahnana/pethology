@@ -1,0 +1,90 @@
+/* Mobile Navigation - Hamburger Menu */
+/* Add this to any page that needs mobile-friendly navigation */
+
+nav {
+  display: block;
+  width: 100%;
+}
+
+/* Hamburger menu button - hidden on desktop */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  font-size: 24px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #111;
+  transition: all 0.2s ease;
+}
+
+.menu-toggle:hover {
+  border-color: #111;
+  background: #f7f6f3;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+nav ul li {
+  margin: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: #666;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+nav a:hover {
+  background: #f7f6f3;
+  color: #111;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  /* Show hamburger button on mobile */
+  .menu-toggle {
+    display: block;
+    margin: 0 auto 12px auto;
+  }
+
+  /* Hide menu by default on mobile */
+  nav ul {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  /* Show menu when open */
+  nav ul.open {
+    display: flex;
+  }
+
+  nav a {
+    font-size: 14px;
+    padding: 10px 20px;
+    width: 100%;
+    text-align: center;
+  }
+
+  nav ul li {
+    margin-left: 0;
+    width: 100%;
+  }
+}
