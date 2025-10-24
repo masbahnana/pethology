@@ -1,14 +1,14 @@
 # 🎓 Pethology - FINAL Roadmap v5.0
 
-**Última atualização:** 22 Outubro 2025
-**Versão Atual:** v4.2 - 100% REST API ✅
-**Próxima Release:** v5.0 - Complete Platform 🚀
+**Última atualização:** 24 Outubro 2025
+**Versão Atual:** v5.4 - Class Management (Filter/Sort + Student Detail) ✅
+**Próxima Release:** v5.5 - Remaining v5.0 Features 🚀
 
 ---
 
-## 🏆 **WHAT'S DONE (v4.2):**
+## 🏆 **WHAT'S DONE:**
 
-### ✅ **Core System:**
+### ✅ **v4.2 - Core System:**
 - [x] 100% REST API (zero Firebase SDK)
 - [x] Teacher Whitelist System
 - [x] Student Whitelist System (pre-registration)
@@ -21,6 +21,19 @@
 - [x] 200 Quiz Questions (10 modules)
 - [x] Quiz Randomization
 - [x] Cypress E2E Testing Structure
+
+### ✅ **v5.0-v5.4 - Platform Enhancements:**
+- [x] **v5.0:** Achievements Page (standalone, 19 achievements, filters, stats)
+- [x] **v5.0:** My Progress Page (graphs, module breakdown, quiz history)
+- [x] **v5.1:** Quiz Import System (CSV upload, validation, custom quizzes)
+- [x] **v5.1:** Multiple Quizzes Modal (standard + custom, deadline tracking)
+- [x] **v5.2:** Toast Notification System (4 types, auto-dismiss, mobile)
+- [x] **v5.2:** Error Handler (centralized, retry logic, user-friendly)
+- [x] **v5.2:** Mobile Responsiveness (touch-friendly, responsive grids)
+- [x] **v5.3:** Custom Quiz Support in quiz.js (Firebase integration)
+- [x] **v5.3:** Real Teacher Whitelist Verification (async Firebase check)
+- [x] **v5.4:** Class Management - Filter/Sort Table (search, score filter, sortable)
+- [x] **v5.4:** Class Management - Student Detail View (stats, weak topics, quiz history)
 
 ---
 
@@ -550,7 +563,8 @@ These go to v6.0 (Future):
 - ❌ Exam Mode (2-3h) - Nice to have, not critical
 - ❌ Glossary System (2-3h) - Useful but not core
 - ❌ Skills Demos Checklist (2-3h) - Can reuse Goals later
-- ❌ Class Management System (8-10h) - Big feature for scaling
+- ✅ ~~Class Management System (8-10h)~~ - **v5.4 COMPLETED** (P1: Filter/Sort + Student Detail)
+  - ⏸️ Remaining P2/P3 features postponed (Export Grades, Remove Student)
 - ❌ Microsoft Forms Import (4-6h) - CSV covers 80% of use case
 - ❌ Advanced Gamification (4-6h) - Already have achievements
 - ❌ Standalone pages for other features
