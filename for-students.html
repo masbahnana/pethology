@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pethology for Students | Learn Smarter with AI</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --primary: #667eea;
+      --primary-dark: #5568d3;
+      --secondary: #764ba2;
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-light: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f6f3;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: var(--gradient);
+      color: white;
+      padding: 80px 20px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+      opacity: 0.3;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      letter-spacing: -1px;
+    }
+
+    .hero .emoji {
+      font-size: 64px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .hero p {
+      font-size: 20px;
+      margin: 0 0 32px 0;
+      opacity: 0.95;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 150ms ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: white;
+      color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 20px;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      margin-top: 60px;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: all 200ms ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: var(--gradient-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .feature-card h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 12px 0;
+      color: #111827;
+    }
+
+    .feature-card p {
+      color: #6b7280;
+      margin: 0 0 16px 0;
+      line-height: 1.7;
+    }
+
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .feature-list li {
+      padding: 8px 0;
+      color: #4b5563;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-size: 36px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+      color: #111827;
+    }
+
+    .section-header p {
+      font-size: 18px;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    /* Highlight Box */
+    .highlight-box {
+      background: var(--gradient);
+      color: white;
+      border-radius: 16px;
+      padding: 48px 32px;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    .highlight-box h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 16px 0;
+    }
+
+    .highlight-box p {
+      font-size: 18px;
+      margin: 0 0 32px 0;
+      opacity: 0.95;
+    }
+
+    /* Special Card for Adaptive Quiz */
+    .special-card {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
+      border: 2px solid #3b82f6;
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .special-card h3 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e40af;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .special-card p {
+      font-size: 18px;
+      color: #1e3a8a;
+      margin: 0 0 24px 0;
+      line-height: 1.7;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ef4444;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* How it Works */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 24px;
+    }
+
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 auto 16px;
+    }
+
+    .step h4 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      color: #111827;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 80px;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 32px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .section-header h2 {
+        font-size: 28px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-content">
+      <span class="emoji">🎓</span>
+      <h1>Pethology for Students</h1>
+      <p>Learn smarter, not harder—with AI that adapts to YOU.</p>
+      <div class="hero-buttons">
+        <a href="auth0-login.html" class="btn btn-primary">
+          <i data-lucide="rocket"></i>
+          Try Demo
+        </a>
+        <a href="quick-start.html" class="btn btn-secondary">
+          <i data-lucide="book-open"></i>
+          How It Works
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+
+    <!-- Special: Adaptive Quiz -->
+    <div class="special-card">
+      <h3>
+        🤖 Adaptive Quiz AI
+        <span class="badge">Game Changer!</span>
+      </h3>
+      <p>This is what makes Pethology different from every other platform.</p>
+      <p style="font-size: 16px;">Our AI analyzes YOUR quiz history and creates personalized quizzes focusing 60% on your weak topics, 30% on medium, and 10% on strong areas. It's like having a personal tutor that knows exactly what you need to practice!</p>
+      <p style="font-size: 14px; opacity: 0.8; margin-top: 16px;">✨ No other platform has this feature. You'll learn faster and smarter.</p>
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header" style="margin-top: 80px;">
+      <h2>Everything you need to succeed</h2>
+      <p>Powerful features to help you master Pet Grooming</p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="features-grid">
+
+      <!-- Feature 1: Practice Quizzes -->
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <h3>200+ Practice Questions</h3>
+        <p>Master every topic with our comprehensive question bank.</p>
+        <ul class="feature-list">
+          <li>10 modules covering all Pet Grooming topics</li>
+          <li>Questions randomized every time</li>
+          <li>Instant feedback with explanations</li>
+          <li>Practice as many times as you want</li>
+        </ul>
+      </div>
+
+      <!-- Feature 2: Track Progress -->
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Track Your Progress</h3>
+        <p>See your improvement with beautiful charts and insights.</p>
+        <ul class="feature-list">
+          <li>Performance graphs over time</li>
+          <li>Module-by-module breakdown</li>
+          <li>Quiz history timeline</li>
+          <li>Identify weak topics instantly</li>
+        </ul>
+      </div>
+
+      <!-- Feature 3: Achievements -->
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Unlock Achievements</h3>
+        <p>Make learning fun with 19 achievements to collect!</p>
+        <ul class="feature-list">
+          <li>Common, Rare, Epic, and Legendary rewards</li>
+          <li>Track your collection progress</li>
+          <li>Filter and search achievements</li>
+          <li>Gamified learning experience</li>
+        </ul>
+      </div>
+
+      <!-- Feature 4: Mobile Friendly -->
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Study Anywhere</h3>
+        <p>Fully responsive design works on any device.</p>
+        <ul class="feature-list">
+          <li>Practice on phone, tablet, or computer</li>
+          <li>Touch-friendly interface</li>
+          <li>Works offline after loading</li>
+          <li>Sync progress across devices</li>
+        </ul>
+      </div>
+
+      <!-- Feature 5: Custom Quizzes -->
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <h3>Teacher Assignments</h3>
+        <p>Complete quizzes assigned by your teacher.</p>
+        <ul class="feature-list">
+          <li>See custom quizzes in your dashboard</li>
+          <li>Track deadlines for assignments</li>
+          <li>Auto-graded with instant results</li>
+          <li>Teachers see your progress</li>
+        </ul>
+      </div>
+
+      <!-- Feature 6: Smart Learning -->
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <h3>Smart Recommendations</h3>
+        <p>Get personalized study suggestions based on your performance.</p>
+        <ul class="feature-list">
+          <li>Focus on topics you struggle with</li>
+          <li>AI-powered learning path</li>
+          <li>See strengths and weaknesses</li>
+          <li>Improve faster with targeted practice</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- How it Works -->
+    <div class="section-header" style="margin-top: 80px;">
+      <h2>How to get started</h2>
+      <p>Start learning in 3 simple steps</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4>Sign Up</h4>
+        <p>Create your account with your school email</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4>Take Quizzes</h4>
+        <p>Start with 2-3 standard quizzes from any module</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4>Unlock Adaptive Quiz</h4>
+        <p>AI will personalize quizzes based on YOUR performance!</p>
+      </div>
+    </div>
+
+    <!-- CTA Box -->
+    <div class="highlight-box">
+      <h2>Ready to learn smarter?</h2>
+      <p>Join students who are mastering Pet Grooming with AI-powered learning!</p>
+      <div class="hero-buttons">
+        <a href="auth0-login.html" class="btn btn-primary">
+          <i data-lucide="play"></i>
+          Start Learning Now
+        </a>
+        <a href="for-teachers.html" class="btn btn-secondary">
+          <i data-lucide="arrow-right"></i>
+          Are You a Teacher?
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Pethology. Learn smarter with AI.</p>
+    <p>
+      <a href="index.html">Home</a> •
+      <a href="for-teachers.html">For Teachers</a> •
+      <a href="quick-start.html">Quick Start</a> •
+      <a href="auth0-login.html">Login</a>
+    </p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+
+</body>
+</html>

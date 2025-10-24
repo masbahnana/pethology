@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Templates | Pethology Pilot</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --primary: #667eea;
+      --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f7f6f3;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+
+    .header {
+      background: var(--gradient);
+      color: white;
+      padding: 48px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin: 0 0 8px 0;
+    }
+
+    .header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .template-section {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .template-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 24px 0;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .email-box {
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      position: relative;
+    }
+
+    .email-box .copy-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 8px 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 150ms ease;
+    }
+
+    .email-box .copy-btn:hover {
+      background: #5568d3;
+      transform: translateY(-1px);
+    }
+
+    .email-box .copy-btn.copied {
+      background: #10b981;
+    }
+
+    .email-content {
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      color: #374151;
+      white-space: pre-wrap;
+      margin-top: 40px;
+    }
+
+    .placeholder {
+      background: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #92400e;
+      font-weight: 600;
+    }
+
+    .info-box {
+      background: rgba(102, 126, 234, 0.1);
+      border-left: 4px solid var(--primary);
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .info-box strong {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .nav-links a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 16px;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>📧 Email Templates for Pilot Launch</h1>
+    <p>Ready-to-use templates to invite teachers and students</p>
+  </div>
+
+  <div class="container">
+
+    <div class="info-box">
+      <strong>📋 Instructions:</strong> Click "Copy Email" on any template below, paste into your email client, and replace the highlighted placeholders with actual information.
+    </div>
+
+    <!-- Template 1: Teacher Invite -->
+    <div class="template-section">
+      <h2>
+        <i data-lucide="user" style="width: 28px; height: 28px; color: var(--primary);"></i>
+        Template 1: Teacher Invitation
+      </h2>
+      <p>Use this template to invite teachers/coordinators to join Pethology as instructors.</p>
+
+      <div class="email-box">
+        <button class="copy-btn" onclick="copyEmail('teacher-email')">
+          <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+          Copy Email
+        </button>
+        <div class="email-content" id="teacher-email">Subject: [Pilot] Try Pethology - AI-Powered Teaching Platform 🎓
+
+Hi <span class="placeholder">[Teacher Name]</span>,
+
+I'd like to invite you to be part of the Pethology pilot program—a new teaching platform with unique AI features that help students learn more effectively.
+
+🎓 WHAT IS PETHOLOGY?
+Pethology is a complete learning platform with AI-powered adaptive quizzes that personalize each student's learning experience.
+
+✨ FEATURES FOR TEACHERS:
+• Class Management - Filter and sort students by performance
+• Student Detail View - See complete profiles with weak topics and quiz history
+• Quiz Import (CSV) - Create custom quizzes in seconds
+• Track Student Progress - Identify who needs help instantly
+• Announcements & Calendar - Keep students informed
+
+🤖 THE GAME CHANGER:
+Our Adaptive Quiz AI analyzes each student's performance and generates personalized quizzes focusing 60% on their weak topics, 30% on medium, and 10% on strong areas. No other platform has this!
+
+🚀 GET STARTED:
+1. Visit: https://pethology.netlify.app/for-teachers.html
+2. Login with your email: <span class="placeholder">[teacher@email.com]</span>
+3. Create a password on first login
+4. Explore the Teacher Dashboard
+
+📚 QUICK START GUIDE:
+https://pethology.netlify.app/quick-start.html
+
+We'd love your feedback as we prepare for the full launch! Feel free to reach out with any questions.
+
+Best regards,
+<span class="placeholder">[Your Name]</span>
+<span class="placeholder">[Your Contact Info]</span></div>
+      </div>
+    </div>
+
+    <!-- Template 2: Student Invite (Casual) -->
+    <div class="template-section">
+      <h2>
+        <i data-lucide="graduation-cap" style="width: 28px; height: 28px; color: var(--primary);"></i>
+        Template 2: Student Invitation (Casual)
+      </h2>
+      <p>Use this friendly template to invite students to join the platform.</p>
+
+      <div class="email-box">
+        <button class="copy-btn" onclick="copyEmail('student-email-casual')">
+          <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+          Copy Email
+        </button>
+        <div class="email-content" id="student-email-casual">Subject: You're invited to try Pethology! 🚀
+
+Hey <span class="placeholder">[Student Name]</span>!
+
+You've been selected to test out Pethology—a new learning platform that uses AI to help you study smarter, not harder!
+
+🎓 WHAT YOU'LL GET:
+• 200+ practice questions on Pet Grooming
+• AI-powered Adaptive Quiz that learns from YOU
+• Track your progress with cool charts
+• Unlock 19 achievements as you learn
+• Study on any device (phone, tablet, computer)
+
+🤖 THE COOLEST FEATURE:
+After you take a few quizzes, you'll unlock "Adaptive Quiz" mode. The AI will create personalized quizzes that focus on the topics YOU need to practice most. It's like having a personal tutor!
+
+🚀 HOW TO START:
+1. Go to: https://pethology.netlify.app/for-students.html
+2. Login with your school email: <span class="placeholder">[student@plc...]</span>
+3. Take 2-3 quizzes from any module
+4. Unlock Adaptive Quiz and watch your scores improve!
+
+📚 Need help? Check out the Quick Start Guide:
+https://pethology.netlify.app/quick-start.html
+
+Have fun learning! Let me know if you have any questions 😊
+
+<span class="placeholder">[Your Name]</span></div>
+      </div>
+    </div>
+
+    <!-- Template 3: Student Invite (Formal) -->
+    <div class="template-section">
+      <h2>
+        <i data-lucide="graduation-cap" style="width: 28px; height: 28px; color: var(--primary);"></i>
+        Template 3: Student Invitation (Formal)
+      </h2>
+      <p>Use this more formal template for official class communications.</p>
+
+      <div class="email-box">
+        <button class="copy-btn" onclick="copyEmail('student-email-formal')">
+          <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+          Copy Email
+        </button>
+        <div class="email-content" id="student-email-formal">Subject: Access to Pethology Learning Platform
+
+Dear Students,
+
+You now have access to Pethology, an AI-powered learning platform designed to enhance your Pet Grooming studies.
+
+📚 PLATFORM FEATURES:
+• Comprehensive quiz bank with 200+ questions across 10 modules
+• Adaptive Quiz AI that personalizes practice to your learning needs
+• Progress tracking with detailed performance analytics
+• Achievement system to motivate continued learning
+• Mobile-responsive design for studying anywhere
+
+🎯 GETTING STARTED:
+1. Access the platform: https://pethology.netlify.app
+2. Login using your school email credentials
+3. Begin with standard quizzes to build your knowledge base
+4. Unlock Adaptive Quiz mode after completing initial assessments
+
+📋 IMPORTANT INFORMATION:
+• All quiz attempts are recorded and visible to your instructor
+• Adaptive Quiz becomes available after completing 1-2 standard quizzes
+• You may retake quizzes as many times as needed for practice
+• Questions are randomized each attempt for varied practice
+
+For detailed instructions, please refer to the Quick Start Guide:
+https://pethology.netlify.app/quick-start.html
+
+If you encounter any technical issues, please contact <span class="placeholder">[support email]</span>.
+
+Best regards,
+<span class="placeholder">[Instructor Name]</span>
+<span class="placeholder">[Course Name]</span></div>
+      </div>
+    </div>
+
+    <!-- Template 4: Follow-up / Reminder -->
+    <div class="template-section">
+      <h2>
+        <i data-lucide="bell" style="width: 28px; height: 28px; color: var(--primary);"></i>
+        Template 4: Follow-up / Reminder
+      </h2>
+      <p>Send this 3-4 days after the initial invite to encourage sign-up.</p>
+
+      <div class="email-box">
+        <button class="copy-btn" onclick="copyEmail('followup-email')">
+          <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+          Copy Email
+        </button>
+        <div class="email-content" id="followup-email">Subject: Reminder: Join Pethology & Unlock Adaptive Quiz 🤖
+
+Hi <span class="placeholder">[Name]</span>!
+
+Just a quick reminder to check out Pethology if you haven't already!
+
+✨ QUICK WINS:
+• Takes only 5 minutes to get started
+• First quiz unlocks your progress tracking
+• 2-3 quizzes unlocks the AI Adaptive Quiz feature
+• Works great on mobile—practice anywhere!
+
+🚀 JUMP IN NOW:
+👉 https://pethology.netlify.app/auth0-login.html
+
+Already started? Here's a pro tip: Complete quizzes from different modules to get better insights from the Adaptive Quiz AI. The more variety in your practice, the smarter the AI recommendations!
+
+Questions? Hit reply—I'm here to help!
+
+<span class="placeholder">[Your Name]</span></div>
+      </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="template-section">
+      <h2>
+        <i data-lucide="lightbulb" style="width: 28px; height: 28px; color: var(--primary);"></i>
+        Email Best Practices
+      </h2>
+
+      <h3>📧 Tips for Successful Invitations:</h3>
+      <ul style="line-height: 2; color: #4b5563;">
+        <li><strong>Personalize:</strong> Always use the recipient's name</li>
+        <li><strong>Be clear:</strong> Explain what Pethology is in simple terms</li>
+        <li><strong>Highlight benefits:</strong> Focus on how it helps THEM (not features)</li>
+        <li><strong>Include links:</strong> Make it easy to access (for-teachers.html, for-students.html)</li>
+        <li><strong>Provide support:</strong> Let them know how to get help</li>
+        <li><strong>Follow up:</strong> Send a reminder after 3-4 days to non-responders</li>
+      </ul>
+
+      <h3>📋 Before Sending:</h3>
+      <ul style="line-height: 2; color: #4b5563;">
+        <li>✅ Replace all <span class="placeholder">[placeholders]</span> with actual information</li>
+        <li>✅ Double-check email addresses are correct</li>
+        <li>✅ Test the login link yourself first</li>
+        <li>✅ Ensure students/teachers are in the whitelist</li>
+        <li>✅ Proofread for typos</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="nav-links">
+    <a href="index.html">← Home</a>
+    <a href="for-teachers.html">For Teachers</a>
+    <a href="for-students.html">For Students</a>
+    <a href="quick-start.html">Quick Start</a>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function copyEmail(elementId) {
+      const emailContent = document.getElementById(elementId).innerText;
+      navigator.clipboard.writeText(emailContent).then(() => {
+        const btn = event.target.closest('.copy-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i> Copied!';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.classList.remove('copied');
+          lucide.createIcons();
+        }, 2000);
+      });
+    }
+  </script>
+
+</body>
+</html>
