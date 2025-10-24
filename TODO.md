@@ -43,10 +43,11 @@
 ## 🚀 **PILOT LAUNCH - PENDING TASKS**
 
 ### **🔥 CRITICAL (Do Before Mary Tests):**
-- [ ] **Create test student data** (3-5 fake students with quiz history) - 20min
-  - Add students to whitelist
-  - Complete 2-3 quizzes per student
-  - So Mary sees populated dashboard
+- [x] ~~**Create test student data** (3-5 fake students with quiz history)~~ ✅ DONE!
+  - Created populate-demo-data.html (one-click demo generation)
+  - 5 demo students: John Smith, Emma Brown, Lucas Green, Sophia White, Oliver Black
+  - Realistic quiz history with varied performance (High/Medium/Low)
+  - Teacher dashboard now shows 9 students correctly!
 
 ### **⚠️ HIGH PRIORITY (Do This Week):**
 - [ ] **Mobile testing** - Test all pages on phone/tablet - 30min
