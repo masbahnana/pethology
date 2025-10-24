@@ -2,7 +2,7 @@
 
 **Última atualização:** 24 Outubro 2025
 **Versão Atual:** v5.5 - 100% v5.0 COMPLETE ✅ 🎉
-**Status:** ALL v5.0 FEATURES IMPLEMENTED AND WORKING!
+**Status:** PILOT LAUNCH IN PROGRESS 🚀
 
 ---
 
@@ -35,6 +35,37 @@
 - [x] **v5.3:** Real Teacher Whitelist Verification (async Firebase check)
 - [x] **v5.4:** Class Management - Filter/Sort Table (search, score filter, sortable)
 - [x] **v5.4:** Class Management - Student Detail View (stats, weak topics, quiz history)
+- [x] **v5.5:** Pilot Launch Materials (for-teachers.html, for-students.html, quick-start.html, email-templates.html)
+- [x] **v5.5:** Emergency Fixes (Mary teacher access, dashboard loading, Lucide icons)
+
+---
+
+## 🚀 **PILOT LAUNCH - PENDING TASKS**
+
+### **🔥 CRITICAL (Do Before Mary Tests):**
+- [ ] **Create test student data** (3-5 fake students with quiz history) - 20min
+  - Add students to whitelist
+  - Complete 2-3 quizzes per student
+  - So Mary sees populated dashboard
+
+### **⚠️ HIGH PRIORITY (Do This Week):**
+- [ ] **Mobile testing** - Test all pages on phone/tablet - 30min
+- [ ] **Fix real whitelist issue** - Debug why Mary wasn't recognized - 30min
+  - Remove emergency hardcode after fix
+  - Get console logs from Mary's login
+- [ ] **Setup basic analytics** - Google Analytics for pilot monitoring - 20min
+
+### **📋 MEDIUM PRIORITY (Nice to Have):**
+- [ ] **FAQ page** - Common questions and answers - 30min
+- [ ] **Known issues doc** - Document bugs/limitations - 15min
+- [ ] **Collect Mary's feedback** - After she tests - ongoing
+- [ ] **Mobile responsive fixes** - Based on testing - 30min
+
+### **🎯 LOW PRIORITY (Can Wait):**
+- [ ] **Performance optimization** - Minify, lazy load, cache - 45min
+- [ ] **Video tutorial** - Screen recording walkthrough - 1-2h
+- [ ] **Professional screenshots** - For marketing - 30min
+- [ ] **GitHub Kanban board** - Project management - 20min 😄
 
 ---
 
