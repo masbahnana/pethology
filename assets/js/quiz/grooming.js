@@ -99,7 +99,7 @@ export const questions = [
         explanation: "If a dog is getting stressed during the grooming process, it's important to take a break and give the dog some space. This can help the dog relax and reduce stress levels.",
     },
     {
-        questions: "What is the purpose of a grooming loop?",
+        question: "What is the purpose of a grooming loop?",
         options: [
             "To keep the dog secure and prevent them from jumping off the table",
             "To help with drying the dog",
