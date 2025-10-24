@@ -691,6 +691,13 @@ async function handleQuizSelection(file, topicName, moduleId) {
 
 function loadQuizButtons() {
   const quizContainer = document.getElementById("quiz-buttons");
+
+  // Skip if not on quiz page (e.g., on index.html)
+  if (!quizContainer) {
+    console.log('ℹ️ Quiz container not found - not on quiz page');
+    return;
+  }
+
   quizContainer.innerHTML = `
     <h1></h1>
     <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
