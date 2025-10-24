@@ -1377,6 +1377,11 @@
     // Prevent multiple executions (BFCache protection)
     let dashboardInitialized = false;
 
+    // Global state for sorting and filtering (MUST be truly global for window functions!)
+    window.allStudents = [];
+    window.currentSortColumn = 'name';
+    window.currentSortDirection = 'asc';
+
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
       if (dashboardInitialized) {
@@ -1489,7 +1494,31 @@
           ]);
           console.log('✅ Promise.all completed!');
           console.log('📊 Analytics received:', analytics);
-          console.log('👥 Students received:', students?.length || 0);
+          console.log('👥 Students progress received:', students?.length || 0);
+
+          // CRITICAL FIX: Merge student progress with user data (name, email)
+          // Progress has userId, stats but NO name/email
+          // Users has name, email but NO progress
+          const allUsers = await PethologyFirebaseService.getAllStudents();
+          console.log('👤 Users received:', allUsers?.length || 0);
+
+          // Create a map of userId -> user data for quick lookup
+          const userMap = new Map(allUsers.map(user => [user.id, user]));
+
+          // Merge: Add name/email from users to progress data
+          students = students.map(progressData => {
+            const user = userMap.get(progressData.userId || progressData.id);
+            return {
+              ...progressData,
+              id: progressData.userId || progressData.id,
+              name: user?.name || 'Unknown',
+              email: user?.email || 'unknown@example.com',
+              lastLogin: user?.lastLogin,
+              progress: progressData // Nest progress data inside
+            };
+          });
+
+          console.log('✅ Students merged:', students?.length || 0);
         } catch (error) {
           console.error('❌ Promise.all failed:', error);
 
@@ -1567,8 +1596,12 @@
         `;
 
         // Re-initialize icons
-        if (typeof lucide !== 'undefined') {
-          lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+          try {
+            lucide.createIcons();
+          } catch (error) {
+            console.warn('⚠️ Lucide icons failed to re-initialize:', error);
+          }
         }
       }
     }
@@ -1602,14 +1635,9 @@
       document.getElementById('averageScore').textContent = overview.averageScore + '%';
     }
 
-    // Global state for sorting and filtering
-    let allStudents = [];
-    let currentSortColumn = 'name';
-    let currentSortDirection = 'asc';
-
     function updateStudentsTable(students) {
       // Store all students globally for filtering/sorting
-      allStudents = students;
+      window.allStudents = students;
 
       const container = document.getElementById('studentsTableContainer');
       const countLabel = document.getElementById('studentCount');
@@ -1631,12 +1659,12 @@
       filterAndSortStudents();
     }
 
-    function renderStudentsTable(students) {
+    window.renderStudentsTable = function(students) {
       const container = document.getElementById('studentsTableContainer');
 
       const getSortIcon = (column) => {
-        if (currentSortColumn !== column) return '↕️';
-        return currentSortDirection === 'asc' ? '↑' : '↓';
+        if (window.currentSortColumn !== column) return '↕️';
+        return window.currentSortDirection === 'asc' ? '↑' : '↓';
       };
 
       const tableHTML = `
@@ -1801,7 +1829,13 @@
       container.innerHTML = performanceHTML;
 
       // Re-initialize Lucide icons for dynamic content
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        try {
+          lucide.createIcons();
+        } catch (error) {
+          console.warn('⚠️ Lucide icons failed to re-initialize:', error);
+        }
+      }
 
       // Update grid width and slider
       const grid = document.getElementById('modulesGrid');
@@ -2070,9 +2104,9 @@
 
     // Filter and Sort Functions
     window.filterAndSortStudents = function() {
-      if (allStudents.length === 0) return;
+      if (!window.allStudents || window.allStudents.length === 0) return;
 
-      let filtered = [...allStudents];
+      let filtered = [...window.allStudents];
 
       // Apply search filter
       const searchTerm = document.getElementById('studentSearchInput').value.toLowerCase();
@@ -2107,45 +2141,45 @@
 
         let comparison = 0;
 
-        if (currentSortColumn === 'name') {
+        if (window.currentSortColumn === 'name') {
           const aName = (a.name || a.email || '').toLowerCase();
           const bName = (b.name || b.email || '').toLowerCase();
           comparison = aName.localeCompare(bName);
-        } else if (currentSortColumn === 'quizzes') {
+        } else if (window.currentSortColumn === 'quizzes') {
           comparison = (aStats.totalQuizzes || 0) - (bStats.totalQuizzes || 0);
-        } else if (currentSortColumn === 'score') {
+        } else if (window.currentSortColumn === 'score') {
           comparison = (aStats.averageScore || 0) - (bStats.averageScore || 0);
-        } else if (currentSortColumn === 'lastActive') {
+        } else if (window.currentSortColumn === 'lastActive') {
           const aLogin = a.lastLogin?.toDate ? a.lastLogin.toDate() : new Date(a.lastLogin);
           const bLogin = b.lastLogin?.toDate ? b.lastLogin.toDate() : new Date(b.lastLogin);
           comparison = aLogin - bLogin;
         }
 
-        return currentSortDirection === 'asc' ? comparison : -comparison;
+        return window.currentSortDirection === 'asc' ? comparison : -comparison;
       });
 
       // Update filtered count
       const filteredCountEl = document.getElementById('filteredCount');
-      if (filtered.length !== allStudents.length) {
-        filteredCountEl.textContent = `Showing ${filtered.length} of ${allStudents.length}`;
+      if (filtered.length !== window.allStudents.length) {
+        filteredCountEl.textContent = `Showing ${filtered.length} of ${window.allStudents.length}`;
       } else {
         filteredCountEl.textContent = '';
       }
 
       // Render table
-      renderStudentsTable(filtered);
+      window.renderStudentsTable(filtered);
     };
 
     window.sortStudentsBy = function(column) {
-      if (currentSortColumn === column) {
+      if (window.currentSortColumn === column) {
         // Toggle direction
-        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+        window.currentSortDirection = window.currentSortDirection === 'asc' ? 'desc' : 'asc';
       } else {
-        currentSortColumn = column;
-        currentSortDirection = 'asc';
+        window.currentSortColumn = column;
+        window.currentSortDirection = 'asc';
       }
 
-      filterAndSortStudents();
+      window.filterAndSortStudents();
     };
 
     // Student Detail Modal Functions
@@ -2184,7 +2218,13 @@
             <button onclick="closeStudentDetailModal()" class="btn btn-primary" style="margin-top: 16px;">Close</button>
           </div>
         `;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+          try {
+            lucide.createIcons();
+          } catch (error) {
+            console.warn('⚠️ Lucide icons failed to re-initialize:', error);
+          }
+        }
       }
     };
 
@@ -2304,7 +2344,13 @@
         </div>
       `;
 
-      lucide.createIcons();
+      if (typeof lucide !== 'undefined' && lucide.createIcons) {
+        try {
+          lucide.createIcons();
+        } catch (error) {
+          console.warn('⚠️ Lucide icons failed to re-initialize:', error);
+        }
+      }
     }
 
     window.closeStudentDetailModal = function() {

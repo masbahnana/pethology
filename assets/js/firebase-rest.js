@@ -41,7 +41,11 @@ export class PethologyFirebaseREST {
   static convertDocument(doc) {
     if (!doc.fields) return null;
 
-    const data = { id: doc.name.split('/').pop() };
+    // Extract ID from document name if available, otherwise use userId field
+    const data = {};
+    if (doc.name) {
+      data.id = doc.name.split('/').pop();
+    }
 
     for (const [key, value] of Object.entries(doc.fields)) {
       if (value.stringValue !== undefined) data[key] = value.stringValue;
@@ -51,6 +55,11 @@ export class PethologyFirebaseREST {
       else if (value.timestampValue !== undefined) data[key] = new Date(value.timestampValue);
       else if (value.arrayValue !== undefined) data[key] = value.arrayValue.values || [];
       else if (value.mapValue !== undefined) data[key] = this.convertDocument({ fields: value.mapValue.fields });
+    }
+
+    // Fallback: use userId as id if no doc.name
+    if (!data.id && data.userId) {
+      data.id = data.userId;
     }
 
     return data;
@@ -90,7 +99,7 @@ export class PethologyFirebaseREST {
     try {
       console.log('📊 Fetching all students progress (REST API)...');
 
-      const response = await this.request('/progress');
+      const response = await this.request('/student_progress');
 
       if (!response.documents) {
         console.log('✅ Loaded progress for 0 students');
@@ -485,6 +494,124 @@ export class PethologyFirebaseREST {
       return true;
     } catch (error) {
       console.error('❌ Error marking announcement as read:', error);
+      throw error;
+    }
+  }
+
+  // Create or update user
+  static async createOrUpdateUser(userData) {
+    try {
+      console.log(`👤 Creating/updating user: ${userData.email}`);
+
+      const userDoc = {
+        fields: {
+          id: { stringValue: userData.id },
+          name: { stringValue: userData.name },
+          email: { stringValue: userData.email },
+          role: { stringValue: userData.role || 'Student' },
+          createdAt: { timestampValue: userData.createdAt || new Date().toISOString() },
+          lastLogin: { timestampValue: userData.lastLogin || new Date().toISOString() }
+        }
+      };
+
+      await this.request(`/users/${userData.id}`, 'PATCH', userDoc);
+      console.log('✅ User created/updated');
+      return userData;
+    } catch (error) {
+      console.error('❌ Error creating user:', error);
+      throw error;
+    }
+  }
+
+  // Update student progress
+  static async updateStudentProgress(userId, progressData) {
+    try {
+      console.log(`📊 Updating progress for: ${userId}`);
+
+      // Convert moduleProgress to Firestore format
+      const moduleProgressFields = {};
+      for (const [moduleName, moduleData] of Object.entries(progressData.moduleProgress || {})) {
+        moduleProgressFields[moduleName] = {
+          mapValue: {
+            fields: {
+              quizzesCompleted: { integerValue: moduleData.quizzesCompleted || 0 },
+              averageScore: { doubleValue: moduleData.averageScore || 0 },
+              totalQuestions: { integerValue: moduleData.totalQuestions || 0 },
+              correctAnswers: { integerValue: moduleData.correctAnswers || 0 }
+            }
+          }
+        };
+      }
+
+      const progressDoc = {
+        fields: {
+          userId: { stringValue: userId },
+          overallStats: {
+            mapValue: {
+              fields: {
+                totalQuizzes: { integerValue: progressData.overallStats.totalQuizzes || 0 },
+                averageScore: { doubleValue: progressData.overallStats.averageScore || 0 },
+                totalQuestions: { integerValue: progressData.overallStats.totalQuestions || 0 },
+                correctAnswers: { integerValue: progressData.overallStats.correctAnswers || 0 },
+                lastActivity: { timestampValue: progressData.overallStats.lastActivity || new Date().toISOString() }
+              }
+            }
+          },
+          moduleProgress: {
+            mapValue: {
+              fields: moduleProgressFields
+            }
+          },
+          achievements: {
+            arrayValue: {
+              values: (progressData.achievements || []).map(a => ({ stringValue: a }))
+            }
+          },
+          createdAt: { timestampValue: progressData.createdAt || new Date().toISOString() },
+          updatedAt: { timestampValue: progressData.updatedAt || new Date().toISOString() }
+        }
+      };
+
+      await this.request(`/student_progress/${userId}`, 'PATCH', progressDoc);
+      console.log('✅ Progress updated');
+      return progressData;
+    } catch (error) {
+      console.error('❌ Error updating progress:', error);
+      throw error;
+    }
+  }
+
+  // Save quiz result
+  static async saveQuizResult(quizResult) {
+    try {
+      console.log(`💾 Saving quiz result: ${quizResult.module}`);
+
+      // Generate unique ID for quiz result
+      const resultId = `${quizResult.userId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      const resultDoc = {
+        fields: {
+          userId: { stringValue: quizResult.userId },
+          quizId: { stringValue: quizResult.quizId || quizResult.module },
+          module: { stringValue: quizResult.module },
+          score: { doubleValue: quizResult.score },
+          totalQuestions: { integerValue: quizResult.totalQuestions },
+          correctAnswers: { integerValue: quizResult.correctAnswers },
+          timeSpent: { integerValue: Math.round(quizResult.timeSpent || 0) },
+          completedAt: { timestampValue: quizResult.completedAt },
+          answers: {
+            arrayValue: {
+              values: (quizResult.answers || []).map(a => ({ stringValue: JSON.stringify(a) }))
+            }
+          }
+        }
+      };
+
+      await this.request(`/quiz_results/${resultId}`, 'PATCH', resultDoc);
+      console.log('✅ Quiz result saved');
+      return quizResult;
+    } catch (error) {
+      console.error('❌ Error saving quiz result:', error);
       throw error;
     }
   }
