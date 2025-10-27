@@ -50,17 +50,22 @@
   - Teacher dashboard now shows 9 students correctly!
 
 ### **⚠️ HIGH PRIORITY (Do This Week):**
-- [ ] **Mobile testing** - Test all pages on phone/tablet - 30min
+- [x] ~~**Mobile testing**~~ ✅ IN PROGRESS!
+  - Fixed index.html script errors (quiz.js 404, null pointer)
+  - Added hamburger menu (☰) to ALL pages for easy navigation
+  - User can now navigate from any page back to home
+  - Pages updated: index, quiz, about, login, blog, contact, content, for-teachers, for-students, quick-start
+  - Still testing: dashboards, quiz functionality, landing pages
 - [ ] **Fix real whitelist issue** - Debug why Mary wasn't recognized - 30min
   - Remove emergency hardcode after fix
   - Get console logs from Mary's login
+  - LOW PRIORITY: Mary will test first
 - [ ] **Setup basic analytics** - Google Analytics for pilot monitoring - 20min
 
 ### **📋 MEDIUM PRIORITY (Nice to Have):**
 - [ ] **FAQ page** - Common questions and answers - 30min
 - [ ] **Known issues doc** - Document bugs/limitations - 15min
 - [ ] **Collect Mary's feedback** - After she tests - ongoing
-- [ ] **Mobile responsive fixes** - Based on testing - 30min
 
 ### **🎯 LOW PRIORITY (Can Wait):**
 - [ ] **Performance optimization** - Minify, lazy load, cache - 45min
