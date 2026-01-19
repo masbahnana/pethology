@@ -13,23 +13,21 @@
 
 ### ⚠️ High Priority
 - [ ] **FAQ page** - Perguntas comuns e respostas - *30min*
-- [ ] **Known issues doc** - Documentar bugs/limitações conhecidos - *15min*
+- [ ] **Collect Mary's feedback** - Após ela testar - *ongoing*
 
 ### 📋 Medium Priority (This Week)
-- [ ] **Collect Mary's feedback** - Após ela testar - *ongoing*
 - [ ] **Performance optimization** - Minify, lazy load, cache - *45min*
 
 ---
 
 ## 🟡 IN PROGRESS
 
-### 🔧 Active Tasks
-- [x] **Teacher login fix** ✅ DONE! (19 Jan 2026)
-  - Whitelist agora é verificada PRIMEIRO
-  - Mary Deegan deve conseguir logar como Teacher
-  - Aguardando teste da professora
+### 🧪 Testing Phase - Aguardando Mary
+- [ ] **Teacher login verification** - Aguardando Mary testar
+  - ✅ Fix implementado (whitelist verificada primeiro)
+  - ⏳ Aguardando teste da professora
+  - Action: Mary precisa fazer logout e login novamente
 
-### 🧪 Testing Phase
 - [ ] **Mobile testing** - Em andamento
   - ✅ Fixed index.html script errors
   - ✅ Hamburger menu em TODAS as páginas
@@ -39,6 +37,13 @@
 ---
 
 ## 🟢 DONE (Recent Completions)
+
+### ✅ January 2026 - Documentation & Bug Fixes
+- [x] **KANBAN.md** - Visual task board criado (19 Jan 2026)
+- [x] **KNOWN_ISSUES.md** - Documentação completa de bugs e limitações (19 Jan 2026)
+- [x] **Teacher login fix** - Whitelist verificada primeiro (19 Jan 2026)
+  - Fix crítico: role determination agora verifica whitelist antes de email patterns
+  - Teachers podem logar corretamente independente do formato do email
 
 ### ✅ v5.5 - Pilot Launch Materials (24 Oct 2025)
 - [x] for-teachers.html - Página explicativa para professores
