@@ -91,20 +91,24 @@
 
         // Determinar role
         const email = user.email || '';
-        let role = email.toLowerCase().startsWith('plc') ? 'Student' :
-                   (email.includes('teacher') || email.includes('staff')) ? 'Teacher' : 'Student';
+        const emailLower = email.toLowerCase();
 
-        // 🔐 TEACHER WHITELIST CHECK: Verify teachers are authorized
-        if (role === 'Teacher') {
-          const isAuthorized = await isEmailWhitelisted(email);
+        console.log('🔍 Determining role for email:', email);
 
-          if (!isAuthorized) {
-            console.log('🚫 Teacher access denied - not in whitelist');
-            window.location.href = `/access-denied.html?email=${encodeURIComponent(email)}&type=teacher`;
-            return;
-          }
+        // 🔐 PRIORITY 1: Check teacher whitelist FIRST
+        const isTeacherWhitelisted = await isEmailWhitelisted(email);
 
-          console.log('✅ Teacher whitelisted - access granted');
+        let role;
+        if (isTeacherWhitelisted) {
+          role = 'Teacher';
+          console.log('✅ Teacher role assigned - email found in whitelist');
+        } else if (emailLower.startsWith('plc')) {
+          role = 'Student';
+          console.log('📚 Student role assigned - email starts with "plc"');
+        } else {
+          // Default to Student if not in whitelist and doesn't start with plc
+          role = 'Student';
+          console.log('📚 Student role assigned - default');
         }
 
         // 🔐 STUDENT WHITELIST CHECK: Verify students are pre-registered
