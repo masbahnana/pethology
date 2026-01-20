@@ -188,6 +188,82 @@
       margin: 0;
     }
 
+    /* Dropdown Menu */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-toggle:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .dropdown-toggle svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 4px;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 180px;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .dropdown.active .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--gray-700);
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .dropdown-item svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 2;
+    }
+
     /* NEW LAYOUT: Dashboard Top Section */
     .dashboard-top-section {
       display: grid;
@@ -1161,14 +1237,23 @@
             <i data-lucide="plus-circle"></i>
             Publish Content
           </a>
-          <button onclick="window.supportModal.open()" class="btn btn-secondary">
-            <i data-lucide="life-buoy"></i>
-            Report Issue
-          </button>
-          <a href="faq.html" class="btn btn-secondary">
-            <i data-lucide="help-circle"></i>
-            Help & FAQ
-          </a>
+          <div class="dropdown" id="help-dropdown">
+            <button class="dropdown-toggle" onclick="toggleHelpDropdown()">
+              <i data-lucide="help-circle"></i>
+              Help
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a href="faq.html" class="dropdown-item">
+                <i data-lucide="book-open"></i>
+                FAQ & Guides
+              </a>
+              <button onclick="window.supportModal.open(); closeHelpDropdown();" class="dropdown-item">
+                <i data-lucide="life-buoy"></i>
+                Report Issue
+              </button>
+            </div>
+          </div>
           <button onclick="logout()" class="btn btn-secondary">
             <i data-lucide="log-out"></i>
             Logout
@@ -1943,6 +2028,25 @@
         window.location.href = 'index.html';
       }
     };
+
+    // Help dropdown functionality
+    window.toggleHelpDropdown = function() {
+      const dropdown = document.getElementById('help-dropdown');
+      dropdown.classList.toggle('active');
+    };
+
+    window.closeHelpDropdown = function() {
+      const dropdown = document.getElementById('help-dropdown');
+      dropdown.classList.remove('active');
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const dropdown = document.getElementById('help-dropdown');
+      if (dropdown && !dropdown.contains(event.target)) {
+        dropdown.classList.remove('active');
+      }
+    });
   </script>
 
   <!-- Announcement Modal -->
