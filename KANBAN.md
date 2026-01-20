@@ -38,7 +38,12 @@
 
 ## 🟢 DONE (Recent Completions)
 
-### ✅ January 2026 - Documentation & Bug Fixes
+### ✅ January 2026 - Features & Bug Fixes
+- [x] **Glossary System** - Complete veterinary terminology management (19 Jan 2026)
+  - Teacher: Add/edit/delete terms, search, filter by category, stats
+  - Student: Browse terms, search, multiple view modes (A-Z, by category)
+  - Integration: Links in both dashboards, Firebase REST API
+  - Categories: Anatomy, Diseases, Procedures, Tools, Medications
 - [x] **KANBAN.md** - Visual task board criado (19 Jan 2026)
 - [x] **KNOWN_ISSUES.md** - Documentação completa de bugs e limitações (19 Jan 2026)
 - [x] **Teacher login fix** - Whitelist verificada primeiro (19 Jan 2026)
