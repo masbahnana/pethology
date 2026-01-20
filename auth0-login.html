@@ -272,26 +272,11 @@
   <!-- Auth0 SDK -->
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 
-  <!-- Firebase SDK for database -->
+  <!-- Firebase REST API -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getFirestore, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-    // FIREBASE CONFIG (para banco de dados)
-    const firebaseConfig = {
-        apiKey: "AIzaSyDYq8xnfL9KPiKYHHvDG1zHDvjd4WAOO3o",
-        authDomain: "pethology-7e9d7.firebaseapp.com",
-        projectId: "pethology-7e9d7",
-        storageBucket: "pethology-7e9d7.firebasestorage.app",
-        messagingSenderId: "485201789422",
-        appId: "1:485201789422:web:309a54ceb82588973f0eff"
-    };
-
-    // Inicializar Firebase (só para dados)
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    window.firebaseDb = db;
-    console.log('✅ Firebase initialized');
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.1';
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+    console.log('✅ Firebase REST API initialized');
 
     // AUTH0 CONFIG
     const auth0Config = {
@@ -430,24 +415,37 @@
       }
     }
 
-    // Salvar usuário no Firebase
+    // Salvar usuário no Firebase usando REST API
     async function saveUserToFirebase(userSession) {
       console.log('🔥 saveUserToFirebase called with:', userSession);
-      
+
       try {
-        console.log('📝 Attempting to save to Firestore...');
-        
-        await setDoc(doc(db, 'users', userSession.id), {
-          ...userSession,
-          lastLogin: new Date(),
-          updatedAt: new Date()
-        }, { merge: true });
-        
-        console.log('✅ User successfully saved to Firebase!');
+        console.log('📝 Attempting to save to Firestore using REST API...');
+
+        const firestoreData = {
+          fields: {
+            id: { stringValue: userSession.id },
+            name: { stringValue: userSession.name },
+            email: { stringValue: userSession.email },
+            role: { stringValue: userSession.role },
+            photo: { stringValue: userSession.photo },
+            loginTime: { stringValue: userSession.loginTime },
+            provider: { stringValue: userSession.provider },
+            lastLogin: { timestampValue: new Date().toISOString() },
+            updatedAt: { timestampValue: new Date().toISOString() }
+          }
+        };
+
+        await PethologyFirebaseREST.request(
+          `/users/${userSession.id}`,
+          'PATCH',
+          firestoreData
+        );
+
+        console.log('✅ User successfully saved to Firebase using REST API!');
       } catch (error) {
         console.error('❌ Error saving user to Firebase:', error);
         console.error('Error details:', error.message);
-        console.error('Error code:', error.code);
       }
     }
 
