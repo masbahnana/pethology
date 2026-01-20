@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glossary Management - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .header-subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #d94848;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 13px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Content Card */
+    .content-card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--gray-100);
+      padding: 24px;
+    }
+
+    /* Search and Filters */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px 10px 40px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 150ms ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--gray-400);
+    }
+
+    select {
+      padding: 8px 32px 8px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23787774' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    th {
+      text-align: left;
+      padding: 12px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--gray-600);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid var(--gray-100);
+      font-size: 14px;
+    }
+
+    tbody tr {
+      transition: background 150ms ease;
+    }
+
+    tbody tr:hover {
+      background: var(--bg-hover);
+    }
+
+    .term-name {
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .term-definition {
+      color: var(--gray-600);
+      max-width: 400px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .category-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--gray-500);
+      transition: color 150ms ease;
+    }
+
+    .close-btn:hover {
+      color: var(--gray-700);
+    }
+
+    .close-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--gray-700);
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 150ms ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-helper {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      color: var(--gray-300);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    /* Loading */
+    .loading-container {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .spinner {
+      border: 3px solid var(--gray-100);
+      border-top: 3px solid var(--blue-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Stats */
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      flex: 1;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-top">
+        <div class="header-title">
+          <h1>Glossary Management</h1>
+        </div>
+        <div class="header-actions">
+          <a href="teacher-dashboard.html" class="btn btn-secondary">
+            <i data-lucide="arrow-left"></i>
+            Back to Dashboard
+          </a>
+          <button class="btn btn-primary" id="add-term-btn">
+            <i data-lucide="plus"></i>
+            Add Term
+          </button>
+        </div>
+      </div>
+      <p class="header-subtitle">Manage veterinary terminology for your students</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row" style="display: none;">
+      <div class="stat-card">
+        <div class="stat-label">Total Terms</div>
+        <div class="stat-value" id="total-terms">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Categories</div>
+        <div class="stat-value" id="total-categories">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Recently Added</div>
+        <div class="stat-value" id="recent-terms">0</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-card">
+      <!-- Controls -->
+      <div class="controls-bar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search terms..."
+            autocomplete="off"
+          />
+        </div>
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+          <option value="anatomy">Anatomy</option>
+          <option value="diseases">Diseases</option>
+          <option value="procedures">Procedures</option>
+          <option value="tools">Tools & Equipment</option>
+          <option value="medications">Medications</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-container" id="loading-container">
+        <div class="spinner"></div>
+        <p>Loading glossary terms...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i data-lucide="book-open"></i>
+        <h3>No Terms Yet</h3>
+        <p>Start building your veterinary glossary by adding terms.</p>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container" id="table-container" style="display: none;">
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Definition</th>
+              <th>Category</th>
+              <th>Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="terms-tbody">
+            <!-- Terms will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-overlay" id="term-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add Term</h2>
+        <button class="close-btn" onclick="closeModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="term-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="term-input">Term *</label>
+            <input
+              type="text"
+              class="form-input"
+              id="term-input"
+              placeholder="e.g., Auscultation"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="definition-input">Definition *</label>
+            <textarea
+              class="form-textarea"
+              id="definition-input"
+              placeholder="Enter the definition..."
+              required
+            ></textarea>
+            <div class="form-helper">Provide a clear, concise definition</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="category-input">Category *</label>
+            <select class="form-select" id="category-input" required>
+              <option value="">Select a category</option>
+              <option value="anatomy">Anatomy</option>
+              <option value="diseases">Diseases</option>
+              <option value="procedures">Procedures</option>
+              <option value="tools">Tools & Equipment</option>
+              <option value="medications">Medications</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="save"></i>
+            Save Term
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { Auth0Service } from './assets/js/auth0-service.js';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    let allTerms = [];
+    let filteredTerms = [];
+    let editingTermId = null;
+    let currentUser = null;
+
+    // Initialize
+    async function init() {
+      // Check auth and require teacher role
+      const user = await Auth0Service.requireAuth();
+      if (!user) return;
+
+      if (user.role !== 'Teacher') {
+        alert('Access denied. Teacher privileges required.');
+        window.location.href = '/student-dashboard.html';
+        return;
+      }
+
+      currentUser = user;
+      await loadGlossary();
+      lucide.createIcons();
+    }
+
+    // Load glossary
+    async function loadGlossary() {
+      try {
+        const response = await PethologyFirebaseREST.request('/glossary');
+
+        if (!response.documents || response.documents.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        allTerms = response.documents
+          .map(doc => PethologyFirebaseREST.convertDocument(doc))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        filteredTerms = [...allTerms];
+        renderTable();
+        updateStats();
+        document.getElementById('stats-row').style.display = 'flex';
+
+      } catch (error) {
+        console.error('Error loading glossary:', error);
+        showEmptyState();
+      } finally {
+        document.getElementById('loading-container').style.display = 'none';
+      }
+    }
+
+    // Render table
+    function renderTable() {
+      const tbody = document.getElementById('terms-tbody');
+
+      if (filteredTerms.length === 0) {
+        document.getElementById('table-container').style.display = 'none';
+        document.getElementById('empty-state').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('table-container').style.display = 'block';
+
+      tbody.innerHTML = filteredTerms.map(term => `
+        <tr>
+          <td class="term-name">${term.term}</td>
+          <td class="term-definition">${term.definition}</td>
+          <td><span class="category-badge">${term.category || 'Other'}</span></td>
+          <td>${formatDate(term.createdAt)}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn-sm btn-secondary" onclick="window.editTerm('${term._id}')">
+                <i data-lucide="edit-2"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" onclick="window.deleteTerm('${term._id}')">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // Show empty state
+    function showEmptyState() {
+      document.getElementById('empty-state').style.display = 'block';
+      document.getElementById('table-container').style.display = 'none';
+    }
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('total-terms').textContent = allTerms.length;
+
+      const categories = new Set(allTerms.map(t => t.category));
+      document.getElementById('total-categories').textContent = categories.size;
+
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const recentCount = allTerms.filter(t => new Date(t.createdAt) > weekAgo).length;
+      document.getElementById('recent-terms').textContent = recentCount;
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // Search and filter
+    function applyFilters() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const category = document.getElementById('category-filter').value;
+
+      filteredTerms = allTerms.filter(term => {
+        const matchesSearch = term.term.toLowerCase().includes(searchTerm) ||
+                            term.definition.toLowerCase().includes(searchTerm);
+        const matchesCategory = category === 'all' ||
+                               (term.category || 'other').toLowerCase() === category;
+
+        return matchesSearch && matchesCategory;
+      });
+
+      renderTable();
+    }
+
+    // Open modal
+    window.openAddModal = function() {
+      editingTermId = null;
+      document.getElementById('modal-title').textContent = 'Add Term';
+      document.getElementById('term-form').reset();
+      document.getElementById('term-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    // Edit term
+    window.editTerm = function(termId) {
+      const term = allTerms.find(t => t._id === termId);
+      if (!term) return;
+
+      editingTermId = termId;
+      document.getElementById('modal-title').textContent = 'Edit Term';
+      document.getElementById('term-input').value = term.term;
+      document.getElementById('definition-input').value = term.definition;
+      document.getElementById('category-input').value = term.category || 'other';
+      document.getElementById('term-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    // Close modal
+    window.closeModal = function() {
+      document.getElementById('term-modal').classList.remove('active');
+      document.getElementById('term-form').reset();
+      editingTermId = null;
+    };
+
+    // Delete term
+    window.deleteTerm = async function(termId) {
+      if (!confirm('Are you sure you want to delete this term?')) return;
+
+      try {
+        await PethologyFirebaseREST.request(`/glossary/${termId}`, 'DELETE');
+        await loadGlossary();
+        alert('Term deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting term:', error);
+        alert('Error deleting term. Please try again.');
+      }
+    };
+
+    // Save term
+    document.getElementById('term-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const termData = {
+        term: document.getElementById('term-input').value.trim(),
+        definition: document.getElementById('definition-input').value.trim(),
+        category: document.getElementById('category-input').value,
+        createdBy: currentUser.id,
+        createdByName: currentUser.name,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        const firestoreData = {
+          fields: {
+            term: { stringValue: termData.term },
+            definition: { stringValue: termData.definition },
+            category: { stringValue: termData.category },
+            createdBy: { stringValue: termData.createdBy },
+            createdByName: { stringValue: termData.createdByName },
+            createdAt: { timestampValue: termData.createdAt }
+          }
+        };
+
+        if (editingTermId) {
+          // Update existing term
+          await PethologyFirebaseREST.request(
+            `/glossary/${editingTermId}`,
+            'PATCH',
+            firestoreData
+          );
+          alert('Term updated successfully!');
+        } else {
+          // Create new term
+          await PethologyFirebaseREST.request(
+            '/glossary',
+            'POST',
+            firestoreData
+          );
+          alert('Term added successfully!');
+        }
+
+        closeModal();
+        await loadGlossary();
+
+      } catch (error) {
+        console.error('Error saving term:', error);
+        alert('Error saving term. Please try again.');
+      }
+    });
+
+    // Event listeners
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+    document.getElementById('category-filter').addEventListener('change', applyFilters);
+    document.getElementById('add-term-btn').addEventListener('click', openAddModal);
+
+    // Click outside modal to close
+    document.getElementById('term-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'term-modal') {
+        closeModal();
+      }
+    });
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>

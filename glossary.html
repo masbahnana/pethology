@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Glossary - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System */
+    :root {
+      /* Neutrals */
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      /* Brand */
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      /* Semantic */
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      /* Backgrounds */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+    }
+
+    /* Layout */
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--gray-100);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .user-section {
+      padding: 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--gray-100);
+      cursor: pointer;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--blue-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .nav-section {
+      padding: 12px 8px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      text-decoration: none;
+      color: var(--gray-700);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .nav-item.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+    }
+
+    .nav-item.active svg {
+      color: var(--blue-primary);
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 12px 0;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 8px 12px 4px;
+      margin-top: 4px;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 48px;
+      overflow-y: auto;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 16px;
+      color: var(--gray-500);
+    }
+
+    /* Search and Filters */
+    .controls-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 12px 10px 40px;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 150ms ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--gray-400);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--bg-hover);
+    }
+
+    .filter-btn.active {
+      background: var(--blue-primary);
+      color: white;
+      border-color: var(--blue-primary);
+    }
+
+    select.filter-btn {
+      padding-right: 32px;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23787774' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    /* Stats */
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      padding: 16px 20px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    /* Glossary Grid */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .glossary-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 150ms ease;
+    }
+
+    .glossary-card:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .term-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .term-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .term-category {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .term-definition {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--gray-600);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      color: var(--gray-300);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    /* Alphabetical Sections */
+    .alphabet-section {
+      margin-bottom: 32px;
+    }
+
+    .alphabet-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--blue-primary);
+      display: inline-block;
+    }
+
+    /* Loading State */
+    .loading-container {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .spinner {
+      border: 3px solid var(--gray-100);
+      border-top: 3px solid var(--blue-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        padding: 24px 16px;
+      }
+
+      .glossary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="logo">
+          <img src="assets/img/pethology-logo.png" alt="Pethology Logo" />
+        </a>
+      </div>
+
+      <div class="user-section" id="user-section">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Loading...</div>
+          <div class="user-role" id="user-role">Student</div>
+        </div>
+        <i data-lucide="chevron-down"></i>
+      </div>
+
+      <div class="nav-section">
+        <a href="student-dashboard.html" class="nav-item">
+          <i data-lucide="home"></i>
+          Dashboard
+        </a>
+
+        <a href="quiz.html" class="nav-item">
+          <i data-lucide="book-open"></i>
+          Start Quiz
+        </a>
+
+        <a href="achievements.html" class="nav-item">
+          <i data-lucide="trophy"></i>
+          Achievements
+        </a>
+
+        <a href="my-progress.html" class="nav-item">
+          <i data-lucide="bar-chart-2"></i>
+          My Progress
+        </a>
+
+        <div class="nav-divider"></div>
+        <div class="nav-group-title">Learning</div>
+
+        <a href="content.html" class="nav-item">
+          <i data-lucide="file-text"></i>
+          Content
+        </a>
+
+        <a href="glossary.html" class="nav-item active">
+          <i data-lucide="book-open"></i>
+          Glossary
+        </a>
+
+        <div class="nav-divider"></div>
+
+        <a href="index.html" class="nav-item">
+          <i data-lucide="arrow-left"></i>
+          Back to Home
+        </a>
+
+        <a href="#" class="nav-item" id="logout-btn">
+          <i data-lucide="log-out"></i>
+          Logout
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1 class="page-title">Veterinary Glossary</h1>
+        <p class="page-subtitle">Learn and review veterinary terminology</p>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="controls-bar">
+        <div class="search-box">
+          <i data-lucide="search"></i>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search terms..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="filter-group">
+          <select id="category-filter" class="filter-btn">
+            <option value="all">All Categories</option>
+            <option value="anatomy">Anatomy</option>
+            <option value="diseases">Diseases</option>
+            <option value="procedures">Procedures</option>
+            <option value="tools">Tools & Equipment</option>
+            <option value="medications">Medications</option>
+            <option value="other">Other</option>
+          </select>
+
+          <select id="sort-filter" class="filter-btn">
+            <option value="alpha">A-Z</option>
+            <option value="recent">Recently Added</option>
+            <option value="category">By Category</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-bar" id="stats-bar" style="display: none;">
+        <div class="stat-item">
+          <span class="stat-label">Total Terms:</span>
+          <span class="stat-value" id="total-terms">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Showing:</span>
+          <span class="stat-value" id="showing-terms">0</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-container" id="loading-container">
+        <div class="spinner"></div>
+        <p>Loading glossary terms...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i data-lucide="book-open"></i>
+        <h3>No terms found</h3>
+        <p id="empty-message">No glossary terms match your search.</p>
+      </div>
+
+      <!-- Glossary Content -->
+      <div id="glossary-content"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { Auth0Service } from './assets/js/auth0-service.js';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    let allTerms = [];
+    let filteredTerms = [];
+
+    // Initialize
+    async function init() {
+      // Check auth
+      const user = await Auth0Service.requireAuth();
+      if (!user) return;
+
+      // Update UI with user info
+      document.getElementById('user-name').textContent = Auth0Service.formatDisplayName(user.name);
+      document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+
+      // Load glossary
+      await loadGlossary();
+
+      // Initialize Lucide icons
+      lucide.createIcons();
+    }
+
+    // Load glossary from Firebase
+    async function loadGlossary() {
+      try {
+        const response = await PethologyFirebaseREST.request('/glossary');
+
+        if (!response.documents || response.documents.length === 0) {
+          showEmptyState('No glossary terms yet. Check back soon!');
+          return;
+        }
+
+        allTerms = response.documents
+          .map(doc => PethologyFirebaseREST.convertDocument(doc))
+          .sort((a, b) => a.term.localeCompare(b.term));
+
+        filteredTerms = [...allTerms];
+        renderGlossary();
+        updateStats();
+        document.getElementById('stats-bar').style.display = 'flex';
+
+      } catch (error) {
+        console.error('Error loading glossary:', error);
+        showEmptyState('Error loading glossary terms. Please try again.');
+      } finally {
+        document.getElementById('loading-container').style.display = 'none';
+      }
+    }
+
+    // Render glossary
+    function renderGlossary() {
+      const container = document.getElementById('glossary-content');
+      const sortBy = document.getElementById('sort-filter').value;
+
+      if (filteredTerms.length === 0) {
+        showEmptyState('No terms match your search.');
+        container.innerHTML = '';
+        return;
+      }
+
+      document.getElementById('empty-state').style.display = 'none';
+
+      if (sortBy === 'alpha') {
+        renderAlphabetical(container);
+      } else if (sortBy === 'category') {
+        renderByCategory(container);
+      } else {
+        renderGrid(container);
+      }
+
+      lucide.createIcons();
+    }
+
+    // Render alphabetical sections
+    function renderAlphabetical(container) {
+      const grouped = {};
+      filteredTerms.forEach(term => {
+        const letter = term.term.charAt(0).toUpperCase();
+        if (!grouped[letter]) grouped[letter] = [];
+        grouped[letter].push(term);
+      });
+
+      let html = '';
+      Object.keys(grouped).sort().forEach(letter => {
+        html += `
+          <div class="alphabet-section">
+            <div class="alphabet-title">${letter}</div>
+            <div class="glossary-grid">
+              ${grouped[letter].map(term => createTermCard(term)).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Render by category
+    function renderByCategory(container) {
+      const grouped = {};
+      filteredTerms.forEach(term => {
+        const cat = term.category || 'Other';
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(term);
+      });
+
+      let html = '';
+      Object.keys(grouped).sort().forEach(category => {
+        html += `
+          <div class="alphabet-section">
+            <div class="alphabet-title">${category}</div>
+            <div class="glossary-grid">
+              ${grouped[category].map(term => createTermCard(term)).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    // Render grid
+    function renderGrid(container) {
+      container.innerHTML = `
+        <div class="glossary-grid">
+          ${filteredTerms.map(term => createTermCard(term)).join('')}
+        </div>
+      `;
+    }
+
+    // Create term card HTML
+    function createTermCard(term) {
+      return `
+        <div class="glossary-card">
+          <div class="term-header">
+            <div>
+              <div class="term-name">${term.term}</div>
+            </div>
+            <span class="term-category">${term.category || 'Other'}</span>
+          </div>
+          <p class="term-definition">${term.definition}</p>
+        </div>
+      `;
+    }
+
+    // Show empty state
+    function showEmptyState(message) {
+      document.getElementById('empty-message').textContent = message;
+      document.getElementById('empty-state').style.display = 'block';
+    }
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('total-terms').textContent = allTerms.length;
+      document.getElementById('showing-terms').textContent = filteredTerms.length;
+    }
+
+    // Search and filter
+    function applyFilters() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const category = document.getElementById('category-filter').value;
+
+      filteredTerms = allTerms.filter(term => {
+        const matchesSearch = term.term.toLowerCase().includes(searchTerm) ||
+                            term.definition.toLowerCase().includes(searchTerm);
+        const matchesCategory = category === 'all' ||
+                               (term.category || 'other').toLowerCase() === category;
+
+        return matchesSearch && matchesCategory;
+      });
+
+      renderGlossary();
+      updateStats();
+    }
+
+    // Event listeners
+    document.getElementById('search-input').addEventListener('input', applyFilters);
+    document.getElementById('category-filter').addEventListener('change', applyFilters);
+    document.getElementById('sort-filter').addEventListener('change', () => renderGlossary());
+
+    document.getElementById('logout-btn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await Auth0Service.logout();
+    });
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
