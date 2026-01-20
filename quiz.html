@@ -276,6 +276,21 @@
         <!-- Quiz options will be inserted here -->
       </div>
 
+      <!-- Exam Mode Toggle -->
+      <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+        <label style="display: flex; align-items: start; gap: 12px; cursor: pointer;">
+          <input type="checkbox" id="examModeCheckbox" onchange="toggleExamMode()" style="margin-top: 2px; width: 20px; height: 20px; cursor: pointer;">
+          <div style="flex: 1;">
+            <div style="font-weight: 600; font-size: 15px; color: #92400e; margin-bottom: 4px;">
+              🎯 Exam Mode
+            </div>
+            <div style="font-size: 13px; color: #78350f; line-height: 1.5;">
+              Strict timer • No hints • Fullscreen • Auto-submit when time runs out
+            </div>
+          </div>
+        </label>
+      </div>
+
       <div style="display: flex; gap: 12px; justify-content: flex-end;">
         <button onclick="closeQuizModal()" style="padding: 10px 20px; border: 1px solid #d1d5db; background: white; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; color: #374151;">
           Cancel

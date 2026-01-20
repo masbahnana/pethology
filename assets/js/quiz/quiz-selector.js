@@ -6,6 +6,7 @@
 import { PethologyFirebaseREST } from '../firebase-rest.js';
 
 let selectedQuizData = null;
+let examModeEnabled = false;
 
 /**
  * Check if module has multiple quizzes (standard + custom)
@@ -69,7 +70,14 @@ export function showQuizSelectionModal(quizzes, onSelect) {
   const startBtn = document.getElementById('startSelectedQuiz');
 
   selectedQuizData = null;
+  examModeEnabled = false;
   startBtn.disabled = true;
+
+  // Reset exam mode checkbox if exists
+  const examCheckbox = document.getElementById('examModeCheckbox');
+  if (examCheckbox) {
+    examCheckbox.checked = false;
+  }
 
   // Render quiz options
   optionsContainer.innerHTML = quizzes.map((quiz, index) => {
@@ -129,9 +137,17 @@ export function showQuizSelectionModal(quizzes, onSelect) {
     });
   };
 
+  // Setup exam mode toggle
+  window.toggleExamMode = function() {
+    const checkbox = document.getElementById('examModeCheckbox');
+    examModeEnabled = checkbox.checked;
+  };
+
   // Setup start handler
   window.startSelectedQuiz = function() {
     if (selectedQuizData) {
+      // Add exam mode flag to quiz data
+      selectedQuizData.examMode = examModeEnabled;
       closeQuizModal();
       onSelect(selectedQuizData);
     }
