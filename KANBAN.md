@@ -124,18 +124,63 @@
 
 #### Teacher Tools
 - [ ] **Microsoft Forms Import** - Import quizzes from MS Forms - *4-6h*
-- [ ] **Deadlines System** - Set deadlines for custom quizzes - *2-3h*
 - [ ] **Class Management P2/P3** - Export grades, remove students - *4-6h*
 
 #### Support & Help
 - [ ] **Support Ticket System** - Complete support system with admin dashboard - *2-3h*
-  - User-facing: "Support" button in both dashboards (student + teacher)
-  - Support modal: subject dropdown, description textarea, screenshot upload
-  - Firebase collection: /support_tickets with full metadata
-  - Admin dashboard: /admin-support.html (whitelist protected)
-  - Admin features: View all tickets, filter by status, add notes, change priority
-  - Ticket fields: id, userEmail, userName, userRole, subject, description, screenshot, status (open/in-progress/resolved), priority (low/medium/high/critical), pageUrl, browser, createdAt, resolvedAt
-  - Auto-includes: user info, browser details, current page URL for debugging
+
+  **User-Facing Components:**
+  - "Support" button in both dashboards (student + teacher sidebar/footer)
+  - Support modal with reporting guidelines at top:
+    ```
+    📋 How to Report an Issue
+    Please provide:
+    ✓ What you were trying to do
+    ✓ What happened instead
+    ✓ Steps to reproduce (1, 2, 3...)
+    ✓ Browser: Chrome, Safari, Firefox, Edge
+    ✓ Device: Desktop, Tablet, Mobile
+    ✓ Page where it happened (auto-filled)
+    ```
+  - Form fields:
+    - Subject dropdown: Login Issue, Quiz Problem, Display Issue, Feature Request, Other
+    - Description textarea (required, min 20 chars)
+    - Screenshot upload (optional, image files only)
+    - Browser input (text, auto-suggested)
+    - Device dropdown: Desktop, Tablet, Mobile
+
+  **Auto-Captured Metadata:**
+  - Current page URL
+  - User email, name, role
+  - Browser/OS details (navigator.userAgent)
+  - Screen resolution
+  - Timestamp
+
+  **Firebase Collection: /support_tickets**
+  - Fields: id, userEmail, userName, userRole, subject, description, screenshot (URL),
+    status (open/in-progress/resolved), priority (low/medium/high/critical),
+    pageUrl, browser, device, userAgent, screenSize, createdAt, resolvedAt,
+    adminNotes (array)
+
+  **Admin Dashboard: /admin-support.html**
+  - Whitelist protected (same system as admin-whitelist.html)
+  - Header: Stats (X open, Y in progress, Z resolved this week)
+  - Filters: Status, Priority, User Role, Date Range
+  - Search: By email, subject, or description
+  - Ticket list: Card view with key info
+  - Ticket detail modal:
+    - Full description + screenshot preview
+    - All metadata displayed
+    - Change status dropdown (open → in-progress → resolved)
+    - Change priority dropdown (low → medium → high → critical)
+    - Admin notes section (add internal notes, timestamps)
+    - Mark as resolved button (sets resolvedAt timestamp)
+
+  **Technical Implementation:**
+  - Reusable support-modal.js component
+  - Image upload to Firebase Storage (optional)
+  - Toast notifications on submit
+  - Email notification to admin (optional future enhancement)
 
 #### Student Experience
 - [ ] **Smart Review System** - AI-powered weak topic review - *3-4h*
