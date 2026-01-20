@@ -39,6 +39,12 @@
 ## 🟢 DONE (Recent Completions)
 
 ### ✅ January 2026 - Features & Bug Fixes
+- [x] **Deadlines System** - Complete deadline tracking for custom quizzes (20 Jan 2026)
+  - Teacher: Add optional deadline when creating custom quiz
+  - Student: See deadline with countdown in quiz selection modal
+  - Visual indicators: "Due in X days" or "X days overdue"
+  - Overdue badge: Red badge for quizzes past deadline
+  - Firebase integration: Deadline stored as timestampValue
 - [x] **Skills Demos System** - Complete practical demonstration checklist system (20 Jan 2026)
   - Teacher: Create/edit/delete demos, save as draft or publish, view student progress
   - Student: View published demos, mark tasks complete, progress tracking, mark ready for assessment
@@ -119,9 +125,17 @@
 #### Teacher Tools
 - [ ] **Microsoft Forms Import** - Import quizzes from MS Forms - *4-6h*
 - [ ] **Deadlines System** - Set deadlines for custom quizzes - *2-3h*
-- [ ] **Glossary System** - Veterinary terms with definitions - *2-3h*
-- [ ] **Skills Demos Checklist** - Practical exam preparation - *2-3h*
 - [ ] **Class Management P2/P3** - Export grades, remove students - *4-6h*
+
+#### Support & Help
+- [ ] **Support Ticket System** - Complete support system with admin dashboard - *2-3h*
+  - User-facing: "Support" button in both dashboards (student + teacher)
+  - Support modal: subject dropdown, description textarea, screenshot upload
+  - Firebase collection: /support_tickets with full metadata
+  - Admin dashboard: /admin-support.html (whitelist protected)
+  - Admin features: View all tickets, filter by status, add notes, change priority
+  - Ticket fields: id, userEmail, userName, userRole, subject, description, screenshot, status (open/in-progress/resolved), priority (low/medium/high/critical), pageUrl, browser, createdAt, resolvedAt
+  - Auto-includes: user info, browser details, current page URL for debugging
 
 #### Student Experience
 - [ ] **Smart Review System** - AI-powered weak topic review - *3-4h*
