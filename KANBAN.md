@@ -1,6 +1,6 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 19 Janeiro 2026
+**Última atualização:** 20 Janeiro 2026
 **Versão Atual:** v5.5
 **Status:** PILOT LAUNCH + Bug Fixes
 
@@ -232,24 +232,20 @@ Próximos passos:
 
 ## 🐛 RESOLVED BUGS (20 Jan 2026)
 
+### ✅ Chrome Login CORS Issue (CRITICAL)
+**Problem:** Chrome users couldn't log in - page hung after Auth0 redirect, never reached dashboard
+**Cause:** auth0-login.html used Firebase SDK (setDoc) which triggers WebChannel CORS in Chrome
+**Root Cause:** Chrome blocks WebChannel CORS when credentials mode is 'include'; Safari more lenient
+**Fix:** Converted auth0-login.html to use Firebase REST API instead of SDK
+**Files Modified:** auth0-login.html - replaced Firebase SDK imports with PethologyFirebaseREST
+**Testing:** ✅ Verified working in Chrome, Safari, and Firefox
+**Status:** ✅ FIXED - commit d04d17d
+
 ### ✅ John Doe Name Issue
 **Problem:** Students logging in with PLC accounts saw "John Doe" instead of their real name
 **Cause:** Auth0 user.name returning placeholder; whitelist name not being used
 **Fix:** Modified auth0-callback.html to prioritize studentData.name from whitelist
 **Status:** ✅ FIXED - commit 4ad10df
-
-### 📝 Firestore CORS Error (Legacy Pages)
-**Problem:** CORS error in Chrome: "Fetch API cannot load firestore.googleapis.com/.../Write/channel"
-**Cause:** Legacy pages (content.html, teacher-content-manager.html, etc.) still use Firebase SDK with WebChannel
-**Solution:** These pages already have `experimentalForceLongPolling: true` configured
-**Impact:** Low - these are legacy/admin pages not used by students
-**Status:** ⚠️ Known issue - acceptable for now (SDK configured correctly)
-
-### ℹ️ 404 Errors for New Users
-**Problem:** `GET /progress/auth0|{userId}` returns 404 for new users
-**Cause:** Expected behavior - progress document doesn't exist yet for new students
-**Impact:** None - system creates default progress on first quiz attempt
-**Status:** ✅ Not a bug - normal behavior
 
 ---
 
