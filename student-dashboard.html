@@ -2017,6 +2017,12 @@
         if (el) el.textContent = displayName;
       });
 
+      // Atualizar título "Welcome back"
+      const pageTitleEl = document.querySelector('.page-title');
+      if (pageTitleEl) {
+        pageTitleEl.textContent = `Welcome back, ${displayName}! 👋`;
+      }
+
       // Atualizar foto
       const avatarElements = document.querySelectorAll('.student-avatar, #studentAvatar, #sidebarAvatar');
       avatarElements.forEach(el => {
