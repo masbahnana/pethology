@@ -308,5 +308,13 @@
 
   <script src="assets/js/mobile-nav.js"></script>
   <script type="module" src="/assets/js/quiz/quiz.js"></script>
+
+  <script>
+    // Expose toggleExamMode globally for inline HTML event handler
+    // This will be overridden by quiz-selector.js when it loads
+    window.toggleExamMode = function() {
+      console.log('Exam mode toggled (will be handled by quiz-selector when quiz starts)');
+    };
+  </script>
 </body>
 </html>
