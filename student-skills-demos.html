@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skills Demonstrations - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System */
+    :root {
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #0d6960;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 13px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .content-card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--gray-100);
+      padding: 24px;
+    }
+
+    .demos-grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .demo-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 24px;
+      transition: all 150ms ease;
+    }
+
+    .demo-card:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .demo-header {
+      margin-bottom: 16px;
+    }
+
+    .demo-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .demo-description {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .progress-section {
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .progress-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+
+    .progress-percentage {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--blue-primary);
+    }
+
+    .progress-bar-container {
+      background: var(--gray-100);
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background: var(--blue-primary);
+      height: 100%;
+      transition: width 300ms ease;
+      border-radius: 4px;
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-secondary);
+      border-radius: 6px;
+      transition: background 150ms ease;
+    }
+
+    .checklist-item:hover {
+      background: var(--gray-100);
+    }
+
+    .checklist-item.completed {
+      opacity: 0.6;
+    }
+
+    .checkbox-wrapper {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .custom-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--gray-300);
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 150ms ease;
+    }
+
+    .custom-checkbox:hover {
+      border-color: var(--blue-primary);
+    }
+
+    .custom-checkbox.checked {
+      background: var(--blue-primary);
+      border-color: var(--blue-primary);
+    }
+
+    .custom-checkbox.checked svg {
+      width: 14px;
+      height: 14px;
+      color: white;
+    }
+
+    .item-content {
+      flex: 1;
+    }
+
+    .item-task {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .checklist-item.completed .item-task {
+      text-decoration: line-through;
+    }
+
+    .item-criteria {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .assessment-section {
+      background: var(--blue-light);
+      border: 1px solid var(--blue-primary);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .assessment-message {
+      font-size: 14px;
+      color: var(--gray-700);
+      margin-bottom: 12px;
+    }
+
+    .assessment-message.ready {
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      color: var(--gray-300);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .spinner {
+      border: 3px solid var(--gray-100);
+      border-top: 3px solid var(--blue-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .demo-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .demo-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-not-started {
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+
+    .status-in-progress {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .status-ready {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .demo-card {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="header">
+      <div class="header-top">
+        <div class="header-title">
+          <h1>Skills Demonstrations</h1>
+        </div>
+        <div class="header-actions">
+          <a href="student-dashboard.html" class="btn btn-secondary">
+            <i data-lucide="arrow-left"></i>
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+      <p class="header-subtitle">Track your progress on practical demonstration checklists</p>
+    </div>
+
+    <div class="content-card">
+      <div class="loading-container" id="loading-container">
+        <div class="spinner"></div>
+        <p>Loading skills demos...</p>
+      </div>
+
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i data-lucide="clipboard-check"></i>
+        <h3>No Skills Demos Available</h3>
+        <p>Your teacher hasn't published any demonstration checklists yet. Check back soon!</p>
+      </div>
+
+      <div class="demos-grid" id="demos-grid" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { Auth0Service } from './assets/js/auth0-service.js';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    let allDemos = [];
+    let studentProgress = {};
+    let currentUser = null;
+
+    async function init() {
+      const user = await Auth0Service.requireAuth();
+      if (!user) return;
+
+      if (user.role !== 'Student') {
+        alert('Access denied. Student privileges required.');
+        window.location.href = '/teacher-dashboard.html';
+        return;
+      }
+
+      currentUser = user;
+      await loadDemos();
+      await loadStudentProgress();
+      renderDemos();
+      lucide.createIcons();
+    }
+
+    async function loadDemos() {
+      try {
+        const response = await PethologyFirebaseREST.request('/skills_demos');
+
+        if (!response.documents || response.documents.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        // Only show published demos
+        allDemos = response.documents
+          .map(doc => PethologyFirebaseREST.convertDocument(doc))
+          .filter(demo => demo.status === 'published')
+          .sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
+
+      } catch (error) {
+        console.error('Error loading demos:', error);
+        showEmptyState();
+      }
+    }
+
+    async function loadStudentProgress() {
+      try {
+        // Try to load existing progress
+        const response = await PethologyFirebaseREST.request(
+          `/student_skills_progress?studentId=${currentUser.id}`
+        );
+
+        if (response.documents && response.documents.length > 0) {
+          const doc = PethologyFirebaseREST.convertDocument(response.documents[0]);
+          studentProgress = doc.progress || {};
+        }
+      } catch (error) {
+        console.error('Error loading progress:', error);
+        studentProgress = {};
+      }
+    }
+
+    async function saveProgress() {
+      try {
+        const progressData = {
+          studentId: currentUser.id,
+          studentEmail: currentUser.email,
+          studentName: currentUser.name,
+          progress: studentProgress,
+          lastUpdated: new Date().toISOString()
+        };
+
+        const firestoreData = {
+          fields: {
+            studentId: { stringValue: progressData.studentId },
+            studentEmail: { stringValue: progressData.studentEmail },
+            studentName: { stringValue: progressData.studentName },
+            progress: { mapValue: { fields: convertProgressToFirestore(studentProgress) }},
+            lastUpdated: { timestampValue: progressData.lastUpdated }
+          }
+        };
+
+        // Check if document exists
+        const existing = await PethologyFirebaseREST.request(
+          `/student_skills_progress?studentId=${currentUser.id}`
+        );
+
+        if (existing.documents && existing.documents.length > 0) {
+          const docId = existing.documents[0].name.split('/').pop();
+          await PethologyFirebaseREST.request(
+            `/student_skills_progress/${docId}`,
+            'PATCH',
+            firestoreData
+          );
+        } else {
+          await PethologyFirebaseREST.request(
+            '/student_skills_progress',
+            'POST',
+            firestoreData
+          );
+        }
+      } catch (error) {
+        console.error('Error saving progress:', error);
+        alert('Error saving progress. Please try again.');
+      }
+    }
+
+    function convertProgressToFirestore(progress) {
+      const fields = {};
+      for (const [demoId, demoProgress] of Object.entries(progress)) {
+        fields[demoId] = {
+          mapValue: {
+            fields: {
+              completedItems: { arrayValue: { values: demoProgress.completedItems.map(id => ({ stringValue: id })) }},
+              readyForAssessment: { booleanValue: demoProgress.readyForAssessment || false },
+              markedReadyAt: { timestampValue: demoProgress.markedReadyAt || new Date().toISOString() }
+            }
+          }
+        };
+      }
+      return fields;
+    }
+
+    function renderDemos() {
+      const grid = document.getElementById('demos-grid');
+
+      if (allDemos.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      document.getElementById('loading-container').style.display = 'none';
+      document.getElementById('empty-state').style.display = 'none';
+      grid.style.display = 'grid';
+
+      grid.innerHTML = allDemos.map(demo => {
+        const demoProgress = studentProgress[demo._id] || {
+          completedItems: [],
+          readyForAssessment: false
+        };
+
+        const totalItems = demo.items?.length || 0;
+        const completedCount = demoProgress.completedItems.length;
+        const percentage = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
+
+        let statusBadge = '';
+        if (demoProgress.readyForAssessment) {
+          statusBadge = '<span class="status-badge status-ready"><i data-lucide="check-circle"></i> Ready for Assessment</span>';
+        } else if (completedCount > 0) {
+          statusBadge = '<span class="status-badge status-in-progress"><i data-lucide="clock"></i> In Progress</span>';
+        } else {
+          statusBadge = '<span class="status-badge status-not-started"><i data-lucide="circle"></i> Not Started</span>';
+        }
+
+        return `
+          <div class="demo-card">
+            <div class="demo-header">
+              <div class="demo-title">${demo.title}</div>
+              ${statusBadge}
+            </div>
+            <p class="demo-description">${demo.description}</p>
+
+            <div class="demo-meta">
+              <span>
+                <i data-lucide="list-checks"></i>
+                ${totalItems} tasks
+              </span>
+              <span>
+                <i data-lucide="calendar"></i>
+                Published ${formatDate(demo.publishedAt)}
+              </span>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-header">
+                <span class="progress-label">Your Progress</span>
+                <span class="progress-percentage">${percentage}%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${percentage}%"></div>
+              </div>
+            </div>
+
+            <div class="checklist-items">
+              ${demo.items.map(item => {
+                const isCompleted = demoProgress.completedItems.includes(item.id);
+                return `
+                  <div class="checklist-item ${isCompleted ? 'completed' : ''}" data-demo-id="${demo._id}" data-item-id="${item.id}">
+                    <div class="checkbox-wrapper">
+                      <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" onclick="window.toggleItem('${demo._id}', '${item.id}')">
+                        ${isCompleted ? '<i data-lucide="check"></i>' : ''}
+                      </div>
+                    </div>
+                    <div class="item-content">
+                      <div class="item-task">${item.task}</div>
+                      ${item.criteria ? `<div class="item-criteria">${item.criteria}</div>` : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            <div class="assessment-section">
+              ${demoProgress.readyForAssessment ? `
+                <p class="assessment-message ready">
+                  <i data-lucide="check-circle"></i>
+                  You've marked yourself as ready for assessment!
+                </p>
+              ` : `
+                <p class="assessment-message">Complete all tasks to mark yourself ready for assessment</p>
+                <button
+                  class="btn btn-success"
+                  onclick="window.markReady('${demo._id}')"
+                  ${percentage < 100 ? 'disabled' : ''}
+                >
+                  <i data-lucide="flag"></i>
+                  Mark as Ready for Assessment
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function showEmptyState() {
+      document.getElementById('loading-container').style.display = 'none';
+      document.getElementById('empty-state').style.display = 'block';
+      document.getElementById('demos-grid').style.display = 'none';
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    window.toggleItem = async function(demoId, itemId) {
+      if (!studentProgress[demoId]) {
+        studentProgress[demoId] = {
+          completedItems: [],
+          readyForAssessment: false
+        };
+      }
+
+      const completedItems = studentProgress[demoId].completedItems;
+      const index = completedItems.indexOf(itemId);
+
+      if (index > -1) {
+        completedItems.splice(index, 1);
+      } else {
+        completedItems.push(itemId);
+      }
+
+      await saveProgress();
+      renderDemos();
+    };
+
+    window.markReady = async function(demoId) {
+      if (!confirm('Are you sure you\'re ready for assessment on this demonstration?')) {
+        return;
+      }
+
+      if (!studentProgress[demoId]) {
+        studentProgress[demoId] = { completedItems: [] };
+      }
+
+      studentProgress[demoId].readyForAssessment = true;
+      studentProgress[demoId].markedReadyAt = new Date().toISOString();
+
+      await saveProgress();
+      renderDemos();
+      alert('Great! You\'ve marked yourself as ready for assessment. Your teacher will be notified.');
+    };
+
+    init();
+  </script>
+</body>
+</html>

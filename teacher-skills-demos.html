@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skills Demos Management - Pethology</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Notion-inspired Design System */
+    :root {
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .header-subtitle {
+      color: var(--gray-500);
+      font-size: 14px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 13px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .content-card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--gray-100);
+      padding: 24px;
+    }
+
+    .demos-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .demo-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 150ms ease;
+    }
+
+    .demo-card:hover {
+      border-color: var(--gray-300);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .demo-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+    }
+
+    .demo-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-published {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status-draft {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .demo-description {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .demo-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--gray-500);
+      margin-bottom: 16px;
+    }
+
+    .demo-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .demo-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .empty-state svg {
+      width: 64px;
+      height: 64px;
+      color: var(--gray-300);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      color: var(--gray-500);
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 64px 32px;
+    }
+
+    .spinner {
+      border: 3px solid var(--gray-100);
+      border-top: 3px solid var(--blue-primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: var(--gray-500);
+    }
+
+    .close-btn:hover {
+      color: var(--gray-700);
+    }
+
+    .close-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--gray-700);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 150ms ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-helper {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-top: 4px;
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .checklist-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--gray-100);
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .checklist-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .checklist-item-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .checklist-item-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 4px;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Progress Modal Styles */
+    .student-progress-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--gray-100);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .student-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .student-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--gray-700);
+    }
+
+    .student-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .mini-progress {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+
+    .mini-progress-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .mini-progress-fill {
+      height: 100%;
+      background: var(--blue-primary);
+      transition: width 300ms ease;
+    }
+
+    .no-students {
+      text-align: center;
+      padding: 32px;
+      color: var(--gray-500);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="header">
+      <div class="header-top">
+        <div class="header-title">
+          <h1>Skills Demonstrations</h1>
+        </div>
+        <div class="header-actions">
+          <a href="teacher-dashboard.html" class="btn btn-secondary">
+            <i data-lucide="arrow-left"></i>
+            Back to Dashboard
+          </a>
+          <button class="btn btn-primary" id="create-demo-btn">
+            <i data-lucide="plus"></i>
+            Create Demo
+          </button>
+        </div>
+      </div>
+      <p class="header-subtitle">Manage practical demonstration checklists for your students</p>
+    </div>
+
+    <div class="content-card">
+      <div class="loading-container" id="loading-container">
+        <div class="spinner"></div>
+        <p>Loading skills demos...</p>
+      </div>
+
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i data-lucide="clipboard-check"></i>
+        <h3>No Skills Demos Yet</h3>
+        <p>Create demonstration checklists to help students prepare for practical assessments.</p>
+      </div>
+
+      <div class="demos-grid" id="demos-grid" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Progress Modal -->
+  <div class="modal-overlay" id="progress-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="progress-modal-title">Student Progress</h2>
+        <button class="close-btn" onclick="closeProgressModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="progress-content">
+          <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Loading student progress...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div class="modal-overlay" id="demo-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Create Skills Demo</h2>
+        <button class="close-btn" onclick="closeModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="demo-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="title-input">Demo Title *</label>
+            <input
+              type="text"
+              class="form-input"
+              id="title-input"
+              placeholder="e.g., Canine Physical Examination"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="description-input">Description *</label>
+            <textarea
+              class="form-textarea"
+              id="description-input"
+              placeholder="Describe what students need to demonstrate..."
+              required
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Checklist Items</label>
+            <div class="form-helper">Add tasks students need to complete to prepare</div>
+            <div class="checklist-items" id="checklist-items">
+              <!-- Items will be added here -->
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addChecklistItem()" style="margin-top: 12px;">
+              <i data-lucide="plus"></i>
+              Add Item
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="saveAsDraft()">
+            Save as Draft
+          </button>
+          <div class="modal-footer-right">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button type="submit" class="btn btn-success">
+              <i data-lucide="check"></i>
+              Publish Demo
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { Auth0Service } from './assets/js/auth0-service.js';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    let allDemos = [];
+    let editingDemoId = null;
+    let currentUser = null;
+    let checklistItemCounter = 0;
+
+    async function init() {
+      const user = await Auth0Service.requireAuth();
+      if (!user) return;
+
+      if (user.role !== 'Teacher') {
+        alert('Access denied. Teacher privileges required.');
+        window.location.href = '/student-dashboard.html';
+        return;
+      }
+
+      currentUser = user;
+      await loadDemos();
+      lucide.createIcons();
+    }
+
+    async function loadDemos() {
+      try {
+        const response = await PethologyFirebaseREST.request('/skills_demos');
+
+        if (!response.documents || response.documents.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        allDemos = response.documents
+          .map(doc => PethologyFirebaseREST.convertDocument(doc))
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        renderDemos();
+
+      } catch (error) {
+        console.error('Error loading demos:', error);
+        showEmptyState();
+      } finally {
+        document.getElementById('loading-container').style.display = 'none';
+      }
+    }
+
+    function renderDemos() {
+      const grid = document.getElementById('demos-grid');
+
+      if (allDemos.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      document.getElementById('empty-state').style.display = 'none';
+      grid.style.display = 'grid';
+
+      grid.innerHTML = allDemos.map(demo => `
+        <div class="demo-card">
+          <div class="demo-header">
+            <div>
+              <div class="demo-title">${demo.title}</div>
+              <span class="demo-status status-${demo.status || 'draft'}">
+                <i data-lucide="${demo.status === 'published' ? 'check-circle' : 'file-edit'}"></i>
+                ${demo.status || 'draft'}
+              </span>
+            </div>
+          </div>
+          <p class="demo-description">${demo.description}</p>
+          <div class="demo-meta">
+            <span>
+              <i data-lucide="list-checks"></i>
+              ${demo.items?.length || 0} tasks
+            </span>
+            <span>
+              <i data-lucide="calendar"></i>
+              ${formatDate(demo.createdAt)}
+            </span>
+          </div>
+          <div class="demo-actions">
+            <button class="btn btn-sm btn-primary" onclick="window.viewProgress('${demo._id}')">
+              <i data-lucide="users"></i>
+              View Student Progress
+            </button>
+            <button class="btn btn-sm btn-secondary" onclick="window.editDemo('${demo._id}')">
+              <i data-lucide="edit-2"></i>
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="window.deleteDemo('${demo._id}')">
+              <i data-lucide="trash-2"></i>
+              Delete
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function showEmptyState() {
+      document.getElementById('empty-state').style.display = 'block';
+      document.getElementById('demos-grid').style.display = 'none';
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    window.openCreateModal = function() {
+      editingDemoId = null;
+      document.getElementById('modal-title').textContent = 'Create Skills Demo';
+      document.getElementById('demo-form').reset();
+      document.getElementById('checklist-items').innerHTML = '';
+      checklistItemCounter = 0;
+      addChecklistItem();
+      addChecklistItem();
+      document.getElementById('demo-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    window.addChecklistItem = function() {
+      const id = `item-${checklistItemCounter++}`;
+      const container = document.getElementById('checklist-items');
+      const item = document.createElement('div');
+      item.className = 'checklist-item';
+      item.dataset.id = id;
+      item.innerHTML = `
+        <div class="checklist-item-header">
+          <span class="checklist-item-title">Item ${checklistItemCounter}</span>
+          <button type="button" class="btn btn-sm btn-danger" onclick="removeChecklistItem('${id}')">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <input type="text" class="checklist-item-input" placeholder="Task description" data-field="task" required />
+        <input type="text" class="checklist-item-input" placeholder="Completion criteria (optional)" data-field="criteria" />
+      `;
+      container.appendChild(item);
+      lucide.createIcons();
+    };
+
+    window.removeChecklistItem = function(id) {
+      const item = document.querySelector(`[data-id="${id}"]`);
+      if (item) item.remove();
+    };
+
+    window.editDemo = function(demoId) {
+      const demo = allDemos.find(d => d._id === demoId);
+      if (!demo) return;
+
+      editingDemoId = demoId;
+      document.getElementById('modal-title').textContent = 'Edit Skills Demo';
+      document.getElementById('title-input').value = demo.title;
+      document.getElementById('description-input').value = demo.description;
+
+      const container = document.getElementById('checklist-items');
+      container.innerHTML = '';
+      checklistItemCounter = 0;
+
+      demo.items.forEach(item => {
+        addChecklistItem();
+        const itemEl = container.lastElementChild;
+        itemEl.querySelector('[data-field="task"]').value = item.task;
+        itemEl.querySelector('[data-field="criteria"]').value = item.criteria || '';
+      });
+
+      document.getElementById('demo-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    window.closeModal = function() {
+      document.getElementById('demo-modal').classList.remove('active');
+      document.getElementById('demo-form').reset();
+      editingDemoId = null;
+    };
+
+    window.deleteDemo = async function(demoId) {
+      if (!confirm('Are you sure you want to delete this skills demo?')) return;
+
+      try {
+        await PethologyFirebaseREST.request(`/skills_demos/${demoId}`, 'DELETE');
+        await loadDemos();
+        alert('Demo deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting demo:', error);
+        alert('Error deleting demo. Please try again.');
+      }
+    };
+
+    window.saveAsDraft = async function() {
+      await saveDemoWithStatus('draft');
+    };
+
+    async function saveDemoWithStatus(status) {
+      const title = document.getElementById('title-input').value.trim();
+      const description = document.getElementById('description-input').value.trim();
+
+      if (!title || !description) {
+        alert('Please fill in title and description');
+        return;
+      }
+
+      const itemElements = document.querySelectorAll('.checklist-item');
+      const items = Array.from(itemElements).map((el, index) => ({
+        id: `item${index + 1}`,
+        task: el.querySelector('[data-field="task"]').value.trim(),
+        criteria: el.querySelector('[data-field="criteria"]').value.trim(),
+        order: index + 1
+      })).filter(item => item.task);
+
+      if (items.length === 0) {
+        alert('Please add at least one checklist item');
+        return;
+      }
+
+      const demoData = {
+        title,
+        description,
+        items,
+        status,
+        createdBy: currentUser.id,
+        createdByName: currentUser.name,
+        createdAt: new Date().toISOString(),
+        publishedAt: status === 'published' ? new Date().toISOString() : null
+      };
+
+      try {
+        const firestoreData = {
+          fields: {
+            title: { stringValue: demoData.title },
+            description: { stringValue: demoData.description },
+            items: { arrayValue: { values: demoData.items.map(item => ({
+              mapValue: { fields: {
+                id: { stringValue: item.id },
+                task: { stringValue: item.task },
+                criteria: { stringValue: item.criteria },
+                order: { integerValue: item.order }
+              }}
+            }))}},
+            status: { stringValue: demoData.status },
+            createdBy: { stringValue: demoData.createdBy },
+            createdByName: { stringValue: demoData.createdByName },
+            createdAt: { timestampValue: demoData.createdAt },
+            publishedAt: { timestampValue: demoData.publishedAt || new Date().toISOString() }
+          }
+        };
+
+        if (editingDemoId) {
+          await PethologyFirebaseREST.request(`/skills_demos/${editingDemoId}`, 'PATCH', firestoreData);
+          alert('Demo updated successfully!');
+        } else {
+          await PethologyFirebaseREST.request('/skills_demos', 'POST', firestoreData);
+          alert(`Demo ${status === 'published' ? 'published' : 'saved as draft'} successfully!`);
+        }
+
+        closeModal();
+        await loadDemos();
+
+      } catch (error) {
+        console.error('Error saving demo:', error);
+        alert('Error saving demo. Please try again.');
+      }
+    }
+
+    document.getElementById('demo-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await saveDemoWithStatus('published');
+    });
+
+    document.getElementById('create-demo-btn').addEventListener('click', openCreateModal);
+    document.getElementById('demo-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'demo-modal') closeModal();
+    });
+
+    window.viewProgress = async function(demoId) {
+      const demo = allDemos.find(d => d._id === demoId);
+      if (!demo) return;
+
+      document.getElementById('progress-modal-title').textContent = `Student Progress: ${demo.title}`;
+      document.getElementById('progress-modal').classList.add('active');
+
+      try {
+        // Load all student progress
+        const progressResponse = await PethologyFirebaseREST.request('/student_skills_progress');
+
+        // Load student list
+        const studentsResponse = await PethologyFirebaseREST.request('/student_whitelist');
+
+        let allStudents = [];
+        if (studentsResponse.documents && studentsResponse.documents.length > 0) {
+          allStudents = studentsResponse.documents
+            .map(doc => PethologyFirebaseREST.convertDocument(doc))
+            .sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        let progressData = {};
+        if (progressResponse.documents && progressResponse.documents.length > 0) {
+          progressResponse.documents.forEach(doc => {
+            const data = PethologyFirebaseREST.convertDocument(doc);
+            progressData[data.studentEmail] = data.progress;
+          });
+        }
+
+        const totalItems = demo.items?.length || 0;
+
+        const html = allStudents.length === 0 ?
+          '<div class="no-students">No students registered yet.</div>' :
+          allStudents.map(student => {
+            const studentDemoProgress = progressData[student.email]?.[demoId] || {
+              completedItems: [],
+              readyForAssessment: false
+            };
+
+            const completedCount = studentDemoProgress.completedItems.length;
+            const percentage = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
+
+            let statusClass = 'status-not-started';
+            let statusText = 'Not Started';
+            let statusIcon = 'circle';
+
+            if (studentDemoProgress.readyForAssessment) {
+              statusClass = 'status-ready';
+              statusText = 'Ready';
+              statusIcon = 'check-circle';
+            } else if (completedCount > 0) {
+              statusClass = 'status-in-progress';
+              statusText = 'In Progress';
+              statusIcon = 'clock';
+            }
+
+            return `
+              <div class="student-progress-item">
+                <div class="student-header">
+                  <span class="student-name">${student.name}</span>
+                  <span class="student-status ${statusClass}">
+                    <i data-lucide="${statusIcon}"></i>
+                    ${statusText}
+                  </span>
+                </div>
+                <div class="mini-progress">
+                  <span>${completedCount}/${totalItems} tasks</span>
+                  <div class="mini-progress-bar">
+                    <div class="mini-progress-fill" style="width: ${percentage}%"></div>
+                  </div>
+                  <span>${percentage}%</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+        document.getElementById('progress-content').innerHTML = html;
+        lucide.createIcons();
+
+      } catch (error) {
+        console.error('Error loading progress:', error);
+        document.getElementById('progress-content').innerHTML =
+          '<div class="no-students">Error loading student progress. Please try again.</div>';
+      }
+    };
+
+    window.closeProgressModal = function() {
+      document.getElementById('progress-modal').classList.remove('active');
+    };
+
+    document.getElementById('progress-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'progress-modal') closeProgressModal();
+    });
+
+    init();
+  </script>
+</body>
+</html>

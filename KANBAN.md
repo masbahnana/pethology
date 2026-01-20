@@ -39,6 +39,12 @@
 ## 🟢 DONE (Recent Completions)
 
 ### ✅ January 2026 - Features & Bug Fixes
+- [x] **Skills Demos System** - Complete practical demonstration checklist system (20 Jan 2026)
+  - Teacher: Create/edit/delete demos, save as draft or publish, view student progress
+  - Student: View published demos, mark tasks complete, progress tracking, mark ready for assessment
+  - Progress tracking: Teachers can see each student's completion percentage and status
+  - Integration: Links in both dashboards, Firebase REST API with student_skills_progress collection
+  - Status badges: Not Started, In Progress, Ready for Assessment
 - [x] **Glossary System** - Complete veterinary terminology management (19 Jan 2026)
   - Teacher: Add/edit/delete terms, search, filter by category, stats
   - Student: Browse terms, search, multiple view modes (A-Z, by category)
