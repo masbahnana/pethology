@@ -128,9 +128,14 @@
           await PethologyFirebaseREST.markStudentAsRegistered(email, user.sub);
         }
 
+        // Use name from whitelist if available (more accurate than Auth0's user.name)
+        const userName = (role === 'Student' && studentData && studentData.name)
+          ? studentData.name
+          : (user.name || user.email);
+
         const userSession = {
           id: user.sub,
-          name: user.name || user.email,
+          name: userName,
           email: user.email,
           role: role,
           photo: user.picture || '',
