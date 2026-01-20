@@ -1161,6 +1161,14 @@
             <i data-lucide="plus-circle"></i>
             Publish Content
           </a>
+          <button onclick="window.supportModal.open()" class="btn btn-secondary">
+            <i data-lucide="life-buoy"></i>
+            Report Issue
+          </button>
+          <a href="faq.html" class="btn btn-secondary">
+            <i data-lucide="help-circle"></i>
+            Help & FAQ
+          </a>
           <button onclick="logout()" class="btn btn-secondary">
             <i data-lucide="log-out"></i>
             Logout
@@ -1349,6 +1357,9 @@
     </div>
   </div>
 
+  <!-- Support Modal Component -->
+  <script src="assets/js/support-modal.js"></script>
+
   <script type="module">
     // USE REST API instead of Firebase SDK to avoid WebChannel issues
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.0';
@@ -1361,6 +1372,8 @@
     // Make globally available
     window.toast = toast;
     window.errorHandler = errorHandler;
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+    window.showToast = (message, type) => toast.show(message, type);
 
     // Module slider state
     let currentPage = 0;

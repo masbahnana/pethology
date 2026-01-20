@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Tickets - Pethology Admin</title>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --blue-primary: #2563eb;
+      --blue-hover: #1d4ed8;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      --red-500: #ef4444;
+      --red-600: #dc2626;
+      --green-500: #10b981;
+      --green-600: #059669;
+      --yellow-500: #f59e0b;
+      --orange-500: #f97316;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 32px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: var(--gray-500);
+      font-size: 16px;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+
+    /* Filters */
+    .filters {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .filters select:focus, .filters input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .filters input[type="search"] {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    /* Tickets Grid */
+    .tickets-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .tickets-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .ticket-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+
+    .ticket-card:hover {
+      border-color: var(--blue-primary);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    }
+
+    .ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .ticket-subject {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+
+    .ticket-meta {
+      font-size: 13px;
+      color: var(--gray-500);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .ticket-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ticket-description {
+      color: var(--gray-600);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ticket-footer {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-open {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-in-progress {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-resolved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-low {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .badge-medium {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-high {
+      background: #fed7aa;
+      color: #9a3412;
+    }
+
+    .badge-critical {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-student {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-teacher {
+      background: #e9d5ff;
+      color: #6b21a8;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      max-width: 800px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--gray-500);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      background: var(--gray-100);
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .detail-section {
+      margin-bottom: 24px;
+    }
+
+    .detail-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .detail-value {
+      font-size: 14px;
+      color: var(--gray-700);
+      line-height: 1.6;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--gray-700);
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .admin-notes {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .admin-note {
+      background: white;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .admin-note:last-child {
+      margin-bottom: 0;
+    }
+
+    .note-meta {
+      font-size: 12px;
+      color: var(--gray-500);
+      margin-bottom: 4px;
+    }
+
+    .note-text {
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-success {
+      background: var(--green-500);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: var(--green-600);
+    }
+
+    .btn-secondary {
+      background: var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-300);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-500);
+    }
+
+    .empty-state i {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-500);
+    }
+
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters select, .filters input {
+        width: 100%;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>Support Tickets</h1>
+      <p>Manage and respond to user-reported issues</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Open Tickets</div>
+        <div class="stat-value" id="stat-open">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">In Progress</div>
+        <div class="stat-value" id="stat-in-progress">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Resolved This Week</div>
+        <div class="stat-value" id="stat-resolved">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Tickets</div>
+        <div class="stat-value" id="stat-total">-</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <input type="search" id="search-input" placeholder="Search by email, subject, or description..." />
+
+      <select id="status-filter">
+        <option value="all">All Status</option>
+        <option value="open">Open</option>
+        <option value="in-progress">In Progress</option>
+        <option value="resolved">Resolved</option>
+      </select>
+
+      <select id="priority-filter">
+        <option value="all">All Priority</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="critical">Critical</option>
+      </select>
+
+      <select id="role-filter">
+        <option value="all">All Users</option>
+        <option value="Student">Students</option>
+        <option value="Teacher">Teachers</option>
+      </select>
+    </div>
+
+    <!-- Tickets Container -->
+    <div class="tickets-container">
+      <div class="loading" id="loading-state">
+        <i data-lucide="loader"></i>
+        <p>Loading support tickets...</p>
+      </div>
+
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <i data-lucide="inbox"></i>
+        <h3>No tickets found</h3>
+        <p>No support tickets match your filters</p>
+      </div>
+
+      <div class="tickets-grid" id="tickets-grid" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Ticket Detail Modal -->
+  <div class="modal-overlay" id="ticket-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-ticket-subject">Ticket Details</h2>
+        <button class="modal-close" onclick="closeModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- User & Metadata -->
+        <div class="detail-grid">
+          <div class="detail-section">
+            <div class="detail-label">User</div>
+            <div class="detail-value" id="modal-user"></div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Role</div>
+            <div class="detail-value" id="modal-role"></div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Browser</div>
+            <div class="detail-value" id="modal-browser"></div>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">Device</div>
+            <div class="detail-value" id="modal-device"></div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="detail-section">
+          <div class="detail-label">Description</div>
+          <div class="detail-value" id="modal-description"></div>
+        </div>
+
+        <!-- Page URL -->
+        <div class="detail-section">
+          <div class="detail-label">Page URL</div>
+          <div class="detail-value" id="modal-page-url"></div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="detail-section">
+          <div class="detail-label">User Agent</div>
+          <div class="detail-value" id="modal-user-agent" style="font-size: 12px; word-break: break-all;"></div>
+        </div>
+
+        <!-- Status & Priority -->
+        <div class="detail-grid">
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="modal-status">
+              <option value="open">Open</option>
+              <option value="in-progress">In Progress</option>
+              <option value="resolved">Resolved</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <select id="modal-priority">
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Admin Notes -->
+        <div class="detail-section">
+          <div class="detail-label">Admin Notes</div>
+          <div class="admin-notes" id="admin-notes-list">
+            <div style="text-align: center; color: var(--gray-500); font-size: 14px;">
+              No notes yet
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea id="new-note-input" placeholder="Add an internal note..."></textarea>
+          </div>
+          <button class="btn btn-secondary" onclick="addNote()">
+            <i data-lucide="plus"></i>
+            Add Note
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="markAsResolved()">
+          <i data-lucide="check-circle"></i>
+          Mark as Resolved
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="saveChanges()">
+            <i data-lucide="save"></i>
+            Save Changes
+          </button>
+          <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
+
+    let allTickets = [];
+    let currentTicket = null;
+
+    async function loadTickets() {
+      try {
+        const response = await PethologyFirebaseREST.request('/support_tickets');
+
+        if (response.documents && response.documents.length > 0) {
+          allTickets = response.documents
+            .map(doc => PethologyFirebaseREST.convertDocument(doc))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else {
+          allTickets = [];
+        }
+
+        updateStats();
+        filterAndRenderTickets();
+      } catch (error) {
+        console.error('Error loading tickets:', error);
+        document.getElementById('loading-state').innerHTML = `
+          <i data-lucide="alert-circle"></i>
+          <p>Error loading tickets. Please refresh.</p>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    function updateStats() {
+      const open = allTickets.filter(t => t.status === 'open').length;
+      const inProgress = allTickets.filter(t => t.status === 'in-progress').length;
+
+      // Resolved this week
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const resolvedThisWeek = allTickets.filter(t =>
+        t.status === 'resolved' &&
+        t.resolvedAt &&
+        new Date(t.resolvedAt) > oneWeekAgo
+      ).length;
+
+      document.getElementById('stat-open').textContent = open;
+      document.getElementById('stat-in-progress').textContent = inProgress;
+      document.getElementById('stat-resolved').textContent = resolvedThisWeek;
+      document.getElementById('stat-total').textContent = allTickets.length;
+    }
+
+    function filterAndRenderTickets() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const statusFilter = document.getElementById('status-filter').value;
+      const priorityFilter = document.getElementById('priority-filter').value;
+      const roleFilter = document.getElementById('role-filter').value;
+
+      let filtered = allTickets.filter(ticket => {
+        const matchesSearch = !searchTerm ||
+          ticket.userEmail.toLowerCase().includes(searchTerm) ||
+          ticket.subject.toLowerCase().includes(searchTerm) ||
+          ticket.description.toLowerCase().includes(searchTerm);
+
+        const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+        const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
+        const matchesRole = roleFilter === 'all' || ticket.userRole === roleFilter;
+
+        return matchesSearch && matchesStatus && matchesPriority && matchesRole;
+      });
+
+      renderTickets(filtered);
+    }
+
+    function renderTickets(tickets) {
+      document.getElementById('loading-state').style.display = 'none';
+
+      if (tickets.length === 0) {
+        document.getElementById('empty-state').style.display = 'block';
+        document.getElementById('tickets-grid').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('tickets-grid').style.display = 'grid';
+
+      const html = tickets.map(ticket => {
+        const date = new Date(ticket.createdAt).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+
+        return `
+          <div class="ticket-card" onclick="openTicketModal('${ticket._id}')">
+            <div class="ticket-header">
+              <div>
+                <div class="ticket-subject">${ticket.subject}</div>
+                <div class="ticket-meta">
+                  <span>
+                    <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                    ${ticket.userName}
+                  </span>
+                  <span>
+                    <i data-lucide="mail" style="width: 14px; height: 14px;"></i>
+                    ${ticket.userEmail}
+                  </span>
+                  <span>
+                    <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                    ${date}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-description">${ticket.description}</div>
+            <div class="ticket-footer">
+              <span class="badge badge-${ticket.status}">${ticket.status}</span>
+              <span class="badge badge-${ticket.priority}">${ticket.priority}</span>
+              <span class="badge badge-${ticket.userRole.toLowerCase()}">${ticket.userRole}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('tickets-grid').innerHTML = html;
+      lucide.createIcons();
+    }
+
+    window.openTicketModal = function(ticketId) {
+      currentTicket = allTickets.find(t => t._id === ticketId);
+      if (!currentTicket) return;
+
+      document.getElementById('modal-ticket-subject').textContent = currentTicket.subject;
+      document.getElementById('modal-user').textContent = `${currentTicket.userName} (${currentTicket.userEmail})`;
+      document.getElementById('modal-role').textContent = currentTicket.userRole;
+      document.getElementById('modal-browser').textContent = currentTicket.browser;
+      document.getElementById('modal-device').textContent = currentTicket.device;
+      document.getElementById('modal-description').textContent = currentTicket.description;
+      document.getElementById('modal-page-url').textContent = currentTicket.pageUrl;
+      document.getElementById('modal-user-agent').textContent = currentTicket.userAgent || 'N/A';
+      document.getElementById('modal-status').value = currentTicket.status;
+      document.getElementById('modal-priority').value = currentTicket.priority;
+
+      // Render admin notes
+      const notesContainer = document.getElementById('admin-notes-list');
+      if (currentTicket.adminNotes && currentTicket.adminNotes.length > 0) {
+        notesContainer.innerHTML = currentTicket.adminNotes.map(note => `
+          <div class="admin-note">
+            <div class="note-meta">${new Date(note.timestamp).toLocaleString()}</div>
+            <div class="note-text">${note.text}</div>
+          </div>
+        `).join('');
+      } else {
+        notesContainer.innerHTML = '<div style="text-align: center; color: var(--gray-500); font-size: 14px;">No notes yet</div>';
+      }
+
+      document.getElementById('ticket-modal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    window.closeModal = function() {
+      document.getElementById('ticket-modal').classList.remove('active');
+      document.getElementById('new-note-input').value = '';
+      currentTicket = null;
+    };
+
+    window.addNote = async function() {
+      const noteText = document.getElementById('new-note-input').value.trim();
+      if (!noteText) {
+        alert('Please enter a note');
+        return;
+      }
+
+      if (!currentTicket.adminNotes) {
+        currentTicket.adminNotes = [];
+      }
+
+      currentTicket.adminNotes.push({
+        text: noteText,
+        timestamp: new Date().toISOString()
+      });
+
+      document.getElementById('new-note-input').value = '';
+
+      // Re-render notes
+      const notesContainer = document.getElementById('admin-notes-list');
+      notesContainer.innerHTML = currentTicket.adminNotes.map(note => `
+        <div class="admin-note">
+          <div class="note-meta">${new Date(note.timestamp).toLocaleString()}</div>
+          <div class="note-text">${note.text}</div>
+        </div>
+      `).join('');
+    };
+
+    window.markAsResolved = async function() {
+      document.getElementById('modal-status').value = 'resolved';
+      await saveChanges();
+    };
+
+    window.saveChanges = async function() {
+      if (!currentTicket) return;
+
+      try {
+        const newStatus = document.getElementById('modal-status').value;
+        const newPriority = document.getElementById('modal-priority').value;
+
+        const updateData = {
+          fields: {
+            ...Object.keys(currentTicket).reduce((acc, key) => {
+              if (key !== '_id' && currentTicket[key] !== undefined) {
+                if (key === 'adminNotes') {
+                  acc[key] = {
+                    arrayValue: {
+                      values: currentTicket[key].map(note => ({
+                        mapValue: {
+                          fields: {
+                            text: { stringValue: note.text },
+                            timestamp: { timestampValue: note.timestamp }
+                          }
+                        }
+                      }))
+                    }
+                  };
+                } else if (typeof currentTicket[key] === 'string') {
+                  acc[key] = { stringValue: currentTicket[key] };
+                } else if (typeof currentTicket[key] === 'number') {
+                  acc[key] = { integerValue: currentTicket[key].toString() };
+                } else if (typeof currentTicket[key] === 'boolean') {
+                  acc[key] = { booleanValue: currentTicket[key] };
+                }
+              }
+              return acc;
+            }, {}),
+            status: { stringValue: newStatus },
+            priority: { stringValue: newPriority }
+          }
+        };
+
+        // If marking as resolved, add timestamp
+        if (newStatus === 'resolved' && currentTicket.status !== 'resolved') {
+          updateData.fields.resolvedAt = { timestampValue: new Date().toISOString() };
+        }
+
+        await PethologyFirebaseREST.request(`/support_tickets/${currentTicket._id}`, {
+          method: 'PATCH',
+          body: JSON.stringify(updateData)
+        });
+
+        alert('Ticket updated successfully!');
+        closeModal();
+        loadTickets();
+      } catch (error) {
+        console.error('Error updating ticket:', error);
+        alert('Failed to update ticket. Please try again.');
+      }
+    };
+
+    // Event listeners
+    document.getElementById('search-input').addEventListener('input', filterAndRenderTickets);
+    document.getElementById('status-filter').addEventListener('change', filterAndRenderTickets);
+    document.getElementById('priority-filter').addEventListener('change', filterAndRenderTickets);
+    document.getElementById('role-filter').addEventListener('change', filterAndRenderTickets);
+
+    document.getElementById('ticket-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'ticket-modal') closeModal();
+    });
+
+    // Initialize
+    loadTickets();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

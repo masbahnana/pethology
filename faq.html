@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Pethology</title>
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      /* Notion-inspired colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: #f1f1ef;
+      --text-primary: #37352f;
+      --text-secondary: #787774;
+      --border-color: #e9e9e7;
+      --blue-primary: #2383e2;
+      --blue-hover: #1a73d1;
+      --gray-100: #f1f1ef;
+      --gray-200: #e9e9e7;
+      --gray-500: #9b9a97;
+      --gray-600: #787774;
+      --gray-700: #37352f;
+      --green-bg: #ddedea;
+      --green-text: #0f7b6c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .logo:hover {
+      opacity: 0.7;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 150ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .page-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--blue-primary);
+      color: white;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+
+    .page-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* FAQ Categories */
+    .faq-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .category-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 150ms ease;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .category-card:hover {
+      background: var(--bg-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .category-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--blue-primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .category-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .category-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* FAQ Items */
+    .faq-section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--blue-primary);
+      color: white;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .faq-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all 150ms ease;
+    }
+
+    .faq-question {
+      padding: 20px 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      user-select: none;
+    }
+
+    .faq-question:hover {
+      background: var(--bg-hover);
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .question-icon {
+      color: var(--text-secondary);
+      transition: transform 200ms ease;
+      flex-shrink: 0;
+    }
+
+    .faq-item.active .question-icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 300ms ease;
+    }
+
+    .faq-item.active .faq-answer {
+      max-height: 1000px;
+    }
+
+    .answer-content {
+      padding: 0 24px 20px 24px;
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .answer-content p {
+      margin-bottom: 12px;
+    }
+
+    .answer-content ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .answer-content li {
+      margin-bottom: 6px;
+    }
+
+    .answer-content strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .answer-content a {
+      color: var(--blue-primary);
+      text-decoration: none;
+    }
+
+    .answer-content a:hover {
+      text-decoration: underline;
+    }
+
+    /* Help Banner */
+    .help-banner {
+      background: var(--green-bg);
+      border: 1px solid var(--green-text);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .help-banner-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--green-text);
+      margin-bottom: 8px;
+    }
+
+    .help-banner-text {
+      color: var(--green-text);
+      margin-bottom: 16px;
+    }
+
+    .help-banner .btn {
+      background: var(--green-text);
+      color: white;
+    }
+
+    .help-banner .btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 32px;
+      }
+
+      .page-subtitle {
+        font-size: 16px;
+      }
+
+      .faq-categories {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 32px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <a href="index.html" class="logo">
+        <i data-lucide="heart-pulse"></i>
+        <span>Pethology</span>
+      </a>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-secondary">
+          <i data-lucide="arrow-left"></i>
+          Back to Home
+        </a>
+        <a href="login.html" class="btn btn-primary">
+          <i data-lucide="log-in"></i>
+          Login
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-icon">
+        <i data-lucide="help-circle" style="width: 32px; height: 32px;"></i>
+      </div>
+      <h1 class="page-title">Frequently Asked Questions</h1>
+      <p class="page-subtitle">Find answers to common questions about Pethology and how to use the platform.</p>
+    </div>
+
+    <!-- FAQ Categories -->
+    <div class="faq-categories">
+      <a href="#getting-started" class="category-card">
+        <div class="category-icon">
+          <i data-lucide="rocket"></i>
+        </div>
+        <div class="category-title">Getting Started</div>
+        <div class="category-count">5 questions</div>
+      </a>
+      <a href="#for-students" class="category-card">
+        <div class="category-icon">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <div class="category-title">For Students</div>
+        <div class="category-count">6 questions</div>
+      </a>
+      <a href="#for-teachers" class="category-card">
+        <div class="category-icon">
+          <i data-lucide="users"></i>
+        </div>
+        <div class="category-title">For Teachers</div>
+        <div class="category-count">5 questions</div>
+      </a>
+      <a href="#technical" class="category-card">
+        <div class="category-icon">
+          <i data-lucide="settings"></i>
+        </div>
+        <div class="category-title">Technical</div>
+        <div class="category-count">4 questions</div>
+      </a>
+    </div>
+
+    <!-- Getting Started Section -->
+    <div class="faq-section" id="getting-started">
+      <h2 class="section-title">
+        <span class="section-icon">
+          <i data-lucide="rocket"></i>
+        </span>
+        Getting Started
+      </h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">What is Pethology?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Pethology is a comprehensive learning platform designed specifically for veterinary students and teachers. It provides interactive quizzes, progress tracking, achievements, and study tools to help students master veterinary concepts and prepare for practical assessments.</p>
+            <p>The platform includes features like adaptive quizzes, skills demonstrations, glossary management, and detailed progress analytics.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do I create an account?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Pethology uses a <strong>whitelist system</strong> to ensure only authorized users can access the platform:</p>
+            <ul>
+              <li><strong>Students:</strong> Your teacher must add you to the student whitelist before you can create an account</li>
+              <li><strong>Teachers:</strong> You must be added to the teacher whitelist by an administrator</li>
+            </ul>
+            <p>Once you're whitelisted, simply click "Login" and follow the authentication process through Auth0.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Is Pethology free to use?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Yes! Pethology is currently <strong>completely free</strong> for students and teachers. Our goal is to support veterinary education and make quality learning tools accessible to everyone.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">What devices can I use Pethology on?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Pethology works on any device with a modern web browser:</p>
+            <ul>
+              <li><strong>Desktop:</strong> Full-featured experience on Windows, Mac, or Linux</li>
+              <li><strong>Tablet:</strong> Touch-optimized interface for iPad and Android tablets</li>
+              <li><strong>Mobile:</strong> Responsive design works on all smartphones</li>
+            </ul>
+            <p>We recommend using the latest version of Chrome, Safari, Firefox, or Edge for the best experience.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Do I need to install anything?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>No! Pethology is a <strong>web-based application</strong>. Just open your browser, navigate to the website, and log in. No downloads or installations required.</p>
+            <p>Your progress is automatically saved to the cloud, so you can access it from any device.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Students Section -->
+    <div class="faq-section" id="for-students">
+      <h2 class="section-title">
+        <span class="section-icon">
+          <i data-lucide="graduation-cap"></i>
+        </span>
+        For Students
+      </h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do quizzes work?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Pethology offers two types of quizzes:</p>
+            <ul>
+              <li><strong>Standard Quizzes:</strong> Pre-made quizzes covering all 10 veterinary modules (200+ questions)</li>
+              <li><strong>Custom Quizzes:</strong> Created by your teacher with optional deadlines</li>
+            </ul>
+            <p>Our <strong>adaptive quiz system</strong> intelligently adjusts question difficulty based on your performance, ensuring you're always learning at the right level.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">What are achievements and how do I unlock them?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Achievements are rewards for reaching milestones in your learning journey. There are <strong>19 different achievements</strong> to unlock:</p>
+            <ul>
+              <li><strong>Quiz Achievements:</strong> Complete specific numbers of quizzes (5, 10, 25, 50, 100)</li>
+              <li><strong>Score Achievements:</strong> Reach certain average scores (70%, 80%, 90%)</li>
+              <li><strong>Module Achievements:</strong> Master specific veterinary modules</li>
+              <li><strong>Special Achievements:</strong> Perfect scores, speed challenges, and more</li>
+            </ul>
+            <p>Check your "My Achievements" page to see your progress toward each achievement.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do Skills Demonstrations work?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Skills Demonstrations are practical checklists created by your teacher to help you prepare for hands-on assessments:</p>
+            <ul>
+              <li>View published demonstrations in your dashboard</li>
+              <li>Check off tasks as you complete them</li>
+              <li>Track your progress with visual indicators</li>
+              <li>Mark yourself as "Ready for Assessment" when you're 100% complete</li>
+            </ul>
+            <p>Your teacher can see your progress in real-time to know when you're ready for evaluation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">What is the Glossary and how do I use it?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>The Glossary is a comprehensive dictionary of veterinary terms managed by your teacher. It includes:</p>
+            <ul>
+              <li>Terms organized by category (Anatomy, Diseases, Procedures, Tools, Medications)</li>
+              <li>Search functionality to quickly find definitions</li>
+              <li>Multiple view modes (A-Z, by category, grid view)</li>
+            </ul>
+            <p>Use it as a quick reference while studying or taking quizzes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Can my teacher see my quiz results?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Yes. Your teacher can view your progress through the Class Management system, including:</p>
+            <ul>
+              <li>Quiz scores and completion rates</li>
+              <li>Average scores and trends</li>
+              <li>Weak topics that need improvement</li>
+              <li>Quiz history and timeline</li>
+            </ul>
+            <p>This helps your teacher provide targeted support and identify areas where you might need extra help.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How is my progress tracked?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Your progress is automatically saved after every quiz. You can view detailed analytics in your "My Progress" page:</p>
+            <ul>
+              <li><strong>Overall Stats:</strong> Total quizzes, average score, total time spent</li>
+              <li><strong>Module Breakdown:</strong> Performance by topic with visual charts</li>
+              <li><strong>Quiz History:</strong> Complete timeline of all attempts with scores and topics</li>
+              <li><strong>Weak Topics:</strong> Areas identified for improvement based on your performance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Teachers Section -->
+    <div class="faq-section" id="for-teachers">
+      <h2 class="section-title">
+        <span class="section-icon">
+          <i data-lucide="users"></i>
+        </span>
+        For Teachers
+      </h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do I add students to my class?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>You can add students in two ways:</p>
+            <ul>
+              <li><strong>Manual Entry:</strong> Click "Import Students" and add students one by one with their name and email</li>
+              <li><strong>CSV Upload:</strong> Upload a CSV file with columns for name and email to add multiple students at once</li>
+            </ul>
+            <p>Once added to the whitelist, students can create their accounts and start learning.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Can I create my own quizzes?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Yes! Use the <strong>Custom Quiz Import</strong> system to create your own quizzes:</p>
+            <ul>
+              <li>Upload questions via CSV file</li>
+              <li>Add quiz title, topic, and difficulty</li>
+              <li>Set optional deadlines for assignments</li>
+              <li>Quizzes appear automatically in your students' dashboards</li>
+            </ul>
+            <p>This is perfect for assignments, homework, or topic-specific assessments.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do I create Skills Demonstrations?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Navigate to "Skills Demos" from your dashboard and click "Create New Demo":</p>
+            <ul>
+              <li>Add title and description</li>
+              <li>Create checklist items with task descriptions and completion criteria</li>
+              <li>Save as Draft (only you can see) or Publish (visible to students)</li>
+              <li>View student progress to see who's ready for assessment</li>
+            </ul>
+            <p>You can edit or delete demos at any time.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">How do I manage the Glossary?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Access the Glossary management from your dashboard to:</p>
+            <ul>
+              <li>Add new terms with definitions and categories</li>
+              <li>Edit existing terms</li>
+              <li>Delete outdated terms</li>
+              <li>Search and filter by category</li>
+              <li>View stats (total terms by category)</li>
+            </ul>
+            <p>All changes are instantly visible to your students.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Can I make announcements to my class?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Yes! Use the <strong>Announcements</strong> system to communicate with your students:</p>
+            <ul>
+              <li>Create announcements that appear on student dashboards</li>
+              <li>Add titles and detailed messages</li>
+              <li>Edit or delete announcements as needed</li>
+              <li>Students see announcements immediately upon login</li>
+            </ul>
+            <p>Perfect for reminders about deadlines, exam dates, or important notices.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Section -->
+    <div class="faq-section" id="technical">
+      <h2 class="section-title">
+        <span class="section-icon">
+          <i data-lucide="settings"></i>
+        </span>
+        Technical
+      </h2>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Is my data secure?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Yes. Pethology uses industry-standard security practices:</p>
+            <ul>
+              <li><strong>Auth0:</strong> Enterprise-grade authentication with encrypted login</li>
+              <li><strong>Firebase:</strong> Google Cloud infrastructure for data storage</li>
+              <li><strong>Whitelist System:</strong> Only authorized users can access the platform</li>
+              <li><strong>HTTPS:</strong> All data is encrypted in transit</li>
+            </ul>
+            <p>Your personal information and quiz data are never shared with third parties.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">What browsers are supported?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Pethology works best on modern browsers:</p>
+            <ul>
+              <li><strong>Recommended:</strong> Chrome, Safari, Firefox, Edge (latest versions)</li>
+              <li><strong>Mobile:</strong> Safari (iOS), Chrome (Android)</li>
+            </ul>
+            <p>We recommend keeping your browser updated to the latest version for optimal performance and security.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">Can I use Pethology offline?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>Currently, Pethology requires an internet connection to function. Offline support is planned for a future release.</p>
+            <p>Your progress is automatically saved to the cloud, so you can pick up where you left off on any device.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFAQ(this)">
+          <span class="question-text">I found a bug. How do I report it?</span>
+          <i data-lucide="chevron-down" class="question-icon"></i>
+        </div>
+        <div class="faq-answer">
+          <div class="answer-content">
+            <p>We're continuously improving Pethology and appreciate bug reports. Please contact your teacher with the following information:</p>
+            <ul>
+              <li>What you were trying to do</li>
+              <li>What happened instead</li>
+              <li>Steps to reproduce the issue (1, 2, 3...)</li>
+              <li>Your browser and device type</li>
+              <li>Screenshots if applicable</li>
+            </ul>
+            <p>Your teacher can forward the report to the development team for investigation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Banner -->
+    <div class="help-banner">
+      <div class="help-banner-title">Still have questions?</div>
+      <p class="help-banner-text">Can't find the answer you're looking for? Contact your teacher for additional support.</p>
+      <a href="login.html" class="btn">
+        <i data-lucide="log-in"></i>
+        Go to Login
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Toggle FAQ item
+    function toggleFAQ(element) {
+      const faqItem = element.parentElement;
+      const allItems = document.querySelectorAll('.faq-item');
+
+      // Close all other items
+      allItems.forEach(item => {
+        if (item !== faqItem && item.classList.contains('active')) {
+          item.classList.remove('active');
+        }
+      });
+
+      // Toggle current item
+      faqItem.classList.toggle('active');
+
+      // Recreate icons for the toggled item
+      lucide.createIcons();
+    }
+
+    // Auto-open FAQ from hash
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const section = document.querySelector(hash);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+
+    // Smooth scroll for category cards
+    document.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = card.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

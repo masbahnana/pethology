@@ -1324,6 +1324,14 @@
 
         <div class="nav-divider"></div>
 
+        <button onclick="window.supportModal.open()" class="nav-item" style="width: 100%; text-align: left;">
+          <i data-lucide="life-buoy"></i>
+          Report Issue
+        </button>
+        <a href="faq.html" class="nav-item">
+          <i data-lucide="help-circle"></i>
+          Help & FAQ
+        </a>
         <a href="index.html" class="nav-item">
           <i data-lucide="arrow-left"></i>
           Back to Home
@@ -1872,6 +1880,9 @@
     </div>
   </div>
 
+  <!-- Support Modal Component -->
+  <script src="assets/js/support-modal.js"></script>
+
   <script type="module">
     // ✅ 100% REST API - No Firebase SDK!
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
@@ -1884,6 +1895,8 @@
     window.markAnnouncementAsRead = markAnnouncementAsRead;
     window.toast = toast;
     window.errorHandler = errorHandler;
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+    window.showToast = (message, type) => toast.show(message, type);
 
     // Função para carregar dados reais do estudante
     async function loadRealStudentData() {
