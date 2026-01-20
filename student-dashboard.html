@@ -1997,8 +1997,20 @@
         displayName = user.name.split('@')[0];
       }
 
+      // Remover prefixo "plc" se existir (ex: plcnatalia → natalia)
+      if (displayName.toLowerCase().startsWith('plc')) {
+        displayName = displayName.substring(3);
+      }
+
       // Se tiver pontos ou underscores, substituir por espaços
       displayName = displayName.replace(/[._]/g, ' ');
+
+      // Se não tiver espaços, tentar adicionar espaços antes de maiúsculas
+      // Ex: "nataliadasilva" → "natalia dasilva" (se tiver maiúsculas internas)
+      if (!displayName.includes(' ') && displayName.length > 0) {
+        // Adicionar espaço antes de maiúsculas no meio da string
+        displayName = displayName.replace(/([a-z])([A-Z])/g, '$1 $2');
+      }
 
       // Capitalizar primeira letra de cada palavra
       displayName = displayName.split(' ')
