@@ -2011,8 +2011,8 @@
         displayName = `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
       }
 
-      // Atualizar nome
-      const nameElements = document.querySelectorAll('.student-name, #studentName, #displayName, #sidebarName');
+      // Atualizar nome (incluindo sidebar)
+      const nameElements = document.querySelectorAll('.student-name, .user-name, #studentName, #displayName, #sidebarName');
       nameElements.forEach(el => {
         if (el) el.textContent = displayName;
       });
@@ -2021,6 +2021,16 @@
       const pageTitleEl = document.querySelector('.page-title');
       if (pageTitleEl) {
         pageTitleEl.textContent = `Welcome back, ${displayName}! 👋`;
+      }
+
+      // Atualizar iniciais no avatar da sidebar
+      const userAvatarEl = document.querySelector('.user-avatar');
+      if (userAvatarEl) {
+        const initials = displayName.split(' ')
+          .map(word => word.charAt(0).toUpperCase())
+          .join('')
+          .substring(0, 2);
+        userAvatarEl.textContent = initials;
       }
 
       // Atualizar foto
