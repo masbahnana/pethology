@@ -25,6 +25,10 @@ let userAnswers = [];
 let quizStartTime = null;
 let isAdaptiveMode = false; // Track if in adaptive quiz mode
 let adaptiveMetadata = null; // Store adaptive quiz metadata
+let isExamMode = false; // Track if in exam mode
+let examTimeLimit = 30 * 60; // 30 minutes in seconds
+let examTimer = null; // Timer interval
+let examTimeRemaining = examTimeLimit; // Remaining time in seconds
 
 // Check if user is logged in
 const userSession = sessionStorage.getItem('pethologyUser');
@@ -82,6 +86,9 @@ async function loadQuiz(file, topicName) {
     console.log(`✅ Quiz loaded! ${currentQuestions.length} questions available (randomized)`);
     if (isLoggedIn) {
       console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
+    }
+    if (isExamMode) {
+      startExamTimer();
     }
     showQuestion();
   } catch (error) {
@@ -141,8 +148,8 @@ function showQuestion() {
     </ul>
     <div id="feedback" style="text-align: center;"></div>
     <div class="quiz-navigation" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-      <button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>
-      ${isLoggedIn ? `
+      ${!isExamMode ? `<button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>` : ''}
+      ${isLoggedIn && !isExamMode ? `
         <button onclick="saveProgressAndExit()" class="quiz-navigation" style="background: #f59e0b;">💾 Save Progress & Exit</button>
         <button onclick="finishQuizEarly()" class="quiz-navigation" style="background: #10b981;">✓ Finish Quiz Now</button>
       ` : ''}
@@ -195,9 +202,11 @@ function selectAnswer(index) {
         <p style="color: #065f46; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
           ✅ Correct!
         </p>
-        <p style="color: #047857; margin: 0; line-height: 1.6;">
-          ${question.explanation}
-        </p>
+        ${!isExamMode ? `
+          <p style="color: #047857; margin: 0; line-height: 1.6;">
+            ${question.explanation}
+          </p>
+        ` : ''}
       </div>
       <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
         Moving to next question in 3 seconds... ⏱️
@@ -239,12 +248,14 @@ function selectAnswer(index) {
         <p style="color: #991b1b; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
           ❌ Incorrect
         </p>
-        <p style="color: #b91c1c; margin: 0 0 12px 0;">
-          The correct answer is: <strong>${question.options[correct]}</strong>
-        </p>
-        <p style="color: #dc2626; margin: 0; line-height: 1.6;">
-          ${question.explanation}
-        </p>
+        ${!isExamMode ? `
+          <p style="color: #b91c1c; margin: 0 0 12px 0;">
+            The correct answer is: <strong>${question.options[correct]}</strong>
+          </p>
+          <p style="color: #dc2626; margin: 0; line-height: 1.6;">
+            ${question.explanation}
+          </p>
+        ` : ''}
       </div>
       <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
         Moving to next question in 3 seconds... ⏱️
@@ -333,10 +344,19 @@ async function showQuizCompleted() {
       totalQuestions: currentQuestions.length,
       correctAnswers: correctAnswersCount,
       timeSpent: timeSpent,
-      answers: userAnswers
+      answers: userAnswers,
+      examMode: isExamMode
     };
 
     await saveQuizToFirebase(quizData);
+
+    // Clean up exam mode
+    if (isExamMode) {
+      exitFullscreen();
+      clearInterval(examTimer);
+      isExamMode = false;
+      examTimeRemaining = examTimeLimit;
+    }
 
     // Save adaptive metadata if in adaptive mode
     if (isAdaptiveMode && adaptiveMetadata) {
@@ -662,6 +682,13 @@ async function handleQuizSelection(file, topicName, moduleId) {
       // Show selection modal
       console.log(`📚 Found ${availableQuizzes.length} quizzes for ${topicName}`);
       showQuizSelectionModal(availableQuizzes, (selectedQuiz) => {
+        // Check if exam mode is enabled
+        if (selectedQuiz.examMode) {
+          isExamMode = true;
+          console.log('🎯 EXAM MODE ACTIVATED - Strict rules apply!');
+          initExamMode();
+        }
+
         loadSelectedQuiz(selectedQuiz, loadQuiz, (questions, quizName) => {
           // Custom quiz loader
           currentQuestions = shuffleArray(questions.map(q => ({
@@ -675,6 +702,9 @@ async function handleQuizSelection(file, topicName, moduleId) {
           userAnswers = [];
           quizStartTime = Date.now();
           console.log(`✅ Custom quiz loaded! ${currentQuestions.length} questions`);
+          if (isExamMode) {
+            startExamTimer();
+          }
           showQuestion();
         });
       });
@@ -1036,6 +1066,195 @@ async function loadAdaptiveQuiz() {
 
 // Initialize on page load
 initUserIndicator();
+
+// ===== EXAM MODE FUNCTIONS =====
+
+/**
+ * Initialize Exam Mode UI
+ */
+function initExamMode() {
+  console.log('🎯 Initializing Exam Mode...');
+
+  // Enter fullscreen
+  enterFullscreen();
+
+  // Create timer UI if doesn't exist
+  if (!document.getElementById('exam-timer')) {
+    createExamTimerUI();
+  }
+
+  // Hide elements that shouldn't be visible in exam mode
+  hideNonExamElements();
+
+  // Disable browser back button
+  history.pushState(null, null, location.href);
+  window.onpopstate = function() {
+    if (isExamMode) {
+      history.go(1);
+      alert('⚠️ You cannot navigate away during exam mode!');
+    }
+  };
+
+  // Prevent tab switching (visibility API)
+  let tabSwitchCount = 0;
+  document.addEventListener('visibilitychange', function() {
+    if (isExamMode && document.hidden) {
+      tabSwitchCount++;
+      console.warn(`⚠️ Tab switch detected! Count: ${tabSwitchCount}`);
+      if (tabSwitchCount >= 3) {
+        alert('⚠️ Warning: Excessive tab switching detected. This may result in automatic submission.');
+      }
+    }
+  });
+}
+
+/**
+ * Create timer UI element
+ */
+function createExamTimerUI() {
+  const timerContainer = document.createElement('div');
+  timerContainer.id = 'exam-timer';
+  timerContainer.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #fee2e2;
+    border: 2px solid #ef4444;
+    padding: 16px 24px;
+    border-radius: 12px;
+    z-index: 9999;
+    font-weight: 600;
+    font-size: 18px;
+    color: #991b1b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 150px;
+    text-align: center;
+  `;
+  timerContainer.innerHTML = `
+    <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
+      ⏱️ Time Remaining
+    </div>
+    <div id="exam-timer-display" style="font-size: 28px; font-family: 'Courier New', monospace;">
+      30:00
+    </div>
+  `;
+  document.body.appendChild(timerContainer);
+}
+
+/**
+ * Start exam timer countdown
+ */
+function startExamTimer() {
+  examTimeRemaining = examTimeLimit;
+  updateTimerDisplay();
+
+  examTimer = setInterval(() => {
+    examTimeRemaining--;
+    updateTimerDisplay();
+
+    // Warning at 5 minutes
+    if (examTimeRemaining === 300) {
+      alert('⚠️ 5 minutes remaining!');
+    }
+
+    // Warning at 1 minute
+    if (examTimeRemaining === 60) {
+      alert('⚠️ 1 minute remaining!');
+    }
+
+    // Time's up!
+    if (examTimeRemaining <= 0) {
+      clearInterval(examTimer);
+      autoSubmitExam();
+    }
+  }, 1000);
+}
+
+/**
+ * Update timer display
+ */
+function updateTimerDisplay() {
+  const display = document.getElementById('exam-timer-display');
+  if (!display) return;
+
+  const minutes = Math.floor(examTimeRemaining / 60);
+  const seconds = examTimeRemaining % 60;
+  display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+  // Change color when less than 5 minutes
+  const timer = document.getElementById('exam-timer');
+  if (examTimeRemaining <= 300 && examTimeRemaining > 60) {
+    timer.style.background = '#fed7aa';
+    timer.style.borderColor = '#f97316';
+    timer.style.color = '#9a3412';
+  } else if (examTimeRemaining <= 60) {
+    timer.style.background = '#fecaca';
+    timer.style.borderColor = '#dc2626';
+    timer.style.color = '#7f1d1d';
+  }
+}
+
+/**
+ * Auto-submit exam when time runs out
+ */
+async function autoSubmitExam() {
+  console.log('⏰ Time's up! Auto-submitting exam...');
+  alert('⏰ Time is up! Your exam will be submitted automatically.');
+
+  // Force finish quiz
+  await finishQuiz();
+
+  exitFullscreen();
+  isExamMode = false;
+}
+
+/**
+ * Enter fullscreen mode
+ */
+function enterFullscreen() {
+  const elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen().catch(err => {
+      console.warn('Could not enter fullscreen:', err);
+    });
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+}
+
+/**
+ * Exit fullscreen mode
+ */
+function exitFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) {
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    document.msExitFullscreen();
+  }
+}
+
+/**
+ * Hide non-exam elements
+ */
+function hideNonExamElements() {
+  // Hide navigation, footer, etc.
+  const elementsToHide = [
+    document.querySelector('nav'),
+    document.querySelector('footer'),
+    document.querySelector('.hamburger-menu')
+  ];
+
+  elementsToHide.forEach(el => {
+    if (el) {
+      el.style.display = 'none';
+      el.dataset.hiddenByExam = 'true';
+    }
+  });
+}
 
 window.loadQuiz = loadQuiz;
 window.handleQuizSelection = handleQuizSelection;
