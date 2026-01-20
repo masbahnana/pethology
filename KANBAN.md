@@ -230,23 +230,30 @@ Próximos passos:
 
 ---
 
-*Este Kanban é atualizado manualmente. Para ver detalhes completos das features, consulte TODO.md e TODO-v4.md*
+## 🐛 RESOLVED BUGS (20 Jan 2026)
 
-BUG: Quando eu logo com a minha conta PLC meu nome segue sendo john doe e tem uma "welcome back john" bem grande
-BUG: checar erros no google chrome: [Error] Fetch API cannot load https://firestore.googleapis.com/google.firestore.v1.Firestore/Write/channel?gsessionid=qCtryzV71r9HzGnbngG8Et8nxtXeq4rd27Gs7mGt-9E&VER=8&database=projects%2Fpethology-7e9d7%2Fdatabases%2F(default)&RID=rpc&SID=IzByWncWWVkkSSm02GUQMg&AID=2&CI=0&TYPE=xmlhttp&zx=58caiv600968&t=1 due to access control checks.
-	(anonymous function) (firebase-firestore.js:1:33582)
-	(anonymous function) (firebase-firestore.js:1:49976)
-	ic (firebase-firestore.js:1:21188)
-	Md (firebase-firestore.js:1:40273)
-	(anonymous function) (firebase-firestore.js:1:51844)
-	ub (firebase-firestore.js:1:17037)
-[Error] Failed to load resource: the server responded with a status of 404 () (auth0|68f005ae44cd2424e8e74abd, line 0)
-[Error] ❌ REST request failed: GET /progress/auth0|68f005ae44cd2424e8e74abd – Error: HTTP 404:  — firebase-rest.js:31
-Error: HTTP 404:  — firebase-rest.js:31
-	(anonymous function) (firebase-rest.js:35)
-[Error] ❌ Error getting user progress: – Error: HTTP 404:  — firebase-rest.js:31
-Error: HTTP 404:  — firebase-rest.js:31
-	(anonymous function) (firebase-rest.js:198)
+### ✅ John Doe Name Issue
+**Problem:** Students logging in with PLC accounts saw "John Doe" instead of their real name
+**Cause:** Auth0 user.name returning placeholder; whitelist name not being used
+**Fix:** Modified auth0-callback.html to prioritize studentData.name from whitelist
+**Status:** ✅ FIXED - commit 4ad10df
+
+### 📝 Firestore CORS Error (Legacy Pages)
+**Problem:** CORS error in Chrome: "Fetch API cannot load firestore.googleapis.com/.../Write/channel"
+**Cause:** Legacy pages (content.html, teacher-content-manager.html, etc.) still use Firebase SDK with WebChannel
+**Solution:** These pages already have `experimentalForceLongPolling: true` configured
+**Impact:** Low - these are legacy/admin pages not used by students
+**Status:** ⚠️ Known issue - acceptable for now (SDK configured correctly)
+
+### ℹ️ 404 Errors for New Users
+**Problem:** `GET /progress/auth0|{userId}` returns 404 for new users
+**Cause:** Expected behavior - progress document doesn't exist yet for new students
+**Impact:** None - system creates default progress on first quiz attempt
+**Status:** ✅ Not a bug - normal behavior
+
+---
+
+*Este Kanban é atualizado manualmente. Para ver detalhes completos das features, consulte TODO.md e TODO-v4.md*
 [Error] Failed to load resource: the server responded with a status of 404 () (auth0|68f005ae44cd2424e8e74abd, line 0)
 [Error] ❌ REST request failed: GET /progress/auth0|68f005ae44cd2424e8e74abd – Error: HTTP 404:  — firebase-rest.js:31
 Error: HTTP 404:  — firebase-rest.js:31
