@@ -38,6 +38,15 @@
 ## 🟢 DONE (Recent Completions)
 
 ### ✅ January 2026 - Features & Bug Fixes
+- [x] **Exam Mode** - Complete exam simulation with strict rules (20 Jan 2026)
+  - Quiz selection: Exam mode checkbox with warning banner
+  - Timer: 30min countdown with color warnings (5min orange, 1min red)
+  - Auto-submit: Automatic submission when time runs out
+  - Fullscreen: Forced fullscreen mode with exit prevention
+  - Restrictions: No hints, no explanations, no progress save, no menu access
+  - Tab detection: Warning after 3 tab switches
+  - Back button: Disabled browser back during exam
+  - Progress tracking: examMode flag saved to Firebase history
 - [x] **Support Ticket System** - Complete support system with admin dashboard (20 Jan 2026)
   - Reusable support-modal.js component
   - Report Issue button in both dashboards (student sidebar, teacher header)
@@ -143,7 +152,6 @@
 
 #### Student Experience
 - [ ] **Smart Review System** - AI-powered weak topic review - *3-4h*
-- [ ] **Exam Mode** - Strict timer, no hints, fullscreen - *2-3h*
 - [ ] **Flashcards System** - Auto-generate from quiz questions - *3-4h*
 
 #### Advanced Features
