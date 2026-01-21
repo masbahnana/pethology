@@ -1908,13 +1908,9 @@
       try {
         console.log('🔄 Loading student data from Firebase (REST API)...');
 
-        // Show loading, hide content
-        document.getElementById('dashboardLoading').style.display = 'flex';
-        document.getElementById('dashboardContent').style.display = 'none';
-
-        // Pegar usuário da sessão
+        // SECURITY: Check if user is actually a student (not a teacher)
         const userSession = sessionStorage.getItem('pethologyUser');
-
+        
         if (!userSession) {
           console.warn('⚠️ No user session found, redirecting to login...');
           window.location.href = 'auth0-login.html';
@@ -1923,6 +1919,19 @@
 
         const user = JSON.parse(userSession);
         console.log('👤 User:', user);
+        
+        // 🚨 SECURITY: If user is a Teacher, redirect to teacher dashboard
+        if (user.role === 'Teacher') {
+          console.log('🚨 [SECURITY] Teacher detected in student dashboard - redirecting to teacher-dashboard.html');
+          console.log('🚨 [SECURITY] User role:', user.role);
+          console.log('🚨 [SECURITY] User email:', user.email);
+          window.location.href = '/teacher-dashboard.html';
+          return;
+        }
+
+        // Show loading, hide content
+        document.getElementById('dashboardLoading').style.display = 'flex';
+        document.getElementById('dashboardContent').style.display = 'none';
 
         // Carregar progresso do Firebase usando REST API
         const progress = await PethologyFirebaseREST.getStudentProgress(user.id);

@@ -174,7 +174,7 @@ class Auth0Service {
 
     // 🚨 EMERGENCY FIX: Hardcode Mary Deegan as Teacher (TEMPORARY!)
     // TODO: Remove this after fixing whitelist issue
-    if (emailLower === 'mdeegan@stconlethcc365.ie') {
+    if (emailLower === 'mdeegan@stconlethcc365.ie' || emailLower === 'mdeegan@stconlethscc.ie') {
       console.log('🚨 [EMERGENCY FIX] Mary Deegan detected - forcing Teacher role');
       return 'Teacher';
     }

@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Loading... - Pethology</title>
 
   <!-- Google Analytics 4 -->
@@ -50,32 +53,62 @@
 
     // Check if email is in teacher whitelist
     async function isEmailWhitelisted(email) {
-      console.log('🔍 isEmailWhitelisted called with email:', email);
+      console.log('🔍 [WHITELIST] isEmailWhitelisted called with email:', email);
+      console.log('🔍 [WHITELIST] Email type:', typeof email, 'Length:', email ? email.length : 'null');
       try {
-        console.log('📡 Fetching teacher whitelist from Firebase...');
+        console.log('📡 [WHITELIST] Fetching teacher whitelist from Firebase...');
         const response = await PethologyFirebaseREST.request('/teacher_whitelist');
-        console.log('📡 Whitelist response:', response);
+        console.log('📡 [WHITELIST] Raw response:', response);
+        console.log('📡 [WHITELIST] Response type:', typeof response);
+        console.log('📡 [WHITELIST] Response.documents type:', Array.isArray(response.documents) ? 'Array' : typeof response.documents);
+        console.log('📡 [WHITELIST] Response.documents length:', response.documents ? response.documents.length : 'undefined');
 
         if (!response.documents || response.documents.length === 0) {
-          console.log('⚠️ No whitelist found - denying teacher access');
+          console.log('⚠️ [WHITELIST] No whitelist found - response.documents is:', response.documents);
+          console.log('⚠️ [WHITELIST] response.documents === undefined:', response.documents === undefined);
+          console.log('⚠️ [WHITELIST] response.documents === null:', response.documents === null);
+          console.log('⚠️ [WHITELIST] response.documents === []:', response.documents && response.documents.length === 0);
           return false;
         }
 
-        const whitelist = response.documents.map(doc =>
-          PethologyFirebaseREST.convertDocument(doc)
-        );
-        console.log('📋 Whitelist entries:', whitelist);
+        console.log(`📋 [WHITELIST] Found ${response.documents.length} whitelist entries`);
+        
+        const whitelist = response.documents.map((doc, idx) => {
+          const converted = PethologyFirebaseREST.convertDocument(doc);
+          console.log(`📋 [WHITELIST] Entry ${idx}:`, converted);
+          console.log(`📋 [WHITELIST]   - Raw doc:`, doc);
+          console.log(`📋 [WHITELIST]   - Converted:`, converted);
+          return converted;
+        });
+        
+        console.log('📋 [WHITELIST] All whitelist entries:', whitelist);
 
         const isAllowed = whitelist.some(entry => {
-          const match = entry.email.toLowerCase() === email.toLowerCase();
-          console.log(`  Comparing: [${entry.email.toLowerCase()}] vs [${email.toLowerCase()}] = ${match}`);
+          const entryEmail = entry.email ? entry.email.toLowerCase() : 'UNDEFINED';
+          const checkEmail = email.toLowerCase();
+          const match = entryEmail === checkEmail;
+          console.log(`📋 [WHITELIST] Entry email raw:`, entry.email, '| Type:', typeof entry.email);
+          console.log(`📋 [WHITELIST] Entry email lower:`, entryEmail);
+          console.log(`📋 [WHITELIST] Check email lower:`, checkEmail);
+          console.log(`📋 [WHITELIST] Comparing: [${entryEmail}] vs [${checkEmail}] = ${match}`);
+          console.log(`📋 [WHITELIST] Match details:`, {
+            entryEmailLength: entryEmail.length,
+            checkEmailLength: checkEmail.length,
+            entryEmailChars: entryEmail.split('').map(c => c.charCodeAt(0)),
+            checkEmailChars: checkEmail.split('').map(c => c.charCodeAt(0))
+          });
           return match;
         });
 
-        console.log(`🔐 Whitelist check for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
+        console.log(`🔐 [WHITELIST] Final result for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
         return isAllowed;
       } catch (error) {
-        console.error('❌ Error checking whitelist:', error);
+        console.error('❌ [WHITELIST] Error checking whitelist:', error);
+        console.error('❌ [WHITELIST] Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
         return false; // Deny access if we can't verify
       }
     }
@@ -104,25 +137,32 @@
         const email = user.email || '';
         const emailLower = email.toLowerCase();
 
-        console.log('🔍 Determining role for email:', email);
-        console.log('🔍 Email lowercase:', emailLower);
+        console.log('🔍 [ROLE DETERMINATION] Starting role determination...');
+        console.log('🔍 [ROLE DETERMINATION] Email:', email);
+        console.log('🔍 [ROLE DETERMINATION] Email lowercase:', emailLower);
 
         // 🔐 PRIORITY 1: Check teacher whitelist FIRST
-        console.log('🚀 About to call isEmailWhitelisted...');
+        console.log('🚀 [ROLE DETERMINATION] Checking teacher whitelist...');
         const isTeacherWhitelisted = await isEmailWhitelisted(email);
-        console.log('🚀 isEmailWhitelisted returned:', isTeacherWhitelisted);
+        console.log('🚀 [ROLE DETERMINATION] Whitelist check result:', isTeacherWhitelisted);
 
+        // 🎓 DETERMINE ROLE based on email domain/pattern
         let role;
-        if (isTeacherWhitelisted) {
+        if (emailLower.endsWith('@stconlethcc365.ie')) {
           role = 'Teacher';
-          console.log('✅ Teacher role assigned - email found in whitelist');
+          console.log('✅ [ROLE DETERMINATION] ROLE ASSIGNED: Teacher (email ends with @stconlethcc365.ie)');
+        } else if (isTeacherWhitelisted) {
+          role = 'Teacher';
+          console.log('✅ [ROLE DETERMINATION] ROLE ASSIGNED: Teacher (found in whitelist)');
         } else if (emailLower.startsWith('plc')) {
           role = 'Student';
-          console.log('📚 Student role assigned - email starts with "plc"');
+          console.log('📚 [ROLE DETERMINATION] ROLE ASSIGNED: Student (email starts with plc)');
         } else {
-          // Default to Student if not in whitelist and doesn't start with plc
+          // Default to Student if not recognized as teacher
           role = 'Student';
-          console.log('📚 Student role assigned - default');
+          console.log('📚 [ROLE DETERMINATION] ROLE ASSIGNED: Student (default)');
+          console.log('⚠️ [ROLE DETERMINATION] WARNING: Email does not match known patterns');
+          console.log('⚠️ [ROLE DETERMINATION] Email:', emailLower);
         }
 
         // 🔐 STUDENT WHITELIST CHECK: Verify students are pre-registered
@@ -181,8 +221,15 @@
 
         console.log('✅ User saved to Firebase');
 
-        // Salvar na sessão
+        // ⚠️ CLEAR OLD SESSION CACHE - Ensure we don't have old role data
+        console.log('🧹 [CLEANUP] Clearing old session data...');
+        sessionStorage.clear();
+        localStorage.removeItem('learningStreak');
+        localStorage.removeItem('pethologyUser');
+
+        // Salvar na sessão com a nova role
         sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
+        console.log('💾 [CLEANUP] New session saved:', userSession);
 
         // Track login event
         if (window.analytics && window.analytics.login) {
@@ -190,7 +237,25 @@
         }
 
         // Redirecionar
-        window.location.href = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
+        console.log('🔄 [REDIRECT] Final role before redirect:', role);
+        console.log('🔄 [REDIRECT] User object:', userSession);
+        const targetPage = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
+        console.log('🔄 [REDIRECT] Target page:', targetPage);
+        console.log('🔄 [REDIRECT] Current URL:', window.location.href);
+        console.log('🔄 [REDIRECT] Will redirect in 500ms to ensure sessionStorage is synced...');
+        console.log('%c🎯 FINAL STATE BEFORE REDIRECT', 'background: yellow; color: black; font-size: 16px; font-weight: bold;');
+        console.log({
+          role: role,
+          email: userSession.email,
+          targetPage: targetPage,
+          sessionStorageContent: JSON.parse(sessionStorage.getItem('pethologyUser'))
+        });
+        
+        // Dar um pequeno delay para garantir que sessionStorage foi escrito
+        setTimeout(() => {
+          console.log('⏳ [REDIRECT] NOW REDIRECTING to:', targetPage);
+          window.location.href = targetPage;
+        }, 500);
 
       } catch (error) {
         console.error('❌ Callback error:', error);

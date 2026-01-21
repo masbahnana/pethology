@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Login - Pethology</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="stylesheet" href="assets/css/mobile-nav.css?v=5.1" />
@@ -386,9 +389,15 @@
 
           console.log('💾 UserSession created:', userSession);
 
-          // Salvar na sessão
+          // 🧹 CLEAR OLD SESSION DATA - Ensure we don't have old role data
+          console.log('🧹 [CLEANUP] Clearing old session data...');
+          sessionStorage.clear();
+          localStorage.removeItem('learningStreak');
+          localStorage.removeItem('pethologyUser');
+
+          // Salvar na sessão com a nova role
           sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
-          console.log('✅ Session saved to sessionStorage');
+          console.log('✅ Session saved to sessionStorage:', userSession);
 
           // Salvar no Firebase para histórico
           console.log('🔥 Calling saveUserToFirebase...');
@@ -455,11 +464,16 @@
 
       const emailLower = email.toLowerCase();
 
-      // 👨‍🏫 Lista específica de Teachers (adicione seu email aqui!)
+      // 🎓 RULE 1: Teachers use @stconlethcc365.ie domain
+      if (emailLower.endsWith('@stconlethcc365.ie')) {
+        console.log('✅ [ROLE] Teacher detected - email ends with @stconlethcc365.ie:', emailLower);
+        return 'Teacher';
+      }
+
+      // 👨‍🏫 RULE 3: Demo/test accounts
       const teacherEmails = [
-        'plcnataliadasilvaraythz@plcstconlethcc365.ie', // Seu email!
         'teacher@demo.com',
-        'nataliadasilvaraythz@outlook.com' // Se usar outlook
+        'nataliadasilvaraythz@outlook.com'
       ];
 
       if (teacherEmails.includes(emailLower)) {
@@ -467,15 +481,16 @@
         return 'Teacher';
       }
 
-      // Identificação automática por palavras-chave
+      // RULE 4: Identificação automática por palavras-chave (fallback)
       if (emailLower.includes('staff') ||
           emailLower.includes('teacher') ||
           emailLower.includes('admin') ||
           emailLower.includes('instructor')) {
+        console.log('✅ [ROLE] Teacher detected - email contains keyword');
         return 'Teacher';
       }
 
-      // Estudantes: começam com "plc" (mas não estão na lista de teachers)
+      // Estudantes: começam com "plc"
       if (emailLower.startsWith('plc')) {
         return 'Student';
       }
