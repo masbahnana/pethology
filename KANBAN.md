@@ -1,6 +1,6 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 20 Janeiro 2026
+**Última atualização:** 21 Janeiro 2026
 **Versão Atual:** v5.5
 **Status:** PILOT LAUNCH + Bug Fixes
 
@@ -130,6 +130,11 @@
 - [x] Cypress E2E Testing Structure
 
 ### ✅ Recent Fixes (Jan 2026)
+- [x] Quiz navigation complete fix - 4 cascading issues (21 Jan 2026)
+  - Course Modules collapsible now open by default
+  - Module cards clickable on dashboard
+  - Firebase REST API imported in quiz.html
+  - Emoji characters removed from JavaScript strings
 - [x] Teacher login whitelist check priority fix (19 Jan 2026)
 - [x] Hamburger navigation on all pages (Oct 2025)
 - [x] Mobile layout and script errors (Oct 2025)
@@ -246,6 +251,38 @@ Próximos passos:
 **Cause:** Auth0 user.name returning placeholder; whitelist name not being used
 **Fix:** Modified auth0-callback.html to prioritize studentData.name from whitelist
 **Status:** ✅ FIXED - commit 4ad10df
+
+### ✅ Quiz Navigation Issues (21 Jan 2026)
+**Problem:** Clicking Biology module from dashboard did nothing - no navigation, blank page
+**Root Causes:** Multiple cascading issues discovered:
+1. Course Modules collapsible menu was closed by default (max-height: 0)
+2. Module cards on dashboard were not clickable (missing onclick handlers)
+3. quiz.html missing Firebase REST API import (quiz.js requires it)
+4. JavaScript syntax errors from emoji characters (⏰, ⚠️) in strings
+
+**Fixes Applied:**
+1. **Commit 20d052c** - Made "Course Modules" collapsible open by default
+   - Added "open" class to both collapsible content and icon
+   - Users can now immediately see and click module links in sidebar
+
+2. **Commit 2f7434b** - Made all 7 module cards clickable on dashboard
+   - Added onclick handlers: `window.location.href='quiz.html?module=X'`
+   - Added cursor: pointer for visual feedback
+   - Modules: biology, animal-welfare, grooming, animal-anatomy, small-animals, vet-assistant-skills, animal-behaviour
+
+3. **Commit 738ebce** - Added Firebase REST API import to quiz.html
+   - quiz.js was migrated to REST API but quiz.html wasn't updated
+   - Added script block to import and expose window.PethologyFirebaseREST
+   - Without this, quiz.js failed silently and page stayed blank
+
+4. **Commit 890c224** - Removed emoji characters causing JavaScript syntax errors
+   - UTF-8 emoji bytes (⏰ ⏱️ ⚠️) confused JavaScript parser
+   - Browser error: "Uncaught SyntaxError: missing ) after argument list (at quiz.js:1313:15)"
+   - Replaced all emojis in alerts/console.logs with plain text: "WARNING:", "Time is up!"
+   - Verified syntax with `node -c quiz.js`
+
+**Testing:** ✅ All module cards now clickable, Biology quiz loads and runs perfectly in Chrome
+**Status:** ✅ FULLY FIXED - 4 consecutive fixes completed
 
 ---
 
