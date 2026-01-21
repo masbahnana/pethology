@@ -8,9 +8,6 @@
 
 ## 🔴 TO DO (Urgente)
 
-### 🚨 Critical Bugs
-- [ ] **Setup basic analytics** - Google Analytics para monitorar pilot - *20min*
-
 ### ⚠️ High Priority
 - [ ] **Collect Mary's feedback** - Após ela testar - *ongoing*
 
@@ -38,6 +35,12 @@
 ## 🟢 DONE (Recent Completions)
 
 ### ✅ January 2026 - Features & Bug Fixes
+- [x] **Google Analytics 4** - Basic analytics setup for pilot monitoring (21 Jan 2026)
+  - Created analytics.js helper with custom event tracking
+  - Integrated GA4 (G-BVVY1X67PX) into: index.html, student-dashboard.html, teacher-dashboard.html, quiz.html, auth0-callback.html
+  - Login tracking: automatically tracks user login with role (Teacher/Student)
+  - Custom events ready: quiz_start, quiz_complete, custom_quiz_create, student_import, achievement_unlock, support_ticket
+  - Free tier: 10 million events/month
 - [x] **Exam Mode** - Complete exam simulation with strict rules (20 Jan 2026)
   - Quiz selection: Exam mode checkbox with warning banner
   - Timer: 30min countdown with color warnings (5min orange, 1min red)

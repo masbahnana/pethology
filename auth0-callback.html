@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Loading... - Pethology</title>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVVY1X67PX"></script>
+  <script src="assets/js/analytics.js"></script>
+
   <style>
     body {
       display: flex;
@@ -169,6 +174,11 @@
 
         // Salvar na sessão
         sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
+
+        // Track login event
+        if (window.analytics && window.analytics.login) {
+          window.analytics.login('auth0', role);
+        }
 
         // Redirecionar
         window.location.href = role === 'Teacher' ? '/teacher-dashboard.html' : '/student-dashboard.html';
