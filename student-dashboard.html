@@ -1887,7 +1887,7 @@
     // ✅ 100% REST API - No Firebase SDK!
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements-rest.js?v=4.1';
-    import { loadStudentCalendarEvents } from './assets/js/calendar-teacher.js?v=2.0';
+    // Removed calendar-teacher.js import (uses Firebase SDK which causes CORS)
     import toast from './assets/js/toast.js';
     import errorHandler from './assets/js/error-handler.js';
 
@@ -1937,7 +1937,8 @@
         await loadStudentAnnouncements();
 
         // Carregar calendar events
-        await loadStudentCalendarEvents();
+        // TODO: Migrate calendar to REST API
+        // await loadStudentCalendarEvents();
 
         console.log('✅ Student data loaded successfully!');
 
