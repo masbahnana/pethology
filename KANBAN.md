@@ -9,7 +9,7 @@
 ## 🔴 TO DO (Urgente)
 
 ### ⚠️ High Priority
-- [ ] **Collect Mary's feedback** - Após ela testar - *ongoing*
+- [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
 
 ### 📋 Medium Priority (This Week)
 - [ ] **Performance optimization** - Minify, lazy load, cache - *45min*
@@ -18,12 +18,7 @@
 
 ## 🟡 IN PROGRESS
 
-### 🧪 Testing Phase - Aguardando Mary
-- [ ] **Teacher login verification** - Aguardando Mary testar
-  - ✅ Fix implementado (whitelist verificada primeiro)
-  - ⏳ Aguardando teste da professora
-  - Action: Mary precisa fazer logout e login novamente
-
+### 🧪 Testing Phase - Pilot Launch
 - [ ] **Mobile testing** - Em andamento
   - ✅ Fixed index.html script errors
   - ✅ Hamburger menu em TODAS as páginas
@@ -35,6 +30,13 @@
 ## 🟢 DONE (Recent Completions)
 
 ### ✅ January 2026 - Features & Bug Fixes
+- [x] **Teacher role detection fix** - Generic email-based role assignment (21 Jan 2026)
+  - Teachers: emails ending with @stconlethcc365.ie → Teacher Dashboard
+  - Students: emails starting with 'plc' → Student Dashboard
+  - Removed hardcoded emergency fixes (scalable for all users)
+  - Updated in: auth0-callback.html, auth0-login.html, auth0-service.js
+  - Added security check in student-dashboard.html to auto-redirect teachers
+  - Added session cleanup and cache busting to prevent stale role data
 - [x] **Google Analytics 4** - Basic analytics setup for pilot monitoring (21 Jan 2026)
   - Created analytics.js helper with custom event tracking
   - Integrated GA4 (G-BVVY1X67PX) into: index.html, student-dashboard.html, teacher-dashboard.html, quiz.html, auth0-callback.html
@@ -42,52 +44,6 @@
   - Custom events ready: quiz_start, quiz_complete, custom_quiz_create, student_import, achievement_unlock, support_ticket
   - Free tier: 10 million events/month
 - [x] **Exam Mode** - Complete exam simulation with strict rules (20 Jan 2026)
-  - Quiz selection: Exam mode checkbox with warning banner
-  - Timer: 30min countdown with color warnings (5min orange, 1min red)
-  - Auto-submit: Automatic submission when time runs out
-  - Fullscreen: Forced fullscreen mode with exit prevention
-  - Restrictions: No hints, no explanations, no progress save, no menu access
-  - Tab detection: Warning after 3 tab switches
-  - Back button: Disabled browser back during exam
-  - Progress tracking: examMode flag saved to Firebase history
-- [x] **Support Ticket System** - Complete support system with admin dashboard (20 Jan 2026)
-  - Reusable support-modal.js component
-  - Report Issue button in both dashboards (student sidebar, teacher header)
-  - Reporting guidelines modal with form validation
-  - Auto-captured metadata: page URL, user agent, screen size, user info
-  - Firebase /support_tickets collection with full CRUD
-  - Admin dashboard: stats, filters, search, ticket management
-  - Status management: open → in-progress → resolved
-  - Priority levels: low, medium, high, critical
-  - Admin notes system with timestamps
-- [x] **FAQ Page** - Complete FAQ with 20 questions in 4 categories (20 Jan 2026)
-  - Categories: Getting Started, For Students, For Teachers, Technical
-  - Accordion-style expandable answers
-  - Category cards with smooth scroll
-  - Links added to: student dashboard, teacher dashboard, index.html
-  - Fully responsive design
-- [x] **Deadlines System** - Complete deadline tracking for custom quizzes (20 Jan 2026)
-  - Teacher: Add optional deadline when creating custom quiz
-  - Student: See deadline with countdown in quiz selection modal
-  - Visual indicators: "Due in X days" or "X days overdue"
-  - Overdue badge: Red badge for quizzes past deadline
-  - Firebase integration: Deadline stored as timestampValue
-- [x] **Skills Demos System** - Complete practical demonstration checklist system (20 Jan 2026)
-  - Teacher: Create/edit/delete demos, save as draft or publish, view student progress
-  - Student: View published demos, mark tasks complete, progress tracking, mark ready for assessment
-  - Progress tracking: Teachers can see each student's completion percentage and status
-  - Integration: Links in both dashboards, Firebase REST API with student_skills_progress collection
-  - Status badges: Not Started, In Progress, Ready for Assessment
-- [x] **Glossary System** - Complete veterinary terminology management (19 Jan 2026)
-  - Teacher: Add/edit/delete terms, search, filter by category, stats
-  - Student: Browse terms, search, multiple view modes (A-Z, by category)
-  - Integration: Links in both dashboards, Firebase REST API
-  - Categories: Anatomy, Diseases, Procedures, Tools, Medications
-- [x] **KANBAN.md** - Visual task board criado (19 Jan 2026)
-- [x] **KNOWN_ISSUES.md** - Documentação completa de bugs e limitações (19 Jan 2026)
-- [x] **Teacher login fix** - Whitelist verificada primeiro (19 Jan 2026)
-  - Fix crítico: role determination agora verifica whitelist antes de email patterns
-  - Teachers podem logar corretamente independente do formato do email
 
 ### ✅ v5.5 - Pilot Launch Materials (24 Oct 2025)
 - [x] for-teachers.html - Página explicativa para professores

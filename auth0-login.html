@@ -470,29 +470,19 @@
         return 'Teacher';
       }
 
-      // 👨‍🏫 RULE 3: Demo/test accounts
-      const teacherEmails = [
-        'teacher@demo.com',
-        'nataliadasilvaraythz@outlook.com'
-      ];
-
-      if (teacherEmails.includes(emailLower)) {
-        console.log('✅ Email reconhecido como Teacher:', emailLower);
-        return 'Teacher';
+      // � RULE 2: Students start with 'plc'
+      if (emailLower.startsWith('plc')) {
+        console.log('✅ [ROLE] Student detected - email starts with plc:', emailLower);
+        return 'Student';
       }
 
-      // RULE 4: Identificação automática por palavras-chave (fallback)
+      // RULE 3: Identificação automática por palavras-chave (fallback)
       if (emailLower.includes('staff') ||
           emailLower.includes('teacher') ||
           emailLower.includes('admin') ||
           emailLower.includes('instructor')) {
         console.log('✅ [ROLE] Teacher detected - email contains keyword');
         return 'Teacher';
-      }
-
-      // Estudantes: começam com "plc"
-      if (emailLower.startsWith('plc')) {
-        return 'Student';
       }
 
       // Por padrão, assume Student
