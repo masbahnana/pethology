@@ -758,7 +758,7 @@ async function saveProgressAndExit() {
 // Finalizar quiz antecipadamente
 async function finishQuizEarly() {
   if (correctAnswersCount === 0) {
-    alert('⚠️ You need to answer at least one question correctly before finishing.');
+    alert('You need to answer at least one question correctly before finishing.');
     return;
   }
 
@@ -1063,7 +1063,7 @@ async function loadCustomQuiz(quizId) {
       const now = new Date();
       if (deadline < now) {
         const daysOverdue = Math.ceil((now - deadline) / (1000 * 60 * 60 * 24));
-        alert(`⚠️ This quiz is ${daysOverdue} day${daysOverdue !== 1 ? 's' : ''} overdue!`);
+        alert(`WARNING: This quiz is ${daysOverdue} day${daysOverdue !== 1 ? 's' : ''} overdue!`);
       }
     }
 
@@ -1203,7 +1203,7 @@ function initExamMode() {
   window.onpopstate = function() {
     if (isExamMode) {
       history.go(1);
-      alert('⚠️ You cannot navigate away during exam mode!');
+      alert('WARNING: You cannot navigate away during exam mode!');
     }
   };
 
@@ -1214,7 +1214,7 @@ function initExamMode() {
       tabSwitchCount++;
       console.warn(`⚠️ Tab switch detected! Count: ${tabSwitchCount}`);
       if (tabSwitchCount >= 3) {
-        alert('⚠️ Warning: Excessive tab switching detected. This may result in automatic submission.');
+        alert('WARNING: Excessive tab switching detected. This may result in automatic submission.');
       }
     }
   });
@@ -1266,12 +1266,12 @@ function startExamTimer() {
 
     // Warning at 5 minutes
     if (examTimeRemaining === 300) {
-      alert('⚠️ 5 minutes remaining!');
+      alert('WARNING: 5 minutes remaining!');
     }
 
     // Warning at 1 minute
     if (examTimeRemaining === 60) {
-      alert('⚠️ 1 minute remaining!');
+      alert('WARNING: 1 minute remaining!');
     }
 
     // Time's up!
@@ -1310,8 +1310,8 @@ function updateTimerDisplay() {
  * Auto-submit exam when time runs out
  */
 async function autoSubmitExam() {
-  console.log('⏰ Time's up! Auto-submitting exam...');
-  alert('⏰ Time is up! Your exam will be submitted automatically.');
+  console.log('Time is up! Auto-submitting exam...');
+  alert('Time is up! Your exam will be submitted automatically.');
 
   // Force finish quiz
   await finishQuiz();
