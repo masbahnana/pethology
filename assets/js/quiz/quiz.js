@@ -1,4 +1,3 @@
-import { PethologyFirebaseService } from '../firebase-service.js';
 import { getAvailableQuizzes, showQuizSelectionModal, loadSelectedQuiz } from './quiz-selector.js';
 import { calculateConfidenceScores, categorizeModules, selectAdaptiveQuestions, saveAdaptiveMetadata } from '../adaptive-quiz-ai.js';
 import { PethologyFirebaseREST } from '../firebase-rest.js';
@@ -404,6 +403,115 @@ function normalizeModuleName(moduleName) {
   return moduleName.toLowerCase().replace(/\s+/g, '-');
 }
 
+// Save quiz result using REST API
+async function saveQuizResultREST(resultData) {
+  try {
+    const firestoreData = {
+      fields: {
+        userId: { stringValue: resultData.userId },
+        quizId: { stringValue: resultData.quizId },
+        type: { stringValue: resultData.type },
+        score: { doubleValue: resultData.score },
+        totalQuestions: { integerValue: String(resultData.totalQuestions) },
+        correctAnswers: { integerValue: String(resultData.correctAnswers) },
+        timeSpent: { integerValue: String(resultData.timeSpent || 0) },
+        completedAt: { timestampValue: resultData.completedAt.toISOString() },
+        examMode: { booleanValue: resultData.examMode || false }
+      }
+    };
+
+    await PethologyFirebaseREST.request('/quiz_results', 'POST', firestoreData);
+    console.log('✅ Quiz result saved via REST API');
+  } catch (error) {
+    console.error('❌ Error saving quiz result:', error);
+    throw error;
+  }
+}
+
+// Get student progress using REST API
+async function getStudentProgressREST(userId) {
+  try {
+    const response = await PethologyFirebaseREST.request(`/student_progress/${userId}`);
+
+    if (response && response.fields) {
+      return PethologyFirebaseREST.convertDocument(response);
+    }
+
+    // Return default progress if not found
+    return {
+      overallStats: {
+        totalQuizzes: 0,
+        averageScore: 0,
+        totalTimeSpent: 0,
+        lastActivity: new Date()
+      },
+      moduleProgress: {},
+      achievements: []
+    };
+  } catch (error) {
+    console.error('❌ Error getting student progress:', error);
+    return {
+      overallStats: {
+        totalQuizzes: 0,
+        averageScore: 0,
+        totalTimeSpent: 0,
+        lastActivity: new Date()
+      },
+      moduleProgress: {},
+      achievements: []
+    };
+  }
+}
+
+// Update student progress using REST API
+async function updateStudentProgressREST(userId, progress) {
+  try {
+    const firestoreData = {
+      fields: {
+        overallStats: {
+          mapValue: {
+            fields: {
+              totalQuizzes: { integerValue: String(progress.overallStats.totalQuizzes || 0) },
+              averageScore: { doubleValue: progress.overallStats.averageScore || 0 },
+              totalTimeSpent: { integerValue: String(progress.overallStats.totalTimeSpent || 0) },
+              lastActivity: { timestampValue: new Date().toISOString() }
+            }
+          }
+        },
+        moduleProgress: {
+          mapValue: {
+            fields: Object.fromEntries(
+              Object.entries(progress.moduleProgress || {}).map(([key, val]) => [
+                key,
+                {
+                  mapValue: {
+                    fields: {
+                      completion: { doubleValue: val.completion || 0 },
+                      timeSpent: { integerValue: String(val.timeSpent || 0) },
+                      lastAttempt: { timestampValue: new Date().toISOString() }
+                    }
+                  }
+                }
+              ])
+            )
+          }
+        },
+        achievements: {
+          arrayValue: {
+            values: (progress.achievements || []).map(a => ({ stringValue: a }))
+          }
+        }
+      }
+    };
+
+    await PethologyFirebaseREST.request(`/student_progress/${userId}`, 'PATCH', firestoreData);
+    console.log('✅ Student progress updated via REST API');
+  } catch (error) {
+    console.error('❌ Error updating student progress:', error);
+    throw error;
+  }
+}
+
 // Salvar resultado do quiz no Firebase
 async function saveQuizToFirebase(quizData) {
   try {
@@ -436,9 +544,11 @@ async function saveQuizToFirebase(quizData) {
 
     console.log('📝 Result data:', resultData);
 
-    // Salvar resultado com sistema de achievements
-    const achievementResult = await PethologyFirebaseService.saveQuizResultWithAchievements(resultData);
-    console.log('✅ Quiz result saved with achievements check');
+    // Salvar resultado usando REST API
+    await saveQuizResultREST(resultData);
+    console.log('✅ Quiz result saved');
+
+    const achievementResult = { success: true, newAchievements: [] };
 
     // Atualizar progresso do estudante
     await updateStudentProgressAfterQuiz(user.id, quizData);
@@ -463,8 +573,8 @@ async function updateStudentProgressAfterQuiz(userId, quizData) {
   try {
     console.log('📊 Updating student progress...');
 
-    // Carregar progresso atual
-    const progress = await PethologyFirebaseService.getStudentProgress(userId);
+    // Carregar progresso atual usando REST API
+    const progress = await getStudentProgressREST(userId);
 
     // Atualizar stats gerais
     progress.overallStats.totalQuizzes += 1;
@@ -510,8 +620,8 @@ async function updateStudentProgressAfterQuiz(userId, quizData) {
     // Verificar achievements
     checkAndUnlockAchievements(progress);
 
-    // Salvar progresso atualizado
-    await PethologyFirebaseService.updateStudentProgress(userId, progress);
+    // Salvar progresso atualizado usando REST API
+    await updateStudentProgressREST(userId, progress);
 
     console.log('✅ Progress updated successfully!');
 
@@ -824,7 +934,9 @@ async function initUserIndicator() {
   if (!userIndicator) return;
 
   try {
-    const user = await PethologyFirebaseService.getCurrentUser();
+    // Get user from session storage instead
+    const userSession = sessionStorage.getItem('pethologyUser');
+    const user = userSession ? JSON.parse(userSession) : null;
 
     if (user) {
       // User is logged in - show avatar
@@ -883,7 +995,7 @@ document.addEventListener('click', function(event) {
 // Logout function
 window.logout = async function() {
   try {
-    await PethologyFirebaseService.logout();
+    // Simply clear session and redirect
     sessionStorage.removeItem('pethologyUser');
     window.location.href = 'index.html';
   } catch (error) {
