@@ -50,8 +50,11 @@
 
     // Check if email is in teacher whitelist
     async function isEmailWhitelisted(email) {
+      console.log('🔍 isEmailWhitelisted called with email:', email);
       try {
+        console.log('📡 Fetching teacher whitelist from Firebase...');
         const response = await PethologyFirebaseREST.request('/teacher_whitelist');
+        console.log('📡 Whitelist response:', response);
 
         if (!response.documents || response.documents.length === 0) {
           console.log('⚠️ No whitelist found - denying teacher access');
@@ -61,10 +64,13 @@
         const whitelist = response.documents.map(doc =>
           PethologyFirebaseREST.convertDocument(doc)
         );
+        console.log('📋 Whitelist entries:', whitelist);
 
-        const isAllowed = whitelist.some(entry =>
-          entry.email.toLowerCase() === email.toLowerCase()
-        );
+        const isAllowed = whitelist.some(entry => {
+          const match = entry.email.toLowerCase() === email.toLowerCase();
+          console.log(`  Comparing: [${entry.email.toLowerCase()}] vs [${email.toLowerCase()}] = ${match}`);
+          return match;
+        });
 
         console.log(`🔐 Whitelist check for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
         return isAllowed;
@@ -99,9 +105,12 @@
         const emailLower = email.toLowerCase();
 
         console.log('🔍 Determining role for email:', email);
+        console.log('🔍 Email lowercase:', emailLower);
 
         // 🔐 PRIORITY 1: Check teacher whitelist FIRST
+        console.log('🚀 About to call isEmailWhitelisted...');
         const isTeacherWhitelisted = await isEmailWhitelisted(email);
+        console.log('🚀 isEmailWhitelisted returned:', isTeacherWhitelisted);
 
         let role;
         if (isTeacherWhitelisted) {
