@@ -307,6 +307,14 @@
   </footer>
 
   <script src="assets/js/mobile-nav.js"></script>
+
+  <!-- Firebase REST API - Required by quiz.js -->
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+    console.log('✅ Firebase REST API initialized for quiz');
+  </script>
+
   <script type="module" src="/assets/js/quiz/quiz.js"></script>
 </body>
 </html>
