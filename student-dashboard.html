@@ -821,8 +821,29 @@
       color: var(--gray-700);
     }
 
+    .announcement-banner.pinned.read {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      color: var(--gray-600);
+    }
+
     .announcement-banner.pinned .announcement-icon {
       color: var(--gray-700);
+    }
+
+    .announcement-banner.pinned.read .announcement-icon {
+      color: #059669;
+    }
+
+    .read-badge {
+      background: rgba(5, 150, 105, 0.2);
+      color: #059669;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .announcement-icon {

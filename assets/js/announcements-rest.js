@@ -252,15 +252,15 @@ export async function loadStudentAnnouncements() {
       const isRead = pinned.readBy?.includes(user.id);
 
       bannerContainer.innerHTML = `
-        <div class="announcement-banner pinned">
-          <i data-lucide="pin" class="announcement-icon"></i>
+        <div class="announcement-banner pinned ${isRead ? 'read' : ''}">
+          <i data-lucide="${isRead ? 'check-circle' : 'pin'}" class="announcement-icon"></i>
           <div class="announcement-content">
             <div class="announcement-title">${pinned.title}</div>
             <div class="announcement-body">${pinned.message}</div>
           </div>
           ${!isRead ? `<button onclick="window.markAnnouncementAsRead('${pinned.id}')" class="btn-secondary btn-sm">
             Mark as read
-          </button>` : ''}
+          </button>` : '<span class="read-badge">Read</span>'}
         </div>
       `;
       bannerContainer.style.display = 'block';
@@ -273,18 +273,20 @@ export async function loadStudentAnnouncements() {
       bannerContainer.style.display = 'none';
     }
 
-    // Show announcements list
+    // Show announcements list (only unread ones for non-pinned)
     const listContainer = document.getElementById('announcementsList');
     if (listContainer) {
-      if (regularAnnouncements.length === 0) {
+      // Filter out already-read announcements
+      const unreadAnnouncements = regularAnnouncements.filter(a => !a.readBy?.includes(user.id));
+
+      if (unreadAnnouncements.length === 0) {
         listContainer.innerHTML = `
           <p style="text-align: center; color: var(--gray-500); padding: 20px;">
-            No announcements
+            No new announcements
           </p>
         `;
       } else {
-        listContainer.innerHTML = regularAnnouncements.slice(0, 5).map(announcement => {
-          const isRead = announcement.readBy?.includes(user.id);
+        listContainer.innerHTML = unreadAnnouncements.slice(0, 5).map(announcement => {
           const date = announcement.createdAt;
           const formattedDate = date.toLocaleDateString('en-US', {
             month: 'short',
@@ -292,7 +294,7 @@ export async function loadStudentAnnouncements() {
           });
 
           return `
-            <div class="announcement-item ${!isRead ? 'unread' : ''}"
+            <div class="announcement-item unread"
                  onclick="window.markAnnouncementAsRead('${announcement.id}')">
               <div class="announcement-item-header">
                 <div class="announcement-item-title">${announcement.title}</div>
