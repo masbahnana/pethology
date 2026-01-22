@@ -417,4 +417,24 @@ npm run test:open   # Interactive
 
 ---
 
+## 14. Known Limitations (v5.6 Pilot)
+
+### Features Not Yet Implemented
+
+| Feature | Description | Status |
+|---------|-------------|--------|
+| **Adaptive Quiz** | Dynamic difficulty adjustment based on student performance | Not implemented |
+| **Exam Mode** | Timed quiz mode with 30-minute limit | UI exists, logic not functional |
+| **Class Settings** | Teacher configuration for class parameters | Not implemented |
+| **Calendar Event Edit/Delete** | Teacher ability to modify existing events | Not implemented |
+| **Announcement Deletion** | Teacher ability to remove announcements | Not implemented |
+
+### Known Bugs
+
+- Quiz progress may start at 2% instead of 0%
+- "Mark as read" for announcements not persisting
+- Student profile click may show "Failed to load student data" error
+
+---
+
 *Documentation generated for Pethology v5.6 Pilot*
