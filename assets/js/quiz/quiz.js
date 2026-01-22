@@ -103,7 +103,8 @@ function showQuestion() {
 
   const progress = currentQuestionIndex + 1;
   const total = currentQuestions.length;
-  const percentage = Math.round((progress / total) * 100);
+  // Percentage shows how many questions have been ANSWERED (0% at start, 100% at end)
+  const percentage = Math.round((currentQuestionIndex / total) * 100);
 
   quizContainer.innerHTML = `
     ${isAdaptiveMode ? `
