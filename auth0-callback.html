@@ -53,63 +53,27 @@
 
     // Check if email is in teacher whitelist
     async function isEmailWhitelisted(email) {
-      console.log('🔍 [WHITELIST] isEmailWhitelisted called with email:', email);
-      console.log('🔍 [WHITELIST] Email type:', typeof email, 'Length:', email ? email.length : 'null');
       try {
-        console.log('📡 [WHITELIST] Fetching teacher whitelist from Firebase...');
         const response = await PethologyFirebaseREST.request('/teacher_whitelist');
-        console.log('📡 [WHITELIST] Raw response:', response);
-        console.log('📡 [WHITELIST] Response type:', typeof response);
-        console.log('📡 [WHITELIST] Response.documents type:', Array.isArray(response.documents) ? 'Array' : typeof response.documents);
-        console.log('📡 [WHITELIST] Response.documents length:', response.documents ? response.documents.length : 'undefined');
 
         if (!response.documents || response.documents.length === 0) {
-          console.log('⚠️ [WHITELIST] No whitelist found - response.documents is:', response.documents);
-          console.log('⚠️ [WHITELIST] response.documents === undefined:', response.documents === undefined);
-          console.log('⚠️ [WHITELIST] response.documents === null:', response.documents === null);
-          console.log('⚠️ [WHITELIST] response.documents === []:', response.documents && response.documents.length === 0);
+          console.log('⚠️ No whitelist found');
           return false;
         }
 
-        console.log(`📋 [WHITELIST] Found ${response.documents.length} whitelist entries`);
-        
-        const whitelist = response.documents.map((doc, idx) => {
-          const converted = PethologyFirebaseREST.convertDocument(doc);
-          console.log(`📋 [WHITELIST] Entry ${idx}:`, converted);
-          console.log(`📋 [WHITELIST]   - Raw doc:`, doc);
-          console.log(`📋 [WHITELIST]   - Converted:`, converted);
-          return converted;
-        });
-        
-        console.log('📋 [WHITELIST] All whitelist entries:', whitelist);
+        const whitelist = response.documents.map(doc =>
+          PethologyFirebaseREST.convertDocument(doc)
+        );
 
-        const isAllowed = whitelist.some(entry => {
-          const entryEmail = entry.email ? entry.email.toLowerCase() : 'UNDEFINED';
-          const checkEmail = email.toLowerCase();
-          const match = entryEmail === checkEmail;
-          console.log(`📋 [WHITELIST] Entry email raw:`, entry.email, '| Type:', typeof entry.email);
-          console.log(`📋 [WHITELIST] Entry email lower:`, entryEmail);
-          console.log(`📋 [WHITELIST] Check email lower:`, checkEmail);
-          console.log(`📋 [WHITELIST] Comparing: [${entryEmail}] vs [${checkEmail}] = ${match}`);
-          console.log(`📋 [WHITELIST] Match details:`, {
-            entryEmailLength: entryEmail.length,
-            checkEmailLength: checkEmail.length,
-            entryEmailChars: entryEmail.split('').map(c => c.charCodeAt(0)),
-            checkEmailChars: checkEmail.split('').map(c => c.charCodeAt(0))
-          });
-          return match;
-        });
+        const isAllowed = whitelist.some(entry =>
+          entry.email && entry.email.toLowerCase() === email.toLowerCase()
+        );
 
-        console.log(`🔐 [WHITELIST] Final result for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
+        console.log(`🔐 Whitelist check for ${email}: ${isAllowed ? 'ALLOWED' : 'DENIED'}`);
         return isAllowed;
       } catch (error) {
-        console.error('❌ [WHITELIST] Error checking whitelist:', error);
-        console.error('❌ [WHITELIST] Error details:', {
-          message: error.message,
-          stack: error.stack,
-          name: error.name
-        });
-        return false; // Deny access if we can't verify
+        console.error('❌ Error checking whitelist:', error);
+        return false;
       }
     }
 
@@ -137,32 +101,21 @@
         const email = user.email || '';
         const emailLower = email.toLowerCase();
 
-        console.log('🔍 [ROLE DETERMINATION] Starting role determination...');
-        console.log('🔍 [ROLE DETERMINATION] Email:', email);
-        console.log('🔍 [ROLE DETERMINATION] Email lowercase:', emailLower);
-
-        // 🔐 PRIORITY 1: Check teacher whitelist FIRST
-        console.log('🚀 [ROLE DETERMINATION] Checking teacher whitelist...');
+        // 🔐 Check teacher whitelist
         const isTeacherWhitelisted = await isEmailWhitelisted(email);
-        console.log('🚀 [ROLE DETERMINATION] Whitelist check result:', isTeacherWhitelisted);
 
-        // 🎓 DETERMINE ROLE based on email domain/pattern
+        // 🎓 DETERMINE ROLE based on whitelist or email pattern
         let role;
-        if (emailLower.endsWith('@stconlethcc365.ie')) {
+        if (isTeacherWhitelisted || emailLower.endsWith('@stconlethcc365.ie')) {
           role = 'Teacher';
-          console.log('✅ [ROLE DETERMINATION] ROLE ASSIGNED: Teacher (email ends with @stconlethcc365.ie)');
-        } else if (isTeacherWhitelisted) {
-          role = 'Teacher';
-          console.log('✅ [ROLE DETERMINATION] ROLE ASSIGNED: Teacher (found in whitelist)');
+          console.log('✅ Role: Teacher');
         } else if (emailLower.startsWith('plc')) {
           role = 'Student';
-          console.log('📚 [ROLE DETERMINATION] ROLE ASSIGNED: Student (email starts with plc)');
+          console.log('📚 Role: Student');
         } else {
           // Default to Student if not recognized as teacher
           role = 'Student';
-          console.log('📚 [ROLE DETERMINATION] ROLE ASSIGNED: Student (default)');
-          console.log('⚠️ [ROLE DETERMINATION] WARNING: Email does not match known patterns');
-          console.log('⚠️ [ROLE DETERMINATION] Email:', emailLower);
+          console.log('📚 Role: Student (default)');
         }
 
         // 🔐 STUDENT WHITELIST CHECK: Verify students are pre-registered
