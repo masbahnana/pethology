@@ -200,7 +200,7 @@ function selectAnswer(index) {
     feedbackEl.innerHTML = `
       <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-top: 20px;">
         <p style="color: #065f46; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
-          ✅ Correct!
+          Correct!
         </p>
         ${!isExamMode ? `
           <p style="color: #047857; margin: 0; line-height: 1.6;">
@@ -208,15 +208,25 @@ function selectAnswer(index) {
           </p>
         ` : ''}
       </div>
-      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
-        Moving to next question in 3 seconds... ⏱️
-      </p>
+      <div class="timer-container" style="margin-top: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="flex: 1;">
+            <div class="timer-bar" style="background: #e5e7eb; border-radius: 4px; height: 6px; overflow: hidden;">
+              <div id="timerProgress" style="background: #10b981; height: 100%; width: 100%; transition: width 0.1s linear;"></div>
+            </div>
+            <p id="timerText" style="color: #6b7280; font-size: 0.85rem; margin: 8px 0 0 0; text-align: center;">
+              Next question in 3s...
+            </p>
+          </div>
+          <button id="pauseBtn" onclick="window.togglePause()" style="background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #374151;">
+            <span id="pauseIcon">⏸️</span> Pause
+          </button>
+        </div>
+      </div>
     `;
 
-    // Avançar automaticamente após 3 segundos
-    setTimeout(() => {
-      nextQuestion();
-    }, 3000);
+    // Start countdown with timer bar
+    startCountdown(3000, true);
 
   } else {
     // RESPOSTA ERRADA ❌
@@ -246,7 +256,7 @@ function selectAnswer(index) {
     feedbackEl.innerHTML = `
       <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin-top: 20px;">
         <p style="color: #991b1b; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
-          ❌ Incorrect
+          Incorrect
         </p>
         ${!isExamMode ? `
           <p style="color: #b91c1c; margin: 0 0 12px 0;">
@@ -257,19 +267,110 @@ function selectAnswer(index) {
           </p>
         ` : ''}
       </div>
-      <p style="color: #6b7280; font-size: 0.9rem; margin-top: 16px; text-align: center;">
-        Moving to next question in 3 seconds... ⏱️
-      </p>
+      <div class="timer-container" style="margin-top: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+          <div style="flex: 1;">
+            <div class="timer-bar" style="background: #e5e7eb; border-radius: 4px; height: 6px; overflow: hidden;">
+              <div id="timerProgress" style="background: #ef4444; height: 100%; width: 100%; transition: width 0.1s linear;"></div>
+            </div>
+            <p id="timerText" style="color: #6b7280; font-size: 0.85rem; margin: 8px 0 0 0; text-align: center;">
+              Next question in 3s...
+            </p>
+          </div>
+          <button id="pauseBtn" onclick="window.togglePause()" style="background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px; padding: 8px 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #374151;">
+            <span id="pauseIcon">⏸️</span> Pause
+          </button>
+        </div>
+      </div>
     `;
 
-    // Avançar automaticamente após 3 segundos (mesmo errado!)
-    setTimeout(() => {
-      nextQuestion();
-    }, 3000);
+    // Start countdown with timer bar (longer for wrong answers to read explanation)
+    startCountdown(4000, false);
   }
 }
 
+// Timer state variables
+let countdownInterval = null;
+let countdownTimeout = null;
+let isPaused = false;
+let remainingTime = 0;
+let totalTime = 0;
+
+function startCountdown(duration, isCorrect) {
+  // Clear any existing timers
+  clearInterval(countdownInterval);
+  clearTimeout(countdownTimeout);
+
+  isPaused = false;
+  totalTime = duration;
+  remainingTime = duration;
+
+  const progressBar = document.getElementById('timerProgress');
+  const timerText = document.getElementById('timerText');
+  const pauseBtn = document.getElementById('pauseBtn');
+
+  if (pauseBtn) {
+    pauseBtn.innerHTML = '<span id="pauseIcon">⏸️</span> Pause';
+  }
+
+  // Update every 100ms for smooth animation
+  countdownInterval = setInterval(() => {
+    if (!isPaused) {
+      remainingTime -= 100;
+
+      const percent = (remainingTime / totalTime) * 100;
+      const seconds = Math.ceil(remainingTime / 1000);
+
+      if (progressBar) {
+        progressBar.style.width = percent + '%';
+      }
+      if (timerText) {
+        timerText.textContent = `Next question in ${seconds}s...`;
+      }
+
+      if (remainingTime <= 0) {
+        clearInterval(countdownInterval);
+        nextQuestion();
+      }
+    }
+  }, 100);
+}
+
+function togglePause() {
+  isPaused = !isPaused;
+
+  const pauseBtn = document.getElementById('pauseBtn');
+  const timerText = document.getElementById('timerText');
+
+  if (isPaused) {
+    if (pauseBtn) {
+      pauseBtn.innerHTML = '<span id="pauseIcon">▶️</span> Continue';
+      pauseBtn.style.background = '#dbeafe';
+      pauseBtn.style.borderColor = '#3b82f6';
+      pauseBtn.style.color = '#1d4ed8';
+    }
+    if (timerText) {
+      timerText.textContent = 'Paused - Take your time to read';
+    }
+  } else {
+    if (pauseBtn) {
+      pauseBtn.innerHTML = '<span id="pauseIcon">⏸️</span> Pause';
+      pauseBtn.style.background = '#f3f4f6';
+      pauseBtn.style.borderColor = '#d1d5db';
+      pauseBtn.style.color = '#374151';
+    }
+  }
+}
+
+// Make togglePause globally available
+window.togglePause = togglePause;
+
 function nextQuestion() {
+  // Clear any running timers
+  clearInterval(countdownInterval);
+  clearTimeout(countdownTimeout);
+  isPaused = false;
+
   // Avançar independente de estar certo ou errado (modo uma tentativa)
   currentQuestionIndex++;
   if (currentQuestionIndex < currentQuestions.length) {
