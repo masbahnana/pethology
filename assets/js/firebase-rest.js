@@ -13,7 +13,12 @@ export class PethologyFirebaseREST {
 
   // Helper to make REST requests
   static async request(path, method = 'GET', body = null) {
-    const url = `${FIREBASE_CONFIG.databaseURL}${path}`;
+    // Add API key for authentication
+    const separator = path.includes('?') ? '&' : '?';
+    const url = `${FIREBASE_CONFIG.databaseURL}${path}${separator}key=${FIREBASE_CONFIG.apiKey}`;
+
+    console.log(`🔥 REST ${method}: ${path}`);
+
     const options = {
       method,
       headers: {
@@ -23,14 +28,21 @@ export class PethologyFirebaseREST {
 
     if (body) {
       options.body = JSON.stringify(body);
+      console.log(`🔥 Request body:`, body);
     }
 
     try {
       const response = await fetch(url, options);
+      const responseText = await response.text();
+
+      console.log(`🔥 Response status: ${response.status}`);
+
       if (!response.ok) {
+        console.error(`🔥 Response body:`, responseText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-      return await response.json();
+
+      return responseText ? JSON.parse(responseText) : {};
     } catch (error) {
       console.error(`❌ REST request failed: ${method} ${path}`, error);
       throw error;
