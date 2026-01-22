@@ -2024,7 +2024,8 @@
       }
     };
 
-    function formatTimeAgo(date) {
+    window.formatTimeAgo = function(date) {
+      if (!date) return 'Never';
       const now = new Date();
       const diffMs = now - date;
       const diffMins = Math.floor(diffMs / 60000);
