@@ -407,6 +407,12 @@ function normalizeModuleName(moduleName) {
 // Save quiz result using REST API
 async function saveQuizResultREST(resultData) {
   try {
+    console.log('💾 Saving quiz result with data:', {
+      userId: resultData.userId,
+      quizId: resultData.quizId,
+      score: resultData.score
+    });
+
     const firestoreData = {
       fields: {
         userId: { stringValue: resultData.userId },
@@ -421,8 +427,8 @@ async function saveQuizResultREST(resultData) {
       }
     };
 
-    await PethologyFirebaseREST.request('/quiz_results', 'POST', firestoreData);
-    console.log('✅ Quiz result saved via REST API');
+    const response = await PethologyFirebaseREST.request('/quiz_results', 'POST', firestoreData);
+    console.log('✅ Quiz result saved via REST API, response:', response);
   } catch (error) {
     console.error('❌ Error saving quiz result:', error);
     throw error;
