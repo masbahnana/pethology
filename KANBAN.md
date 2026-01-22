@@ -15,7 +15,9 @@
 - [x] **Dados misturados demo/real** - ✅ FIXED (22 Jan) - Filtragem por teacherId implementada
 
 ### ⚠️ High Priority
-- [ ] **Quiz começa em 2%** - Deveria começar em 0%
+- [x] **Quiz começa em 2%** - ✅ FIXED (22 Jan) - Agora começa em 0%
+- [ ] **Quiz progress não salva no dashboard** - Small Animals testado, não aparece progresso
+- [ ] **Module cards mostram 20 questões** - Hardcoded, deveria mostrar número real (Biology=52)
 - [ ] **Announcements mark as read** - Não está funcionando
 - [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
 

@@ -1432,21 +1432,21 @@
                   </div>
                   <div>
                     <div class="module-title">Biology</div>
-                    <div class="module-questions">20 questions</div>
+                    <div class="module-questions">51 questions</div>
                   </div>
                 </div>
                 <div class="module-progress">
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width: 75%"></div>
+                    <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>15/20 completed</span>
-                    <span>75%</span>
+                    <span>0/51 completed</span>
+                    <span>0%</span>
                   </div>
                 </div>
-                <button class="btn btn-primary">
+                <button class="btn btn-secondary">
                   <i data-lucide="play"></i>
-                  Continue
+                  Start
                 </button>
               </div>
 
@@ -1457,21 +1457,21 @@
                   </div>
                   <div>
                     <div class="module-title">Animal Welfare</div>
-                    <div class="module-questions">20 questions</div>
+                    <div class="module-questions">23 questions</div>
                   </div>
                 </div>
                 <div class="module-progress">
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width: 60%"></div>
+                    <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>12/20 completed</span>
-                    <span>60%</span>
+                    <span>0/23 completed</span>
+                    <span>0%</span>
                   </div>
                 </div>
-                <button class="btn btn-primary">
+                <button class="btn btn-secondary">
                   <i data-lucide="play"></i>
-                  Continue
+                  Start
                 </button>
               </div>
 
@@ -1482,21 +1482,21 @@
                   </div>
                   <div>
                     <div class="module-title">Grooming</div>
-                    <div class="module-questions">20 questions</div>
+                    <div class="module-questions">18 questions</div>
                   </div>
                 </div>
                 <div class="module-progress">
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width: 90%"></div>
+                    <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>18/20 completed</span>
-                    <span>90%</span>
+                    <span>0/18 completed</span>
+                    <span>0%</span>
                   </div>
                 </div>
-                <button class="btn btn-primary">
+                <button class="btn btn-secondary">
                   <i data-lucide="play"></i>
-                  Continue
+                  Start
                 </button>
               </div>
 
@@ -1507,16 +1507,16 @@
                   </div>
                   <div>
                     <div class="module-title">Animal Anatomy</div>
-                    <div class="module-questions">20 questions</div>
+                    <div class="module-questions">48 questions</div>
                   </div>
                 </div>
                 <div class="module-progress">
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width: 45%"></div>
+                    <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>9/20 completed</span>
-                    <span>45%</span>
+                    <span>0/48 completed</span>
+                    <span>0%</span>
                   </div>
                 </div>
                 <button class="btn btn-secondary">
@@ -2047,16 +2047,16 @@
       console.log('📊 Module progress data:', moduleProgress);
 
       const moduleNames = {
-        'animal-welfare': { name: 'Animal Welfare', icon: 'heart', color: 'welfare' },
-        'biology': { name: 'Biology', icon: 'dna', color: 'biology' },
-        'grooming': { name: 'Grooming', icon: 'scissors', color: 'grooming' },
-        'animal-anatomy': { name: 'Animal Anatomy', icon: 'bone', color: 'anatomy' },
-        'small-animals': { name: 'Small Animals H&H', icon: 'rabbit', color: 'small-animals' },
-        'vet-assistant': { name: 'Vet Assistant Skills', icon: 'stethoscope', color: 'vet-skills' },
-        'animal-behaviour': { name: 'Animal Behaviour', icon: 'dog', color: 'behaviour' },
-        'communications': { name: 'Communications', icon: 'message-circle', color: 'communications' },
-        'word-processing': { name: 'Word Processing', icon: 'file-text', color: 'word-processing' },
-        'work-experience': { name: 'Work Experience', icon: 'briefcase', color: 'communications' }
+        'animal-welfare': { name: 'Animal Welfare', icon: 'heart', color: 'welfare', questionCount: 23 },
+        'biology': { name: 'Biology', icon: 'dna', color: 'biology', questionCount: 51 },
+        'grooming': { name: 'Grooming', icon: 'scissors', color: 'grooming', questionCount: 18 },
+        'animal-anatomy': { name: 'Animal Anatomy', icon: 'bone', color: 'anatomy', questionCount: 48 },
+        'small-animals': { name: 'Small Animals H&H', icon: 'rabbit', color: 'small-animals', questionCount: 20 },
+        'vet-assistant': { name: 'Vet Assistant Skills', icon: 'stethoscope', color: 'vet-skills', questionCount: 20 },
+        'animal-behaviour': { name: 'Animal Behaviour', icon: 'dog', color: 'behaviour', questionCount: 20 },
+        'communications': { name: 'Communications', icon: 'message-circle', color: 'communications', questionCount: 20 },
+        'word-processing': { name: 'Word Processing', icon: 'file-text', color: 'word-processing', questionCount: 20 },
+        'work-experience': { name: 'Work Experience', icon: 'briefcase', color: 'communications', questionCount: 20 }
       };
 
       // Get the container
@@ -2082,9 +2082,9 @@
       });
 
       Object.entries(allModulesData).forEach(([moduleName, data]) => {
-        const moduleInfo = moduleNames[moduleName] || { name: moduleName, icon: 'book-open', color: 'biology' };
+        const moduleInfo = moduleNames[moduleName] || { name: moduleName, icon: 'book-open', color: 'biology', questionCount: 20 };
         const completion = data.completion || 0;
-        const totalQuestions = 20; // Each module has 20 questions
+        const totalQuestions = moduleInfo.questionCount || 20;
         const completedQuestions = Math.round((completion / 100) * totalQuestions);
 
         const moduleCard = document.createElement('div');
