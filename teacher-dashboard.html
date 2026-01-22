@@ -1812,7 +1812,8 @@
             ${students.map(student => {
               const progress = student.progress || {};
               const stats = progress.overallStats || {};
-              const score = Math.round((stats.averageScore || 0) * 100);
+              // averageScore is already in percentage (0-100) from firebase-rest.js
+              const score = stats.averageScore || 0;
               const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : new Date(student.lastLogin);
               const lastActiveText = formatTimeAgo(lastLogin);
 
@@ -2266,7 +2267,8 @@
         filtered = filtered.filter(student => {
           const progress = student.progress || {};
           const stats = progress.overallStats || {};
-          const score = Math.round((stats.averageScore || 0) * 100);
+          // averageScore is already in percentage (0-100)
+          const score = stats.averageScore || 0;
 
           if (scoreFilter === 'high') return score >= 80;
           if (scoreFilter === 'medium') return score >= 60 && score < 80;
@@ -2389,13 +2391,15 @@
       const body = document.getElementById('studentDetailBody');
       const progress = student.progress || {};
       const stats = progress.overallStats || {};
-      const score = Math.round((stats.averageScore || 0) * 100);
+      // averageScore is already in percentage (0-100)
+      const score = stats.averageScore || 0;
       const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : new Date(student.lastLogin);
 
       // Calculate weak topics (avg score < 70%)
+      // moduleProgress.averageScore is already in percentage (0-100)
       const moduleProgress = progress.moduleProgress || {};
       const weakTopics = Object.entries(moduleProgress)
-        .filter(([module, data]) => (data.averageScore || 0) * 100 < 70)
+        .filter(([module, data]) => (data.averageScore || 0) < 70)
         .sort((a, b) => (a[1].averageScore || 0) - (b[1].averageScore || 0))
         .slice(0, 5);
 
@@ -2450,8 +2454,8 @@
               <div class="weak-topic-card">
                 <div class="weak-topic-name">${module}</div>
                 <div class="weak-topic-score">
-                  Average: ${Math.round((data.averageScore || 0) * 100)}% •
-                  ${data.quizzesCompleted || 0} quiz${data.quizzesCompleted !== 1 ? 'zes' : ''} completed
+                  Average: ${data.averageScore || 0}% •
+                  ${data.completed || 0} quiz${data.completed !== 1 ? 'zes' : ''} completed
                 </div>
               </div>
             `).join('')}

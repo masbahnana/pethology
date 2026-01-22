@@ -2132,11 +2132,10 @@
         totalQuizzesEl.textContent = stats.totalQuizzes || 0;
       }
 
-      // Média de score
+      // Média de score (already in percentage 0-100 from firebase-rest.js)
       const avgScoreEl = document.querySelector('.average-score, [data-stat="averageScore"]');
       if (avgScoreEl) {
-        const score = Math.round((stats.averageScore || 0) * 100);
-        avgScoreEl.textContent = `${score}%`;
+        avgScoreEl.textContent = `${stats.averageScore || 0}%`;
       }
 
       // Streak

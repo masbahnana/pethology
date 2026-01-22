@@ -232,8 +232,10 @@ export class PethologyFirebaseREST {
 
       // Calculate overall stats
       const totalQuizzes = quizHistory.length;
+      // Score is stored as fraction (0-1), sum them up
       const totalScore = quizHistory.reduce((sum, q) => sum + (q.score || 0), 0);
-      const averageScore = Math.round(totalScore / totalQuizzes);
+      // Convert average from fraction to percentage (0-100)
+      const averageScore = Math.round((totalScore / totalQuizzes) * 100);
 
       // Calculate module progress
       const moduleProgress = {};
@@ -250,9 +252,10 @@ export class PethologyFirebaseREST {
       // Calculate average per module and completion percentage
       Object.keys(moduleProgress).forEach(module => {
         const m = moduleProgress[module];
-        m.averageScore = Math.round(m.totalScore / m.completed);
-        // Use best score as completion percentage (0-100)
-        m.completion = m.bestScore;
+        // Score is stored as fraction (0-1), convert to percentage (0-100)
+        m.averageScore = Math.round((m.totalScore / m.completed) * 100);
+        // Best score as completion percentage (convert from 0-1 to 0-100)
+        m.completion = Math.round(m.bestScore * 100);
       });
 
       // Calculate streak (consecutive days with quizzes)
