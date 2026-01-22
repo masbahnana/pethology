@@ -1603,10 +1603,15 @@
             setTimeout(() => reject(new Error('Timeout: Data fetch took too long')), 10000)
           );
 
+          // Get teacher ID from session to filter students
+          const userSession = sessionStorage.getItem('pethologyUser');
+          const teacher = userSession ? JSON.parse(userSession) : null;
+          const teacherId = teacher?.id || null;
+
           [analytics, students] = await Promise.race([
             Promise.all([
-              PethologyFirebaseService.getTeacherAnalytics(),
-              PethologyFirebaseService.getAllStudentsProgress()
+              PethologyFirebaseService.getTeacherAnalytics(teacherId),
+              PethologyFirebaseService.getAllStudentsProgress(teacherId)
             ]),
             timeoutPromise
           ]);
@@ -1617,8 +1622,8 @@
           // CRITICAL FIX: Merge student progress with user data (name, email)
           // Progress has userId, stats but NO name/email
           // Users has name, email but NO progress
-          const allUsers = await PethologyFirebaseService.getAllStudents();
-          console.log('👤 Users received:', allUsers?.length || 0);
+          const allUsers = await PethologyFirebaseService.getAllStudents(teacherId);
+          console.log('👤 Users received:', allUsers?.length || 0, teacherId ? `(filtered for teacher)` : '');
 
           // Create a map of userId -> user data for quick lookup
           const userMap = new Map(allUsers.map(user => [user.id, user]));

@@ -227,19 +227,35 @@ class PethologyFirebaseService {
   // 👨‍🏫 TEACHER FUNCTIONS
 
   // Get all students (users with role: 'Student')
-  static async getAllStudents() {
+  // If teacherId is provided, only return students added by that teacher
+  static async getAllStudents(teacherId = null) {
     try {
-      console.log('📋 Fetching all students...');
+      console.log('📋 Fetching students...', teacherId ? `for teacher ${teacherId}` : '(all)');
+
+      // If teacherId provided, get only students pre-registered by this teacher
+      let allowedEmails = null;
+      if (teacherId) {
+        const preRegistered = await this.getPreRegisteredStudents(teacherId);
+        allowedEmails = new Set(preRegistered.map(s => s.email?.toLowerCase()));
+        console.log(`📋 Teacher's pre-registered students: ${allowedEmails.size}`);
+      }
+
       const q = query(
         collection(db, 'users'),
         where('role', '==', 'Student')
       );
 
       const querySnapshot = await getDocs(q);
-      const students = querySnapshot.docs.map(doc => ({
+      let students = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+
+      // Filter by teacher's pre-registered students if teacherId provided
+      if (allowedEmails && allowedEmails.size > 0) {
+        students = students.filter(s => allowedEmails.has(s.email?.toLowerCase()));
+        console.log(`📋 Filtered to ${students.length} students for this teacher`);
+      }
 
       // Sort by lastLogin client-side to avoid Firebase index requirement
       students.sort((a, b) => {
@@ -257,12 +273,13 @@ class PethologyFirebaseService {
   }
 
   // Get all students with their progress
-  static async getAllStudentsProgress() {
+  // If teacherId is provided, only return students added by that teacher
+  static async getAllStudentsProgress(teacherId = null) {
     try {
-      console.log('📊 Fetching all students progress...');
+      console.log('📊 Fetching students progress...', teacherId ? `for teacher ${teacherId}` : '(all)');
 
-      // First get all students
-      const students = await this.getAllStudents();
+      // First get students (filtered by teacherId if provided)
+      const students = await this.getAllStudents(teacherId);
 
       // Then get progress for each student
       const progressPromises = students.map(async (student) => {
@@ -307,14 +324,20 @@ class PethologyFirebaseService {
   }
 
   // Get teacher analytics dashboard data
-  static async getTeacherAnalytics() {
+  // If teacherId is provided, only include data from that teacher's students
+  static async getTeacherAnalytics(teacherId = null) {
     try {
-      console.log('📈 Generating teacher analytics...');
+      console.log('📈 Generating teacher analytics...', teacherId ? `for teacher ${teacherId}` : '(all)');
 
-      const [students, quizResults] = await Promise.all([
-        this.getAllStudents(),
+      const [students, allQuizResults] = await Promise.all([
+        this.getAllStudents(teacherId),
         this.getAllQuizResults(200)
       ]);
+
+      // Filter quiz results to only include this teacher's students
+      const studentIds = new Set(students.map(s => s.id));
+      const quizResults = allQuizResults.filter(r => studentIds.has(r.userId));
+      console.log(`📊 Filtered quiz results: ${quizResults.length} of ${allQuizResults.length} for teacher's students`);
 
       // Calculate statistics
       const totalStudents = students.length;

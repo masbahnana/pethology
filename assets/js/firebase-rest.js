@@ -216,19 +216,88 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get student progress (alias for getUserProgress with default structure)
+  // Get student progress calculated from quiz_results
   static async getStudentProgress(userId) {
-    // For now, just return default structure to avoid 404 errors
-    // TODO: Implement proper progress tracking if needed
-    return {
-      overallStats: {
-        totalQuizzes: 0,
-        averageScore: 0,
-        streak: 0
-      },
-      moduleProgress: {},
-      achievements: []
-    };
+    try {
+      // Fetch all quiz results for this user
+      const quizHistory = await this.getStudentQuizHistory(userId);
+
+      if (!quizHistory || quizHistory.length === 0) {
+        return {
+          overallStats: { totalQuizzes: 0, averageScore: 0, streak: 0 },
+          moduleProgress: {},
+          achievements: []
+        };
+      }
+
+      // Calculate overall stats
+      const totalQuizzes = quizHistory.length;
+      const totalScore = quizHistory.reduce((sum, q) => sum + (q.score || 0), 0);
+      const averageScore = Math.round(totalScore / totalQuizzes);
+
+      // Calculate module progress
+      const moduleProgress = {};
+      quizHistory.forEach(quiz => {
+        const module = quiz.quizId || quiz.type || 'unknown';
+        if (!moduleProgress[module]) {
+          moduleProgress[module] = { completed: 0, totalScore: 0, bestScore: 0 };
+        }
+        moduleProgress[module].completed++;
+        moduleProgress[module].totalScore += (quiz.score || 0);
+        moduleProgress[module].bestScore = Math.max(moduleProgress[module].bestScore, quiz.score || 0);
+      });
+
+      // Calculate average per module and completion percentage
+      Object.keys(moduleProgress).forEach(module => {
+        const m = moduleProgress[module];
+        m.averageScore = Math.round(m.totalScore / m.completed);
+        // Use best score as completion percentage (0-100)
+        m.completion = m.bestScore;
+      });
+
+      // Calculate streak (consecutive days with quizzes)
+      let streak = 0;
+      if (quizHistory.length > 0) {
+        const sortedByDate = [...quizHistory].sort((a, b) => {
+          const dateA = a.completedAt ? new Date(a.completedAt) : new Date(0);
+          const dateB = b.completedAt ? new Date(b.completedAt) : new Date(0);
+          return dateB - dateA;
+        });
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let checkDate = new Date(today);
+        for (const quiz of sortedByDate) {
+          const quizDate = quiz.completedAt ? new Date(quiz.completedAt) : null;
+          if (!quizDate) continue;
+          quizDate.setHours(0, 0, 0, 0);
+
+          const diffDays = Math.floor((checkDate - quizDate) / (1000 * 60 * 60 * 24));
+          if (diffDays <= 1) {
+            streak++;
+            checkDate = quizDate;
+          } else {
+            break;
+          }
+        }
+      }
+
+      console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak`);
+
+      return {
+        overallStats: { totalQuizzes, averageScore, streak },
+        moduleProgress,
+        achievements: [] // TODO: Calculate achievements
+      };
+    } catch (error) {
+      console.error('❌ Error calculating student progress:', error);
+      return {
+        overallStats: { totalQuizzes: 0, averageScore: 0, streak: 0 },
+        moduleProgress: {},
+        achievements: []
+      };
+    }
   }
 
   // Get student quiz history

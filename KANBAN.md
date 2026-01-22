@@ -8,11 +8,26 @@
 
 ## 🔴 TO DO (Urgente)
 
+### 🚨 Critical Bugs (Pilot Blockers)
+- [ ] **Exam Mode não funciona** - Checkbox não tem event listener
+- [ ] **Quiz progress não salva** - Ex: Small Animals quiz completed mas não aparece no dashboard
+- [ ] **Failed to load student data** - Erro ao clicar no student profile
+- [ ] **Dados misturados demo/real** - Mary vê dados fake junto com dados reais
+
 ### ⚠️ High Priority
+- [ ] **Quiz começa em 2%** - Deveria começar em 0%
+- [ ] **Announcements mark as read** - Não está funcionando
 - [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
 
 ### 📋 Medium Priority (This Week)
+- [ ] **Deletar announcements** - Teacher precisa poder limpar announcements
+- [ ] **Editar/deletar eventos** - Teacher não consegue editar eventos do calendário
+- [ ] **Class Settings** - Ainda não implementado
 - [ ] **Performance optimization** - Minify, lazy load, cache - *45min*
+
+### 📝 Low Priority (Features)
+- [ ] **Timer bar + pause no quiz** - Barra de tempo + botão pause para ler explicação
+- [ ] **Seta no sidebar student** - Definir o que vai no dropdown
 
 ---
 
