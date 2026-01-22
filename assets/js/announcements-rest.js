@@ -245,11 +245,21 @@ export async function loadStudentAnnouncements() {
     const pinnedAnnouncements = announcements.filter(a => a.isPinned);
     const regularAnnouncements = announcements.filter(a => !a.isPinned);
 
+    console.log('📢 Total announcements:', announcements.length);
+    console.log('📢 Pinned:', pinnedAnnouncements.length);
+    console.log('📢 Regular:', regularAnnouncements.length);
+    console.log('📢 User ID:', user.id);
+
     // Show pinned announcement banner (first pinned only)
     const bannerContainer = document.getElementById('announcementBanner');
+    console.log('📢 Banner container found:', !!bannerContainer);
+
     if (bannerContainer && pinnedAnnouncements.length > 0) {
       const pinned = pinnedAnnouncements[0];
+      console.log('📢 Pinned announcement:', pinned);
+      console.log('📢 Pinned readBy:', pinned.readBy);
       const isRead = pinned.readBy?.includes(user.id);
+      console.log('📢 Is pinned read by user?', isRead);
 
       bannerContainer.innerHTML = `
         <div class="announcement-banner pinned ${isRead ? 'read' : ''}">
