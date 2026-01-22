@@ -306,9 +306,16 @@ export class PethologyFirebaseREST {
   // Get student quiz history
   static async getStudentQuizHistory(userId) {
     try {
-      console.log(`📝 Fetching quiz history for: ${userId}`);
+      console.log(`📝 Fetching quiz history for userId: "${userId}"`);
 
       const allResults = await this.getAllQuizResults();
+      console.log(`📝 Total quiz results in DB: ${allResults.length}`);
+
+      // Debug: show all userIds in results
+      if (allResults.length > 0) {
+        const uniqueUserIds = [...new Set(allResults.map(r => r.userId))];
+        console.log(`📝 Unique userIds in DB:`, uniqueUserIds);
+      }
 
       // Filter results for this user
       const userResults = allResults.filter(result => result.userId === userId);
@@ -320,7 +327,7 @@ export class PethologyFirebaseREST {
         return dateB - dateA;
       });
 
-      console.log(`✅ Loaded ${userResults.length} quiz results for student`);
+      console.log(`✅ Loaded ${userResults.length} quiz results for this student`);
       return userResults;
     } catch (error) {
       console.error('❌ Error getting student quiz history:', error);
