@@ -9,10 +9,10 @@
 ## 🔴 TO DO (Urgente)
 
 ### 🚨 Critical Bugs (Pilot Blockers)
-- [ ] **Exam Mode não funciona** - Checkbox não tem event listener
-- [ ] **Quiz progress não salva** - Ex: Small Animals quiz completed mas não aparece no dashboard
+- [x] **Exam Mode não funciona** - ✅ FIXED (22 Jan) - Adicionado onchange ao checkbox
+- [x] **Quiz progress não salva** - ✅ FIXED (22 Jan) - getStudentProgress() agora calcula de quiz_results
 - [ ] **Failed to load student data** - Erro ao clicar no student profile
-- [ ] **Dados misturados demo/real** - Mary vê dados fake junto com dados reais
+- [x] **Dados misturados demo/real** - ✅ FIXED (22 Jan) - Filtragem por teacherId implementada
 
 ### ⚠️ High Priority
 - [ ] **Quiz começa em 2%** - Deveria começar em 0%
@@ -72,6 +72,14 @@
   - CSS layout fixes for grid rendering
 
 #### Critical Bug Fixes (22 Jan 2026)
+- [x] **Exam Mode Checkbox** - Added `onchange="toggleExamMode()"` to checkbox in quiz.html
+- [x] **Quiz Progress Not Saving** - Rewrote `getStudentProgress()` in firebase-rest.js to calculate from quiz_results
+  - Now computes: totalQuizzes, averageScore, streak, moduleProgress with completion %
+- [x] **Data Isolation (Demo vs Real)** - Teachers now only see their own students
+  - `getAllStudents(teacherId)` filters by pre_registered_students.addedBy
+  - `getAllStudentsProgress(teacherId)` passes filter through
+  - `getTeacherAnalytics(teacherId)` filters quiz results by student IDs
+  - Mary will only see students SHE imported, not demo/fake data
 - [x] **Calendar Parser Error** - Fixed malformed closing brace in renderCalendar() function
 - [x] **Logout Function Error** - Fixed ReferenceError by ensuring function in global scope
 - [x] **Dashboard Loading Hang** - Fixed by removing 404 API calls to non-existent /progress endpoint
