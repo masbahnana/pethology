@@ -11,7 +11,7 @@
 ### 🚨 Critical Bugs (Pilot Blockers)
 - [x] **Exam Mode não funciona** - ✅ FIXED (22 Jan) - Adicionado onchange ao checkbox
 - [x] **Quiz progress não salva** - ✅ FIXED (22 Jan) - getStudentProgress() agora calcula de quiz_results
-- [ ] **Failed to load student data** - Erro ao clicar no student profile
+- [x] **Failed to load student data** - ✅ FIXED (22 Jan) - formatTimeAgo no escopo global
 - [x] **Dados misturados demo/real** - ✅ FIXED (22 Jan) - Filtragem por teacherId implementada
 
 ### ⚠️ High Priority
