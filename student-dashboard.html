@@ -2069,10 +2069,19 @@
       // Clear and rebuild
       modulesGrid.innerHTML = '';
 
-      // Show ALL modules
-      const allModules = Object.entries(moduleProgress);
+      // Show ALL modules (merge defaults with actual progress data)
+      // Start with all defined modules as defaults with 0% completion
+      const allModulesData = {};
+      Object.keys(moduleNames).forEach(key => {
+        allModulesData[key] = { completion: 0, averageScore: 0, completed: 0 };
+      });
 
-      allModules.forEach(([moduleName, data]) => {
+      // Override with actual progress data
+      Object.entries(moduleProgress).forEach(([key, data]) => {
+        allModulesData[key] = data;
+      });
+
+      Object.entries(allModulesData).forEach(([moduleName, data]) => {
         const moduleInfo = moduleNames[moduleName] || { name: moduleName, icon: 'book-open', color: 'biology' };
         const completion = data.completion || 0;
         const totalQuestions = 20; // Each module has 20 questions
