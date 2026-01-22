@@ -554,12 +554,20 @@ export class PethologyFirebaseREST {
 
       // Get current announcement
       const response = await this.request(`/announcements/${announcementId}`);
+      console.log('📢 Raw announcement response:', response);
+
       const announcement = this.convertDocument(response);
+      console.log('📢 Converted announcement:', announcement);
+      console.log('📢 Current readBy:', announcement.readBy);
 
       // Add userId to readBy array if not already there
       const readBy = announcement.readBy || [];
+      console.log('📢 ReadBy array:', readBy);
+      console.log('📢 User already read?', readBy.includes(userId));
+
       if (!readBy.includes(userId)) {
         readBy.push(userId);
+        console.log('📢 New readBy array:', readBy);
 
         const updateData = {
           fields: {
@@ -571,13 +579,18 @@ export class PethologyFirebaseREST {
           }
         };
 
-        await this.request(
+        console.log('📢 Update data:', JSON.stringify(updateData, null, 2));
+
+        const updateResponse = await this.request(
           `/announcements/${announcementId}?updateMask.fieldPaths=readBy`,
           'PATCH',
           updateData
         );
 
+        console.log('📢 Update response:', updateResponse);
         console.log('✅ Announcement marked as read');
+      } else {
+        console.log('📢 User already in readBy, skipping update');
       }
 
       return true;
