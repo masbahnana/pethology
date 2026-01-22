@@ -685,15 +685,15 @@
             </span>
           </div>
           <div class="demo-actions">
-            <button class="btn btn-sm btn-primary" onclick="window.viewProgress('${demo._id}')">
+            <button class="btn btn-sm btn-primary" onclick="window.viewProgress('${demo.id}')">
               <i data-lucide="users"></i>
               View Student Progress
             </button>
-            <button class="btn btn-sm btn-secondary" onclick="window.editDemo('${demo._id}')">
+            <button class="btn btn-sm btn-secondary" onclick="window.editDemo('${demo.id}')">
               <i data-lucide="edit-2"></i>
               Edit
             </button>
-            <button class="btn btn-sm btn-danger" onclick="window.deleteDemo('${demo._id}')">
+            <button class="btn btn-sm btn-danger" onclick="window.deleteDemo('${demo.id}')">
               <i data-lucide="trash-2"></i>
               Delete
             </button>
@@ -752,7 +752,7 @@
     };
 
     window.editDemo = function(demoId) {
-      const demo = allDemos.find(d => d._id === demoId);
+      const demo = allDemos.find(d => d.id === demoId);
       if (!demo) return;
 
       editingDemoId = demoId;
@@ -880,7 +880,7 @@
     });
 
     window.viewProgress = async function(demoId) {
-      const demo = allDemos.find(d => d._id === demoId);
+      const demo = allDemos.find(d => d.id === demoId);
       if (!demo) return;
 
       document.getElementById('progress-modal-title').textContent = `Student Progress: ${demo.title}`;
@@ -890,14 +890,15 @@
         // Load all student progress
         const progressResponse = await PethologyFirebaseREST.request('/student_skills_progress');
 
-        // Load student list
-        const studentsResponse = await PethologyFirebaseREST.request('/student_whitelist');
+        // Load all students from /users (those with role = 'Student')
+        const usersResponse = await PethologyFirebaseREST.request('/users');
 
         let allStudents = [];
-        if (studentsResponse.documents && studentsResponse.documents.length > 0) {
-          allStudents = studentsResponse.documents
+        if (usersResponse.documents && usersResponse.documents.length > 0) {
+          allStudents = usersResponse.documents
             .map(doc => PethologyFirebaseREST.convertDocument(doc))
-            .sort((a, b) => a.name.localeCompare(b.name));
+            .filter(user => user.role === 'Student')
+            .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         }
 
         let progressData = {};

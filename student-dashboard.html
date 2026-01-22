@@ -1021,6 +1021,45 @@
       padding: 20px;
     }
 
+    /* Upcoming Events (from calendar-rest.js) */
+    .upcoming-events {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .upcoming-events h5 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .event-item {
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: var(--gray-50);
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .event-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .event-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .event-date {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+
     .deadline-list {
       display: flex;
       flex-direction: column;
@@ -1616,80 +1655,8 @@
           <!-- Right Column: Calendar & Deadlines Stacked -->
           <div style="display: flex; flex-direction: column; gap: 16px;">
             <!-- Calendar Widget -->
-            <div class="calendar-widget">
-            <div class="calendar-header">
-              <div class="calendar-month">October 2025</div>
-              <div class="calendar-nav">
-                <button class="calendar-nav-btn">
-                  <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
-                </button>
-                <button class="calendar-nav-btn">
-                  <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Calendar Days Header -->
-            <div class="calendar-days">
-              <div class="calendar-day-header">S</div>
-              <div class="calendar-day-header">M</div>
-              <div class="calendar-day-header">T</div>
-              <div class="calendar-day-header">W</div>
-              <div class="calendar-day-header">T</div>
-              <div class="calendar-day-header">F</div>
-              <div class="calendar-day-header">S</div>
-            </div>
-
-            <!-- Calendar Days -->
-            <div class="calendar-days">
-              <div class="calendar-day"></div>
-              <div class="calendar-day"></div>
-              <div class="calendar-day">1</div>
-              <div class="calendar-day">2</div>
-              <div class="calendar-day">3</div>
-              <div class="calendar-day">4</div>
-              <div class="calendar-day">5</div>
-
-              <div class="calendar-day">6</div>
-              <div class="calendar-day">7</div>
-              <div class="calendar-day">8</div>
-              <div class="calendar-day">9</div>
-              <div class="calendar-day">10</div>
-              <div class="calendar-day">11</div>
-              <div class="calendar-day">12</div>
-
-              <div class="calendar-day">13</div>
-              <div class="calendar-day">14</div>
-              <div class="calendar-day">15</div>
-              <div class="calendar-day">16</div>
-              <div class="calendar-day today">17</div>
-              <div class="calendar-day">18</div>
-              <div class="calendar-day">19</div>
-
-              <div class="calendar-day has-event">20</div>
-              <div class="calendar-day">21</div>
-              <div class="calendar-day has-event">22</div>
-              <div class="calendar-day">23</div>
-              <div class="calendar-day">24</div>
-              <div class="calendar-day has-event">25</div>
-              <div class="calendar-day">26</div>
-
-              <div class="calendar-day">27</div>
-              <div class="calendar-day">28</div>
-              <div class="calendar-day">29</div>
-              <div class="calendar-day">30</div>
-              <div class="calendar-day">31</div>
-            </div>
-            </div>
-
-            <!-- Upcoming Events -->
-            <div class="deadlines-widget">
-              <h3 style="font-size: 14px; font-weight: 600; color: var(--gray-700); margin-bottom: 16px;">Upcoming Events</h3>
-              <div id="upcomingEvents">
-                <p style="text-align: center; color: var(--gray-500); padding: 20px;">
-                  Loading events...
-                </p>
-              </div>
+            <div id="calendarWidget" class="calendar-widget">
+              <p style="text-align: center; color: var(--gray-500); padding: 20px;">Loading calendar...</p>
             </div>
           </div>
         </div>
@@ -1892,14 +1859,19 @@
     // ✅ 100% REST API - No Firebase SDK!
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements-rest.js?v=4.1';
+    import { loadCalendarEvents } from './assets/js/calendar-rest.js?v=1.0';
     // Removed calendar-teacher.js import (uses Firebase SDK which causes CORS)
     import toast from './assets/js/toast.js';
     import errorHandler from './assets/js/error-handler.js';
+
+    console.log('✅ All imports loaded successfully');
 
     // Make functions globally available
     window.markAnnouncementAsRead = markAnnouncementAsRead;
     window.toast = toast;
     window.errorHandler = errorHandler;
+    window.PethologyFirebaseREST = PethologyFirebaseREST;
+    window.loadCalendarEvents = loadCalendarEvents;
     window.PethologyFirebaseREST = PethologyFirebaseREST;
     window.showToast = (message, type) => toast.show(message, type);
 
@@ -2218,7 +2190,14 @@
     // Carregar dados quando a página carregar
     window.addEventListener('DOMContentLoaded', () => {
       console.log('🚀 Student Dashboard loading...');
+      console.log('📅 loadCalendarEvents function available?', typeof loadCalendarEvents);
       loadRealStudentData();
+      if (typeof loadCalendarEvents === 'function') {
+        console.log('📅 Calling loadCalendarEvents...');
+        loadCalendarEvents().then(() => console.log('✅ Calendar loaded')).catch(err => console.error('❌ Calendar error:', err));
+      } else {
+        console.error('❌ loadCalendarEvents is not a function!');
+      }
     });
 
     // Exportar funções para uso global (se necessário)
@@ -2232,12 +2211,13 @@
     });
 
     // Logout function
-    window.logout = function() {
+    function logout() {
       if (confirm('Are you sure you want to logout?')) {
         sessionStorage.removeItem('pethologyUser');
         window.location.href = 'auth0-login.html';
       }
     }
+    window.logout = logout;
 
     // Toggle collapsible sections (NEW - for Notion design)
     window.toggleCollapsible = function(id) {

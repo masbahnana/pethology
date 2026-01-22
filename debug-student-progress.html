@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Student Progress</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        pre { background: white; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        h2 { color: #333; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Student Progress Debug Tool</h1>
+        <h2>Inspecting /student_skills_progress collection...</h2>
+        <pre id="output">Loading...</pre>
+    </div>
+
+    <script type="module">
+        import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+        async function debug() {
+            const output = document.getElementById('output');
+            try {
+                const response = await PethologyFirebaseREST.request('/student_skills_progress');
+                
+                output.innerHTML = '';
+                output.innerHTML += '✅ Fetching /student_skills_progress collection...\n';
+                output.innerHTML += `📊 Found ${response.documents?.length || 0} progress documents\n\n`;
+
+                if (!response.documents || response.documents.length === 0) {
+                    output.innerHTML += '⚠️ No documents found!\n';
+                    return;
+                }
+
+                response.documents.forEach((doc, idx) => {
+                    output.innerHTML += `\n📄 Document ${idx + 1}:\n`;
+                    output.innerHTML += `Document ID: ${doc.name.split('/').pop()}\n`;
+                    
+                    const converted = PethologyFirebaseREST.convertDocument(doc);
+                    output.innerHTML += `\nConverted structure:\n`;
+                    output.innerHTML += JSON.stringify(converted, null, 2);
+                    
+                    output.innerHTML += `\n\nChecking fields:\n`;
+                    output.innerHTML += `- studentId: ${converted.studentId ? '✓' : '✗'}\n`;
+                    output.innerHTML += `- studentEmail: ${converted.studentEmail ? '✓' : '✗'}\n`;
+                    output.innerHTML += `- studentName: ${converted.studentName ? '✓' : '✗'}\n`;
+                    output.innerHTML += `- progress (object): ${typeof converted.progress === 'object' ? '✓' : '✗'}\n`;
+                    
+                    if (typeof converted.progress === 'object') {
+                        output.innerHTML += `\nProgress structure:\n`;
+                        output.innerHTML += JSON.stringify(converted.progress, null, 2);
+                    }
+                });
+
+            } catch (error) {
+                output.innerHTML = `❌ Error: ${error.message}\n${error.stack}`;
+            }
+        }
+
+        debug();
+    </script>
+</body>
+</html>

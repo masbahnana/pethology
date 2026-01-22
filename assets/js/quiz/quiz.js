@@ -865,18 +865,24 @@ window.onload = function() {
   const userSession = sessionStorage.getItem('pethologyUser');
 
   if (userSession) {
-    // Verificar se é um estudante
-    try {
-      const user = JSON.parse(userSession);
-      if (user.role && user.role !== 'Student') {
-        console.warn('⚠️ Only students can access quizzes');
-        alert('Only students can access quizzes! 🎓');
-        window.location.href = 'index.html';
-        return;
+    // Verificar se é um estudante (only if actually on quiz page with module parameter)
+    const urlParams = new URLSearchParams(window.location.search);
+    const module = urlParams.get('module') || urlParams.get('mode') || urlParams.get('customQuizId');
+    
+    // Only enforce role check if actually attempting to access a quiz
+    if (module) {
+      try {
+        const user = JSON.parse(userSession);
+        if (user.role && user.role !== 'Student') {
+          console.warn('⚠️ Only students can access quizzes');
+          alert('Only students can access quizzes! 🎓');
+          window.location.href = 'index.html';
+          return;
+        }
+        console.log('✅ User authenticated:', user.name);
+      } catch (error) {
+        console.error('❌ Error parsing user session:', error);
       }
-      console.log('✅ User authenticated:', user.name);
-    } catch (error) {
-      console.error('❌ Error parsing user session:', error);
     }
   } else {
     console.log('👤 Visitor mode: Access to 30% of quiz questions');

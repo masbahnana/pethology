@@ -508,17 +508,18 @@
 
     async function loadStudentProgress() {
       try {
-        // Try to load existing progress
+        // Load progress document using studentId as the document ID
         const response = await PethologyFirebaseREST.request(
-          `/student_skills_progress?studentId=${currentUser.id}`
+          `/student_skills_progress/${currentUser.id}`
         );
 
-        if (response.documents && response.documents.length > 0) {
-          const doc = PethologyFirebaseREST.convertDocument(response.documents[0]);
+        if (response.fields) {
+          const doc = PethologyFirebaseREST.convertDocument(response);
           studentProgress = doc.progress || {};
         }
       } catch (error) {
         console.error('Error loading progress:', error);
+        // This is normal if no progress exists yet
         studentProgress = {};
       }
     }
@@ -543,22 +544,22 @@
           }
         };
 
-        // Check if document exists
-        const existing = await PethologyFirebaseREST.request(
-          `/student_skills_progress?studentId=${currentUser.id}`
-        );
-
-        if (existing.documents && existing.documents.length > 0) {
-          const docId = existing.documents[0].name.split('/').pop();
+        // Use studentId as the document ID for persistence
+        const docId = currentUser.id;
+        
+        try {
+          // Try to update existing document
           await PethologyFirebaseREST.request(
             `/student_skills_progress/${docId}`,
             'PATCH',
             firestoreData
           );
-        } else {
+        } catch (error) {
+          // If PATCH fails (document doesn't exist), try POST to create new
+          console.log('Creating new progress document...');
           await PethologyFirebaseREST.request(
-            '/student_skills_progress',
-            'POST',
+            `/student_skills_progress/${docId}`,
+            'PUT',
             firestoreData
           );
         }
@@ -597,7 +598,7 @@
       grid.style.display = 'grid';
 
       grid.innerHTML = allDemos.map(demo => {
-        const demoProgress = studentProgress[demo._id] || {
+        const demoProgress = studentProgress[demo.id] || {
           completedItems: [],
           readyForAssessment: false
         };
@@ -648,9 +649,9 @@
               ${demo.items.map(item => {
                 const isCompleted = demoProgress.completedItems.includes(item.id);
                 return `
-                  <div class="checklist-item ${isCompleted ? 'completed' : ''}" data-demo-id="${demo._id}" data-item-id="${item.id}">
+                  <div class="checklist-item ${isCompleted ? 'completed' : ''}" data-demo-id="${demo.id}" data-item-id="${item.id}">
                     <div class="checkbox-wrapper">
-                      <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" onclick="window.toggleItem('${demo._id}', '${item.id}')">
+                      <div class="custom-checkbox ${isCompleted ? 'checked' : ''}" onclick="window.toggleItem('${demo.id}', '${item.id}')">
                         ${isCompleted ? '<i data-lucide="check"></i>' : ''}
                       </div>
                     </div>
@@ -673,7 +674,7 @@
                 <p class="assessment-message">Complete all tasks to mark yourself ready for assessment</p>
                 <button
                   class="btn btn-success"
-                  onclick="window.markReady('${demo._id}')"
+                  onclick="window.markReady('${demo.id}')"
                   ${percentage < 100 ? 'disabled' : ''}
                 >
                   <i data-lucide="flag"></i>

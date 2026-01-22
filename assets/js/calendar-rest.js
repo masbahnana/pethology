@@ -156,21 +156,38 @@ async function getCalendarEvents(startDate, endDate) {
     const response = await PethologyFirebaseREST.request('/calendar_events');
 
     if (!response.documents) {
+      console.log('📅 No documents property in response');
       return [];
     }
 
-    let events = response.documents.map(doc => PethologyFirebaseREST.convertDocument(doc));
+    console.log(`📅 Found ${response.documents.length} documents in Firebase`);
+
+    let events = response.documents.map(doc => {
+      const converted = PethologyFirebaseREST.convertDocument(doc);
+      // Ensure date is a Date object
+      if (converted.date && typeof converted.date === 'string') {
+        converted.date = new Date(converted.date);
+      }
+      return converted;
+    });
+
+    console.log(`📅 After conversion: ${events.length} events`);
+    console.log('📅 Events:', events);
 
     // Filter by date range
     if (startDate && endDate) {
       events = events.filter(e => {
-        const eventDate = e.date;
+        const eventDate = e.date instanceof Date ? e.date : new Date(e.date);
         return eventDate >= startDate && eventDate <= endDate;
       });
     }
 
     // Sort by date ascending
-    events.sort((a, b) => a.date - b.date);
+    events.sort((a, b) => {
+      const dateA = a.date instanceof Date ? a.date : new Date(a.date);
+      const dateB = b.date instanceof Date ? b.date : new Date(b.date);
+      return dateA - dateB;
+    });
 
     return events;
   } catch (error) {
@@ -181,7 +198,11 @@ async function getCalendarEvents(startDate, endDate) {
 
 function renderCalendar(events) {
   const container = document.getElementById('calendarWidget');
-  if (!container) return;
+  console.log('🎨 renderCalendar called, container:', container, 'events:', events.length);
+  if (!container) {
+    console.error('❌ No #calendarWidget found!');
+    return;
+  }
 
   const now = new Date();
   const year = now.getFullYear();
@@ -197,16 +218,16 @@ function renderCalendar(events) {
 
   let html = `
     <div class="calendar-header">
-      <h4>${monthNames[month]} ${year}</h4>
+      <h4 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--gray-700);">${monthNames[month]} ${year}</h4>
     </div>
-    <div class="calendar-grid">
-      <div class="calendar-day-name">Sun</div>
-      <div class="calendar-day-name">Mon</div>
-      <div class="calendar-day-name">Tue</div>
-      <div class="calendar-day-name">Wed</div>
-      <div class="calendar-day-name">Thu</div>
-      <div class="calendar-day-name">Fri</div>
-      <div class="calendar-day-name">Sat</div>
+    <div class="calendar-days">
+      <div class="calendar-day-header">Sun</div>
+      <div class="calendar-day-header">Mon</div>
+      <div class="calendar-day-header">Tue</div>
+      <div class="calendar-day-header">Wed</div>
+      <div class="calendar-day-header">Thu</div>
+      <div class="calendar-day-header">Fri</div>
+      <div class="calendar-day-header">Sat</div>
   `;
 
   // Empty cells for days before month starts
@@ -224,20 +245,21 @@ function renderCalendar(events) {
     });
 
     html += `
-      <div class="calendar-day ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-events' : ''}">
-        <span class="day-number">${day}</span>
-        ${dayEvents.length > 0 ? `<span class="event-dot" title="${dayEvents.length} event(s)"></span>` : ''}
+      <div class="calendar-day ${isToday ? 'today' : ''} ${dayEvents.length > 0 ? 'has-event' : ''}">
+        ${day}
+        ${dayEvents.length > 0 ? '<span class="event-dot"></span>' : ''}
       </div>
     `;
   }
 
   html += '</div>';
 
-  // Upcoming events list
+  // Upcoming events list - always show the section
   const upcomingEvents = events.filter(e => new Date(e.date) >= now).slice(0, 5);
 
+  html += '<div class="upcoming-events"><h5>Upcoming</h5>';
+  
   if (upcomingEvents.length > 0) {
-    html += '<div class="upcoming-events"><h5>Upcoming</h5>';
     upcomingEvents.forEach(event => {
       const eventDate = new Date(event.date);
       const typeColors = {
@@ -256,10 +278,19 @@ function renderCalendar(events) {
         </div>
       `;
     });
-    html += '</div>';
+  } else {
+    html += '<p style="text-align: center; color: var(--gray-500); font-size: 13px; margin: 12px 0;">No upcoming events</p>';
   }
+  
+  html += '</div>';
 
   container.innerHTML = html;
+  console.log('✅ Calendar rendered successfully');
+  
+  // Reinitialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 }
 
 // Load student calendar events (for student dashboard)
