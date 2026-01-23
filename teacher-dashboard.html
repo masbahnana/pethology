@@ -113,6 +113,69 @@
       gap: 6px;
     }
 
+    /* Class Selector */
+    .class-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 16px;
+      padding-left: 16px;
+      border-left: 1px solid var(--gray-200);
+    }
+
+    .class-selector label {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .class-selector select {
+      padding: 8px 32px 8px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23787774' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+      appearance: none;
+      cursor: pointer;
+      min-width: 180px;
+    }
+
+    .class-selector select:hover {
+      border-color: var(--gray-300);
+    }
+
+    .class-selector select:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+
+    .btn-new-class {
+      padding: 8px 12px;
+      background: var(--blue-primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-new-class:hover {
+      background: var(--blue-hover);
+    }
+
+    .no-classes-message {
+      color: var(--gray-500);
+      font-size: 13px;
+      font-style: italic;
+    }
+
     .header-actions {
       display: flex;
       gap: 8px;
@@ -1269,6 +1332,16 @@
             <i data-lucide="graduation-cap"></i>
             Educator
           </span>
+          <!-- Class Selector -->
+          <div class="class-selector" id="classSelectorContainer">
+            <label for="classSelect">Class:</label>
+            <select id="classSelect" onchange="onClassChange(this.value)">
+              <option value="">Loading classes...</option>
+            </select>
+            <button class="btn-new-class" onclick="openCreateClassModal()" title="Create New Class">
+              <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+            </button>
+          </div>
         </div>
         <div class="header-actions">
           <a href="index.html" class="btn btn-secondary">
@@ -1513,7 +1586,7 @@
 
   <script type="module">
     // USE REST API instead of Firebase SDK to avoid WebChannel issues
-    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.1';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
     import toast from './assets/js/toast.js';
     import errorHandler from './assets/js/error-handler.js';
 
@@ -1553,6 +1626,154 @@
     window.allStudents = [];
     window.currentSortColumn = 'name';
     window.currentSortDirection = 'asc';
+
+    // Global state for classes
+    window.teacherClasses = [];
+    window.currentClassId = null;
+
+    // ============================================
+    // CLASS MANAGEMENT FUNCTIONS
+    // ============================================
+
+    // Load teacher's classes and populate selector
+    async function loadTeacherClasses() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        if (!teacher) return;
+
+        console.log('🏫 Loading classes for teacher:', teacher.id);
+
+        const classes = await PethologyFirebaseREST.getTeacherClasses(teacher.id);
+        window.teacherClasses = classes;
+
+        const select = document.getElementById('classSelect');
+        if (!select) return;
+
+        if (classes.length === 0) {
+          select.innerHTML = '<option value="">No classes yet</option>';
+          // Show prompt to create first class
+          setTimeout(() => {
+            if (confirm('You don\'t have any classes yet. Would you like to create your first class?')) {
+              openCreateClassModal();
+            }
+          }, 500);
+          return;
+        }
+
+        // Populate select with classes
+        select.innerHTML = classes.map(cls =>
+          `<option value="${cls.id}">${cls.name}${cls.academicYear ? ` (${cls.academicYear})` : ''}</option>`
+        ).join('');
+
+        // Try to restore previously selected class from localStorage
+        const savedClassId = localStorage.getItem('pethology_selectedClassId');
+        if (savedClassId && classes.some(c => c.id === savedClassId)) {
+          select.value = savedClassId;
+          window.currentClassId = savedClassId;
+        } else {
+          // Select first class by default
+          window.currentClassId = classes[0].id;
+          select.value = window.currentClassId;
+        }
+
+        console.log('✅ Classes loaded:', classes.length, '| Current:', window.currentClassId);
+
+        // Reinitialize Lucide icons for new elements
+        if (typeof lucide !== 'undefined' && lucide.createIcons) {
+          lucide.createIcons();
+        }
+
+      } catch (error) {
+        console.error('Error loading classes:', error);
+      }
+    }
+
+    // Handle class change
+    window.onClassChange = async function(classId) {
+      if (!classId) return;
+
+      console.log('🔄 Switching to class:', classId);
+      window.currentClassId = classId;
+
+      // Save selection to localStorage
+      localStorage.setItem('pethology_selectedClassId', classId);
+
+      // Reload dashboard data for new class
+      await loadTeacherDashboard();
+    };
+
+    // Open modal to create a new class
+    window.openCreateClassModal = function() {
+      // Open class settings on the Class Info tab for creating new class
+      openClassSettings('class-info');
+
+      // Clear form for new class
+      setTimeout(() => {
+        document.getElementById('className').value = '';
+        document.getElementById('academicYear').value = '';
+        document.getElementById('classDescription').value = '';
+
+        // Change save button to "Create Class"
+        const saveBtn = document.querySelector('#settingsTabClassInfo .btn-primary');
+        if (saveBtn) {
+          saveBtn.textContent = 'Create Class';
+          saveBtn.onclick = createNewClass;
+        }
+      }, 100);
+    };
+
+    // Create a new class
+    window.createNewClass = async function() {
+      try {
+        const name = document.getElementById('className').value.trim();
+        const academicYear = document.getElementById('classYear').value.trim();
+        const description = document.getElementById('classDescription').value.trim();
+
+        if (!name) {
+          alert('Please enter a class name');
+          return;
+        }
+
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        if (!teacher) return;
+
+        console.log('🏫 Creating new class:', name);
+
+        const newClass = await PethologyFirebaseREST.createClass({
+          name,
+          academicYear,
+          description,
+          ownerId: teacher.id,
+          ownerName: teacher.name
+        });
+
+        console.log('✅ Class created:', newClass);
+
+        // Close modal
+        closeClassSettings();
+
+        // Reload classes and select the new one
+        await loadTeacherClasses();
+
+        // Select the new class
+        window.currentClassId = newClass.id;
+        localStorage.setItem('pethology_selectedClassId', newClass.id);
+
+        const select = document.getElementById('classSelect');
+        if (select) select.value = newClass.id;
+
+        // Reload dashboard
+        await loadTeacherDashboard();
+
+        alert('Class created successfully!');
+
+      } catch (error) {
+        console.error('Error creating class:', error);
+        alert('Error creating class: ' + error.message);
+      }
+    };
 
     // Check authentication
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1594,12 +1815,18 @@
       }
 
       console.log('✅ Teacher authenticated:', user.name);
+
+      // Load teacher's classes first
+      await loadTeacherClasses();
+
+      // Then load dashboard data
       await loadTeacherDashboard();
     });
 
     async function loadTeacherDashboard() {
       try {
         console.log('🚀 Loading teacher dashboard...');
+        console.log('🏫 Current class:', window.currentClassId);
 
         // FIRST THING: Hide loading and show content IMMEDIATELY (before data loads)
         const loadingEl = document.getElementById('loadingState');
@@ -1667,15 +1894,18 @@
             setTimeout(() => reject(new Error('Timeout: Data fetch took too long')), 10000)
           );
 
-          // Get teacher ID from session to filter students
+          // Get teacher ID and current class from session to filter students
           const userSession = sessionStorage.getItem('pethologyUser');
           const teacher = userSession ? JSON.parse(userSession) : null;
           const teacherId = teacher?.id || null;
+          const classId = window.currentClassId || null;
+
+          console.log('🔍 Fetching data for:', { teacherId, classId });
 
           [analytics, students] = await Promise.race([
             Promise.all([
-              PethologyFirebaseService.getTeacherAnalytics(teacherId),
-              PethologyFirebaseService.getAllStudentsProgress(teacherId)
+              PethologyFirebaseService.getTeacherAnalytics(teacherId, classId),
+              PethologyFirebaseService.getAllStudentsProgress(teacherId, classId)
             ]),
             timeoutPromise
           ]);
@@ -1686,8 +1916,8 @@
           // CRITICAL FIX: Merge student progress with user data (name, email)
           // Progress has userId, stats but NO name/email
           // Users has name, email but NO progress
-          const allUsers = await PethologyFirebaseService.getAllStudents(teacherId);
-          console.log('👤 Users received:', allUsers?.length || 0, teacherId ? `(filtered for teacher)` : '');
+          const allUsers = await PethologyFirebaseService.getAllStudents(teacherId, classId);
+          console.log('👤 Users received:', allUsers?.length || 0, classId ? `(filtered for class)` : teacherId ? `(filtered for teacher)` : '');
 
           // Create a map of userId -> user data for quick lookup
           const userMap = new Map(allUsers.map(user => [user.id, user]));
@@ -3183,29 +3413,24 @@
     // Class Info Functions
     window.loadClassInfo = async function() {
       try {
-        const userSession = sessionStorage.getItem('pethologyUser');
-        const teacher = userSession ? JSON.parse(userSession) : null;
-        if (!teacher) {
-          console.log('No teacher session found');
-          return;
-        }
-
         // Clear form first
         document.getElementById('className').value = '';
         document.getElementById('academicYear').value = '';
         document.getElementById('classDescription').value = '';
 
-        try {
-          const response = await PethologyFirebaseREST.request(`/class_settings/${teacher.id}`);
-          if (response && response.fields) {
-            const data = PethologyFirebaseREST.convertDocument(response);
-            document.getElementById('className').value = data.className || '';
-            document.getElementById('academicYear').value = data.academicYear || '';
-            document.getElementById('classDescription').value = data.description || '';
-          }
-        } catch (fetchError) {
-          // 404 is expected if no settings exist yet
-          console.log('No class settings found yet (this is normal for new teachers)');
+        // If no class selected, leave form empty for new class creation
+        if (!window.currentClassId) {
+          console.log('No class selected - ready for new class creation');
+          return;
+        }
+
+        // Load current class data
+        const cls = await PethologyFirebaseREST.getClass(window.currentClassId);
+        if (cls) {
+          document.getElementById('className').value = cls.name || '';
+          document.getElementById('academicYear').value = cls.academicYear || '';
+          document.getElementById('classDescription').value = cls.description || '';
+          console.log('✅ Loaded class info:', cls.name);
         }
       } catch (error) {
         console.error('Error in loadClassInfo:', error);
@@ -3214,21 +3439,35 @@
 
     window.saveClassInfo = async function() {
       try {
-        const userSession = sessionStorage.getItem('pethologyUser');
-        const teacher = userSession ? JSON.parse(userSession) : null;
-        if (!teacher) return;
+        const name = document.getElementById('className').value.trim();
+        const academicYear = document.getElementById('academicYear').value.trim();
+        const description = document.getElementById('classDescription').value.trim();
 
-        const classData = {
-          fields: {
-            className: { stringValue: document.getElementById('className').value },
-            academicYear: { stringValue: document.getElementById('academicYear').value },
-            description: { stringValue: document.getElementById('classDescription').value },
-            teacherId: { stringValue: teacher.id },
-            updatedAt: { timestampValue: new Date().toISOString() }
-          }
-        };
+        if (!name) {
+          window.showToast('Please enter a class name', 'error');
+          return;
+        }
 
-        await PethologyFirebaseREST.request(`/class_settings/${teacher.id}`, 'PATCH', classData);
+        if (!window.currentClassId) {
+          // Create new class instead
+          await createNewClass();
+          return;
+        }
+
+        // Update existing class
+        await PethologyFirebaseREST.updateClass(window.currentClassId, {
+          name,
+          academicYear,
+          description
+        });
+
+        // Update the select dropdown text
+        const select = document.getElementById('classSelect');
+        const option = select.querySelector(`option[value="${window.currentClassId}"]`);
+        if (option) {
+          option.textContent = `${name}${academicYear ? ` (${academicYear})` : ''}`;
+        }
+
         window.showToast('Class settings saved!', 'success');
       } catch (error) {
         console.error('Error saving class info:', error);
@@ -3240,16 +3479,22 @@
     window.loadStudentsForSettings = async function() {
       const container = document.getElementById('studentsListSettings');
       try {
-        const userSession = sessionStorage.getItem('pethologyUser');
-        const teacher = userSession ? JSON.parse(userSession) : null;
-        const teacherId = teacher?.id;
+        if (!window.currentClassId) {
+          container.innerHTML = `
+            <div class="empty-state-settings">
+              <p>Please select or create a class first.</p>
+            </div>
+          `;
+          return;
+        }
 
-        const students = await PethologyFirebaseREST.getAllPreRegisteredStudents(teacherId);
+        // Get students for current class
+        const students = await PethologyFirebaseREST.getStudentsByClass(window.currentClassId);
 
         if (students.length === 0) {
           container.innerHTML = `
             <div class="empty-state-settings">
-              <p>No students added yet.</p>
+              <p>No students in this class yet.</p>
               <p style="font-size: 13px; margin-top: 8px;">Click "Add Student" to pre-register students for your class.</p>
             </div>
           `;
@@ -3307,10 +3552,16 @@
         const userSession = sessionStorage.getItem('pethologyUser');
         const teacher = userSession ? JSON.parse(userSession) : null;
 
+        if (!window.currentClassId) {
+          window.showToast('Please select or create a class first', 'error');
+          return;
+        }
+
         const studentData = {
           fields: {
             name: { stringValue: name },
             email: { stringValue: email },
+            classId: { stringValue: window.currentClassId },
             addedBy: { stringValue: teacher?.id || 'unknown' },
             addedByName: { stringValue: teacher?.name || 'Unknown Teacher' },
             addedAt: { timestampValue: new Date().toISOString() },
@@ -3352,31 +3603,30 @@
       try {
         const userSession = sessionStorage.getItem('pethologyUser');
         const teacher = userSession ? JSON.parse(userSession) : null;
-        const teacherId = teacher?.id;
 
-        // Get teachers assigned to this class
-        let teachers = [];
-        try {
-          const response = await PethologyFirebaseREST.request(`/class_teachers`);
-          if (response && response.documents) {
-            teachers = response.documents
-              .map(doc => PethologyFirebaseREST.convertDocument(doc))
-              .filter(t => t.classOwnerId === teacherId);
-          }
-        } catch (fetchError) {
-          // 404 is expected if no teachers collection exists yet
-          console.log('No class_teachers collection found yet');
+        if (!window.currentClassId) {
+          container.innerHTML = `
+            <div class="empty-state-settings">
+              <p>Please select or create a class first.</p>
+            </div>
+          `;
+          return;
         }
 
-        // Always show current teacher first
+        // Get current class to read teachers array
+        const currentClass = await PethologyFirebaseREST.getClass(window.currentClassId);
+        const teachers = (currentClass?.teachers || []).filter(t => t.teacherId !== teacher?.id);
+
+        // Always show current teacher (owner) first
+        const isOwner = currentClass?.ownerId === teacher?.id;
         const currentTeacherHtml = `
           <div class="settings-list-item">
             <div class="settings-list-info">
-              <span class="settings-list-name">${teacher?.name || 'You'} (Owner)</span>
+              <span class="settings-list-name">${teacher?.name || 'You'} ${isOwner ? '(Owner)' : ''}</span>
               <span class="settings-list-email">${teacher?.email || ''}</span>
             </div>
             <div class="settings-list-actions">
-              <span class="status-badge registered">Owner</span>
+              <span class="status-badge registered">${isOwner ? 'Owner' : 'Teacher'}</span>
             </div>
           </div>
         `;
@@ -3384,7 +3634,7 @@
         if (teachers.length === 0) {
           container.innerHTML = currentTeacherHtml + `
             <div class="empty-state-settings" style="border-top: 1px solid var(--gray-200);">
-              <p>No additional teachers assigned.</p>
+              <p>No additional teachers assigned to this class.</p>
             </div>
           `;
           return;
@@ -3398,7 +3648,8 @@
           'small-animals': 'Small Animals',
           'dogs-cats': 'Dogs & Cats',
           'animal-health': 'Health',
-          'nutrition': 'Nutrition'
+          'nutrition': 'Nutrition',
+          'all': 'All Modules'
         };
 
         container.innerHTML = currentTeacherHtml + teachers.map(t => {
@@ -3408,14 +3659,14 @@
             <div class="settings-list-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
                 <div class="settings-list-info">
-                  <span class="settings-list-name">${t.name || 'Unknown'}</span>
-                  <span class="settings-list-email">${t.email || ''}</span>
+                  <span class="settings-list-name">${t.teacherName || 'Unknown'}</span>
+                  <span class="settings-list-email">${t.teacherId}</span>
                 </div>
                 <div class="settings-list-actions">
-                  <button class="btn-icon-sm" onclick="editTeacherModules('${t.id}')" title="Edit Modules">
+                  <button class="btn-icon-sm" onclick="editTeacherModules('${t.teacherId}')" title="Edit Modules">
                     <i data-lucide="pencil"></i>
                   </button>
-                  <button class="btn-icon-sm" onclick="removeTeacher('${t.id}')" title="Remove">
+                  <button class="btn-icon-sm" onclick="removeTeacher('${t.teacherId}')" title="Remove">
                     <i data-lucide="trash-2"></i>
                   </button>
                 </div>
@@ -3465,26 +3716,21 @@
         return;
       }
 
+      if (!window.currentClassId) {
+        window.showToast('Please select or create a class first', 'error');
+        return;
+      }
+
       try {
-        const userSession = sessionStorage.getItem('pethologyUser');
-        const teacher = userSession ? JSON.parse(userSession) : null;
+        // Generate a teacherId based on email
+        const teacherId = email.replace(/[@.]/g, '_');
 
-        const teacherData = {
-          fields: {
-            name: { stringValue: name },
-            email: { stringValue: email },
-            classOwnerId: { stringValue: teacher?.id || 'unknown' },
-            modules: {
-              arrayValue: {
-                values: selectedModules.map(m => ({ stringValue: m }))
-              }
-            },
-            addedAt: { timestampValue: new Date().toISOString() }
-          }
-        };
+        await PethologyFirebaseREST.addTeacherToClass(window.currentClassId, {
+          teacherId: teacherId,
+          teacherName: name,
+          modules: selectedModules
+        });
 
-        const teacherId = `${teacher?.id}_${email.replace(/[@.]/g, '_')}`;
-        await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`, 'PATCH', teacherData);
         window.showToast('Teacher added successfully!', 'success');
         hideAddTeacherForm();
         loadTeachersForSettings();
@@ -3495,10 +3741,15 @@
     };
 
     window.removeTeacher = async function(teacherId) {
-      if (!confirm('Are you sure you want to remove this teacher from your class?')) return;
+      if (!confirm('Are you sure you want to remove this teacher from this class?')) return;
+
+      if (!window.currentClassId) {
+        window.showToast('No class selected', 'error');
+        return;
+      }
 
       try {
-        await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`, 'DELETE');
+        await PethologyFirebaseREST.removeTeacherFromClass(window.currentClassId, teacherId);
         window.showToast('Teacher removed', 'success');
         loadTeachersForSettings();
       } catch (error) {
@@ -3509,17 +3760,24 @@
 
     window.editTeacherModules = async function(teacherId) {
       // For now, show a simple prompt - can create a proper modal later
+      if (!window.currentClassId) {
+        window.showToast('No class selected', 'error');
+        return;
+      }
+
       try {
-        const response = await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`);
-        if (!response || !response.fields) {
-          window.showToast('Teacher not found', 'error');
+        const currentClass = await PethologyFirebaseREST.getClass(window.currentClassId);
+        const teacher = (currentClass?.teachers || []).find(t => t.teacherId === teacherId);
+
+        if (!teacher) {
+          window.showToast('Teacher not found in this class', 'error');
           return;
         }
 
-        const teacher = PethologyFirebaseREST.convertDocument(response);
         const currentModules = teacher.modules || [];
 
         const allModules = [
+          { id: 'all', name: 'All Modules' },
           { id: 'anatomy', name: 'Anatomy & Physiology' },
           { id: 'animal-welfare', name: 'Animal Welfare' },
           { id: 'animal-behaviour', name: 'Animal Behaviour' },
@@ -3531,7 +3789,7 @@
         ];
 
         // Create a simple checklist prompt
-        let message = `Edit modules for ${teacher.name}:\n\nCurrent modules: ${currentModules.join(', ') || 'None'}\n\nEnter module IDs separated by commas:\n(${allModules.map(m => m.id).join(', ')})`;
+        let message = `Edit modules for ${teacher.teacherName}:\n\nCurrent modules: ${currentModules.join(', ') || 'None'}\n\nEnter module IDs separated by commas:\n(${allModules.map(m => m.id).join(', ')})`;
 
         const input = prompt(message, currentModules.join(', '));
         if (input === null) return; // Cancelled
@@ -3540,21 +3798,12 @@
           allModules.some(am => am.id === m)
         );
 
-        const updateData = {
-          fields: {
-            modules: {
-              arrayValue: {
-                values: newModules.map(m => ({ stringValue: m }))
-              }
-            }
-          }
-        };
-
-        await PethologyFirebaseREST.request(
-          `/class_teachers/${teacherId}?updateMask.fieldPaths=modules`,
-          'PATCH',
-          updateData
-        );
+        // Update teacher with new modules using the class method
+        await PethologyFirebaseREST.addTeacherToClass(window.currentClassId, {
+          teacherId: teacherId,
+          teacherName: teacher.teacherName,
+          modules: newModules
+        });
 
         window.showToast('Modules updated!', 'success');
         loadTeachersForSettings();

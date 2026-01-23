@@ -571,9 +571,12 @@ Michael,Johnson,michael.johnson@plc.ie</pre>
           return;
         }
 
-        // TODO: Get classId from URL or session
-        // For now, we'll use a default class ID
-        const classId = 'class_default'; // This should come from teacher's selected class
+        // Get classId from localStorage (set by teacher-dashboard.html)
+        const classId = localStorage.getItem('pethology_selectedClassId');
+        if (!classId) {
+          showAlert('error', '❌ No class selected. Please select a class from the dashboard first.');
+          return;
+        }
 
         // Save each student to pre_registered_students collection
         for (const student of window.pendingStudents) {

@@ -99,14 +99,14 @@ export class PethologyFirebaseREST {
     return data;
   }
 
-  // Get pre-registered students for a specific teacher
+  // Get pre-registered students for a specific teacher (legacy - by addedBy)
   static async getPreRegisteredStudentsByTeacher(teacherId) {
     try {
       console.log(`📋 Fetching pre-registered students for teacher: ${teacherId}`);
 
       const response = await this.request('/pre_registered_students');
 
-      if (!response.documents) {
+      if (!response || !response.documents) {
         return [];
       }
 
@@ -122,14 +122,22 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get all students - optionally filtered by teacher
-  static async getAllStudents(teacherId = null) {
+  // Get all students - optionally filtered by teacher or classId
+  // Priority: classId > teacherId (if both provided, classId wins)
+  static async getAllStudents(teacherId = null, classId = null) {
     try {
-      console.log('📋 Fetching students (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
+      console.log('📋 Fetching students (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
 
-      // If teacherId is provided, only get students pre-registered by that teacher
       let allowedEmails = null;
-      if (teacherId) {
+
+      // If classId is provided, filter by class
+      if (classId) {
+        const preRegistered = await this.getStudentsByClass(classId);
+        allowedEmails = preRegistered.map(s => s.email?.toLowerCase());
+        console.log(`📋 Allowed emails for class:`, allowedEmails);
+      }
+      // Otherwise, filter by teacherId if provided
+      else if (teacherId) {
         const preRegistered = await this.getPreRegisteredStudentsByTeacher(teacherId);
         allowedEmails = preRegistered.map(s => s.email?.toLowerCase());
         console.log(`📋 Allowed emails for this teacher:`, allowedEmails);
@@ -137,7 +145,7 @@ export class PethologyFirebaseREST {
 
       const response = await this.request('/users');
 
-      if (!response.documents) {
+      if (!response || !response.documents) {
         console.log('✅ Loaded 0 students');
         return [];
       }
@@ -146,8 +154,8 @@ export class PethologyFirebaseREST {
         .map(doc => this.convertDocument(doc))
         .filter(user => user && user.role === 'Student');
 
-      // Filter by teacher's pre-registered students if teacherId provided
-      if (teacherId && allowedEmails) {
+      // Filter by allowed emails if filtering is active
+      if (allowedEmails) {
         students = students.filter(student =>
           allowedEmails.includes(student.email?.toLowerCase())
         );
@@ -167,26 +175,26 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get all students progress - optionally filtered by teacher
-  static async getAllStudentsProgress(teacherId = null) {
+  // Get all students progress - optionally filtered by teacher or classId
+  static async getAllStudentsProgress(teacherId = null, classId = null) {
     try {
-      console.log('📊 Fetching students progress (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
+      console.log('📊 Fetching students progress (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
 
-      // Get students (filtered by teacher if provided)
-      const students = await this.getAllStudents(teacherId);
+      // Get students (filtered by class or teacher)
+      const students = await this.getAllStudents(teacherId, classId);
       const studentIds = students.map(s => s.id);
 
       const response = await this.request('/student_progress');
 
-      if (!response.documents) {
+      if (!response || !response.documents) {
         console.log('✅ Loaded progress for 0 students');
         return [];
       }
 
       let progress = response.documents.map(doc => this.convertDocument(doc));
 
-      // Filter by teacher's students if teacherId provided
-      if (teacherId && studentIds.length > 0) {
+      // Filter by class/teacher's students if filtering is active
+      if ((teacherId || classId) && studentIds.length > 0) {
         progress = progress.filter(p => studentIds.includes(p.userId || p.id));
       }
 
@@ -220,19 +228,19 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get teacher analytics - filtered by teacher's students
-  static async getTeacherAnalytics(teacherId = null) {
+  // Get teacher analytics - filtered by teacher's students or classId
+  static async getTeacherAnalytics(teacherId = null, classId = null) {
     try {
-      console.log('📈 Generating teacher analytics (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
+      console.log('📈 Generating teacher analytics (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
 
       const [students, allQuizResults] = await Promise.all([
-        this.getAllStudents(teacherId),
+        this.getAllStudents(teacherId, classId),
         this.getAllQuizResults()
       ]);
 
-      // Filter quiz results to only include this teacher's students
+      // Filter quiz results to only include students in the class/teacher
       const studentIds = students.map(s => s.id);
-      const quizResults = teacherId
+      const quizResults = (teacherId || classId)
         ? allQuizResults.filter(r => studentIds.includes(r.userId))
         : allQuizResults;
 
@@ -495,6 +503,280 @@ export class PethologyFirebaseREST {
       return students;
     } catch (error) {
       console.error('Error getting pre-registered students:', error);
+      return [];
+    }
+  }
+
+  // ============================================
+  // CLASSES METHODS
+  // ============================================
+
+  // Get all classes for a teacher (owned or assigned)
+  static async getTeacherClasses(teacherId) {
+    try {
+      console.log(`🏫 Fetching classes for teacher: ${teacherId}`);
+
+      const response = await this.request('/classes');
+
+      if (!response || !response.documents) {
+        console.log('✅ No classes found');
+        return [];
+      }
+
+      const allClasses = response.documents.map(doc => this.convertDocument(doc));
+
+      // Filter: classes where teacher is owner OR is in teachers array
+      const teacherClasses = allClasses.filter(cls => {
+        if (cls.ownerId === teacherId) return true;
+        if (cls.teachers && Array.isArray(cls.teachers)) {
+          return cls.teachers.some(t => t.teacherId === teacherId);
+        }
+        return false;
+      });
+
+      console.log(`✅ Found ${teacherClasses.length} classes for this teacher`);
+      return teacherClasses;
+    } catch (error) {
+      console.error('Error getting teacher classes:', error);
+      return [];
+    }
+  }
+
+  // Get a single class by ID
+  static async getClass(classId) {
+    try {
+      console.log(`🏫 Fetching class: ${classId}`);
+
+      const response = await this.request(`/classes/${classId}`);
+
+      if (!response) {
+        return null;
+      }
+
+      return this.convertDocument(response);
+    } catch (error) {
+      console.error('Error getting class:', error);
+      return null;
+    }
+  }
+
+  // Create a new class
+  static async createClass(classData) {
+    try {
+      console.log('🏫 Creating class:', classData.name);
+
+      // Generate unique ID
+      const classId = `class_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      const firestoreData = {
+        fields: {
+          name: { stringValue: classData.name },
+          academicYear: { stringValue: classData.academicYear || '' },
+          description: { stringValue: classData.description || '' },
+          ownerId: { stringValue: classData.ownerId },
+          ownerName: { stringValue: classData.ownerName || '' },
+          createdAt: { timestampValue: new Date().toISOString() },
+          teachers: {
+            arrayValue: {
+              values: [{
+                mapValue: {
+                  fields: {
+                    teacherId: { stringValue: classData.ownerId },
+                    teacherName: { stringValue: classData.ownerName || '' },
+                    modules: { arrayValue: { values: [{ stringValue: 'all' }] } }
+                  }
+                }
+              }]
+            }
+          }
+        }
+      };
+
+      await this.request(`/classes/${classId}`, 'PATCH', firestoreData);
+      console.log('✅ Class created successfully:', classId);
+
+      return { id: classId, ...classData };
+    } catch (error) {
+      console.error('❌ Error creating class:', error);
+      throw error;
+    }
+  }
+
+  // Update class info
+  static async updateClass(classId, updates) {
+    try {
+      console.log('🏫 Updating class:', classId);
+
+      const fields = {};
+      const updateMask = [];
+
+      if (updates.name !== undefined) {
+        fields.name = { stringValue: updates.name };
+        updateMask.push('name');
+      }
+      if (updates.academicYear !== undefined) {
+        fields.academicYear = { stringValue: updates.academicYear };
+        updateMask.push('academicYear');
+      }
+      if (updates.description !== undefined) {
+        fields.description = { stringValue: updates.description };
+        updateMask.push('description');
+      }
+
+      const updateData = { fields };
+      const maskQuery = updateMask.map(field => `updateMask.fieldPaths=${field}`).join('&');
+
+      await this.request(`/classes/${classId}?${maskQuery}`, 'PATCH', updateData);
+
+      console.log('✅ Class updated successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error updating class:', error);
+      throw error;
+    }
+  }
+
+  // Delete a class
+  static async deleteClass(classId) {
+    try {
+      console.log('🏫 Deleting class:', classId);
+
+      await this.request(`/classes/${classId}`, 'DELETE');
+
+      console.log('✅ Class deleted successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error deleting class:', error);
+      throw error;
+    }
+  }
+
+  // Add teacher to class with module permissions
+  static async addTeacherToClass(classId, teacherData) {
+    try {
+      console.log(`🏫 Adding teacher ${teacherData.teacherId} to class ${classId}`);
+
+      // Get current class
+      const cls = await this.getClass(classId);
+      if (!cls) {
+        throw new Error('Class not found');
+      }
+
+      // Add new teacher to array
+      const teachers = cls.teachers || [];
+
+      // Check if teacher already exists
+      const existingIndex = teachers.findIndex(t => t.teacherId === teacherData.teacherId);
+      if (existingIndex >= 0) {
+        // Update existing teacher's modules
+        teachers[existingIndex].modules = teacherData.modules;
+      } else {
+        teachers.push({
+          teacherId: teacherData.teacherId,
+          teacherName: teacherData.teacherName || '',
+          modules: teacherData.modules || ['all']
+        });
+      }
+
+      // Update class with new teachers array
+      const updateData = {
+        fields: {
+          teachers: {
+            arrayValue: {
+              values: teachers.map(t => ({
+                mapValue: {
+                  fields: {
+                    teacherId: { stringValue: t.teacherId },
+                    teacherName: { stringValue: t.teacherName || '' },
+                    modules: {
+                      arrayValue: {
+                        values: (t.modules || []).map(m => ({ stringValue: m }))
+                      }
+                    }
+                  }
+                }
+              }))
+            }
+          }
+        }
+      };
+
+      await this.request(`/classes/${classId}?updateMask.fieldPaths=teachers`, 'PATCH', updateData);
+
+      console.log('✅ Teacher added to class successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error adding teacher to class:', error);
+      throw error;
+    }
+  }
+
+  // Remove teacher from class
+  static async removeTeacherFromClass(classId, teacherId) {
+    try {
+      console.log(`🏫 Removing teacher ${teacherId} from class ${classId}`);
+
+      // Get current class
+      const cls = await this.getClass(classId);
+      if (!cls) {
+        throw new Error('Class not found');
+      }
+
+      // Remove teacher from array
+      const teachers = (cls.teachers || []).filter(t => t.teacherId !== teacherId);
+
+      // Update class with new teachers array
+      const updateData = {
+        fields: {
+          teachers: {
+            arrayValue: {
+              values: teachers.map(t => ({
+                mapValue: {
+                  fields: {
+                    teacherId: { stringValue: t.teacherId },
+                    teacherName: { stringValue: t.teacherName || '' },
+                    modules: {
+                      arrayValue: {
+                        values: (t.modules || []).map(m => ({ stringValue: m }))
+                      }
+                    }
+                  }
+                }
+              }))
+            }
+          }
+        }
+      };
+
+      await this.request(`/classes/${classId}?updateMask.fieldPaths=teachers`, 'PATCH', updateData);
+
+      console.log('✅ Teacher removed from class successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error removing teacher from class:', error);
+      throw error;
+    }
+  }
+
+  // Get students by class ID
+  static async getStudentsByClass(classId) {
+    try {
+      console.log(`🏫 Fetching students for class: ${classId}`);
+
+      const response = await this.request('/pre_registered_students');
+
+      if (!response || !response.documents) {
+        return [];
+      }
+
+      const students = response.documents
+        .map(doc => this.convertDocument(doc))
+        .filter(student => student && student.classId === classId);
+
+      console.log(`✅ Found ${students.length} students in class ${classId}`);
+      return students;
+    } catch (error) {
+      console.error('Error getting students by class:', error);
       return [];
     }
   }
