@@ -1030,6 +1030,13 @@
       gap: 8px;
     }
 
+    .calendar-widget {
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-100);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
     /* 📅 Calendar Styles */
     .calendar-header {
       margin-bottom: 20px;
@@ -1268,14 +1275,14 @@
             <i data-lucide="home"></i>
             Home
           </a>
-          <a href="import-students.html" class="btn btn-primary">
-            <i data-lucide="users"></i>
-            Import Students
-          </a>
           <a href="teacher-content-manager.html" class="btn btn-secondary">
             <i data-lucide="plus-circle"></i>
             Publish Content
           </a>
+          <button onclick="openClassSettings()" class="btn btn-secondary">
+            <i data-lucide="settings"></i>
+            Settings
+          </button>
           <div class="dropdown" id="help-dropdown">
             <button class="dropdown-toggle" onclick="toggleHelpDropdown()">
               <i data-lucide="help-circle"></i>
@@ -1357,8 +1364,8 @@
           Add Event
         </button>
       </div>
-        <div id="calendarWidget">
-          <p style="text-align: center; color: var(--gray-500); padding: 40px;">
+        <div id="calendarWidget" class="calendar-widget">
+          <p style="text-align: center; color: var(--gray-500); padding: 20px;">
             Loading calendar...
           </p>
         </div>
@@ -1373,7 +1380,7 @@
           </h2>
         </div>
         <ul class="quick-actions">
-          <li class="quick-action-item" onclick="window.location.href='import-students.html'">
+          <li class="quick-action-item" onclick="openClassSettings('students')">
             <i data-lucide="user-plus" class="quick-action-icon"></i>
             <span class="quick-action-text">Add New Students</span>
           </li>
@@ -1506,7 +1513,7 @@
 
   <script type="module">
     // USE REST API instead of Firebase SDK to avoid WebChannel issues
-    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.0';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.1';
     import toast from './assets/js/toast.js';
     import errorHandler from './assets/js/error-handler.js';
 
@@ -2751,6 +2758,812 @@
       color: var(--gray-600);
     }
   </style>
+
+  <!-- Class Settings Modal -->
+  <div id="classSettingsModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeClassSettings()"></div>
+    <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto; position: relative; z-index: 1001;">
+      <div class="modal-header">
+        <h2>Class Settings</h2>
+        <button class="modal-close" onclick="closeClassSettings()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Tabs -->
+        <div class="settings-tabs">
+          <button class="settings-tab active" onclick="switchSettingsTab('class-info', event)">
+            <i data-lucide="info"></i>
+            Class Info
+          </button>
+          <button class="settings-tab" onclick="switchSettingsTab('students', event)">
+            <i data-lucide="users"></i>
+            Students
+          </button>
+          <button class="settings-tab" onclick="switchSettingsTab('teachers', event)">
+            <i data-lucide="graduation-cap"></i>
+            Teachers
+          </button>
+        </div>
+
+        <!-- Tab Content: Class Info -->
+        <div id="tab-class-info" class="settings-tab-content active">
+          <div class="form-group">
+            <label class="form-label">Class Name</label>
+            <input type="text" id="className" class="form-input" placeholder="e.g., Animal Care Level 5 - 2025/2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Academic Year</label>
+            <input type="text" id="academicYear" class="form-input" placeholder="e.g., 2025/2026">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description / Notes</label>
+            <textarea id="classDescription" class="form-input" rows="3" placeholder="Optional notes about this class..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="saveClassInfo()">
+            <i data-lucide="save"></i>
+            Save Changes
+          </button>
+        </div>
+
+        <!-- Tab Content: Students -->
+        <div id="tab-students" class="settings-tab-content" style="display: none;">
+          <div class="settings-section-header">
+            <h3>Manage Students</h3>
+            <button class="btn btn-primary btn-sm" onclick="showAddStudentForm()">
+              <i data-lucide="plus"></i>
+              Add Student
+            </button>
+          </div>
+
+          <!-- Add Student Form (hidden by default) -->
+          <div id="addStudentForm" class="add-form" style="display: none;">
+            <div class="form-row">
+              <input type="text" id="newStudentName" class="form-input" placeholder="Student Name">
+              <input type="email" id="newStudentEmail" class="form-input" placeholder="Student Email">
+              <button class="btn btn-primary" onclick="addStudent()">Add</button>
+              <button class="btn btn-secondary" onclick="hideAddStudentForm()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="studentsListSettings" class="settings-list">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading students...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Content: Teachers -->
+        <div id="tab-teachers" class="settings-tab-content" style="display: none;">
+          <div class="settings-section-header">
+            <h3>Assigned Teachers</h3>
+            <button class="btn btn-primary btn-sm" onclick="showAddTeacherForm()">
+              <i data-lucide="plus"></i>
+              Add Teacher
+            </button>
+          </div>
+
+          <!-- Add Teacher Form (hidden by default) -->
+          <div id="addTeacherForm" class="add-form" style="display: none;">
+            <div class="form-group">
+              <div class="form-row">
+                <input type="text" id="newTeacherName" class="form-input" placeholder="Teacher Name">
+                <input type="email" id="newTeacherEmail" class="form-input" placeholder="Teacher Email">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assign Modules:</label>
+              <div class="modules-checkboxes" id="modulesCheckboxes">
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="anatomy"> Anatomy & Physiology
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="animal-welfare"> Animal Welfare
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="animal-behaviour"> Animal Behaviour
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="biology"> Biology
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="small-animals"> Small Animals
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="dogs-cats"> Dogs & Cats
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="animal-health"> Animal Health
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="nutrition"> Nutrition
+                </label>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="addTeacher()">Add Teacher</button>
+              <button class="btn btn-secondary" onclick="hideAddTeacherForm()">Cancel</button>
+            </div>
+          </div>
+
+          <div id="teachersListSettings" class="settings-list">
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <p>Loading teachers...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Class Settings Modal Styles */
+    .settings-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--gray-200);
+      padding-bottom: 12px;
+    }
+
+    .settings-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--gray-600);
+      transition: all 0.2s;
+    }
+
+    .settings-tab:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+
+    .settings-tab.active {
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      font-weight: 600;
+    }
+
+    .settings-tab svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .settings-tab-content {
+      display: none;
+    }
+
+    .settings-tab-content.active {
+      display: block;
+    }
+
+    .settings-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .settings-section-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+
+    .settings-list {
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .settings-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .settings-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-list-item:hover {
+      background: var(--gray-50);
+    }
+
+    .settings-list-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .settings-list-name {
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .settings-list-email {
+      font-size: 13px;
+      color: var(--gray-500);
+    }
+
+    .settings-list-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .add-form {
+      background: var(--gray-50);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .form-row .form-input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .empty-state-settings {
+      padding: 32px;
+      text-align: center;
+      color: var(--gray-500);
+    }
+
+    .status-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge.registered {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status-badge.pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .modules-checkboxes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: var(--bg-primary);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .checkbox-label:hover {
+      border-color: var(--blue-primary);
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .teacher-modules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .module-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border-radius: 4px;
+    }
+  </style>
+
+  <script>
+    // Class Settings Functions
+    window.openClassSettings = async function(initialTab = 'class-info') {
+      try {
+        const modal = document.getElementById('classSettingsModal');
+        if (!modal) {
+          console.error('Class settings modal not found');
+          return;
+        }
+        modal.style.display = 'flex';
+        lucide.createIcons();
+
+        // Switch to the requested tab
+        switchSettingsTabDirect(initialTab);
+
+        // Load data based on tab
+        if (initialTab === 'class-info') {
+          await loadClassInfo();
+        } else if (initialTab === 'students') {
+          await loadStudentsForSettings();
+        } else if (initialTab === 'teachers') {
+          await loadTeachersForSettings();
+        }
+      } catch (error) {
+        console.error('Error opening class settings:', error);
+      }
+    };
+
+    // Direct tab switch without event
+    function switchSettingsTabDirect(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('onclick')?.includes(tabName)) {
+          tab.classList.add('active');
+        }
+      });
+
+      // Update tab content
+      document.querySelectorAll('.settings-tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+      });
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+      }
+    }
+
+    window.closeClassSettings = function() {
+      document.getElementById('classSettingsModal').style.display = 'none';
+    };
+
+    window.switchSettingsTab = function(tabName, event) {
+      // Update tab buttons
+      document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      if (event && event.target) {
+        event.target.closest('.settings-tab').classList.add('active');
+      }
+
+      // Update tab content
+      document.querySelectorAll('.settings-tab-content').forEach(content => {
+        content.classList.remove('active');
+        content.style.display = 'none';
+      });
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+      }
+
+      // Load data for specific tabs
+      if (tabName === 'students') {
+        loadStudentsForSettings();
+      } else if (tabName === 'teachers') {
+        loadTeachersForSettings();
+      } else if (tabName === 'class-info') {
+        loadClassInfo();
+      }
+    };
+
+    // Class Info Functions
+    window.loadClassInfo = async function() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        if (!teacher) {
+          console.log('No teacher session found');
+          return;
+        }
+
+        // Clear form first
+        document.getElementById('className').value = '';
+        document.getElementById('academicYear').value = '';
+        document.getElementById('classDescription').value = '';
+
+        try {
+          const response = await PethologyFirebaseREST.request(`/class_settings/${teacher.id}`);
+          if (response && response.fields) {
+            const data = PethologyFirebaseREST.convertDocument(response);
+            document.getElementById('className').value = data.className || '';
+            document.getElementById('academicYear').value = data.academicYear || '';
+            document.getElementById('classDescription').value = data.description || '';
+          }
+        } catch (fetchError) {
+          // 404 is expected if no settings exist yet
+          console.log('No class settings found yet (this is normal for new teachers)');
+        }
+      } catch (error) {
+        console.error('Error in loadClassInfo:', error);
+      }
+    };
+
+    window.saveClassInfo = async function() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        if (!teacher) return;
+
+        const classData = {
+          fields: {
+            className: { stringValue: document.getElementById('className').value },
+            academicYear: { stringValue: document.getElementById('academicYear').value },
+            description: { stringValue: document.getElementById('classDescription').value },
+            teacherId: { stringValue: teacher.id },
+            updatedAt: { timestampValue: new Date().toISOString() }
+          }
+        };
+
+        await PethologyFirebaseREST.request(`/class_settings/${teacher.id}`, 'PATCH', classData);
+        window.showToast('Class settings saved!', 'success');
+      } catch (error) {
+        console.error('Error saving class info:', error);
+        window.showToast('Failed to save settings', 'error');
+      }
+    };
+
+    // Students Management
+    window.loadStudentsForSettings = async function() {
+      const container = document.getElementById('studentsListSettings');
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        const teacherId = teacher?.id;
+
+        const students = await PethologyFirebaseREST.getAllPreRegisteredStudents(teacherId);
+
+        if (students.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state-settings">
+              <p>No students added yet.</p>
+              <p style="font-size: 13px; margin-top: 8px;">Click "Add Student" to pre-register students for your class.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = students.map(student => `
+          <div class="settings-list-item">
+            <div class="settings-list-info">
+              <span class="settings-list-name">${student.name || 'Unknown'}</span>
+              <span class="settings-list-email">${student.email || ''}</span>
+            </div>
+            <div class="settings-list-actions">
+              <span class="status-badge ${student.registered ? 'registered' : 'pending'}">
+                ${student.registered ? 'Registered' : 'Pending'}
+              </span>
+              <button class="btn-icon-sm" onclick="editStudent('${student.email}')" title="Edit">
+                <i data-lucide="pencil"></i>
+              </button>
+              <button class="btn-icon-sm" onclick="deleteStudent('${student.email}')" title="Delete">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      } catch (error) {
+        console.error('Error loading students:', error);
+        container.innerHTML = '<div class="empty-state-settings">Error loading students</div>';
+      }
+    };
+
+    window.showAddStudentForm = function() {
+      document.getElementById('addStudentForm').style.display = 'block';
+      document.getElementById('newStudentName').focus();
+    };
+
+    window.hideAddStudentForm = function() {
+      document.getElementById('addStudentForm').style.display = 'none';
+      document.getElementById('newStudentName').value = '';
+      document.getElementById('newStudentEmail').value = '';
+    };
+
+    window.addStudent = async function() {
+      const name = document.getElementById('newStudentName').value.trim();
+      const email = document.getElementById('newStudentEmail').value.trim().toLowerCase();
+
+      if (!name || !email) {
+        window.showToast('Please fill in both name and email', 'error');
+        return;
+      }
+
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+
+        const studentData = {
+          fields: {
+            name: { stringValue: name },
+            email: { stringValue: email },
+            addedBy: { stringValue: teacher?.id || 'unknown' },
+            addedByName: { stringValue: teacher?.name || 'Unknown Teacher' },
+            addedAt: { timestampValue: new Date().toISOString() },
+            registered: { booleanValue: false }
+          }
+        };
+
+        await PethologyFirebaseREST.request(`/pre_registered_students/${email}`, 'PATCH', studentData);
+        window.showToast('Student added successfully!', 'success');
+        hideAddStudentForm();
+        loadStudentsForSettings();
+      } catch (error) {
+        console.error('Error adding student:', error);
+        window.showToast('Failed to add student', 'error');
+      }
+    };
+
+    window.deleteStudent = async function(email) {
+      if (!confirm(`Are you sure you want to remove this student from your class?`)) return;
+
+      try {
+        await PethologyFirebaseREST.request(`/pre_registered_students/${email}`, 'DELETE');
+        window.showToast('Student removed', 'success');
+        loadStudentsForSettings();
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        window.showToast('Failed to remove student', 'error');
+      }
+    };
+
+    window.editStudent = async function(email) {
+      // For now, just show an alert - can implement edit modal later
+      window.showToast('Edit functionality coming soon!', 'info');
+    };
+
+    // Teachers Management
+    window.loadTeachersForSettings = async function() {
+      const container = document.getElementById('teachersListSettings');
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+        const teacherId = teacher?.id;
+
+        // Get teachers assigned to this class
+        let teachers = [];
+        try {
+          const response = await PethologyFirebaseREST.request(`/class_teachers`);
+          if (response && response.documents) {
+            teachers = response.documents
+              .map(doc => PethologyFirebaseREST.convertDocument(doc))
+              .filter(t => t.classOwnerId === teacherId);
+          }
+        } catch (fetchError) {
+          // 404 is expected if no teachers collection exists yet
+          console.log('No class_teachers collection found yet');
+        }
+
+        // Always show current teacher first
+        const currentTeacherHtml = `
+          <div class="settings-list-item">
+            <div class="settings-list-info">
+              <span class="settings-list-name">${teacher?.name || 'You'} (Owner)</span>
+              <span class="settings-list-email">${teacher?.email || ''}</span>
+            </div>
+            <div class="settings-list-actions">
+              <span class="status-badge registered">Owner</span>
+            </div>
+          </div>
+        `;
+
+        if (teachers.length === 0) {
+          container.innerHTML = currentTeacherHtml + `
+            <div class="empty-state-settings" style="border-top: 1px solid var(--gray-200);">
+              <p>No additional teachers assigned.</p>
+            </div>
+          `;
+          return;
+        }
+
+        const moduleNames = {
+          'anatomy': 'Anatomy',
+          'animal-welfare': 'Welfare',
+          'animal-behaviour': 'Behaviour',
+          'biology': 'Biology',
+          'small-animals': 'Small Animals',
+          'dogs-cats': 'Dogs & Cats',
+          'animal-health': 'Health',
+          'nutrition': 'Nutrition'
+        };
+
+        container.innerHTML = currentTeacherHtml + teachers.map(t => {
+          const modules = t.modules || [];
+          const moduleTags = modules.map(m => `<span class="module-tag">${moduleNames[m] || m}</span>`).join('');
+          return `
+            <div class="settings-list-item" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <div class="settings-list-info">
+                  <span class="settings-list-name">${t.name || 'Unknown'}</span>
+                  <span class="settings-list-email">${t.email || ''}</span>
+                </div>
+                <div class="settings-list-actions">
+                  <button class="btn-icon-sm" onclick="editTeacherModules('${t.id}')" title="Edit Modules">
+                    <i data-lucide="pencil"></i>
+                  </button>
+                  <button class="btn-icon-sm" onclick="removeTeacher('${t.id}')" title="Remove">
+                    <i data-lucide="trash-2"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="teacher-modules">
+                ${moduleTags || '<span style="color: var(--gray-400); font-size: 12px;">No modules assigned</span>'}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        lucide.createIcons();
+      } catch (error) {
+        console.error('Error loading teachers:', error);
+        container.innerHTML = '<div class="empty-state-settings">Error loading teachers</div>';
+      }
+    };
+
+    window.showAddTeacherForm = function() {
+      document.getElementById('addTeacherForm').style.display = 'block';
+      document.getElementById('newTeacherName').focus();
+    };
+
+    window.hideAddTeacherForm = function() {
+      document.getElementById('addTeacherForm').style.display = 'none';
+      document.getElementById('newTeacherName').value = '';
+      document.getElementById('newTeacherEmail').value = '';
+      // Clear module checkboxes
+      document.querySelectorAll('input[name="teacherModules"]').forEach(cb => cb.checked = false);
+    };
+
+    window.addTeacher = async function() {
+      const name = document.getElementById('newTeacherName').value.trim();
+      const email = document.getElementById('newTeacherEmail').value.trim().toLowerCase();
+
+      // Get selected modules
+      const selectedModules = Array.from(document.querySelectorAll('input[name="teacherModules"]:checked'))
+        .map(cb => cb.value);
+
+      if (!name || !email) {
+        window.showToast('Please fill in both name and email', 'error');
+        return;
+      }
+
+      if (selectedModules.length === 0) {
+        window.showToast('Please select at least one module', 'error');
+        return;
+      }
+
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+
+        const teacherData = {
+          fields: {
+            name: { stringValue: name },
+            email: { stringValue: email },
+            classOwnerId: { stringValue: teacher?.id || 'unknown' },
+            modules: {
+              arrayValue: {
+                values: selectedModules.map(m => ({ stringValue: m }))
+              }
+            },
+            addedAt: { timestampValue: new Date().toISOString() }
+          }
+        };
+
+        const teacherId = `${teacher?.id}_${email.replace(/[@.]/g, '_')}`;
+        await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`, 'PATCH', teacherData);
+        window.showToast('Teacher added successfully!', 'success');
+        hideAddTeacherForm();
+        loadTeachersForSettings();
+      } catch (error) {
+        console.error('Error adding teacher:', error);
+        window.showToast('Failed to add teacher', 'error');
+      }
+    };
+
+    window.removeTeacher = async function(teacherId) {
+      if (!confirm('Are you sure you want to remove this teacher from your class?')) return;
+
+      try {
+        await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`, 'DELETE');
+        window.showToast('Teacher removed', 'success');
+        loadTeachersForSettings();
+      } catch (error) {
+        console.error('Error removing teacher:', error);
+        window.showToast('Failed to remove teacher', 'error');
+      }
+    };
+
+    window.editTeacherModules = async function(teacherId) {
+      // For now, show a simple prompt - can create a proper modal later
+      try {
+        const response = await PethologyFirebaseREST.request(`/class_teachers/${teacherId}`);
+        if (!response || !response.fields) {
+          window.showToast('Teacher not found', 'error');
+          return;
+        }
+
+        const teacher = PethologyFirebaseREST.convertDocument(response);
+        const currentModules = teacher.modules || [];
+
+        const allModules = [
+          { id: 'anatomy', name: 'Anatomy & Physiology' },
+          { id: 'animal-welfare', name: 'Animal Welfare' },
+          { id: 'animal-behaviour', name: 'Animal Behaviour' },
+          { id: 'biology', name: 'Biology' },
+          { id: 'small-animals', name: 'Small Animals' },
+          { id: 'dogs-cats', name: 'Dogs & Cats' },
+          { id: 'animal-health', name: 'Animal Health' },
+          { id: 'nutrition', name: 'Nutrition' }
+        ];
+
+        // Create a simple checklist prompt
+        let message = `Edit modules for ${teacher.name}:\n\nCurrent modules: ${currentModules.join(', ') || 'None'}\n\nEnter module IDs separated by commas:\n(${allModules.map(m => m.id).join(', ')})`;
+
+        const input = prompt(message, currentModules.join(', '));
+        if (input === null) return; // Cancelled
+
+        const newModules = input.split(',').map(m => m.trim()).filter(m =>
+          allModules.some(am => am.id === m)
+        );
+
+        const updateData = {
+          fields: {
+            modules: {
+              arrayValue: {
+                values: newModules.map(m => ({ stringValue: m }))
+              }
+            }
+          }
+        };
+
+        await PethologyFirebaseREST.request(
+          `/class_teachers/${teacherId}?updateMask.fieldPaths=modules`,
+          'PATCH',
+          updateData
+        );
+
+        window.showToast('Modules updated!', 'success');
+        loadTeachersForSettings();
+      } catch (error) {
+        console.error('Error editing teacher modules:', error);
+        window.showToast('Failed to update modules', 'error');
+      }
+    };
+  </script>
 
 </body>
 </html>

@@ -37,6 +37,12 @@ export class PethologyFirebaseREST {
 
       console.log(`🔥 Response status: ${response.status}`);
 
+      // For GET requests, return null for 404 (document not found) instead of throwing
+      if (response.status === 404 && method === 'GET') {
+        console.log(`🔥 Document not found (404), returning null`);
+        return null;
+      }
+
       if (!response.ok) {
         console.error(`🔥 Response body:`, responseText);
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);

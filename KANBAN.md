@@ -26,8 +26,13 @@
 - [x] **Deletar announcements** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar announcements
 - [x] **Editar/deletar eventos** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar eventos do calendário
 - [x] **Limpar dados fake da Mary** - ✅ FIXED (23 Jan) - Filtragem por teacherId no REST API
-- [x] **Demo users só em dev** - ✅ FIXED (23 Jan) - Botões demo só aparecem em localhost:5500
-- [ ] **Class Settings** - Ainda não implementado
+- [x] **Demo users só em dev** - ✅ FIXED (23 Jan) - Botões demo só aparecem em localhost:5500 ou 127.0.0.1:5500
+- [ ] **Class Settings** - Modal criado com 3 abas (Class Info, Students, Teachers) - Em progresso
+  - ✅ Modal básico criado
+  - ✅ Tabs navegáveis
+  - ✅ Atribuição de módulos por teacher
+  - [ ] Mover import CSV para aba Students
+  - [ ] Refatorar quick action para "Manage Class"
 - [ ] **Coordenador adicionar professores** - Professor principal pode adicionar outros teachers (nas settings)
 - [ ] **Performance optimization** - Minify, lazy load, cache
 
@@ -37,6 +42,11 @@
 ---
 
 ## 🟡 IN PROGRESS
+
+### 🏫 Class Settings Feature (23 Jan 2026)
+- Modal com 3 abas: Class Info, Students, Teachers
+- Teacher pode atribuir módulos específicos para outros professores
+- Próximos passos: mover import CSV para modal, refatorar fluxo
 
 ### 🧪 Testing Phase - Pilot Launch
 - [x] **Mobile testing & Dashboard fixes** - COMPLETED (22 Jan 2026)
