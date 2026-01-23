@@ -1452,6 +1452,26 @@
         </div>
       </div>
     </div>
+
+    <!-- Announcements Management -->
+    <div id="announcementsCard" class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i data-lucide="megaphone"></i>
+          Announcements
+        </h2>
+        <button class="btn btn-primary btn-sm" onclick="showCreateAnnouncementModal()">
+          <i data-lucide="plus"></i>
+          New
+        </button>
+      </div>
+      <div id="announcementsListContainer">
+        <div class="empty-state">
+          <div class="empty-state-icon">📢</div>
+          <p>Loading announcements...</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Support Modal Component -->
@@ -1592,6 +1612,16 @@
           console.log('✅ Module loaded, classes:', moduleEl.className);
         }
 
+        // Show announcements card
+        const announcementsEl = document.getElementById('announcementsCard');
+        if (announcementsEl) {
+          announcementsEl.classList.add('loaded');
+          announcementsEl.style.display = 'block';
+          announcementsEl.style.visibility = 'visible';
+          announcementsEl.style.opacity = '1';
+          console.log('✅ Announcements card loaded');
+        }
+
         console.log('✅ Content visibility toggled!');
 
         // NOW get analytics and students (AFTER showing dashboard)
@@ -1698,6 +1728,16 @@
           }
         } catch (error) {
           console.error('❌ Error loading calendar events:', error);
+        }
+
+        // Load announcements list
+        try {
+          console.log('📢 Loading announcements...');
+          if (typeof window.loadAnnouncementsList === 'function') {
+            await window.loadAnnouncementsList();
+          }
+        } catch (error) {
+          console.error('❌ Error loading announcements:', error);
         }
 
         console.log('✅ Teacher dashboard loaded successfully!');
@@ -2211,14 +2251,21 @@
     // ✅ ENABLED: Using REST API version (no Firebase SDK)
     import {
       showCreateAnnouncementModal,
+      showEditAnnouncementModal,
       closeAnnouncementModal,
-      handleAnnouncementSubmit
-    } from './assets/js/announcements-rest.js?v=4.1';
+      handleAnnouncementSubmit,
+      loadAnnouncementsList,
+      deleteAnnouncement
+    } from './assets/js/announcements-rest.js?v=4.2';
 
     // Make functions globally available
     window.showCreateAnnouncementModal = showCreateAnnouncementModal;
+    window.showEditAnnouncementModal = showEditAnnouncementModal;
+    window.editAnnouncement = showEditAnnouncementModal;
     window.closeAnnouncementModal = closeAnnouncementModal;
     window.handleAnnouncementSubmit = handleAnnouncementSubmit;
+    window.loadAnnouncementsList = loadAnnouncementsList;
+    window.deleteAnnouncement = deleteAnnouncement;
 
     // DISABLED: MutationObserver was causing infinite loop / thread blocking
     // lucide.createIcons() modifies DOM -> triggers observer -> calls createIcons() -> infinite loop
