@@ -1652,12 +1652,16 @@
 
         if (classes.length === 0) {
           select.innerHTML = '<option value="">No classes yet</option>';
-          // Show prompt to create first class
-          setTimeout(() => {
-            if (confirm('You don\'t have any classes yet. Would you like to create your first class?')) {
-              openCreateClassModal();
-            }
-          }, 500);
+          // Show prompt to create first class (only once per session)
+          const promptShown = sessionStorage.getItem('pethology_createClassPromptShown');
+          if (!promptShown) {
+            sessionStorage.setItem('pethology_createClassPromptShown', 'true');
+            setTimeout(() => {
+              if (confirm('You don\'t have any classes yet. Would you like to create your first class?')) {
+                openCreateClassModal();
+              }
+            }, 500);
+          }
           return;
         }
 
