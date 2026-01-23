@@ -23,11 +23,12 @@
 - [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
 
 ### 📋 Medium Priority (This Week)
-- [ ] **Deletar announcements** - Teacher precisa poder limpar announcements
-- [ ] **Editar/deletar eventos** - Teacher não consegue editar eventos do calendário
+- [x] **Deletar announcements** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar announcements
+- [x] **Editar/deletar eventos** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar eventos do calendário
+- [x] **Limpar dados fake da Mary** - ✅ FIXED (23 Jan) - Filtragem por teacherId no REST API
+- [x] **Demo users só em dev** - ✅ FIXED (23 Jan) - Botões demo só aparecem em localhost:5500
 - [ ] **Class Settings** - Ainda não implementado
 - [ ] **Coordenador adicionar professores** - Professor principal pode adicionar outros teachers (nas settings)
-- [ ] **Limpar dados fake da Mary** - Quando Mary loga ainda vê dados de teste misturados
 - [ ] **Performance optimization** - Minify, lazy load, cache
 
 ### 📝 Low Priority (Features)

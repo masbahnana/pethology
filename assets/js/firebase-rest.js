@@ -93,10 +93,41 @@ export class PethologyFirebaseREST {
     return data;
   }
 
-  // Get all students
-  static async getAllStudents() {
+  // Get pre-registered students for a specific teacher
+  static async getPreRegisteredStudentsByTeacher(teacherId) {
     try {
-      console.log('📋 Fetching all students (REST API)...');
+      console.log(`📋 Fetching pre-registered students for teacher: ${teacherId}`);
+
+      const response = await this.request('/pre_registered_students');
+
+      if (!response.documents) {
+        return [];
+      }
+
+      const students = response.documents
+        .map(doc => this.convertDocument(doc))
+        .filter(student => student && student.addedBy === teacherId);
+
+      console.log(`✅ Found ${students.length} pre-registered students for this teacher`);
+      return students;
+    } catch (error) {
+      console.error('Error getting pre-registered students:', error);
+      return [];
+    }
+  }
+
+  // Get all students - optionally filtered by teacher
+  static async getAllStudents(teacherId = null) {
+    try {
+      console.log('📋 Fetching students (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
+
+      // If teacherId is provided, only get students pre-registered by that teacher
+      let allowedEmails = null;
+      if (teacherId) {
+        const preRegistered = await this.getPreRegisteredStudentsByTeacher(teacherId);
+        allowedEmails = preRegistered.map(s => s.email?.toLowerCase());
+        console.log(`📋 Allowed emails for this teacher:`, allowedEmails);
+      }
 
       const response = await this.request('/users');
 
@@ -105,27 +136,39 @@ export class PethologyFirebaseREST {
         return [];
       }
 
-      const students = response.documents
+      let students = response.documents
         .map(doc => this.convertDocument(doc))
-        .filter(user => user && user.role === 'Student')
-        .sort((a, b) => {
-          const dateA = a.lastLogin || new Date(0);
-          const dateB = b.lastLogin || new Date(0);
-          return dateB - dateA;
-        });
+        .filter(user => user && user.role === 'Student');
+
+      // Filter by teacher's pre-registered students if teacherId provided
+      if (teacherId && allowedEmails) {
+        students = students.filter(student =>
+          allowedEmails.includes(student.email?.toLowerCase())
+        );
+      }
+
+      students.sort((a, b) => {
+        const dateA = a.lastLogin || new Date(0);
+        const dateB = b.lastLogin || new Date(0);
+        return dateB - dateA;
+      });
 
       console.log(`✅ Loaded ${students.length} students (REST API)`);
       return students;
     } catch (error) {
-      console.error('❌ Error getting students:', error);
+      console.error('Error getting students:', error);
       return [];
     }
   }
 
-  // Get all students progress
-  static async getAllStudentsProgress() {
+  // Get all students progress - optionally filtered by teacher
+  static async getAllStudentsProgress(teacherId = null) {
     try {
-      console.log('📊 Fetching all students progress (REST API)...');
+      console.log('📊 Fetching students progress (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
+
+      // Get students (filtered by teacher if provided)
+      const students = await this.getAllStudents(teacherId);
+      const studentIds = students.map(s => s.id);
 
       const response = await this.request('/student_progress');
 
@@ -134,12 +177,17 @@ export class PethologyFirebaseREST {
         return [];
       }
 
-      const progress = response.documents.map(doc => this.convertDocument(doc));
+      let progress = response.documents.map(doc => this.convertDocument(doc));
+
+      // Filter by teacher's students if teacherId provided
+      if (teacherId && studentIds.length > 0) {
+        progress = progress.filter(p => studentIds.includes(p.userId || p.id));
+      }
 
       console.log(`✅ Loaded progress for ${progress.length} students (REST API)`);
       return progress;
     } catch (error) {
-      console.error('❌ Error getting students progress:', error);
+      console.error('Error getting students progress:', error);
       return [];
     }
   }
@@ -166,15 +214,21 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get teacher analytics (same logic as before)
-  static async getTeacherAnalytics() {
+  // Get teacher analytics - filtered by teacher's students
+  static async getTeacherAnalytics(teacherId = null) {
     try {
-      console.log('📈 Generating teacher analytics (REST API)...');
+      console.log('📈 Generating teacher analytics (REST API)...', teacherId ? `for teacher ${teacherId}` : '(all)');
 
-      const [students, quizResults] = await Promise.all([
-        this.getAllStudents(),
+      const [students, allQuizResults] = await Promise.all([
+        this.getAllStudents(teacherId),
         this.getAllQuizResults()
       ]);
+
+      // Filter quiz results to only include this teacher's students
+      const studentIds = students.map(s => s.id);
+      const quizResults = teacherId
+        ? allQuizResults.filter(r => studentIds.includes(r.userId))
+        : allQuizResults;
 
       // Calculate analytics
       const totalStudents = students.length;
@@ -405,9 +459,10 @@ export class PethologyFirebaseREST {
   }
 
   // Get all pre-registered students (for admin/teacher dashboard)
-  static async getAllPreRegisteredStudents() {
+  // If teacherId is provided, only returns students added by that teacher
+  static async getAllPreRegisteredStudents(teacherId = null) {
     try {
-      console.log('📋 Fetching all pre-registered students...');
+      console.log('📋 Fetching pre-registered students...', teacherId ? `for teacher ${teacherId}` : '(all)');
 
       const response = await this.request('/pre_registered_students');
 
@@ -416,18 +471,24 @@ export class PethologyFirebaseREST {
         return [];
       }
 
-      const students = response.documents
-        .map(doc => this.convertDocument(doc))
-        .sort((a, b) => {
-          const dateA = a.addedAt || new Date(0);
-          const dateB = b.addedAt || new Date(0);
-          return dateB - dateA;
-        });
+      let students = response.documents
+        .map(doc => this.convertDocument(doc));
+
+      // Filter by teacher if provided
+      if (teacherId) {
+        students = students.filter(s => s.addedBy === teacherId);
+      }
+
+      students.sort((a, b) => {
+        const dateA = a.addedAt || new Date(0);
+        const dateB = b.addedAt || new Date(0);
+        return dateB - dateA;
+      });
 
       console.log(`✅ Loaded ${students.length} pre-registered students`);
       return students;
     } catch (error) {
-      console.error('❌ Error getting pre-registered students:', error);
+      console.error('Error getting pre-registered students:', error);
       return [];
     }
   }

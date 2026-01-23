@@ -258,9 +258,9 @@
         </ul>
       </div>
 
-      <!-- Demo users for testing -->
-      <div class="demo-users">
-        <h4>🧪 Demo Mode</h4>
+      <!-- Demo users for testing - only visible on localhost:5500 -->
+      <div class="demo-users" id="demoUsersSection" style="display: none;">
+        <h4>Dev Mode</h4>
         <p>For testing and development:</p>
         <button class="demo-button" onclick="createDemoUser('student')">Demo Student</button>
         <button class="demo-button" onclick="createDemoUser('teacher')">Demo Teacher</button>
@@ -532,9 +532,22 @@
       }, 1000);
     };
 
+    // Show demo section only in development (localhost or 127.0.0.1 on port 5500/5501)
+    function showDemoSectionIfDev() {
+      const isLocalHost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const isDevPort = window.location.port === '5500' || window.location.port === '5501';
+      const isDev = isLocalHost && isDevPort;
+      const demoSection = document.getElementById('demoUsersSection');
+      if (demoSection && isDev) {
+        demoSection.style.display = 'block';
+        console.log('Dev mode detected - showing demo users section');
+      }
+    }
+
     // Verificar se já está logado
     window.addEventListener('load', async () => {
-      console.log('🚀 Page loaded, initializing...');
+      console.log('Page loaded, initializing...');
+      showDemoSectionIfDev();
       await initAuth0();
       
       const user = sessionStorage.getItem('pethologyUser');
