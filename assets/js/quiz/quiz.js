@@ -814,18 +814,20 @@ async function saveProgressAndExit() {
 
   const quizData = {
     moduleName: currentQuizModule,
-    totalQuestions: currentQuestionIndex + 1, // Quantas você tentou
+    totalQuestions: currentQuestions.length, // Total de questões do módulo
     correctAnswers: correctAnswersCount,
     timeSpent: timeSpent,
     answers: userAnswers,
-    isPartial: true
+    isPartial: true,
+    questionsAnswered: currentQuestionIndex + 1 // Quantas foram respondidas
   };
 
   await saveQuizToFirebase(quizData);
 
   // Show nice save confirmation screen instead of alert
   const quizContainer = document.getElementById("quiz-buttons");
-  const scorePercentage = Math.round((correctAnswersCount / (currentQuestionIndex + 1)) * 100);
+  // Score calculated over total questions (unanswered = wrong)
+  const scorePercentage = Math.round((correctAnswersCount / currentQuestions.length) * 100);
 
   quizContainer.innerHTML = `
     <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
@@ -833,14 +835,18 @@ async function saveProgressAndExit() {
       <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Progress Saved!</h2>
 
       <div style="background: #f3f4f6; border-radius: 16px; padding: 24px; margin: 24px 0;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 20px;">
           <div>
             <div style="font-size: 2rem; font-weight: 700; color: #10b981;">${correctAnswersCount}</div>
             <div style="color: #6b7280; font-size: 0.9rem;">Correct</div>
           </div>
           <div>
-            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">${currentQuestionIndex + 1}</div>
+            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">${currentQuestionIndex + 1}/${currentQuestions.length}</div>
             <div style="color: #6b7280; font-size: 0.9rem;">Answered</div>
+          </div>
+          <div>
+            <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">${scorePercentage}%</div>
+            <div style="color: #6b7280; font-size: 0.9rem;">Score</div>
           </div>
           <div>
             <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">${Math.floor(timeSpent / 60)}:${String(timeSpent % 60).padStart(2, '0')}</div>
@@ -849,7 +855,7 @@ async function saveProgressAndExit() {
         </div>
       </div>
 
-      <p style="color: #6b7280; margin-bottom: 32px;">You can continue this quiz later! 📚</p>
+      <p style="color: #6b7280; margin-bottom: 32px;">Score is calculated over all ${currentQuestions.length} questions.</p>
 
       <div style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
         <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
