@@ -1,6 +1,6 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 22 Janeiro 2026
+**Última atualização:** 23 Janeiro 2026
 **Versão Atual:** v5.6
 **Status:** PILOT LAUNCH + Core Features Complete
 
@@ -16,19 +16,19 @@
 
 ### ⚠️ High Priority
 - [x] **Quiz começa em 2%** - ✅ FIXED (22 Jan) - Agora começa em 0%
-- [ ] **Quiz progress não salva no dashboard** - Small Animals testado, não aparece progresso
-- [ ] **Module cards mostram 20 questões** - Hardcoded, deveria mostrar número real (Biology=52)
-- [ ] **Announcements mark as read** - Não está funcionando
+- [x] **Module cards mostram 20 questões** - ✅ FIXED (23 Jan) - Agora mostra número real por módulo
+- [x] **Announcements mark as read** - ✅ FIXED (23 Jan) - Non-pinned desaparecem, pinned ficam verdes
+- [x] **Timer bar + pause no quiz** - ✅ FIXED (23 Jan) - Barra visual + botão pause implementados
+- [x] **Module cards mostravam score como completion** - ✅ FIXED (23 Jan) - Agora mostra "Best: X%"
 - [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
 
 ### 📋 Medium Priority (This Week)
 - [ ] **Deletar announcements** - Teacher precisa poder limpar announcements
 - [ ] **Editar/deletar eventos** - Teacher não consegue editar eventos do calendário
 - [ ] **Class Settings** - Ainda não implementado
-- [ ] **Performance optimization** - Minify, lazy load, cache - *45min*
+- [ ] **Performance optimization** - Minify, lazy load, cache
 
 ### 📝 Low Priority (Features)
-- [ ] **Timer bar + pause no quiz** - Barra de tempo + botão pause para ler explicação
 - [ ] **Seta no sidebar student** - Definir o que vai no dropdown
 
 ---

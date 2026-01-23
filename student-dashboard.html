@@ -1461,7 +1461,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/51 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1486,7 +1486,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/23 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1511,7 +1511,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/18 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1536,7 +1536,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/48 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1561,7 +1561,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/20 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1586,7 +1586,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/20 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1611,7 +1611,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/20 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1636,7 +1636,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/20 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -1661,7 +1661,7 @@
                     <div class="progress-fill" style="width: 0%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>0/20 completed</span>
+                    <span>Not started</span>
                     <span>0%</span>
                   </div>
                 </div>
@@ -2104,9 +2104,9 @@
 
       Object.entries(allModulesData).forEach(([moduleName, data]) => {
         const moduleInfo = moduleNames[moduleName] || { name: moduleName, icon: 'book-open', color: 'biology', questionCount: 20 };
-        const completion = data.completion || 0;
+        const bestScore = data.completion || 0; // completion is actually bestScore (0-100)
+        const quizzesDone = data.completed || 0;
         const totalQuestions = moduleInfo.questionCount || 20;
-        const completedQuestions = Math.round((completion / 100) * totalQuestions);
 
         const moduleCard = document.createElement('div');
         moduleCard.className = `module-card ${moduleInfo.color}`;
@@ -2114,6 +2114,12 @@
         moduleCard.onclick = () => {
           openQuizModal(moduleName, moduleInfo.name);
         };
+
+        // Build progress text based on whether user has done any quizzes
+        let progressText = 'Not started';
+        if (quizzesDone > 0) {
+          progressText = `Best: ${bestScore}%`;
+        }
 
         moduleCard.innerHTML = `
           <div class="module-header">
@@ -2127,21 +2133,21 @@
           </div>
           <div class="module-progress">
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${completion}%"></div>
+              <div class="progress-fill" style="width: ${bestScore}%"></div>
             </div>
             <div class="progress-text">
-              <span>${completedQuestions}/${totalQuestions} completed</span>
-              <span>${completion}%</span>
+              <span>${progressText}</span>
+              <span>${bestScore}%</span>
             </div>
           </div>
-          <button class="btn ${completion > 0 ? 'btn-primary' : 'btn-secondary'}" style="width: 100%;">
+          <button class="btn ${quizzesDone > 0 ? 'btn-primary' : 'btn-secondary'}" style="width: 100%;">
             <i data-lucide="play"></i>
-            ${completion > 0 ? 'Continue' : 'Start'}
+            ${quizzesDone > 0 ? 'Continue' : 'Start'}
           </button>
         `;
 
         modulesGrid.appendChild(moduleCard);
-        console.log(`✅ ${moduleName}: ${completion}%`);
+        console.log(`✅ ${moduleName}: ${bestScore}%`);
       });
 
       // Re-initialize Lucide icons for dynamically added content
