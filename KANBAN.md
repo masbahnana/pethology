@@ -26,6 +26,8 @@
 - [ ] **Deletar announcements** - Teacher precisa poder limpar announcements
 - [ ] **Editar/deletar eventos** - Teacher não consegue editar eventos do calendário
 - [ ] **Class Settings** - Ainda não implementado
+- [ ] **Coordenador adicionar professores** - Professor principal pode adicionar outros teachers (nas settings)
+- [ ] **Limpar dados fake da Mary** - Quando Mary loga ainda vê dados de teste misturados
 - [ ] **Performance optimization** - Minify, lazy load, cache
 
 ### 📝 Low Priority (Features)
