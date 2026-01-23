@@ -1189,6 +1189,33 @@
       color: var(--gray-500);
     }
 
+    .btn-icon-sm {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-icon-sm:hover {
+      background: var(--bg-hover);
+    }
+
+    .btn-icon-sm svg {
+      width: 14px;
+      height: 14px;
+      color: var(--gray-500);
+    }
+
+    .event-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .pinned-badge {
       display: inline-flex;
       align-items: center;
@@ -2288,10 +2315,20 @@
   <script type="module">
     import {
       showCreateEventModal,
+      showEditEventModal,
       closeCalendarModal,
       handleCalendarSubmit,
-      loadCalendarEvents
-    } from './assets/js/calendar-rest.js?v=1.0';
+      loadCalendarEvents,
+      deleteCalendarEvent
+    } from './assets/js/calendar-rest.js?v=1.1';
+
+    // Make calendar functions globally available
+    window.showCreateEventModal = showCreateEventModal;
+    window.editCalendarEvent = showEditEventModal;
+    window.deleteCalendarEvent = deleteCalendarEvent;
+    window.closeCalendarModal = closeCalendarModal;
+    window.handleCalendarSubmit = handleCalendarSubmit;
+    window.loadCalendarEvents = loadCalendarEvents;
 
     // Filter and Sort Functions
     window.filterAndSortStudents = function() {

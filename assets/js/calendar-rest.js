@@ -42,29 +42,105 @@ export async function handleCalendarSubmit(event) {
   const dateTime = time ? `${date}T${time}` : `${date}T09:00`;
   const eventDate = new Date(dateTime);
 
-  if (mode === 'create') {
-    const eventData = {
-      title,
-      type,
-      date: eventDate,
-      description,
-      createdBy: user.id,
-      createdByName: user.name
-    };
+  try {
+    if (mode === 'create') {
+      const eventData = {
+        title,
+        type,
+        date: eventDate,
+        description,
+        createdBy: user.id,
+        createdByName: user.name
+      };
 
-    try {
       await createCalendarEvent(eventData);
       showSuccessMessage('Event scheduled!');
-      closeCalendarModal();
+    } else if (mode === 'edit') {
+      const eventId = form.dataset.eventId;
+      const eventData = {
+        title,
+        type,
+        date: eventDate,
+        description
+      };
 
-      // Reload calendar if function exists
-      if (typeof window.loadCalendarEvents === 'function') {
-        await window.loadCalendarEvents();
-      }
-    } catch (error) {
-      console.error('Error creating event:', error);
-      alert('Error scheduling event. Please try again.');
+      await updateCalendarEvent(eventId, eventData);
+      showSuccessMessage('Event updated!');
     }
+
+    closeCalendarModal();
+
+    // Reload calendar if function exists
+    if (typeof window.loadCalendarEvents === 'function') {
+      await window.loadCalendarEvents();
+    }
+  } catch (error) {
+    console.error('Error saving event:', error);
+    alert('Error saving event. Please try again.');
+  }
+}
+
+// Show modal to edit an event
+export async function showEditEventModal(eventId) {
+  const modal = document.getElementById('calendarModal');
+  const form = document.getElementById('calendarForm');
+
+  // Get all events and find the one to edit
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+  const events = await getCalendarEvents(startOfMonth, endOfMonth);
+  const event = events.find(e => e.id === eventId);
+
+  if (!event) {
+    console.error('Event not found:', eventId);
+    alert('Event not found');
+    return;
+  }
+
+  // Fill form with event data
+  document.getElementById('eventTitle').value = event.title || '';
+  document.getElementById('eventType').value = event.type || 'other';
+
+  // Format date for input (YYYY-MM-DD)
+  const eventDate = event.date instanceof Date ? event.date : new Date(event.date);
+  document.getElementById('eventDate').value = eventDate.toISOString().split('T')[0];
+
+  // Format time for input (HH:MM)
+  const hours = String(eventDate.getHours()).padStart(2, '0');
+  const minutes = String(eventDate.getMinutes()).padStart(2, '0');
+  document.getElementById('eventTime').value = `${hours}:${minutes}`;
+
+  document.getElementById('eventDescription').value = event.description || '';
+
+  // Set form mode
+  form.dataset.mode = 'edit';
+  form.dataset.eventId = eventId;
+
+  // Update modal title
+  document.getElementById('calendarModalTitle').textContent = 'Edit Event';
+
+  // Show modal
+  modal.style.display = 'flex';
+}
+
+// Delete a calendar event
+export async function deleteCalendarEvent(eventId) {
+  if (!confirm('Are you sure you want to delete this event?')) {
+    return;
+  }
+
+  try {
+    await deleteCalendarEventFromDB(eventId);
+    showSuccessMessage('Event deleted!');
+
+    // Reload calendar if function exists
+    if (typeof window.loadCalendarEvents === 'function') {
+      await window.loadCalendarEvents();
+    }
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    alert('Error deleting event. Please try again.');
   }
 }
 
@@ -91,6 +167,43 @@ async function createCalendarEvent(eventData) {
     return response;
   } catch (error) {
     console.error('❌ Error creating calendar event:', error);
+    throw error;
+  }
+}
+
+// REST API function to update calendar event
+async function updateCalendarEvent(eventId, eventData) {
+  try {
+    console.log('📅 Updating calendar event (REST API)...', eventId, eventData);
+
+    const firestoreData = {
+      fields: {
+        title: { stringValue: eventData.title },
+        type: { stringValue: eventData.type },
+        date: { timestampValue: eventData.date.toISOString() },
+        description: { stringValue: eventData.description || '' },
+        updatedAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+
+    const response = await PethologyFirebaseREST.request(`/calendar_events/${eventId}`, 'PATCH', firestoreData);
+    console.log('✅ Calendar event updated (REST API)');
+    return response;
+  } catch (error) {
+    console.error('❌ Error updating calendar event:', error);
+    throw error;
+  }
+}
+
+// REST API function to delete calendar event
+async function deleteCalendarEventFromDB(eventId) {
+  try {
+    console.log('📅 Deleting calendar event (REST API)...', eventId);
+    await PethologyFirebaseREST.request(`/calendar_events/${eventId}`, 'DELETE');
+    console.log('✅ Calendar event deleted (REST API)');
+    return true;
+  } catch (error) {
+    console.error('❌ Error deleting calendar event:', error);
     throw error;
   }
 }
@@ -260,6 +373,11 @@ function renderCalendar(events) {
   html += '<div class="upcoming-events"><h5>Upcoming</h5>';
   
   if (upcomingEvents.length > 0) {
+    // Check if this is teacher dashboard (has edit capabilities)
+    const userSession = sessionStorage.getItem('pethologyUser');
+    const user = userSession ? JSON.parse(userSession) : null;
+    const isTeacher = user?.role === 'Teacher';
+
     upcomingEvents.forEach(event => {
       const eventDate = new Date(event.date);
       const typeColors = {
@@ -273,8 +391,20 @@ function renderCalendar(events) {
 
       html += `
         <div class="event-item" style="border-left: 3px solid ${color}">
-          <div class="event-title">${event.title}</div>
-          <div class="event-date">${eventDate.toLocaleDateString()} ${eventDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          <div style="flex: 1;">
+            <div class="event-title">${event.title}</div>
+            <div class="event-date">${eventDate.toLocaleDateString()} ${eventDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+          </div>
+          ${isTeacher ? `
+            <div class="event-actions" style="display: flex; gap: 4px;">
+              <button onclick="window.editCalendarEvent('${event.id}')" class="btn-icon-sm" title="Edit">
+                <i data-lucide="edit-2"></i>
+              </button>
+              <button onclick="window.deleteCalendarEvent('${event.id}')" class="btn-icon-sm" title="Delete">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          ` : ''}
         </div>
       `;
     });
@@ -342,4 +472,14 @@ export async function loadStudentCalendarEvents() {
   } catch (error) {
     console.error('❌ Error loading student calendar events:', error);
   }
+}
+
+// Make functions globally available
+if (typeof window !== 'undefined') {
+  window.showCreateEventModal = showCreateEventModal;
+  window.closeCalendarModal = closeCalendarModal;
+  window.handleCalendarSubmit = handleCalendarSubmit;
+  window.loadCalendarEvents = loadCalendarEvents;
+  window.editCalendarEvent = showEditEventModal;
+  window.deleteCalendarEvent = deleteCalendarEvent;
 }
