@@ -1,7 +1,7 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 23 Janeiro 2026
-**Versão Atual:** v5.6
+**Última atualização:** 28 Janeiro 2026
+**Versão Atual:** v5.7
 **Status:** PILOT LAUNCH + Core Features Complete
 
 ---
@@ -27,14 +27,18 @@
 - [x] **Editar/deletar eventos** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar eventos do calendário
 - [x] **Limpar dados fake da Mary** - ✅ FIXED (23 Jan) - Filtragem por teacherId no REST API
 - [x] **Demo users só em dev** - ✅ FIXED (23 Jan) - Botões demo só aparecem em localhost:5500 ou 127.0.0.1:5500
-- [ ] **Class Settings** - Modal criado com 3 abas (Class Info, Students, Teachers) - Em progresso
+- [x] **Class Settings** - ✅ DONE (28 Jan) - Modal 3 abas + Manage Class page + quick action refatorado
   - ✅ Modal básico criado
   - ✅ Tabs navegáveis
   - ✅ Atribuição de módulos por teacher
-  - [ ] Mover import CSV para aba Students
-  - [ ] Refatorar quick action para "Manage Class"
+  - ✅ Mover import CSV para aba Students (27 Jan)
+  - ✅ Refatorar quick action para "Manage Class" (28 Jan)
+- [x] **Exam Mode UI overhaul** - ✅ DONE (28 Jan) - Dark theme, top bar com timer, progress bar, warnings visuais
 - [ ] **Coordenador adicionar professores** - Professor principal pode adicionar outros teachers (nas settings)
 - [ ] **Performance optimization** - Minify, lazy load, cache
+
+### 🐛 Minor Bugs
+- [ ] **Class indicator mostra "undefined"** - No modal Students tab, o nome da turma às vezes mostra undefined
 
 ### 📝 Low Priority (Features)
 - [ ] **Seta no sidebar student** - Definir o que vai no dropdown

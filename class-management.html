@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Class Management - Pethology</title>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVVY1X67PX"></script>
+  <script src="assets/js/analytics.js"></script>
+
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/loading.css" />
+  <link rel="stylesheet" href="assets/css/toast.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Design System */
+    :root {
+      --gray-50: #f7f6f3;
+      --gray-100: #ebeae8;
+      --gray-200: #dfddd9;
+      --gray-300: #c0beba;
+      --gray-400: #9b9a97;
+      --gray-500: #787774;
+      --gray-600: #5f5e5b;
+      --gray-700: #37352f;
+
+      --blue-primary: #2383E2;
+      --blue-hover: #1a73d1;
+      --blue-light: rgba(35, 131, 226, 0.1);
+
+      --success: #0f7b6c;
+      --success-bg: rgba(15, 123, 108, 0.1);
+      --warning: #f2994a;
+      --warning-bg: rgba(242, 153, 74, 0.1);
+      --error: #eb5757;
+      --error-bg: rgba(235, 87, 87, 0.1);
+
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7f6f3;
+      --bg-hover: rgba(0, 0, 0, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans',
+                   Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--gray-700);
+      background: var(--bg-secondary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .page-header {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 24px 32px;
+      margin-bottom: 24px;
+      border: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .back-btn {
+      padding: 8px;
+      background: var(--bg-hover);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-600);
+      transition: all 150ms ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--gray-700);
+    }
+
+    .back-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Class Selector */
+    .class-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .class-selector label {
+      font-size: 13px;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .class-selector select {
+      padding: 8px 32px 8px 12px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23787774' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+      appearance: none;
+      cursor: pointer;
+      min-width: 200px;
+    }
+
+    .class-selector select:hover {
+      border-color: var(--gray-300);
+    }
+
+    .class-selector select:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: background 150ms ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    .btn-danger {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    .btn-danger:hover {
+      background: rgba(235, 87, 87, 0.2);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .btn-sm svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Stats Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      padding: 20px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .stat-label {
+      color: var(--gray-500);
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .stat-subtext {
+      font-size: 12px;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    /* Main Card */
+    .card {
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--gray-100);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gray-500);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Search Box */
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      font-size: 14px;
+      width: 250px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--blue-primary);
+      box-shadow: 0 0 0 2px var(--blue-light);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--gray-400);
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    th {
+      background: var(--gray-50);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-500);
+    }
+
+    tr:hover {
+      background: var(--bg-hover);
+    }
+
+    .student-name {
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .student-email {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .status-active {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .status-inactive {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    /* Progress Bar */
+    .progress-cell {
+      min-width: 120px;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-primary);
+      border-radius: 3px;
+      transition: width 300ms ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    /* Score display */
+    .score-value {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .score-high {
+      color: var(--success);
+    }
+
+    .score-medium {
+      color: var(--warning);
+    }
+
+    .score-low {
+      color: var(--error);
+    }
+
+    /* Action buttons */
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      padding: 6px;
+      min-width: auto;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--gray-500);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 16px;
+      color: var(--gray-300);
+    }
+
+    .empty-state h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--gray-600);
+    }
+
+    .empty-state p {
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* Loading State */
+    .loading-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--gray-500);
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--gray-200);
+      border-top-color: var(--blue-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Student Report Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      padding: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-500);
+      border-radius: 4px;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-hover);
+      color: var(--gray-700);
+    }
+
+    .modal-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-body {
+      padding: 24px;
+    }
+
+    /* Report Sections */
+    .report-section {
+      margin-bottom: 24px;
+    }
+
+    .report-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .report-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .report-section-title svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .report-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .report-stat {
+      background: var(--gray-50);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .report-stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gray-700);
+    }
+
+    .report-stat-label {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    /* Module progress in report */
+    .module-progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .module-progress-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .module-name {
+      min-width: 120px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .module-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--gray-100);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .module-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 300ms ease;
+    }
+
+    .module-score {
+      min-width: 40px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Quiz history in report */
+    .quiz-history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .quiz-history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--gray-50);
+      border-radius: 6px;
+    }
+
+    .quiz-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .quiz-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .quiz-date {
+      font-size: 11px;
+      color: var(--gray-500);
+    }
+
+    .quiz-score {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-right {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .class-selector select {
+        width: 100%;
+      }
+
+      .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .report-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .search-box input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <!-- Header -->
+    <header class="page-header">
+      <div class="header-left">
+        <button class="back-btn" onclick="window.location.href='teacher-dashboard.html'" title="Back to Dashboard">
+          <i data-lucide="arrow-left"></i>
+        </button>
+        <h1 class="page-title">Class Management</h1>
+      </div>
+      <div class="header-right">
+        <div class="class-selector">
+          <label for="classSelect">Class:</label>
+          <select id="classSelect" onchange="handleClassChange()">
+            <option value="">Loading...</option>
+          </select>
+        </div>
+        <button class="btn btn-secondary" onclick="window.location.href='teacher-dashboard.html'">
+          <i data-lucide="layout-dashboard"></i>
+          Dashboard
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Students</div>
+        <div class="stat-value" id="totalStudents">0</div>
+        <div class="stat-subtext">in this class</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Students</div>
+        <div class="stat-value" id="activeStudents">0</div>
+        <div class="stat-subtext">logged in recently</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Avg. Progress</div>
+        <div class="stat-value" id="avgProgress">0%</div>
+        <div class="stat-subtext">quiz completion</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Class Avg. Score</div>
+        <div class="stat-value" id="avgScore">0%</div>
+        <div class="stat-subtext">overall performance</div>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i data-lucide="users"></i>
+          Students
+        </h2>
+        <div class="card-actions">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="searchInput" placeholder="Search students..." oninput="filterStudents()">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddStudentModal()">
+            <i data-lucide="user-plus"></i>
+            Add Student
+          </button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <div id="studentsTableContainer">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading students...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Report Modal -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="reportModalTitle">Student Report</h3>
+        <button class="modal-close" onclick="closeReportModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="reportModalBody">
+        <!-- Report content loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Remove Student</h3>
+        <button class="modal-close" onclick="closeDeleteModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px;">Are you sure you want to remove <strong id="deleteStudentName"></strong> from this class?</p>
+        <p style="font-size: 13px; color: var(--gray-500); margin-bottom: 20px;">This will remove the student from the class roster. Their quiz history will be preserved.</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDeleteStudent()">
+            <i data-lucide="trash-2"></i>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    // Global state
+    let currentClassId = null;
+    let teacherClasses = [];
+    let allStudents = [];
+    let studentToDelete = null;
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      await checkAuth();
+      await loadTeacherClasses();
+    });
+
+    // Check authentication
+    async function checkAuth() {
+      const userSession = sessionStorage.getItem('pethologyUser');
+      if (!userSession) {
+        window.location.href = 'auth0-login.html';
+        return;
+      }
+
+      const user = JSON.parse(userSession);
+      if (user.role !== 'Teacher') {
+        window.location.href = 'student-dashboard.html';
+        return;
+      }
+    }
+
+    // Load teacher's classes
+    async function loadTeacherClasses() {
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const user = JSON.parse(userSession);
+
+        teacherClasses = await PethologyFirebaseREST.getClassesByTeacher(user.email);
+
+        const select = document.getElementById('classSelect');
+
+        if (teacherClasses.length === 0) {
+          select.innerHTML = '<option value="">No classes found</option>';
+          showEmptyState('No classes yet', 'Create a class from the dashboard to get started.');
+          return;
+        }
+
+        select.innerHTML = teacherClasses.map(cls =>
+          `<option value="${cls.id}">${cls.name}${cls.academicYear ? ` (${cls.academicYear})` : ''}</option>`
+        ).join('');
+
+        // Check if there's a class ID in URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const classIdParam = urlParams.get('classId');
+
+        if (classIdParam && teacherClasses.find(c => c.id === classIdParam)) {
+          currentClassId = classIdParam;
+          select.value = classIdParam;
+        } else {
+          currentClassId = teacherClasses[0].id;
+        }
+
+        await loadStudents();
+      } catch (error) {
+        console.error('Error loading classes:', error);
+        showEmptyState('Error loading classes', 'Please try refreshing the page.');
+      }
+    }
+
+    // Handle class change
+    window.handleClassChange = async function() {
+      const select = document.getElementById('classSelect');
+      currentClassId = select.value;
+
+      // Update URL without refresh
+      const url = new URL(window.location);
+      url.searchParams.set('classId', currentClassId);
+      window.history.pushState({}, '', url);
+
+      await loadStudents();
+    };
+
+    // Load students for current class
+    async function loadStudents() {
+      const container = document.getElementById('studentsTableContainer');
+      container.innerHTML = `
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Loading students...</p>
+        </div>
+      `;
+
+      try {
+        // Get pre-registered students
+        const preRegistered = await PethologyFirebaseREST.getStudentsByClass(currentClassId);
+
+        // Get actual user accounts that are students
+        const usersResponse = await PethologyFirebaseREST.request('/users');
+        const allUsers = usersResponse.documents ?
+          usersResponse.documents.map(doc => PethologyFirebaseREST.convertDocument(doc)) : [];
+
+        // Combine and match students
+        allStudents = [];
+
+        for (const preReg of preRegistered) {
+          const matchedUser = allUsers.find(u =>
+            u.email?.toLowerCase() === preReg.email?.toLowerCase() && u.role === 'Student'
+          );
+
+          if (matchedUser) {
+            // Get progress for this student
+            const progress = await PethologyFirebaseREST.getStudentProgress(matchedUser.id);
+
+            allStudents.push({
+              id: preReg.id,
+              oduid: matchedUser.id,
+              firstName: preReg.firstName || matchedUser.firstName || '',
+              lastName: preReg.lastName || matchedUser.lastName || '',
+              email: preReg.email,
+              status: 'active',
+              lastLogin: matchedUser.lastLogin || null,
+              progress: progress
+            });
+          } else {
+            // Pre-registered but not yet signed up
+            allStudents.push({
+              id: preReg.id,
+              oduid: null,
+              firstName: preReg.firstName || '',
+              lastName: preReg.lastName || '',
+              email: preReg.email,
+              status: 'pending',
+              lastLogin: null,
+              progress: null
+            });
+          }
+        }
+
+        updateStats();
+        renderStudentsTable();
+      } catch (error) {
+        console.error('Error loading students:', error);
+        showEmptyState('Error loading students', 'Please try refreshing the page.');
+      }
+    }
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('totalStudents').textContent = allStudents.length;
+
+      const activeStudents = allStudents.filter(s => s.status === 'active').length;
+      document.getElementById('activeStudents').textContent = activeStudents;
+
+      // Calculate average progress
+      const studentsWithProgress = allStudents.filter(s => s.progress?.overallStats?.totalQuizzes > 0);
+      const avgProgress = studentsWithProgress.length > 0 ?
+        Math.round(studentsWithProgress.reduce((sum, s) => sum + (s.progress.overallStats.totalQuizzes || 0), 0) / studentsWithProgress.length) : 0;
+      document.getElementById('avgProgress').textContent = avgProgress + ' quizzes';
+
+      // Calculate average score
+      const avgScore = studentsWithProgress.length > 0 ?
+        Math.round(studentsWithProgress.reduce((sum, s) => sum + (s.progress.overallStats.averageScore || 0), 0) / studentsWithProgress.length) : 0;
+      document.getElementById('avgScore').textContent = avgScore + '%';
+    }
+
+    // Render students table
+    function renderStudentsTable() {
+      const container = document.getElementById('studentsTableContainer');
+
+      if (allStudents.length === 0) {
+        showEmptyState('No students yet', 'Add students to this class to see them here.');
+        return;
+      }
+
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filteredStudents = allStudents.filter(s =>
+        s.firstName.toLowerCase().includes(searchTerm) ||
+        s.lastName.toLowerCase().includes(searchTerm) ||
+        s.email.toLowerCase().includes(searchTerm)
+      );
+
+      if (filteredStudents.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i data-lucide="search"></i>
+            <h3>No matches found</h3>
+            <p>Try a different search term.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      container.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Status</th>
+              <th>Last Activity</th>
+              <th>Quizzes</th>
+              <th>Avg. Score</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredStudents.map(student => renderStudentRow(student)).join('')}
+          </tbody>
+        </table>
+      `;
+
+      lucide.createIcons();
+    }
+
+    // Render single student row
+    function renderStudentRow(student) {
+      const name = `${student.firstName} ${student.lastName}`.trim() || 'Unknown';
+      const statusClass = student.status === 'active' ? 'status-active' : 'status-pending';
+      const statusText = student.status === 'active' ? 'Active' : 'Pending';
+      const statusIcon = student.status === 'active' ? 'check-circle' : 'clock';
+
+      const lastActivity = student.lastLogin ? formatDate(student.lastLogin) : 'Never';
+      const totalQuizzes = student.progress?.overallStats?.totalQuizzes || 0;
+      const avgScore = student.progress?.overallStats?.averageScore || 0;
+
+      const scoreClass = avgScore >= 80 ? 'score-high' : avgScore >= 60 ? 'score-medium' : 'score-low';
+
+      return `
+        <tr>
+          <td>
+            <div class="student-name">${name}</div>
+            <div class="student-email">${student.email}</div>
+          </td>
+          <td>
+            <span class="status-badge ${statusClass}">
+              <i data-lucide="${statusIcon}"></i>
+              ${statusText}
+            </span>
+          </td>
+          <td>${lastActivity}</td>
+          <td>${totalQuizzes}</td>
+          <td>
+            <span class="score-value ${scoreClass}">${avgScore}%</span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button class="btn btn-secondary btn-sm btn-icon" onclick="viewStudentReport('${student.email}')" title="View Report" ${student.status !== 'active' ? 'disabled' : ''}>
+                <i data-lucide="bar-chart-2"></i>
+              </button>
+              <button class="btn btn-danger btn-sm btn-icon" onclick="openDeleteModal('${encodeURIComponent(student.email)}', '${name}')" title="Remove">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    // Filter students
+    window.filterStudents = function() {
+      renderStudentsTable();
+    };
+
+    // Format date
+    function formatDate(dateValue) {
+      if (!dateValue) return 'Never';
+      const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
+      const now = new Date();
+      const diff = now - date;
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      if (days === 0) return 'Today';
+      if (days === 1) return 'Yesterday';
+      if (days < 7) return `${days} days ago`;
+      return date.toLocaleDateString();
+    }
+
+    // Show empty state
+    function showEmptyState(title, message) {
+      const container = document.getElementById('studentsTableContainer');
+      container.innerHTML = `
+        <div class="empty-state">
+          <i data-lucide="users"></i>
+          <h3>${title}</h3>
+          <p>${message}</p>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // View student report
+    window.viewStudentReport = async function(email) {
+      const student = allStudents.find(s => s.email === email);
+      if (!student || !student.progress) {
+        alert('No progress data available for this student.');
+        return;
+      }
+
+      const modal = document.getElementById('reportModal');
+      const title = document.getElementById('reportModalTitle');
+      const body = document.getElementById('reportModalBody');
+
+      const name = `${student.firstName} ${student.lastName}`.trim() || student.email;
+      title.textContent = `Report: ${name}`;
+
+      const stats = student.progress.overallStats || {};
+      const modules = student.progress.moduleProgress || {};
+
+      // Get quiz history
+      let quizHistory = [];
+      if (student.oduid) {
+        quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(student.oduid);
+      }
+
+      body.innerHTML = `
+        <div class="report-section">
+          <div class="report-section-title">
+            <i data-lucide="trophy"></i>
+            Overall Performance
+          </div>
+          <div class="report-stats-grid">
+            <div class="report-stat">
+              <div class="report-stat-value">${stats.totalQuizzes || 0}</div>
+              <div class="report-stat-label">Quizzes Taken</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-value">${stats.averageScore || 0}%</div>
+              <div class="report-stat-label">Average Score</div>
+            </div>
+            <div class="report-stat">
+              <div class="report-stat-value">${stats.streak || 0}</div>
+              <div class="report-stat-label">Day Streak</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            <i data-lucide="book-open"></i>
+            Module Progress
+          </div>
+          <div class="module-progress-list">
+            ${Object.keys(modules).length > 0 ? Object.entries(modules).map(([moduleName, data]) => {
+              const score = data.averageScore || 0;
+              const color = getModuleColor(moduleName);
+              return `
+                <div class="module-progress-item">
+                  <span class="module-name">${formatModuleName(moduleName)}</span>
+                  <div class="module-bar">
+                    <div class="module-bar-fill" style="width: ${score}%; background: ${color};"></div>
+                  </div>
+                  <span class="module-score">${score}%</span>
+                </div>
+              `;
+            }).join('') : '<p style="color: var(--gray-500); font-size: 13px;">No module data yet.</p>'}
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            <i data-lucide="clock"></i>
+            Recent Quiz History
+          </div>
+          <div class="quiz-history-list">
+            ${quizHistory.length > 0 ? quizHistory.slice(0, 10).map(quiz => {
+              const score = Math.round((quiz.score || 0) * 100);
+              const scoreClass = score >= 80 ? 'score-high' : score >= 60 ? 'score-medium' : 'score-low';
+              const date = quiz.completedAt ? new Date(quiz.completedAt).toLocaleDateString() : 'Unknown';
+              return `
+                <div class="quiz-history-item">
+                  <div class="quiz-info">
+                    <span class="quiz-name">${formatModuleName(quiz.quizId || quiz.type || 'Quiz')}</span>
+                    <span class="quiz-date">${date}</span>
+                  </div>
+                  <span class="quiz-score ${scoreClass}">${score}%</span>
+                </div>
+              `;
+            }).join('') : '<p style="color: var(--gray-500); font-size: 13px; padding: 12px;">No quiz history yet.</p>'}
+          </div>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      lucide.createIcons();
+    };
+
+    // Close report modal
+    window.closeReportModal = function() {
+      document.getElementById('reportModal').style.display = 'none';
+    };
+
+    // Open delete modal
+    window.openDeleteModal = function(encodedEmail, name) {
+      studentToDelete = decodeURIComponent(encodedEmail);
+      document.getElementById('deleteStudentName').textContent = name;
+      document.getElementById('deleteModal').style.display = 'flex';
+      lucide.createIcons();
+    };
+
+    // Close delete modal
+    window.closeDeleteModal = function() {
+      document.getElementById('deleteModal').style.display = 'none';
+      studentToDelete = null;
+    };
+
+    // Confirm delete student
+    window.confirmDeleteStudent = async function() {
+      if (!studentToDelete) return;
+
+      try {
+        const student = allStudents.find(s => s.email === studentToDelete);
+        if (student && student.id) {
+          await PethologyFirebaseREST.request(`/pre_registered_students/${student.id}`, 'DELETE');
+        }
+
+        closeDeleteModal();
+        await loadStudents();
+
+        // Show success toast
+        showToast('Student removed successfully', 'success');
+      } catch (error) {
+        console.error('Error removing student:', error);
+        showToast('Failed to remove student', 'error');
+      }
+    };
+
+    // Open add student modal (redirect to dashboard)
+    window.openAddStudentModal = function() {
+      // Redirect to dashboard with class settings open
+      window.location.href = `teacher-dashboard.html?openSettings=students&classId=${currentClassId}`;
+    };
+
+    // Helper functions
+    function getModuleColor(moduleName) {
+      const colors = {
+        'biology': '#10b981',
+        'welfare': '#f59e0b',
+        'grooming': '#8b5cf6',
+        'anatomy': '#ef4444',
+        'parasitology': '#ec4899',
+        'nutrition': '#14b8a6',
+        'behaviour': '#6366f1',
+        'small-animals': '#f97316',
+        'vet-skills': '#06b6d4',
+        'communications': '#84cc16'
+      };
+      const key = moduleName.toLowerCase().replace(/\s+/g, '-');
+      return colors[key] || '#6366f1';
+    }
+
+    function formatModuleName(name) {
+      if (!name) return 'Unknown';
+      return name
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+    }
+
+    // Toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        background: ${type === 'success' ? '#059669' : '#ef4444'};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Close modals on outside click
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+  <style>
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  </style>
+</body>
+</html>

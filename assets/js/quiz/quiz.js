@@ -101,13 +101,27 @@ function showQuestion() {
   const question = currentQuestions[currentQuestionIndex];
   isAnswerCorrect = false;
 
+  // Update exam top bar progress if in exam mode
+  if (isExamMode) {
+    updateExamProgress();
+  }
+
   const progress = currentQuestionIndex + 1;
   const total = currentQuestions.length;
   // Percentage shows how many questions have been ANSWERED (0% at start, 100% at end)
   const percentage = Math.round((currentQuestionIndex / total) * 100);
 
   quizContainer.innerHTML = `
-    ${isAdaptiveMode ? `
+    ${isExamMode ? `
+    <!-- Exam Mode Banner -->
+    <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border: 2px solid #6366f1; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px; filter: grayscale(0);">&#128274;</span>
+      <div style="flex: 1;">
+        <div style="font-weight: 700; color: #e0e7ff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-size: 14px;">Exam Mode Active</div>
+        <div style="font-size: 0.85rem; color: #a5b4fc; line-height: 1.5;">No hints or explanations. Timer is running. Do not switch tabs or leave fullscreen.</div>
+      </div>
+    </div>
+    ` : isAdaptiveMode ? `
     <!-- Adaptive Quiz Badge -->
     <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%); border: 2px solid #3b82f6; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
       <span style="font-size: 24px;">🤖</span>
@@ -453,10 +467,8 @@ async function showQuizCompleted() {
 
     // Clean up exam mode
     if (isExamMode) {
-      exitFullscreen();
       clearInterval(examTimer);
-      isExamMode = false;
-      examTimeRemaining = examTimeLimit;
+      cleanupExamMode();
     }
 
     // Save adaptive metadata if in adaptive mode
@@ -1006,6 +1018,13 @@ window.onload = function() {
   const module = urlParams.get('module');
   const mode = urlParams.get('mode');
   const customQuizId = urlParams.get('customQuizId');
+  const examModeParam = urlParams.get('examMode');
+
+  // Check for exam mode from URL parameter
+  if (examModeParam === 'true') {
+    isExamMode = true;
+    console.log('🎯 EXAM MODE ACTIVATED from URL parameter');
+  }
 
   // Check for adaptive mode
   if (mode === 'adaptive') {
@@ -1301,18 +1320,26 @@ initUserIndicator();
 
 // ===== EXAM MODE FUNCTIONS =====
 
+let examTabSwitchCount = 0;
+
 /**
  * Initialize Exam Mode UI
  */
 function initExamMode() {
-  console.log('🎯 Initializing Exam Mode...');
+  console.log('Initializing Exam Mode...');
+
+  // Add exam mode class to body for global styling
+  document.body.classList.add('exam-mode-active');
+
+  // Inject exam mode CSS
+  injectExamModeStyles();
 
   // Enter fullscreen
   enterFullscreen();
 
-  // Create timer UI if doesn't exist
-  if (!document.getElementById('exam-timer')) {
-    createExamTimerUI();
+  // Create the exam top bar (replaces the old floating timer)
+  if (!document.getElementById('exam-top-bar')) {
+    createExamTopBar();
   }
 
   // Hide elements that shouldn't be visible in exam mode
@@ -1323,54 +1350,310 @@ function initExamMode() {
   window.onpopstate = function() {
     if (isExamMode) {
       history.go(1);
-      alert('WARNING: You cannot navigate away during exam mode!');
+      showExamWarning('You cannot navigate away during an exam.');
     }
   };
 
   // Prevent tab switching (visibility API)
-  let tabSwitchCount = 0;
+  examTabSwitchCount = 0;
   document.addEventListener('visibilitychange', function() {
     if (isExamMode && document.hidden) {
-      tabSwitchCount++;
-      console.warn(`⚠️ Tab switch detected! Count: ${tabSwitchCount}`);
-      if (tabSwitchCount >= 3) {
-        alert('WARNING: Excessive tab switching detected. This may result in automatic submission.');
+      examTabSwitchCount++;
+      console.warn(`Tab switch detected! Count: ${examTabSwitchCount}`);
+      updateExamTabWarning();
+      if (examTabSwitchCount >= 3) {
+        showExamWarning('Excessive tab switching detected. This may result in automatic submission.');
       }
+    }
+  });
+
+  // Disable right-click in exam mode
+  document.addEventListener('contextmenu', function(e) {
+    if (isExamMode) {
+      e.preventDefault();
     }
   });
 }
 
 /**
- * Create timer UI element
+ * Inject exam mode styles into the page
  */
-function createExamTimerUI() {
-  const timerContainer = document.createElement('div');
-  timerContainer.id = 'exam-timer';
-  timerContainer.style.cssText = `
+function injectExamModeStyles() {
+  if (document.getElementById('exam-mode-styles')) return;
+
+  const style = document.createElement('style');
+  style.id = 'exam-mode-styles';
+  style.textContent = `
+    body.exam-mode-active {
+      background: #0f172a !important;
+    }
+    body.exam-mode-active #quiz-buttons {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 800px;
+      margin: 100px auto 40px auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    body.exam-mode-active h2 {
+      color: #f1f5f9 !important;
+    }
+    body.exam-mode-active .minimal-button.answer-button {
+      background: #1e293b !important;
+      border: 2px solid #475569 !important;
+      color: #e2e8f0 !important;
+      transition: all 0.2s ease;
+    }
+    body.exam-mode-active .minimal-button.answer-button:hover:not(:disabled) {
+      background: #334155 !important;
+      border-color: #6366f1 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    body.exam-mode-active .minimal-button.answer-button:disabled {
+      opacity: 0.5 !important;
+    }
+    body.exam-mode-active span[style*="color: #374151"] {
+      color: #94a3b8 !important;
+    }
+    body.exam-mode-active span[style*="color: #3b82f6"] {
+      color: #818cf8 !important;
+    }
+
+    @keyframes examTimerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    @keyframes examTimerCritical {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .exam-timer-warning {
+      animation: examTimerPulse 1.5s ease-in-out infinite;
+    }
+    .exam-timer-critical {
+      animation: examTimerCritical 0.8s ease-in-out infinite;
+    }
+
+    #exam-top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      border-bottom: 2px solid #4f46e5;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    #exam-top-bar .exam-bar-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      gap: 16px;
+    }
+    #exam-top-bar .exam-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    #exam-top-bar .exam-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    #exam-top-bar .exam-badge {
+      background: rgba(99, 102, 241, 0.3);
+      border: 1px solid #6366f1;
+      border-radius: 8px;
+      padding: 6px 14px;
+      color: #c7d2fe;
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    #exam-top-bar .exam-module-name {
+      color: #e0e7ff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    #exam-top-bar .exam-student-name {
+      color: #a5b4fc;
+      font-size: 13px;
+    }
+    #exam-top-bar .exam-timer-box {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      border-radius: 10px;
+      padding: 8px 16px;
+      text-align: center;
+      min-width: 130px;
+    }
+    #exam-top-bar .exam-timer-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #fca5a5;
+      margin-bottom: 2px;
+    }
+    #exam-top-bar .exam-timer-value {
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: #fecaca;
+      line-height: 1;
+    }
+    #exam-top-bar .exam-progress-info {
+      color: #a5b4fc;
+      font-size: 13px;
+      text-align: center;
+    }
+    #exam-top-bar .exam-progress-info strong {
+      color: #e0e7ff;
+      font-size: 16px;
+    }
+    #exam-top-bar .exam-tab-warning {
+      color: #fbbf24;
+      font-size: 12px;
+      display: none;
+    }
+    #exam-top-bar .exam-timer-bar {
+      height: 4px;
+      background: #1e1b4b;
+      width: 100%;
+    }
+    #exam-top-bar .exam-timer-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6366f1, #818cf8);
+      transition: width 1s linear;
+      border-radius: 0 2px 2px 0;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+/**
+ * Create the exam top bar with timer, info, and progress
+ */
+function createExamTopBar() {
+  // Get student name
+  const userSession = sessionStorage.getItem('pethologyUser');
+  const user = userSession ? JSON.parse(userSession) : null;
+  const studentName = user?.name || 'Student';
+
+  const topBar = document.createElement('div');
+  topBar.id = 'exam-top-bar';
+  topBar.innerHTML = `
+    <div class="exam-bar-main">
+      <div class="exam-bar-left">
+        <div class="exam-badge">
+          &#128274; EXAM
+        </div>
+        <div>
+          <div class="exam-module-name" id="exam-module-name">${currentQuizModule || 'Quiz'}</div>
+          <div class="exam-student-name">${studentName}</div>
+        </div>
+      </div>
+      <div class="exam-bar-right">
+        <div class="exam-tab-warning" id="exam-tab-warning">
+          &#9888; Tab switches: <span id="exam-tab-count">0</span>/3
+        </div>
+        <div class="exam-progress-info" id="exam-progress-info">
+          <strong>${currentQuestionIndex + 1}</strong> / ${currentQuestions.length}<br>
+          Questions
+        </div>
+        <div class="exam-timer-box" id="exam-timer-box">
+          <div class="exam-timer-label">Time Remaining</div>
+          <div class="exam-timer-value" id="exam-timer-display">30:00</div>
+        </div>
+      </div>
+    </div>
+    <div class="exam-timer-bar">
+      <div class="exam-timer-bar-fill" id="exam-timer-bar-fill" style="width: 100%"></div>
+    </div>
+  `;
+  document.body.prepend(topBar);
+}
+
+/**
+ * Update exam top bar progress (call from showQuestion)
+ */
+function updateExamProgress() {
+  const progressEl = document.getElementById('exam-progress-info');
+  const moduleNameEl = document.getElementById('exam-module-name');
+  if (progressEl) {
+    progressEl.innerHTML = `
+      <strong>${currentQuestionIndex + 1}</strong> / ${currentQuestions.length}<br>
+      Questions
+    `;
+  }
+  if (moduleNameEl && currentQuizModule) {
+    moduleNameEl.textContent = currentQuizModule;
+  }
+}
+
+/**
+ * Update tab switch warning display
+ */
+function updateExamTabWarning() {
+  const warningEl = document.getElementById('exam-tab-warning');
+  const countEl = document.getElementById('exam-tab-count');
+  if (warningEl && countEl) {
+    warningEl.style.display = 'block';
+    countEl.textContent = examTabSwitchCount;
+    if (examTabSwitchCount >= 2) {
+      warningEl.style.color = '#ef4444';
+    }
+  }
+}
+
+/**
+ * Show a non-blocking exam warning overlay
+ */
+function showExamWarning(message) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
     position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #fee2e2;
-    border: 2px solid #ef4444;
-    padding: 16px 24px;
-    border-radius: 12px;
-    z-index: 9999;
-    font-weight: 600;
-    font-size: 18px;
-    color: #991b1b;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    min-width: 150px;
-    text-align: center;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   `;
-  timerContainer.innerHTML = `
-    <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">
-      ⏱️ Time Remaining
-    </div>
-    <div id="exam-timer-display" style="font-size: 28px; font-family: 'Courier New', monospace;">
-      30:00
+  overlay.innerHTML = `
+    <div style="
+      background: #1e293b;
+      border: 2px solid #ef4444;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    ">
+      <div style="font-size: 40px; margin-bottom: 12px;">&#9888;</div>
+      <div style="font-size: 18px; font-weight: 700; color: #fecaca; margin-bottom: 8px;">Warning</div>
+      <div style="color: #cbd5e1; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">${message}</div>
+      <button onclick="this.closest('div[style]').parentElement.remove()" style="
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 10px 28px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      ">Understood</button>
     </div>
   `;
-  document.body.appendChild(timerContainer);
+  document.body.appendChild(overlay);
 }
 
 /**
@@ -1386,12 +1669,12 @@ function startExamTimer() {
 
     // Warning at 5 minutes
     if (examTimeRemaining === 300) {
-      alert('WARNING: 5 minutes remaining!');
+      showExamWarning('5 minutes remaining. Please finish up your exam.');
     }
 
     // Warning at 1 minute
     if (examTimeRemaining === 60) {
-      alert('WARNING: 1 minute remaining!');
+      showExamWarning('1 minute remaining! Your exam will be submitted automatically.');
     }
 
     // Time's up!
@@ -1403,7 +1686,7 @@ function startExamTimer() {
 }
 
 /**
- * Update timer display
+ * Update timer display with progress bar and visual states
  */
 function updateTimerDisplay() {
   const display = document.getElementById('exam-timer-display');
@@ -1413,16 +1696,34 @@ function updateTimerDisplay() {
   const seconds = examTimeRemaining % 60;
   display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-  // Change color when less than 5 minutes
-  const timer = document.getElementById('exam-timer');
-  if (examTimeRemaining <= 300 && examTimeRemaining > 60) {
-    timer.style.background = '#fed7aa';
-    timer.style.borderColor = '#f97316';
-    timer.style.color = '#9a3412';
-  } else if (examTimeRemaining <= 60) {
-    timer.style.background = '#fecaca';
-    timer.style.borderColor = '#dc2626';
-    timer.style.color = '#7f1d1d';
+  // Update timer progress bar
+  const barFill = document.getElementById('exam-timer-bar-fill');
+  if (barFill) {
+    const percentage = (examTimeRemaining / examTimeLimit) * 100;
+    barFill.style.width = `${percentage}%`;
+
+    // Change bar color based on time
+    if (examTimeRemaining <= 60) {
+      barFill.style.background = '#ef4444';
+    } else if (examTimeRemaining <= 300) {
+      barFill.style.background = 'linear-gradient(90deg, #f97316, #fbbf24)';
+    }
+  }
+
+  // Update timer box visual state
+  const timerBox = document.getElementById('exam-timer-box');
+  if (timerBox) {
+    if (examTimeRemaining <= 60) {
+      timerBox.style.background = 'rgba(239, 68, 68, 0.3)';
+      timerBox.style.borderColor = '#dc2626';
+      timerBox.className = 'exam-timer-box exam-timer-critical';
+      display.style.color = '#fca5a5';
+    } else if (examTimeRemaining <= 300) {
+      timerBox.style.background = 'rgba(249, 115, 22, 0.2)';
+      timerBox.style.borderColor = '#f97316';
+      timerBox.className = 'exam-timer-box exam-timer-warning';
+      display.style.color = '#fed7aa';
+    }
   }
 }
 
@@ -1431,13 +1732,40 @@ function updateTimerDisplay() {
  */
 async function autoSubmitExam() {
   console.log('Time is up! Auto-submitting exam...');
-  alert('Time is up! Your exam will be submitted automatically.');
+  showExamWarning('Time is up! Your exam will be submitted automatically.');
 
-  // Force finish quiz
-  await finishQuiz();
+  // Short delay so warning is visible
+  setTimeout(async () => {
+    await finishQuiz();
+    cleanupExamMode();
+  }, 1500);
+}
 
+/**
+ * Clean up all exam mode UI and state
+ */
+function cleanupExamMode() {
   exitFullscreen();
   isExamMode = false;
+  examTimeRemaining = examTimeLimit;
+  examTabSwitchCount = 0;
+
+  // Remove exam top bar
+  const topBar = document.getElementById('exam-top-bar');
+  if (topBar) topBar.remove();
+
+  // Remove exam styles
+  const styles = document.getElementById('exam-mode-styles');
+  if (styles) styles.remove();
+
+  // Remove body class
+  document.body.classList.remove('exam-mode-active');
+
+  // Restore hidden elements
+  document.querySelectorAll('[data-hidden-by-exam]').forEach(el => {
+    el.style.display = '';
+    delete el.dataset.hiddenByExam;
+  });
 }
 
 /**
@@ -1461,7 +1789,7 @@ function enterFullscreen() {
  */
 function exitFullscreen() {
   if (document.exitFullscreen) {
-    document.exitFullscreen();
+    document.exitFullscreen().catch(() => {});
   } else if (document.webkitExitFullscreen) {
     document.webkitExitFullscreen();
   } else if (document.msExitFullscreen) {
@@ -1473,11 +1801,11 @@ function exitFullscreen() {
  * Hide non-exam elements
  */
 function hideNonExamElements() {
-  // Hide navigation, footer, etc.
   const elementsToHide = [
     document.querySelector('nav'),
     document.querySelector('footer'),
-    document.querySelector('.hamburger-menu')
+    document.querySelector('.hamburger-menu'),
+    document.querySelector('header')
   ];
 
   elementsToHide.forEach(el => {

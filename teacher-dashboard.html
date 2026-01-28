@@ -36,6 +36,9 @@
       --blue-primary: #2383E2;
       --blue-hover: #1a73d1;
       --blue-light: rgba(35, 131, 226, 0.1);
+      --blue-50: #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-700: #1d4ed8;
 
       /* Semantic */
       --success: #0f7b6c;
@@ -756,6 +759,15 @@
       opacity: 1 !important;
     }
 
+    /* Spacing for cards outside content-grid */
+    #modulePerformanceCard {
+      margin-top: 24px;
+    }
+
+    #announcementsCard {
+      margin-top: 24px;
+    }
+
     /* Hide loading when content is ready */
     .loading.hidden {
       display: none !important;
@@ -1100,141 +1112,148 @@
       padding: 20px;
     }
 
-    /* 📅 Calendar Styles */
+    /* 📅 Calendar Styles - Mini Calendar (matches student dashboard) */
     .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 20px;
     }
 
     .calendar-month {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--gray-700);
     }
 
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
+    .calendar-nav {
+      display: flex;
       gap: 8px;
     }
 
-    /* Alias for calendar-rest.js compatibility */
+    .calendar-nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: var(--bg-hover);
+      color: var(--gray-700);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 150ms ease;
+    }
+
+    .calendar-nav-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
     .calendar-days {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 4px;
+      margin-bottom: 8px;
     }
 
     .calendar-day-header {
       text-align: center;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--gray-500);
-      padding: 8px;
+      padding: 8px 0;
     }
 
     .calendar-day {
-      min-height: 80px;
-      border: 1px solid var(--gray-200);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
       border-radius: 6px;
-      padding: 8px;
-      background: white;
+      cursor: pointer;
+      transition: all 150ms ease;
+      color: var(--gray-700);
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: var(--bg-hover);
     }
 
     .calendar-day.empty {
-      background: var(--gray-50);
-      border: none;
+      background: transparent;
+      cursor: default;
+    }
+
+    .calendar-day.empty:hover {
+      background: transparent;
     }
 
     .calendar-day.today {
-      border-color: var(--blue-primary);
-      background: var(--blue-50);
+      background: var(--blue-primary);
+      color: white;
+      font-weight: 600;
     }
 
-    .calendar-day-number {
-      font-size: 14px;
+    .calendar-day.has-event {
+      position: relative;
+    }
+
+    .calendar-day.has-event::after,
+    .calendar-day .event-dot {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      background: var(--blue-primary);
+      border-radius: 50%;
+    }
+
+    .calendar-day.has-event.today::after,
+    .calendar-day.today .event-dot {
+      background: white;
+    }
+
+    /* Upcoming Events */
+    .upcoming-events {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .upcoming-events h5 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
       font-weight: 600;
       color: var(--gray-700);
-      margin-bottom: 4px;
     }
 
-    .calendar-event {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-top: 2px;
+    .event-item {
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: var(--gray-50);
+      border-radius: 6px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      gap: 12px;
     }
 
-    .calendar-event.quiz {
-      background: var(--blue-50);
-      color: var(--blue-primary);
-    }
-
-    .calendar-event.assignment {
-      background: var(--purple-50);
-      color: var(--purple-primary);
-    }
-
-    .calendar-event.exam {
-      background: var(--red-50);
-      color: var(--red-primary);
-    }
-
-    .calendar-event.announcement {
-      background: var(--green-50);
-      color: var(--green-primary);
-    }
-
-    .calendar-event.other {
-      background: var(--gray-100);
-      color: var(--gray-600);
-    }
-
-    .event-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: currentColor;
+    .event-item:last-child {
+      margin-bottom: 0;
     }
 
     .event-title {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* Student Calendar Events */
-    .event-item {
-      display: flex;
-      align-items: start;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      background: var(--gray-50);
-    }
-
-    .event-details {
-      flex: 1;
-    }
-
-    .event-meta {
       font-size: 13px;
-      color: var(--gray-500);
-      margin-top: 4px;
+      font-weight: 500;
+      color: var(--gray-700);
     }
 
-    .event-description {
-      font-size: 14px;
-      color: var(--gray-600);
-      margin-top: 8px;
-      line-height: 1.6;
+    .event-date {
+      font-size: 11px;
+      color: var(--gray-500);
+      margin-top: 2px;
     }
 
     .btn-icon {
@@ -1481,9 +1500,9 @@
             <i data-lucide="download" class="quick-action-icon"></i>
             <span class="quick-action-text">Export Grades</span>
           </li>
-          <li class="quick-action-item">
+          <li class="quick-action-item" onclick="window.location.href='class-management.html' + (window.currentClassId ? '?classId=' + window.currentClassId : '')">
             <i data-lucide="settings" class="quick-action-icon"></i>
-            <span class="quick-action-text">Class Settings</span>
+            <span class="quick-action-text">Manage Class</span>
           </li>
         </ul>
       </div>
@@ -1586,7 +1605,7 @@
 
   <script type="module">
     // USE REST API instead of Firebase SDK to avoid WebChannel issues
-    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.3';
     import toast from './assets/js/toast.js';
     import errorHandler from './assets/js/error-handler.js';
 
@@ -3042,12 +3061,53 @@
 
         <!-- Tab Content: Students -->
         <div id="tab-students" class="settings-tab-content" style="display: none;">
+          <!-- Current class indicator -->
+          <div id="currentClassIndicator" class="current-class-indicator">
+            <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+            <span>Adding students to: <strong id="currentClassName">-</strong></span>
+          </div>
+
           <div class="settings-section-header">
             <h3>Manage Students</h3>
-            <button class="btn btn-primary btn-sm" onclick="showAddStudentForm()">
-              <i data-lucide="plus"></i>
-              Add Student
-            </button>
+            <div class="header-buttons">
+              <button class="btn btn-secondary btn-sm" onclick="showCSVImportForm()">
+                <i data-lucide="upload"></i>
+                Import CSV
+              </button>
+              <button class="btn btn-primary btn-sm" onclick="showAddStudentForm()">
+                <i data-lucide="plus"></i>
+                Add Student
+              </button>
+            </div>
+          </div>
+
+          <!-- CSV Import Section (hidden by default) -->
+          <div id="csvImportSection" class="csv-import-section" style="display: none;">
+            <div class="csv-upload-area" id="csvUploadArea">
+              <div class="csv-upload-content">
+                <i data-lucide="upload-cloud" style="width: 48px; height: 48px; color: var(--primary);"></i>
+                <p><strong>Click to upload</strong> or drag and drop</p>
+                <p class="csv-hint">CSV file with columns: firstName, lastName, email</p>
+                <input type="file" id="csvFileInput" accept=".csv" style="display: none;" onchange="handleCSVUpload(event)">
+              </div>
+            </div>
+            <div class="csv-format-hint">
+              <strong>CSV Format:</strong> firstName,lastName,email<br>
+              <span class="csv-example">John,Doe,john.doe@plc.ie</span>
+            </div>
+            <!-- Pending students from CSV -->
+            <div id="pendingStudentsList" class="pending-students" style="display: none;">
+              <div class="pending-header">
+                <h4>Students to Import (<span id="pendingCount">0</span>)</h4>
+                <button class="btn btn-secondary btn-sm" onclick="clearPendingStudents()">Clear All</button>
+              </div>
+              <div id="pendingStudentsContainer"></div>
+              <button class="btn btn-primary" onclick="savePendingStudents()" style="width: 100%; margin-top: 12px;">
+                <i data-lucide="save"></i>
+                Save All Students
+              </button>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="hideCSVImportForm()" style="margin-top: 12px;">Cancel</button>
           </div>
 
           <!-- Add Student Form (hidden by default) -->
@@ -3241,6 +3301,123 @@
       padding: 16px;
       border-radius: 8px;
       margin-bottom: 16px;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .csv-import-section {
+      background: var(--gray-50);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .csv-upload-area {
+      border: 2px dashed var(--gray-300);
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .csv-upload-area:hover,
+    .csv-upload-area.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .csv-upload-content p {
+      margin: 8px 0 0 0;
+      color: var(--gray-600);
+    }
+
+    .csv-hint {
+      font-size: 12px;
+      color: var(--gray-500);
+    }
+
+    .csv-format-hint {
+      margin-top: 12px;
+      padding: 12px;
+      background: white;
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .csv-example {
+      font-family: monospace;
+      color: var(--gray-500);
+    }
+
+    .current-class-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--blue-50);
+      border: 1px solid var(--blue-100);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      color: var(--blue-700);
+      font-size: 14px;
+    }
+
+    .current-class-indicator strong {
+      color: var(--blue-primary);
+    }
+
+    .pending-students {
+      margin-top: 16px;
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .pending-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .pending-header h4 {
+      margin: 0;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .pending-student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .pending-student-item:last-child {
+      border-bottom: none;
+    }
+
+    .pending-student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .pending-student-name {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .pending-student-email {
+      font-size: 12px;
+      color: var(--gray-500);
     }
 
     .form-row {
@@ -3482,14 +3659,33 @@
     // Students Management
     window.loadStudentsForSettings = async function() {
       const container = document.getElementById('studentsListSettings');
+      const classNameEl = document.getElementById('currentClassName');
+
       try {
         if (!window.currentClassId) {
+          if (classNameEl) classNameEl.textContent = 'No class selected';
           container.innerHTML = `
             <div class="empty-state-settings">
               <p>Please select or create a class first.</p>
             </div>
           `;
           return;
+        }
+
+        // Update the class name indicator
+        let currentClass = window.teacherClasses?.find(c => c.id === window.currentClassId);
+
+        // If not in cache, fetch it directly
+        if (!currentClass && window.currentClassId) {
+          currentClass = await PethologyFirebaseREST.getClass(window.currentClassId);
+        }
+
+        if (classNameEl) {
+          if (currentClass && currentClass.name) {
+            classNameEl.textContent = currentClass.name + (currentClass.academicYear ? ` (${currentClass.academicYear})` : '');
+          } else {
+            classNameEl.textContent = 'Selected class';
+          }
         }
 
         // Get students for current class
@@ -3505,25 +3701,33 @@
           return;
         }
 
-        container.innerHTML = students.map(student => `
-          <div class="settings-list-item">
-            <div class="settings-list-info">
-              <span class="settings-list-name">${student.name || 'Unknown'}</span>
-              <span class="settings-list-email">${student.email || ''}</span>
+        container.innerHTML = students.map(student => {
+          // Build name from firstName/lastName or fallback to name
+          const displayName = student.firstName && student.lastName
+            ? `${student.firstName} ${student.lastName}`
+            : (student.name || 'Unknown');
+          // Encode email for use in onclick (handle special characters)
+          const safeEmail = encodeURIComponent(student.email || '');
+          return `
+            <div class="settings-list-item">
+              <div class="settings-list-info">
+                <span class="settings-list-name">${displayName}</span>
+                <span class="settings-list-email">${student.email || ''}</span>
+              </div>
+              <div class="settings-list-actions">
+                <span class="status-badge ${student.registered ? 'registered' : 'pending'}">
+                  ${student.registered ? 'Registered' : 'Pending'}
+                </span>
+                <button class="btn-icon-sm" onclick="editStudent('${safeEmail}')" title="Edit">
+                  <i data-lucide="pencil"></i>
+                </button>
+                <button class="btn-icon-sm" onclick="deleteStudent('${safeEmail}')" title="Delete">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </div>
             </div>
-            <div class="settings-list-actions">
-              <span class="status-badge ${student.registered ? 'registered' : 'pending'}">
-                ${student.registered ? 'Registered' : 'Pending'}
-              </span>
-              <button class="btn-icon-sm" onclick="editStudent('${student.email}')" title="Edit">
-                <i data-lucide="pencil"></i>
-              </button>
-              <button class="btn-icon-sm" onclick="deleteStudent('${student.email}')" title="Delete">
-                <i data-lucide="trash-2"></i>
-              </button>
-            </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
 
         lucide.createIcons();
       } catch (error) {
@@ -3583,11 +3787,12 @@
       }
     };
 
-    window.deleteStudent = async function(email) {
+    window.deleteStudent = async function(encodedEmail) {
+      const email = decodeURIComponent(encodedEmail);
       if (!confirm(`Are you sure you want to remove this student from your class?`)) return;
 
       try {
-        await PethologyFirebaseREST.request(`/pre_registered_students/${email}`, 'DELETE');
+        await PethologyFirebaseREST.request(`/pre_registered_students/${encodeURIComponent(email)}`, 'DELETE');
         window.showToast('Student removed', 'success');
         loadStudentsForSettings();
       } catch (error) {
@@ -3596,9 +3801,214 @@
       }
     };
 
-    window.editStudent = async function(email) {
+    window.editStudent = async function(encodedEmail) {
+      const email = decodeURIComponent(encodedEmail);
       // For now, just show an alert - can implement edit modal later
       window.showToast('Edit functionality coming soon!', 'info');
+    };
+
+    // CSV Import Functions
+    window.pendingCSVStudents = [];
+
+    window.showCSVImportForm = function() {
+      document.getElementById('csvImportSection').style.display = 'block';
+      document.getElementById('addStudentForm').style.display = 'none';
+      initCSVDragDrop();
+      lucide.createIcons();
+    };
+
+    window.hideCSVImportForm = function() {
+      document.getElementById('csvImportSection').style.display = 'none';
+      window.pendingCSVStudents = [];
+      updatePendingStudentsList();
+    };
+
+    function initCSVDragDrop() {
+      const uploadArea = document.getElementById('csvUploadArea');
+
+      uploadArea.onclick = function() {
+        document.getElementById('csvFileInput').click();
+      };
+
+      uploadArea.ondragover = function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+      };
+
+      uploadArea.ondragleave = function() {
+        uploadArea.classList.remove('dragover');
+      };
+
+      uploadArea.ondrop = function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+
+        const file = e.dataTransfer.files[0];
+        if (file && file.name.endsWith('.csv')) {
+          processCSVFile(file);
+        } else {
+          window.showToast('Please upload a valid CSV file', 'error');
+        }
+      };
+    }
+
+    window.handleCSVUpload = function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      processCSVFile(file);
+    };
+
+    function processCSVFile(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        parseCSV(e.target.result);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSV(csv) {
+      const lines = csv.split('\n').filter(line => line.trim());
+
+      // Skip header row
+      const dataLines = lines.slice(1);
+
+      let successCount = 0;
+      let errorCount = 0;
+
+      dataLines.forEach(line => {
+        // Handle quoted fields
+        const fields = line.split(',').map(field => field.trim().replace(/^"|"$/g, ''));
+        const [firstName, lastName, email] = fields;
+
+        // Validate
+        if (!firstName || !lastName || !email) {
+          errorCount++;
+          return;
+        }
+
+        // Check for valid email
+        if (!email.includes('@')) {
+          console.warn(`Invalid email: ${email}`);
+          errorCount++;
+          return;
+        }
+
+        // Check for duplicates in pending list
+        const existsInPending = window.pendingCSVStudents.some(s => s.email.toLowerCase() === email.toLowerCase());
+        if (existsInPending) {
+          console.warn(`Duplicate email: ${email}`);
+          errorCount++;
+          return;
+        }
+
+        // Add to pending list
+        window.pendingCSVStudents.push({ firstName, lastName, email });
+        successCount++;
+      });
+
+      // Update UI
+      updatePendingStudentsList();
+
+      if (successCount > 0) {
+        window.showToast(`${successCount} students ready to import${errorCount > 0 ? ` (${errorCount} skipped)` : ''}`, 'success');
+      } else {
+        window.showToast('No valid students found in CSV', 'error');
+      }
+    }
+
+    function updatePendingStudentsList() {
+      const container = document.getElementById('pendingStudentsContainer');
+      const listDiv = document.getElementById('pendingStudentsList');
+      const countSpan = document.getElementById('pendingCount');
+
+      if (window.pendingCSVStudents.length === 0) {
+        listDiv.style.display = 'none';
+        return;
+      }
+
+      listDiv.style.display = 'block';
+      countSpan.textContent = window.pendingCSVStudents.length;
+
+      container.innerHTML = window.pendingCSVStudents.map((student, index) => `
+        <div class="pending-student-item">
+          <div class="pending-student-info">
+            <span class="pending-student-name">${student.firstName} ${student.lastName}</span>
+            <span class="pending-student-email">${student.email}</span>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="removePendingStudent(${index})">
+            <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+          </button>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    window.removePendingStudent = function(index) {
+      window.pendingCSVStudents.splice(index, 1);
+      updatePendingStudentsList();
+    };
+
+    window.clearPendingStudents = function() {
+      window.pendingCSVStudents = [];
+      updatePendingStudentsList();
+    };
+
+    window.savePendingStudents = async function() {
+      if (window.pendingCSVStudents.length === 0) {
+        window.showToast('No students to save', 'error');
+        return;
+      }
+
+      if (!window.currentClassId) {
+        window.showToast('Please select a class first', 'error');
+        return;
+      }
+
+      try {
+        const userSession = sessionStorage.getItem('pethologyUser');
+        const teacher = userSession ? JSON.parse(userSession) : null;
+
+        let savedCount = 0;
+        let errorCount = 0;
+
+        for (const student of window.pendingCSVStudents) {
+          try {
+            const email = student.email.toLowerCase();
+            const studentData = {
+              fields: {
+                email: { stringValue: email },
+                firstName: { stringValue: student.firstName },
+                lastName: { stringValue: student.lastName },
+                classId: { stringValue: window.currentClassId },
+                addedBy: { stringValue: teacher?.id || 'unknown' },
+                addedByName: { stringValue: teacher?.name || 'Unknown Teacher' },
+                addedAt: { timestampValue: new Date().toISOString() },
+                registered: { booleanValue: false }
+              }
+            };
+
+            await PethologyFirebaseREST.request(`/pre_registered_students/${email}`, 'PATCH', studentData);
+            savedCount++;
+          } catch (err) {
+            console.error('Error saving student:', student.email, err);
+            errorCount++;
+          }
+        }
+
+        window.showToast(`${savedCount} students imported${errorCount > 0 ? ` (${errorCount} failed)` : ''}`, 'success');
+
+        // Clear and hide
+        window.pendingCSVStudents = [];
+        updatePendingStudentsList();
+        hideCSVImportForm();
+
+        // Reload students list
+        loadStudentsForSettings();
+      } catch (error) {
+        console.error('Error saving students:', error);
+        window.showToast('Failed to save students', 'error');
+      }
     };
 
     // Teachers Management

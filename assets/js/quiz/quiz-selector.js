@@ -70,13 +70,17 @@ export function showQuizSelectionModal(quizzes, onSelect) {
   const startBtn = document.getElementById('startSelectedQuiz');
 
   selectedQuizData = null;
-  examModeEnabled = false;
   startBtn.disabled = true;
 
-  // Reset exam mode checkbox if exists
+  // Check if examMode was passed in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const examModeFromUrl = urlParams.get('examMode') === 'true';
+  examModeEnabled = examModeFromUrl;
+
+  // Set exam mode checkbox based on URL param
   const examCheckbox = document.getElementById('examModeCheckbox');
   if (examCheckbox) {
-    examCheckbox.checked = false;
+    examCheckbox.checked = examModeFromUrl;
   }
 
   // Render quiz options
