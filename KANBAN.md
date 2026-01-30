@@ -1,7 +1,7 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 28 Janeiro 2026
-**Versão Atual:** v5.7
+**Última atualização:** 30 Janeiro 2026
+**Versão Atual:** v5.8
 **Status:** PILOT LAUNCH + Core Features Complete
 
 ---
@@ -34,7 +34,7 @@
   - ✅ Mover import CSV para aba Students (27 Jan)
   - ✅ Refatorar quick action para "Manage Class" (28 Jan)
 - [x] **Exam Mode UI overhaul** - ✅ DONE (28 Jan) - Dark theme, top bar com timer, progress bar, warnings visuais
-- [ ] **Coordenador adicionar professores** - Professor principal pode adicionar outros teachers (nas settings)
+- [x] **Coordenador adicionar professores** - ✅ DONE (30 Jan) - Dropdown com teachers existentes, modal para editar módulos
 - [ ] **Performance optimization** - Minify, lazy load, cache
 
 ### 🐛 Minor Bugs

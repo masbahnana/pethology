@@ -3141,16 +3141,22 @@
           <!-- Add Teacher Form (hidden by default) -->
           <div id="addTeacherForm" class="add-form" style="display: none;">
             <div class="form-group">
-              <div class="form-row">
-                <input type="text" id="newTeacherName" class="form-input" placeholder="Teacher Name">
-                <input type="email" id="newTeacherEmail" class="form-input" placeholder="Teacher Email">
-              </div>
+              <label class="form-label">Select Teacher:</label>
+              <select id="teacherSelect" class="form-input" style="width: 100%;">
+                <option value="">-- Select a teacher --</option>
+              </select>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 4px;">
+                Only teachers registered in the system are shown
+              </p>
             </div>
             <div class="form-group">
               <label class="form-label">Assign Modules:</label>
               <div class="modules-checkboxes" id="modulesCheckboxes">
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="anatomy"> Anatomy & Physiology
+                  <input type="checkbox" name="teacherModules" value="all"> All Modules
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" name="teacherModules" value="biology"> Biology
                 </label>
                 <label class="checkbox-label">
                   <input type="checkbox" name="teacherModules" value="animal-welfare"> Animal Welfare
@@ -3159,19 +3165,19 @@
                   <input type="checkbox" name="teacherModules" value="animal-behaviour"> Animal Behaviour
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="biology"> Biology
+                  <input type="checkbox" name="teacherModules" value="animal-anatomy"> Animal Anatomy & Physiology
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="small-animals"> Small Animals
+                  <input type="checkbox" name="teacherModules" value="grooming"> Grooming
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="dogs-cats"> Dogs & Cats
+                  <input type="checkbox" name="teacherModules" value="small-animals"> Small Animals H&H
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="animal-health"> Animal Health
+                  <input type="checkbox" name="teacherModules" value="word-processing"> Word Processing
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" name="teacherModules" value="nutrition"> Nutrition
+                  <input type="checkbox" name="teacherModules" value="vet-assistant"> Vet. Assistant Skills
                 </label>
               </div>
             </div>
@@ -3188,6 +3194,56 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Teacher Modules Modal -->
+  <div id="editModulesModal" class="modal-overlay" style="display: none;">
+    <div class="modal-container" style="max-width: 450px;">
+      <div class="modal-header">
+        <h2 id="editModulesTitle">Edit Modules</h2>
+        <button class="modal-close" onclick="closeEditModulesModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; color: var(--gray-600); margin-bottom: 16px;">
+          Select the modules this teacher can access:
+        </p>
+        <div class="modules-checkboxes" id="editModulesCheckboxes">
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="all"> All Modules
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="biology"> Biology
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="animal-welfare"> Animal Welfare
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="animal-behaviour"> Animal Behaviour
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="animal-anatomy"> Animal Anatomy & Physiology
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="grooming"> Grooming
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="small-animals"> Small Animals H&H
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="word-processing"> Word Processing
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="editTeacherModules" value="vet-assistant"> Vet. Assistant Skills
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeEditModulesModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTeacherModules()">Save Changes</button>
       </div>
     </div>
   </div>
@@ -4099,29 +4155,60 @@
       }
     };
 
-    window.showAddTeacherForm = function() {
+    window.showAddTeacherForm = async function() {
       document.getElementById('addTeacherForm').style.display = 'block';
-      document.getElementById('newTeacherName').focus();
+
+      // Load available teachers into dropdown
+      const select = document.getElementById('teacherSelect');
+      select.innerHTML = '<option value="">Loading teachers...</option>';
+
+      try {
+        const allTeachers = await PethologyFirebaseREST.getAllTeachers();
+        const currentClass = await PethologyFirebaseREST.getClass(window.currentClassId);
+        const currentUser = JSON.parse(sessionStorage.getItem('pethologyUser'));
+
+        // Get teachers already in this class
+        const assignedTeacherIds = (currentClass?.teachers || []).map(t => t.teacherId);
+
+        // Filter out teachers already assigned to this class and current user
+        const availableTeachers = allTeachers.filter(t =>
+          !assignedTeacherIds.includes(t.id) && t.id !== currentUser?.id
+        );
+
+        select.innerHTML = '<option value="">-- Select a teacher --</option>';
+
+        if (availableTeachers.length === 0) {
+          select.innerHTML += '<option value="" disabled>No teachers available to add</option>';
+        } else {
+          availableTeachers.forEach(teacher => {
+            select.innerHTML += `<option value="${teacher.id}" data-name="${teacher.name || ''}" data-email="${teacher.email || ''}">${teacher.name || 'Unknown'} (${teacher.email || 'No email'})</option>`;
+          });
+        }
+      } catch (error) {
+        console.error('Error loading teachers:', error);
+        select.innerHTML = '<option value="">Error loading teachers</option>';
+      }
     };
 
     window.hideAddTeacherForm = function() {
       document.getElementById('addTeacherForm').style.display = 'none';
-      document.getElementById('newTeacherName').value = '';
-      document.getElementById('newTeacherEmail').value = '';
+      document.getElementById('teacherSelect').value = '';
       // Clear module checkboxes
       document.querySelectorAll('input[name="teacherModules"]').forEach(cb => cb.checked = false);
     };
 
     window.addTeacher = async function() {
-      const name = document.getElementById('newTeacherName').value.trim();
-      const email = document.getElementById('newTeacherEmail').value.trim().toLowerCase();
+      const select = document.getElementById('teacherSelect');
+      const selectedOption = select.options[select.selectedIndex];
+      const teacherId = select.value;
+      const teacherName = selectedOption?.dataset?.name || '';
 
       // Get selected modules
       const selectedModules = Array.from(document.querySelectorAll('input[name="teacherModules"]:checked'))
         .map(cb => cb.value);
 
-      if (!name || !email) {
-        window.showToast('Please fill in both name and email', 'error');
+      if (!teacherId) {
+        window.showToast('Please select a teacher', 'error');
         return;
       }
 
@@ -4136,12 +4223,9 @@
       }
 
       try {
-        // Generate a teacherId based on email
-        const teacherId = email.replace(/[@.]/g, '_');
-
         await PethologyFirebaseREST.addTeacherToClass(window.currentClassId, {
           teacherId: teacherId,
-          teacherName: name,
+          teacherName: teacherName,
           modules: selectedModules
         });
 
@@ -4172,8 +4256,10 @@
       }
     };
 
+    // Store current editing teacher info
+    window.editingTeacher = null;
+
     window.editTeacherModules = async function(teacherId) {
-      // For now, show a simple prompt - can create a proper modal later
       if (!window.currentClassId) {
         window.showToast('No class selected', 'error');
         return;
@@ -4188,41 +4274,66 @@
           return;
         }
 
+        // Store for save
+        window.editingTeacher = {
+          teacherId: teacherId,
+          teacherName: teacher.teacherName
+        };
+
         const currentModules = teacher.modules || [];
 
-        const allModules = [
-          { id: 'all', name: 'All Modules' },
-          { id: 'anatomy', name: 'Anatomy & Physiology' },
-          { id: 'animal-welfare', name: 'Animal Welfare' },
-          { id: 'animal-behaviour', name: 'Animal Behaviour' },
-          { id: 'biology', name: 'Biology' },
-          { id: 'small-animals', name: 'Small Animals' },
-          { id: 'dogs-cats', name: 'Dogs & Cats' },
-          { id: 'animal-health', name: 'Animal Health' },
-          { id: 'nutrition', name: 'Nutrition' }
-        ];
+        // Update modal title
+        document.getElementById('editModulesTitle').textContent = `Edit Modules - ${teacher.teacherName}`;
 
-        // Create a simple checklist prompt
-        let message = `Edit modules for ${teacher.teacherName}:\n\nCurrent modules: ${currentModules.join(', ') || 'None'}\n\nEnter module IDs separated by commas:\n(${allModules.map(m => m.id).join(', ')})`;
+        // Reset and set checkboxes
+        document.querySelectorAll('input[name="editTeacherModules"]').forEach(cb => {
+          cb.checked = currentModules.includes(cb.value);
+        });
 
-        const input = prompt(message, currentModules.join(', '));
-        if (input === null) return; // Cancelled
+        // Show modal
+        document.getElementById('editModulesModal').style.display = 'flex';
 
-        const newModules = input.split(',').map(m => m.trim()).filter(m =>
-          allModules.some(am => am.id === m)
-        );
+        // Reinit icons
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      } catch (error) {
+        console.error('Error loading teacher modules:', error);
+        window.showToast('Failed to load modules', 'error');
+      }
+    };
 
-        // Update teacher with new modules using the class method
+    window.closeEditModulesModal = function() {
+      document.getElementById('editModulesModal').style.display = 'none';
+      window.editingTeacher = null;
+    };
+
+    window.saveTeacherModules = async function() {
+      if (!window.editingTeacher || !window.currentClassId) {
+        window.showToast('Error: No teacher selected', 'error');
+        return;
+      }
+
+      const selectedModules = Array.from(document.querySelectorAll('input[name="editTeacherModules"]:checked'))
+        .map(cb => cb.value);
+
+      if (selectedModules.length === 0) {
+        window.showToast('Please select at least one module', 'error');
+        return;
+      }
+
+      try {
         await PethologyFirebaseREST.addTeacherToClass(window.currentClassId, {
-          teacherId: teacherId,
-          teacherName: teacher.teacherName,
-          modules: newModules
+          teacherId: window.editingTeacher.teacherId,
+          teacherName: window.editingTeacher.teacherName,
+          modules: selectedModules
         });
 
         window.showToast('Modules updated!', 'success');
+        closeEditModulesModal();
         loadTeachersForSettings();
       } catch (error) {
-        console.error('Error editing teacher modules:', error);
+        console.error('Error updating teacher modules:', error);
         window.showToast('Failed to update modules', 'error');
       }
     };

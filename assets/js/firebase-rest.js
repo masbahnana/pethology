@@ -122,6 +122,32 @@ export class PethologyFirebaseREST {
     }
   }
 
+  // Get all teachers from the system
+  static async getAllTeachers() {
+    try {
+      console.log('👩‍🏫 Fetching all teachers (REST API)...');
+
+      const response = await this.request('/users');
+
+      if (!response || !response.documents) {
+        console.log('✅ Loaded 0 teachers');
+        return [];
+      }
+
+      const teachers = response.documents
+        .map(doc => this.convertDocument(doc))
+        .filter(user => user && user.role === 'Teacher');
+
+      teachers.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+      console.log(`✅ Loaded ${teachers.length} teachers (REST API)`);
+      return teachers;
+    } catch (error) {
+      console.error('Error getting teachers:', error);
+      return [];
+    }
+  }
+
   // Get all students - optionally filtered by teacher or classId
   // Priority: classId > teacherId (if both provided, classId wins)
   static async getAllStudents(teacherId = null, classId = null) {
