@@ -2239,7 +2239,8 @@
         <div class="modules-slider">
           <div class="modules-grid" id="modulesGrid">
             ${completeModuleList.map(module => {
-              const score = Math.round((module.averageScore || 0) * 100);
+              // averageScore is already in percentage (0-100)
+              const score = Math.round(module.averageScore || 0);
               const timeMin = Math.round(module.averageTime / 60);
 
               let scoreClass = 'score-medium';

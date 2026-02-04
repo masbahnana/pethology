@@ -201,33 +201,79 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get all students progress - optionally filtered by teacher or classId
+  // Get all students progress - calculated dynamically from quiz_results
   static async getAllStudentsProgress(teacherId = null, classId = null) {
     try {
-      console.log('📊 Fetching students progress (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
+      console.log('📊 Calculating students progress (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
 
       // Get students (filtered by class or teacher)
       const students = await this.getAllStudents(teacherId, classId);
-      const studentIds = students.map(s => s.id);
 
-      const response = await this.request('/student_progress');
-
-      if (!response || !response.documents) {
-        console.log('✅ Loaded progress for 0 students');
+      if (students.length === 0) {
+        console.log('✅ No students found');
         return [];
       }
 
-      let progress = response.documents.map(doc => this.convertDocument(doc));
+      // Get all quiz results once
+      const allQuizResults = await this.getAllQuizResults();
 
-      // Filter by class/teacher's students if filtering is active
-      if ((teacherId || classId) && studentIds.length > 0) {
-        progress = progress.filter(p => studentIds.includes(p.userId || p.id));
-      }
+      // Calculate progress for each student - include student data for merge
+      const progressList = students.map(student => {
+        const studentQuizzes = allQuizResults.filter(q => q.userId === student.id);
 
-      console.log(`✅ Loaded progress for ${progress.length} students (REST API)`);
-      return progress;
+        // Base progress object with student identifiers
+        const baseProgress = {
+          userId: student.id,
+          id: student.id,
+          name: student.name,
+          email: student.email,
+          lastLogin: student.lastLogin
+        };
+
+        if (studentQuizzes.length === 0) {
+          return {
+            ...baseProgress,
+            overallStats: { totalQuizzes: 0, averageScore: 0, streak: 0 },
+            moduleProgress: {}
+          };
+        }
+
+        // Calculate overall stats
+        const totalQuizzes = studentQuizzes.length;
+        // Score is stored as fraction (0-1), convert to percentage (0-100)
+        const totalScore = studentQuizzes.reduce((sum, q) => sum + (q.score || 0), 0);
+        const averageScore = Math.round((totalScore / totalQuizzes) * 100);
+
+        // Calculate module progress
+        const moduleProgress = {};
+        studentQuizzes.forEach(quiz => {
+          const module = quiz.quizId || quiz.type || 'unknown';
+          if (!moduleProgress[module]) {
+            moduleProgress[module] = { completed: 0, totalScore: 0, bestScore: 0 };
+          }
+          moduleProgress[module].completed++;
+          moduleProgress[module].totalScore += (quiz.score || 0);
+          moduleProgress[module].bestScore = Math.max(moduleProgress[module].bestScore, quiz.score || 0);
+        });
+
+        // Convert module scores to percentage
+        Object.keys(moduleProgress).forEach(module => {
+          const m = moduleProgress[module];
+          m.averageScore = Math.round((m.totalScore / m.completed) * 100);
+          m.completion = Math.round(m.bestScore * 100);
+        });
+
+        return {
+          ...baseProgress,
+          overallStats: { totalQuizzes, averageScore, streak: 0 },
+          moduleProgress
+        };
+      });
+
+      console.log(`✅ Calculated progress for ${progressList.length} students (REST API)`);
+      return progressList;
     } catch (error) {
-      console.error('Error getting students progress:', error);
+      console.error('Error calculating students progress:', error);
       return [];
     }
   }
@@ -280,8 +326,9 @@ export class PethologyFirebaseREST {
 
       const completedQuizzes = quizResults.filter(r => r.completed).length;
       const totalQuizzes = quizResults.length;
+      // Score is stored as decimal (0-1), convert to percentage (0-100)
       const averageScore = totalQuizzes > 0
-        ? Math.round(quizResults.reduce((sum, r) => sum + (r.score || 0), 0) / totalQuizzes)
+        ? Math.round((quizResults.reduce((sum, r) => sum + (r.score || 0), 0) / totalQuizzes) * 100)
         : 0;
 
       const analytics = {

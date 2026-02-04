@@ -1,7 +1,7 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 30 Janeiro 2026
-**Versão Atual:** v5.8
+**Última atualização:** 4 Fevereiro 2026
+**Versão Atual:** v5.9
 **Status:** PILOT LAUNCH + Core Features Complete
 
 ---
@@ -38,6 +38,7 @@
 - [ ] **Performance optimization** - Minify, lazy load, cache
 
 ### 🐛 Minor Bugs
+- [x] **Average Score mostra decimais brutos** - ✅ FIXED (4 Feb) - Scores calculados dinamicamente de quiz_results, convertidos de decimal para %
 - [ ] **Class indicator mostra "undefined"** - No modal Students tab, o nome da turma às vezes mostra undefined
 
 ### 📝 Low Priority (Features)
