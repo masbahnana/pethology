@@ -3576,6 +3576,15 @@
         modal.style.display = 'flex';
         lucide.createIcons();
 
+        // Update class name indicator immediately
+        const classNameEl = document.getElementById('currentClassName');
+        if (classNameEl && window.currentClassId) {
+          const cls = window.teacherClasses?.find(c => c.id === window.currentClassId);
+          classNameEl.textContent = cls?.name || 'Loading...';
+        } else if (classNameEl) {
+          classNameEl.textContent = 'No class selected';
+        }
+
         // Switch to the requested tab
         switchSettingsTabDirect(initialTab);
 

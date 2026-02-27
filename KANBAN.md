@@ -39,7 +39,7 @@
 
 ### 🐛 Minor Bugs
 - [x] **Average Score mostra decimais brutos** - ✅ FIXED (4 Feb) - Scores calculados dinamicamente de quiz_results, convertidos de decimal para %
-- [ ] **Class indicator mostra "undefined"** - No modal Students tab, o nome da turma às vezes mostra undefined
+- [x] **Class indicator mostra "undefined"** - ✅ FIXED (23 Feb) - Class name setado ao abrir modal com fallback seguro
 
 ### 📝 Low Priority (Features)
 - [ ] **Seta no sidebar student** - Definir o que vai no dropdown
