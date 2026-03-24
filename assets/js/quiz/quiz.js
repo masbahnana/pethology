@@ -29,9 +29,14 @@ let examTimeLimit = 30 * 60; // 30 minutes in seconds
 let examTimer = null; // Timer interval
 let examTimeRemaining = examTimeLimit; // Remaining time in seconds
 
-// Check if user is logged in
+// Check if user is logged in (evaluated dynamically to avoid timing issues)
 const userSession = sessionStorage.getItem('pethologyUser');
-const isLoggedIn = !!userSession;
+let isLoggedIn = !!userSession;
+
+// Re-check after a short delay in case sessionStorage isn't ready yet
+setTimeout(() => {
+  isLoggedIn = !!sessionStorage.getItem('pethologyUser');
+}, 300);
 const VISITOR_QUESTION_LIMIT = 0.3; // 30% for visitors
 
 // Helper function to shuffle array (Fisher-Yates algorithm)
@@ -87,6 +92,8 @@ async function loadQuiz(file, topicName) {
       console.log('💡 TIP: You can save progress anytime using "Save Progress & Exit" button');
     }
     if (isExamMode) {
+      initExamMode();
+      await calculateDynamicExamTimer(currentQuizModule, currentQuestions.length);
       startExamTimer();
     }
     showQuestion();
@@ -206,21 +213,21 @@ function selectAnswer(index) {
 
     console.log(`✅ Correct! Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
 
-    // Destacar resposta correta em verde
-    clickedButton.style.background = '#10b981';
-    clickedButton.style.color = 'white';
-    clickedButton.style.borderColor = '#10b981';
+    // Destacar resposta correta em verde (não em exam mode)
+    if (!isExamMode) {
+      clickedButton.style.background = '#10b981';
+      clickedButton.style.color = 'white';
+      clickedButton.style.borderColor = '#10b981';
+    }
 
-    feedbackEl.innerHTML = `
+    feedbackEl.innerHTML = isExamMode ? '' : `
       <div style="background: #d1fae5; border: 2px solid #10b981; border-radius: 12px; padding: 20px; margin-top: 20px;">
         <p style="color: #065f46; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
           Correct!
         </p>
-        ${!isExamMode ? `
-          <p style="color: #047857; margin: 0; line-height: 1.6;">
-            ${question.explanation}
-          </p>
-        ` : ''}
+        <p style="color: #047857; margin: 0; line-height: 1.6;">
+          ${question.explanation}
+        </p>
       </div>
       <div class="timer-container" style="margin-top: 16px;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
@@ -253,33 +260,33 @@ function selectAnswer(index) {
 
     console.log(`❌ Wrong answer. Score: ${correctAnswersCount}/${currentQuestionIndex + 1}`);
 
-    // Destacar resposta errada em vermelho
-    clickedButton.style.background = '#ef4444';
-    clickedButton.style.color = 'white';
-    clickedButton.style.borderColor = '#ef4444';
+    // Destacar resposta errada em vermelho (não em exam mode)
+    if (!isExamMode) {
+      clickedButton.style.background = '#ef4444';
+      clickedButton.style.color = 'white';
+      clickedButton.style.borderColor = '#ef4444';
 
-    // Destacar resposta correta em verde
-    const correctButton = answerButtons[correct];
-    if (correctButton) {
-      correctButton.style.background = '#10b981';
-      correctButton.style.color = 'white';
-      correctButton.style.borderColor = '#10b981';
-      correctButton.style.opacity = '1';
+      // Destacar resposta correta em verde
+      const correctButton = answerButtons[correct];
+      if (correctButton) {
+        correctButton.style.background = '#10b981';
+        correctButton.style.color = 'white';
+        correctButton.style.borderColor = '#10b981';
+        correctButton.style.opacity = '1';
+      }
     }
 
-    feedbackEl.innerHTML = `
+    feedbackEl.innerHTML = isExamMode ? '' : `
       <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; margin-top: 20px;">
         <p style="color: #991b1b; font-size: 1.1rem; font-weight: 600; margin: 0 0 12px 0;">
           Incorrect
         </p>
-        ${!isExamMode ? `
-          <p style="color: #b91c1c; margin: 0 0 12px 0;">
-            The correct answer is: <strong>${question.options[correct]}</strong>
-          </p>
-          <p style="color: #dc2626; margin: 0; line-height: 1.6;">
-            ${question.explanation}
-          </p>
-        ` : ''}
+        <p style="color: #b91c1c; margin: 0 0 12px 0;">
+          The correct answer is: <strong>${question.options[correct]}</strong>
+        </p>
+        <p style="color: #dc2626; margin: 0; line-height: 1.6;">
+          ${question.explanation}
+        </p>
       </div>
       <div class="timer-container" style="margin-top: 16px;">
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
@@ -437,14 +444,15 @@ async function showQuizCompleted() {
       `}
 
       <div style="display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto;">
-        ${isLoggedIn ? `
+        ${isLoggedIn || isExamMode ? `
           <button onclick="window.location.href='student-dashboard.html'" class="minimal-button" style="background: #3b82f6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
             🏠 Back to Dashboard
           </button>
         ` : ''}
+        ${!isExamMode ? `
         <button onclick="goBackToMenu()" class="minimal-button" style="background: #10b981; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
           📚 Try Another Quiz
-        </button>
+        </button>` : ''}
         <button onclick="location.reload()" class="minimal-button" style="background: #8b5cf6; color: white; padding: 14px; font-size: 1rem; font-weight: 600;">
           🔄 Retake This Quiz
         </button>
@@ -925,7 +933,7 @@ async function handleQuizSelection(file, topicName, moduleId) {
           initExamMode();
         }
 
-        loadSelectedQuiz(selectedQuiz, loadQuiz, (questions, quizName) => {
+        loadSelectedQuiz(selectedQuiz, loadQuiz, async (questions, quizName) => {
           // Custom quiz loader
           currentQuestions = shuffleArray(questions.map(q => ({
             ...q,
@@ -939,6 +947,7 @@ async function handleQuizSelection(file, topicName, moduleId) {
           quizStartTime = Date.now();
           console.log(`✅ Custom quiz loaded! ${currentQuestions.length} questions`);
           if (isExamMode) {
+            await calculateDynamicExamTimer(currentQuizModule, currentQuestions.length);
             startExamTimer();
           }
           showQuestion();
@@ -1661,6 +1670,58 @@ function showExamWarning(message) {
     </div>
   `;
   document.body.appendChild(overlay);
+}
+
+/**
+ * Calculate dynamic exam timer based on student's past quiz history
+ * Uses average timeSpent/totalQuestions from previous attempts on this module
+ * Min: 45s/question, Max: 180s/question, Default: 90s/question
+ */
+async function calculateDynamicExamTimer(moduleId, numQuestions) {
+  const MIN_PER_Q  = 45;
+  const MAX_PER_Q  = 180;
+  const DEFAULT_PER_Q = 90;
+
+  try {
+    const user = isLoggedIn ? JSON.parse(sessionStorage.getItem('pethologyUser')) : null;
+    if (!user) {
+      examTimeLimit = DEFAULT_PER_Q * numQuestions;
+      return;
+    }
+
+    const response = await PethologyFirebaseREST.request('/quiz_results');
+    const docs = response.documents || [];
+
+    // Filter results for this student + this module (non-exam attempts for realistic pacing)
+    const moduleResults = docs
+      .map(d => PethologyFirebaseREST.convertDocument(d))
+      .filter(r =>
+        r.userId === user.id &&
+        r.moduleId === moduleId &&
+        !r.examMode &&
+        r.timeSpent > 0 &&
+        r.totalQuestions > 0
+      );
+
+    if (moduleResults.length === 0) {
+      examTimeLimit = DEFAULT_PER_Q * numQuestions;
+      console.log(`No history for module "${moduleId}" — using default ${DEFAULT_PER_Q}s/question`);
+      return;
+    }
+
+    // Average seconds per question across past attempts
+    const avgSecsPerQ = moduleResults.reduce((sum, r) => sum + (r.timeSpent / r.totalQuestions), 0) / moduleResults.length;
+
+    // Clamp between min and max
+    const clampedSecsPerQ = Math.round(Math.min(MAX_PER_Q, Math.max(MIN_PER_Q, avgSecsPerQ)));
+
+    examTimeLimit = clampedSecsPerQ * numQuestions;
+    console.log(`Dynamic timer: ${clampedSecsPerQ}s/question × ${numQuestions} = ${examTimeLimit}s (based on ${moduleResults.length} past attempt(s))`);
+
+  } catch (e) {
+    console.warn('Could not calculate dynamic timer, using default:', e);
+    examTimeLimit = DEFAULT_PER_Q * numQuestions;
+  }
 }
 
 /**

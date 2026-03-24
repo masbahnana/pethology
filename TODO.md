@@ -617,6 +617,10 @@ cy.get('.module-card').should('be.visible')
 These go to v6.0 (Future):
 
 ### **Postponed to v6.0:**
+- 🐛 Avatar bug (student dashboard) - banner shows "undefined" after avatar change; avatar disappears when navigating to other pages (e.g. Achievements)
+- ❌ Flashcards (student dashboard) - UI card exists, feature not implemented
+- ❌ Notes (student dashboard) - UI card exists, feature not implemented
+- ❌ Goals (student dashboard) - UI card exists, feature not implemented
 - ❌ Smart Review System (3-4h) - Great but less impact than Adaptive
 - ❌ Exam Mode (2-3h) - Nice to have, not critical
 - ❌ Glossary System (2-3h) - Useful but not core

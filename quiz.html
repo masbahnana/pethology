@@ -242,6 +242,7 @@
   }
 </style>
 
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
 </head>
 <body>
   <nav class="pub-nav">
@@ -253,9 +254,25 @@
       <a href="about.html">🌿 About</a>
       <a href="blog.html">✍️ Blog</a>
       <a href="store.html">🛍️ Store</a>
-      <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+      <div id="nav-user-area">
+        <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+      </div>
     </div>
   </nav>
+  <script>
+    (function() {
+      const session = sessionStorage.getItem('pethologyUser');
+      if (session) {
+        try {
+          const user = JSON.parse(session);
+          const area = document.getElementById('nav-user-area');
+          area.innerHTML = `
+            <a href="student-dashboard.html" class="btn btn-green">← Dashboard</a>
+          `;
+        } catch(e) {}
+      }
+    })();
+  </script>
 
   <main class="layout-wrapper">
     <div class="quiz-container">
