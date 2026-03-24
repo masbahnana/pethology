@@ -25,6 +25,8 @@ let quizStartTime = null;
 let isAdaptiveMode = false; // Track if in adaptive quiz mode
 let adaptiveMetadata = null; // Store adaptive quiz metadata
 let isExamMode = false; // Track if in exam mode
+let isSmartReview = false; // Track if in smart review mode
+let smartReviewModuleName = ''; // Display name for smart review module
 let examTimeLimit = 30 * 60; // 30 minutes in seconds
 let examTimer = null; // Timer interval
 let examTimeRemaining = examTimeLimit; // Remaining time in seconds
@@ -126,6 +128,15 @@ function showQuestion() {
       <div style="flex: 1;">
         <div style="font-weight: 700; color: #e0e7ff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-size: 14px;">Exam Mode Active</div>
         <div style="font-size: 0.85rem; color: #a5b4fc; line-height: 1.5;">No hints or explanations. Timer is running. Do not switch tabs or leave fullscreen.</div>
+      </div>
+    </div>
+    ` : isSmartReview ? `
+    <!-- Smart Review Banner -->
+    <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #16a34a; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 24px;">🧠</span>
+      <div style="flex: 1;">
+        <div style="font-weight: 700; color: #15803d; margin-bottom: 4px;">Smart Review — ${smartReviewModuleName}</div>
+        <div style="font-size: 0.9rem; color: #166534;">Focado no teu módulo mais fraco. Pratica até dominares!</div>
       </div>
     </div>
     ` : isAdaptiveMode ? `
@@ -1040,6 +1051,14 @@ window.onload = function() {
   if (examModeParam === 'true') {
     isExamMode = true;
     console.log('🎯 EXAM MODE ACTIVATED from URL parameter');
+  }
+
+  // Check for smart review mode
+  const smartReviewParam = urlParams.get('smartReview');
+  if (smartReviewParam === 'true') {
+    isSmartReview = true;
+    smartReviewModuleName = urlParams.get('moduleName') ? decodeURIComponent(urlParams.get('moduleName')) : '';
+    console.log('🧠 SMART REVIEW MODE ACTIVATED:', smartReviewModuleName);
   }
 
   // Check for adaptive mode

@@ -1689,7 +1689,7 @@
         <h2 class="section-title">Smart Learning Tools</h2>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <!-- Smart Review Card -->
-          <div class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--blue-primary)'" onmouseout="this.style.borderColor='var(--gray-100)'">
+          <div id="smart-review-card" class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--blue-primary)'" onmouseout="this.style.borderColor='var(--gray-100)'">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
               <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--blue-light); display: flex; align-items: center; justify-content: center;">
                 <i data-lucide="brain" style="width: 24px; height: 24px; color: var(--blue-primary);"></i>
@@ -1702,7 +1702,7 @@
             <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 16px; line-height: 1.6; flex: 1;">
               Review weak topics with AI-selected questions based on your performance.
             </p>
-            <button class="btn btn-primary" style="width: 100%;">
+            <button id="smart-review-btn" class="btn btn-primary" style="width: 100%;">
               <i data-lucide="sparkles"></i>
               Start Review
             </button>
@@ -1880,6 +1880,7 @@
   <script type="module">
     // ✅ 100% REST API - No Firebase SDK!
     import { PethologyFirebaseREST } from './assets/js/firebase-rest.js?v=4.2';
+    import { calculateConfidenceScores, categorizeModules } from './assets/js/adaptive-quiz-ai.js';
     import { loadStudentAnnouncements, markAnnouncementAsRead } from './assets/js/announcements-rest.js?v=4.1';
     import { loadCalendarEvents } from './assets/js/calendar-rest.js?v=1.0';
     // Removed calendar-teacher.js import (uses Firebase SDK which causes CORS)
@@ -1896,6 +1897,85 @@
     window.loadCalendarEvents = loadCalendarEvents;
     window.PethologyFirebaseREST = PethologyFirebaseREST;
     window.showToast = (message, type) => toast.show(message, type);
+
+    // Module ID map (matches quiz.js moduleMap)
+    const MODULE_FILE_MAP = {
+      'animal-anatomy': { file: 'animal-anatomy', name: 'Animal Anatomy and Physiology' },
+      'animal-welfare': { file: 'animal-welfare', name: 'Animal Welfare' },
+      'animal-behaviour': { file: 'animal-behaviour', name: 'Animal Behaviour' },
+      'biology': { file: 'biology', name: 'Biology' },
+      'grooming': { file: 'grooming', name: 'Grooming' },
+      'small-animals': { file: 'small-animals', name: 'Small Animals H&H' },
+      'word-processing': { file: 'word-processing', name: 'Word Processing' },
+      'vet-assistant': { file: 'vet-assistant', name: 'Vet. Assistant Skills' },
+      'communications': { file: 'communications', name: 'Communications' },
+      'work-experience': { file: 'work-experience', name: 'Work Experience' },
+    };
+
+    window.startSmartReview = async function() {
+      const userSession = sessionStorage.getItem('pethologyUser');
+      if (!userSession) {
+        window.location.href = 'auth0-login.html';
+        return;
+      }
+      const user = JSON.parse(userSession);
+
+      try {
+        console.log('🧠 startSmartReview called');
+        toast.show({ type: 'info', message: '🧠 A analisar o teu desempenho...' });
+
+        const quizHistory = await PethologyFirebaseREST.getStudentQuizHistory(user.id);
+        console.log('🧠 Quiz history length:', quizHistory?.length);
+
+        if (!quizHistory || quizHistory.length === 0) {
+          const modal = document.getElementById('smartReviewNoHistoryModal');
+          modal.style.display = 'flex';
+          return;
+        }
+
+        // Map history to format expected by calculateConfidenceScores
+        // Filter out results without a valid module (old records)
+        const historyFormatted = quizHistory
+          .filter(r => r.module && r.module !== 'undefined' && r.totalQuestions > 0)
+          .map(r => ({
+            module: r.module,
+            correctAnswers: r.correctAnswers,
+            totalQuestions: r.totalQuestions,
+            completedAt: r.completedAt
+          }));
+
+        const confidenceScores = calculateConfidenceScores(historyFormatted);
+        const { weak } = categorizeModules(confidenceScores);
+
+        if (weak.length === 0) {
+          toast.show({ type: 'success', message: '🎉 Excelente! Não tens módulos fracos. Continua assim!' });
+          return;
+        }
+
+        // Weakest module is first (sorted by confidence asc)
+        const weakestModule = weak[0].module;
+        const moduleInfo = MODULE_FILE_MAP[weakestModule];
+
+        if (!moduleInfo) {
+          toast.show({ type: 'info', message: `A iniciar revisão de: ${weakestModule}` });
+          window.location.href = `quiz.html?module=${weakestModule}&smartReview=true&moduleName=${encodeURIComponent(weakestModule)}`;
+          return;
+        }
+
+        window.location.href = `quiz.html?module=${moduleInfo.file}&smartReview=true&moduleName=${encodeURIComponent(moduleInfo.name)}`;
+
+      } catch (err) {
+        console.error('❌ Smart Review error:', err);
+        toast.show({ type: 'error', message: 'Erro ao carregar Smart Review. Tenta novamente.' });
+      }
+    };
+
+    // Attach smart review listeners after module loads
+    document.getElementById('smart-review-card')?.addEventListener('click', window.startSmartReview);
+    document.getElementById('smart-review-btn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      window.startSmartReview();
+    });
 
     // Função para carregar dados reais do estudante
     async function loadRealStudentData() {
@@ -2438,6 +2518,28 @@
           <i data-lucide="play-circle"></i>
           Start Selected Quiz
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smart Review — No History Modal -->
+  <div id="smartReviewNoHistoryModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; padding:32px; max-width:440px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.2); text-align:center;">
+      <div style="width:64px; height:64px; border-radius:50%; background:#eff6ff; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+        <span style="font-size:28px;">🧠</span>
+      </div>
+      <h3 style="font-size:1.25rem; font-weight:700; color:#111827; margin:0 0 8px;">Smart Review needs data</h3>
+      <p style="color:#6b7280; font-size:0.95rem; line-height:1.6; margin:0 0 24px;">
+        Smart Review analyses your quiz history to find your weakest topics.<br><br>
+        Complete at least <strong>3 quizzes</strong> across different modules and come back — we'll know exactly where to focus.
+      </p>
+      <div style="display:flex; gap:12px; justify-content:center;">
+        <button onclick="document.getElementById('smartReviewNoHistoryModal').style.display='none'" style="padding:10px 20px; border:1px solid #d1d5db; background:white; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer; color:#374151;">
+          Maybe later
+        </button>
+        <a href="quiz.html" style="padding:10px 20px; background:#2563eb; color:white; border-radius:8px; font-size:14px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          Start a Quiz →
+        </a>
       </div>
     </div>
   </div>
