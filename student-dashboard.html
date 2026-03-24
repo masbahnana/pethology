@@ -1394,22 +1394,10 @@
 
         <div class="nav-divider"></div>
 
-        <button onclick="window.supportModal.open()" class="nav-item" style="width: 100%; text-align: left;">
-          <i data-lucide="life-buoy"></i>
-          Report Issue
-        </button>
-        <a href="faq.html" class="nav-item">
-          <i data-lucide="help-circle"></i>
-          Help & FAQ
-        </a>
         <a href="index.html" class="nav-item">
           <i data-lucide="arrow-left"></i>
           Back to Home
         </a>
-        <button onclick="logout()" class="nav-item">
-          <i data-lucide="log-out"></i>
-          Logout
-        </button>
       </div>
     </div>
 
@@ -3109,6 +3097,19 @@
           <label style="display:block;font-size:13px;font-weight:500;color:var(--gray-600);margin-bottom:12px;">Choose Avatar</label>
           <div id="avatarGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;"></div>
         </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div style="padding:0 24px 16px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="window.supportModal.open()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--gray-200);background:white;font-size:13px;cursor:pointer;color:var(--gray-600);">
+          <i data-lucide="life-buoy" style="width:14px;height:14px;"></i> Report Issue
+        </button>
+        <a href="faq.html" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--gray-200);background:white;font-size:13px;cursor:pointer;color:var(--gray-600);text-decoration:none;">
+          <i data-lucide="help-circle" style="width:14px;height:14px;"></i> Help & FAQ
+        </a>
+        <button onclick="logout()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1px solid var(--error);background:white;font-size:13px;cursor:pointer;color:var(--error);">
+          <i data-lucide="log-out" style="width:14px;height:14px;"></i> Logout
+        </button>
       </div>
 
       <!-- Footer -->
