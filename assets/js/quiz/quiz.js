@@ -965,17 +965,24 @@ function loadQuizButtons() {
   }
 
   quizContainer.innerHTML = `
-    <h1></h1>
-    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-      ${quizTopics.map((topic, index) => `
-        <button
-          onclick="handleQuizSelection('${topic.file}', '${topic.name}', '${getModuleId(topic.file)}')"
-          class="minimal-button"
-        >
-          ${topic.icon ? `<img src="${topic.icon}" alt="${topic.name} icon">` : ""}
-          ${topic.name}
-        </button>
-      `).join('')}
+    <div style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
+      <p style="font-size:0.75rem;font-weight:700;color:#16a34a;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Choose a module</p>
+      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;">Practice your wisdom</h1>
+      <p style="color:#666;font-size:1rem;margin-bottom:40px;">Select a module below and start a quiz — no login needed for a free sample.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
+        ${quizTopics.map((topic) => `
+          <div
+            onclick="handleQuizSelection('${topic.file}', '${topic.name}', '${getModuleId(topic.file)}')"
+            style="background:#fff;border:1.5px solid #e8e8e8;border-radius:12px;padding:24px;cursor:pointer;transition:box-shadow 0.15s,border-color 0.15s;"
+            onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)';this.style.borderColor='#aaa';"
+            onmouseout="this.style.boxShadow='none';this.style.borderColor='#e8e8e8';"
+          >
+            ${topic.icon ? `<img src="${topic.icon}" alt="${topic.name}" style="height:36px;width:36px;object-fit:contain;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;">` : `<div style="font-size:1.8rem;margin-bottom:14px;text-align:center;">📚</div>`}
+            <div style="font-size:0.95rem;font-weight:700;color:#111;margin-bottom:6px;letter-spacing:-0.3px;">${topic.name}</div>
+            <div style="font-size:0.8rem;color:#16a34a;font-weight:600;">Start quiz →</div>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `;
 }
