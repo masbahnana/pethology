@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 24 Março 2026
-**Versão Atual:** v6.0
-**Status:** PILOT LAUNCH + Core Features Complete
+**Última atualização:** 24 Março 2026 (sessão tarde)
+**Versão Atual:** v6.1
+**Status:** PILOT LAUNCH + UX Polish + Smart Review Complete
 
 ---
 
@@ -42,20 +42,31 @@
 - [x] **Class indicator mostra "undefined"** - ✅ FIXED (23 Feb) - Class name setado ao abrir modal com fallback seguro
 
 ### 📝 Low Priority (Features)
-- [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker (cat, dog, cow, sheep, snake, fox, crow) + editar nome
-- [ ] **Timer dinâmico no Exam Mode** - Calcular timer baseado no histórico do aluno: média de (timeSpent / totalQuestions) × nº perguntas do exam. Default: 90s/pergunta se sem histórico. Min: 45s, Max: 3min por pergunta.
+- [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker + editar nome
+- [x] **Timer dinâmico no Exam Mode** - ✅ DONE (24 Mar) - Calcula baseado no histórico: avg timeSpent/totalQuestions, clamp 45s–180s/q, default 90s/q
+- [x] **Smart Review System** - ✅ DONE (24 Mar) - Analisa módulo mais fraco e lança quiz direto. Modal "no history yet" com CTA para começar quiz
+- [x] **Exam Mode layout** - ✅ DONE (24 Mar) - Esconde "Practice your Wisdom" h1, remove laterais pretas
+- [x] **Quiz nav login bug** - ✅ DONE (24 Mar) - Nav mostra Dashboard quando logado, Login quando não logado
+- [x] **Stat cards real data** - ✅ DONE (24 Mar) - Stats do dashboard agora mostram dados reais (não hardcoded)
+- [x] **Achievements real data** - ✅ DONE (24 Mar) - Grid de achievements agora usa dados reais do Firebase
+- [x] **Avatar bug** - ✅ DONE (24 Mar) - Banner "undefined" corrigido, avatar persiste entre páginas
+- [x] **Favicon 🐾** - ✅ DONE (24 Mar) - favicon.svg em todas as páginas (funciona no Netlify)
 
 ### 🎨 Landing Page Redesign (24 Mar 2026)
-- [x] **index-mock.html** - ✅ Mock criado com nova UI (Notion/Tally style)
-- [x] **Try our Quiz section** - ✅ Secção interativa com pergunta sample na landing
-- [ ] **Aplicar mock no index.html** - Após aprovação final do mock
-- [ ] **Roadmap page** - Nova página roadmap.html com linha do tempo visual
-- [ ] **About page** - Remover/ocultar outros membros do team
-- [ ] **Content page** - Adicionar intro + "More modules coming soon"
-- [ ] **Blog page** - Intro + remover post fake + "Coming soon"
-- [ ] **Store page** - Nova store.html com coming soon (adesivos + modelos 3D anatomia)
-- [ ] **Support page** - Ajustar link (aguardar instrução)
-- [ ] **Padronizar layout** - Aplicar novo design em todas as páginas públicas
+- [x] **index.html** - ✅ DONE - Nova UI completa (Notion/Tally style)
+- [x] **Try our Quiz section** - ✅ DONE - Secção interativa com pergunta sample
+- [x] **Roadmap page** - ✅ DONE - roadmap.html com linha do tempo visual
+- [x] **About page** - ✅ DONE - Só Nana, link para roadmap
+- [x] **Content page** - ✅ DONE - Intro + coming soon
+- [x] **Blog page** - ✅ DONE - Intro + coming soon card
+- [x] **Store page** - ✅ DONE - store.html com 3 produtos coming soon
+- [x] **Support page** - ✅ DONE - Nova UI, link placeholder
+- [x] **Padronizar layout** - ✅ DONE - pub-nav/pub-footer em todas as páginas públicas
+- [x] **Quiz module cards** - ✅ DONE - Cards com ícone centrado, título, "Start quiz →"
+- [x] **guide.html** - ✅ DONE - Página de onboarding (não pública) com guia aluno + professor
+
+### 🐛 Backlog Bugs
+- [ ] **Avatar banner "undefined"** - Testar com student demo amanhã após reset dos dados
 
 ---
 
@@ -212,8 +223,11 @@
 - [ ] **Class Management P2/P3** - Export grades, remove students - *4-6h*
 
 #### Student Experience
-- [ ] **Smart Review System** - AI-powered weak topic review - *3-4h*
-- [ ] **Flashcards System** - Auto-generate from quiz questions - *3-4h*
+- [x] **Smart Review System** - ✅ DONE (24 Mar)
+- [ ] **Flashcards System** - Stand by — ideia: gerar de quiz questions existentes (zero custo)
+- [ ] **Notes** - Stand by (coming soon toast)
+- [ ] **Goals** - Stand by (coming soon toast)
+- [ ] **3D Anatomy** - anatomy-3d.html criado, feature real a planear
 
 #### Advanced Features
 - [ ] **Advanced Gamification** - XP, Levels, Leaderboards - *4-6h*
@@ -282,14 +296,15 @@
 
 ---
 
-**🎉 We're SO CLOSE to full pilot launch!**
+**🎉 v6.1 — Smart Review + UX Polish completos!**
 
 Próximos passos:
-1. ✅ Fix teacher login (DONE!)
-2. ⏳ Mary testa o sistema
-3. ⏳ Coletar feedback
-4. ⏳ Fix bugs críticos
-5. 🚀 Full pilot launch!
+1. ✅ Mary consegue logar (whitelist a funcionar)
+2. ✅ Smart Review implementado
+3. ✅ Landing page redesenhada
+4. ⏳ Teste manual completo com student demo (amanhã)
+5. ⏳ Coletar feedback da Mary + alunos
+6. ⏳ Planear 3D Anatomy + Flashcards
 
 ---
 
