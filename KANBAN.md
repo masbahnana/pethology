@@ -35,7 +35,7 @@
   - ✅ Refatorar quick action para "Manage Class" (28 Jan)
 - [x] **Exam Mode UI overhaul** - ✅ DONE (28 Jan) - Dark theme, top bar com timer, progress bar, warnings visuais
 - [x] **Coordenador adicionar professores** - ✅ DONE (30 Jan) - Dropdown com teachers existentes, modal para editar módulos
-- [ ] **Performance optimization** - Minify, lazy load, cache
+- [x] **Performance optimization** - ✅ DONE (24 Mar) - Image compression (PNG→JPG, -1MB total), Lucide defer, in-memory cache (30-60s TTL) for students/classes/quiz results
 
 ### 🐛 Minor Bugs
 - [x] **Average Score mostra decimais brutos** - ✅ FIXED (4 Feb) - Scores calculados dinamicamente de quiz_results, convertidos de decimal para %

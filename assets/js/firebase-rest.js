@@ -11,6 +11,27 @@ console.log('🔥 Firebase REST API initialized (no SDK, no WebChannel) - v4.0')
 
 export class PethologyFirebaseREST {
 
+  // Simple in-memory cache (TTL: 30s for lists, 60s for quiz results)
+  static _cache = new Map();
+
+  static _cacheGet(key) {
+    const entry = this._cache.get(key);
+    if (!entry) return null;
+    if (Date.now() > entry.expires) {
+      this._cache.delete(key);
+      return null;
+    }
+    return entry.data;
+  }
+
+  static _cacheSet(key, data, ttlMs = 30000) {
+    this._cache.set(key, { data, expires: Date.now() + ttlMs });
+  }
+
+  static _cacheInvalidate(...keys) {
+    keys.forEach(k => this._cache.delete(k));
+  }
+
   // Helper to make REST requests
   static async request(path, method = 'GET', body = null) {
     // Add API key for authentication
@@ -152,6 +173,13 @@ export class PethologyFirebaseREST {
   // Priority: classId > teacherId (if both provided, classId wins)
   static async getAllStudents(teacherId = null, classId = null) {
     try {
+      const cacheKey = `students:${teacherId || ''}:${classId || ''}`;
+      const cached = this._cacheGet(cacheKey);
+      if (cached) {
+        console.log('📋 Students from cache');
+        return cached;
+      }
+
       console.log('📋 Fetching students (REST API)...', classId ? `for class ${classId}` : teacherId ? `for teacher ${teacherId}` : '(all)');
 
       let allowedEmails = null;
@@ -194,6 +222,7 @@ export class PethologyFirebaseREST {
       });
 
       console.log(`✅ Loaded ${students.length} students (REST API)`);
+      this._cacheSet(cacheKey, students, 30000);
       return students;
     } catch (error) {
       console.error('Error getting students:', error);
@@ -281,6 +310,12 @@ export class PethologyFirebaseREST {
   // Get all quiz results
   static async getAllQuizResults() {
     try {
+      const cached = this._cacheGet('quizResults');
+      if (cached) {
+        console.log('📝 Quiz results from cache');
+        return cached;
+      }
+
       console.log('📝 Fetching all quiz results (REST API)...');
 
       const response = await this.request('/quiz_results');
@@ -293,6 +328,7 @@ export class PethologyFirebaseREST {
       const results = response.documents.map(doc => this.convertDocument(doc));
 
       console.log(`✅ Loaded ${results.length} quiz results (REST API)`);
+      this._cacheSet('quizResults', results, 60000); // 60s TTL (less volatile)
       return results;
     } catch (error) {
       console.error('❌ Error getting quiz results:', error);
@@ -587,6 +623,13 @@ export class PethologyFirebaseREST {
   // Get all classes for a teacher (owned or assigned)
   static async getTeacherClasses(teacherId) {
     try {
+      const cacheKey = `classes:${teacherId}`;
+      const cached = this._cacheGet(cacheKey);
+      if (cached) {
+        console.log('🏫 Classes from cache');
+        return cached;
+      }
+
       console.log(`🏫 Fetching classes for teacher: ${teacherId}`);
 
       const response = await this.request('/classes');
@@ -608,6 +651,7 @@ export class PethologyFirebaseREST {
       });
 
       console.log(`✅ Found ${teacherClasses.length} classes for this teacher`);
+      this._cacheSet(cacheKey, teacherClasses, 30000);
       return teacherClasses;
     } catch (error) {
       console.error('Error getting teacher classes:', error);
@@ -667,6 +711,7 @@ export class PethologyFirebaseREST {
 
       await this.request(`/classes/${classId}`, 'PATCH', firestoreData);
       console.log('✅ Class created successfully:', classId);
+      this._cacheInvalidate(...[...this._cache.keys()].filter(k => k.startsWith('classes:')));
 
       return { id: classId, ...classData };
     } catch (error) {
@@ -1162,6 +1207,7 @@ export class PethologyFirebaseREST {
 
       await this.request(`/quiz_results/${resultId}`, 'PATCH', resultDoc);
       console.log('✅ Quiz result saved');
+      this._cacheInvalidate('quizResults');
       return quizResult;
     } catch (error) {
       console.error('❌ Error saving quiz result:', error);
