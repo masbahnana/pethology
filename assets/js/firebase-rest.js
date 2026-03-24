@@ -1047,6 +1047,35 @@ export class PethologyFirebaseREST {
     }
   }
 
+  // Get a single user by ID
+  static async getUser(userId) {
+    try {
+      const response = await this.request(`/users/${userId}`);
+      if (!response) return null;
+      return this.convertDocument(response);
+    } catch (error) {
+      console.error('Error getting user:', error);
+      return null;
+    }
+  }
+
+  // Update user profile (name and avatarId)
+  static async updateUserProfile(userId, { name, avatarId }) {
+    try {
+      console.log(`👤 Updating profile for: ${userId}`);
+
+      const fields = {};
+      if (name !== undefined) fields.name = { stringValue: name };
+      if (avatarId !== undefined) fields.avatarId = { stringValue: avatarId };
+
+      await this.request(`/users/${userId}`, 'PATCH', { fields });
+      console.log('✅ User profile updated');
+    } catch (error) {
+      console.error('❌ Error updating user profile:', error);
+      throw error;
+    }
+  }
+
   // Update student progress
   static async updateStudentProgress(userId, progressData) {
     try {

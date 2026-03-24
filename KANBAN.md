@@ -1,7 +1,7 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 4 Fevereiro 2026
-**Versão Atual:** v5.9
+**Última atualização:** 24 Março 2026
+**Versão Atual:** v6.0
 **Status:** PILOT LAUNCH + Core Features Complete
 
 ---
@@ -42,7 +42,7 @@
 - [x] **Class indicator mostra "undefined"** - ✅ FIXED (23 Feb) - Class name setado ao abrir modal com fallback seguro
 
 ### 📝 Low Priority (Features)
-- [ ] **Seta no sidebar student** - Definir o que vai no dropdown
+- [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker (cat, dog, cow, sheep, snake, fox, crow) + editar nome
 
 ---
 

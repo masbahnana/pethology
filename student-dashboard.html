@@ -1264,13 +1264,13 @@
       </div>
 
       <!-- User Section -->
-      <div class="user-section">
+      <div class="user-section" onclick="toggleProfileDropdown()" style="position:relative;">
         <div class="user-avatar">JD</div>
         <div class="user-info">
           <div class="user-name">John Doe</div>
           <div class="user-role">Student</div>
         </div>
-        <i data-lucide="chevron-down" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
+        <i data-lucide="chevron-down" id="profileChevron" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
       </div>
 
       <!-- Navigation -->
@@ -1995,6 +1995,35 @@
       }
     }
 
+    // Avatar definitions
+    const AVATARS = {
+      cat:   { label: 'Cat',   bg: '#8b5cf6', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#8b5cf6"/><polygon points="9,12 13,6 15,13" fill="white" opacity="0.9"/><polygon points="27,12 23,6 21,13" fill="white" opacity="0.9"/><ellipse cx="18" cy="21" rx="9" ry="8" fill="white" opacity="0.9"/><ellipse cx="14.5" cy="19.5" rx="1.5" ry="2" fill="#8b5cf6"/><ellipse cx="21.5" cy="19.5" rx="1.5" ry="2" fill="#8b5cf6"/><ellipse cx="18" cy="23" rx="1.2" ry="0.8" fill="#f9a8d4"/><line x1="10" y1="22.5" x2="16" y2="23" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="10" y1="24" x2="16" y2="23.5" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="26" y1="22.5" x2="20" y2="23" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="26" y1="24" x2="20" y2="23.5" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/></svg>` },
+      dog:   { label: 'Dog',   bg: '#f59e0b', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#f59e0b"/><ellipse cx="10" cy="15" rx="4" ry="6" fill="white" opacity="0.8" transform="rotate(-15 10 15)"/><ellipse cx="26" cy="15" rx="4" ry="6" fill="white" opacity="0.8" transform="rotate(15 26 15)"/><ellipse cx="18" cy="20" rx="9" ry="8" fill="white" opacity="0.9"/><circle cx="14.5" cy="18.5" r="1.5" fill="#f59e0b"/><circle cx="21.5" cy="18.5" r="1.5" fill="#f59e0b"/><ellipse cx="18" cy="23" rx="3" ry="2" fill="#fde68a" opacity="0.8"/><ellipse cx="18" cy="22" rx="1.5" ry="1" fill="#92400e"/></svg>` },
+      cow:   { label: 'Cow',   bg: '#10b981', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#10b981"/><path d="M12 10 Q9 6 11 4" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/><path d="M24 10 Q27 6 25 4" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/><ellipse cx="9" cy="14" rx="3.5" ry="2.5" fill="white" opacity="0.9" transform="rotate(-20 9 14)"/><ellipse cx="27" cy="14" rx="3.5" ry="2.5" fill="white" opacity="0.9" transform="rotate(20 27 14)"/><ellipse cx="18" cy="21" rx="9" ry="8" fill="white" opacity="0.9"/><circle cx="14" cy="18" r="2.5" fill="#10b981" opacity="0.3"/><circle cx="22" cy="20" r="2" fill="#10b981" opacity="0.3"/><circle cx="14.5" cy="19" r="1.5" fill="#10b981"/><circle cx="21.5" cy="19" r="1.5" fill="#10b981"/><ellipse cx="18" cy="24" rx="3.5" ry="2.5" fill="#fce7f3" opacity="0.9"/><circle cx="16.5" cy="24" r="0.8" fill="#10b981" opacity="0.5"/><circle cx="19.5" cy="24" r="0.8" fill="#10b981" opacity="0.5"/></svg>` },
+      sheep: { label: 'Sheep', bg: '#6366f1', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#6366f1"/><circle cx="12" cy="19" r="5" fill="white" opacity="0.9"/><circle cx="24" cy="19" r="5" fill="white" opacity="0.9"/><circle cx="18" cy="15" r="5.5" fill="white" opacity="0.9"/><circle cx="18" cy="22" r="5" fill="white" opacity="0.9"/><ellipse cx="18" cy="22" rx="4" ry="3.5" fill="#e0e7ff" opacity="0.9"/><circle cx="16" cy="21" r="1" fill="#6366f1"/><circle cx="20" cy="21" r="1" fill="#6366f1"/><ellipse cx="18" cy="23.5" rx="1" ry="0.7" fill="#a5b4fc"/></svg>` },
+      snake: { label: 'Snake', bg: '#ef4444', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#ef4444"/><path d="M10 26 Q8 20 14 18 Q20 16 18 10 Q16 6 20 5" stroke="white" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7"/><ellipse cx="22" cy="8" rx="5" ry="4" fill="white" opacity="0.95" transform="rotate(20 22 8)"/><ellipse cx="24" cy="6.5" rx="1" ry="1.3" fill="#ef4444" transform="rotate(20 24 6.5)"/><path d="M19 10 L17 12 M17 12 L16 11 M17 12 L16 13" stroke="#fca5a5" stroke-width="0.8" stroke-linecap="round"/></svg>` },
+      fox:   { label: 'Fox',   bg: '#f97316', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#f97316"/><polygon points="10,14 8,6 14,12" fill="white" opacity="0.9"/><polygon points="26,14 28,6 22,12" fill="white" opacity="0.9"/><ellipse cx="18" cy="21" rx="9" ry="8" fill="white" opacity="0.9"/><ellipse cx="18" cy="22" rx="5" ry="4.5" fill="#fff7ed" opacity="0.9"/><circle cx="14.5" cy="19.5" r="1.5" fill="#f97316"/><circle cx="21.5" cy="19.5" r="1.5" fill="#f97316"/><ellipse cx="18" cy="23.5" rx="1.2" ry="0.9" fill="#7c2d12"/><line x1="10" y1="23" x2="15.5" y2="23.5" stroke="#f97316" stroke-width="0.6" opacity="0.4"/><line x1="26" y1="23" x2="20.5" y2="23.5" stroke="#f97316" stroke-width="0.6" opacity="0.4"/></svg>` },
+      crow:  { label: 'Crow',  bg: '#374151', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#374151"/><ellipse cx="10" cy="22" rx="5" ry="3" fill="white" opacity="0.2" transform="rotate(-20 10 22)"/><ellipse cx="26" cy="22" rx="5" ry="3" fill="white" opacity="0.2" transform="rotate(20 26 22)"/><circle cx="18" cy="17" r="7" fill="#1f2937"/><circle cx="21" cy="15" r="2.5" fill="white"/><circle cx="21.5" cy="15" r="1.5" fill="#374151"/><circle cx="22" cy="14.5" r="0.5" fill="white"/><path d="M14 18 L10 19 L14 20 Z" fill="#9ca3af"/><path d="M18 10 Q16 7 18 5 Q20 7 22 6 Q20 9 18 10Z" fill="white" opacity="0.2"/></svg>` }
+    };
+
+    // Render avatar in sidebar (SVG or initials fallback)
+    function renderUserAvatar(user) {
+      const userAvatarEl = document.querySelector('.user-avatar');
+      if (!userAvatarEl) return;
+
+      if (user.avatarId && AVATARS[user.avatarId]) {
+        userAvatarEl.innerHTML = AVATARS[user.avatarId].svg;
+        userAvatarEl.style.background = 'transparent';
+        userAvatarEl.style.padding = '0';
+      } else {
+        userAvatarEl.innerHTML = '';
+        userAvatarEl.style.background = 'var(--blue-light)';
+        const initials = (user.name || 'U').split(' ')
+          .map(w => w.charAt(0).toUpperCase()).join('').substring(0, 2);
+        userAvatarEl.textContent = initials;
+      }
+    }
+
     // Atualizar perfil do estudante
     function updateStudentProfile(user) {
       // Extrair apenas nome e sobrenome (não o email todo)
@@ -2043,21 +2072,8 @@
         pageTitleEl.textContent = `Welcome back, ${displayName}! 👋`;
       }
 
-      // Atualizar iniciais no avatar da sidebar
-      const userAvatarEl = document.querySelector('.user-avatar');
-      if (userAvatarEl) {
-        const initials = displayName.split(' ')
-          .map(word => word.charAt(0).toUpperCase())
-          .join('')
-          .substring(0, 2);
-        userAvatarEl.textContent = initials;
-      }
-
-      // Atualizar foto
-      const avatarElements = document.querySelectorAll('.student-avatar, #studentAvatar, #sidebarAvatar');
-      avatarElements.forEach(el => {
-        if (el && user.photo) el.src = user.photo;
-      });
+      // Atualizar avatar (SVG ou iniciais)
+      renderUserAvatar(user);
 
       console.log('✅ Profile updated:', displayName);
     }
@@ -2816,6 +2832,194 @@
       };
       return moduleNames[moduleName] || moduleName;
     }
+
+    // ============================================
+    // PROFILE DROPDOWN
+    // ============================================
+
+    let profileDropdownOpen = false;
+
+    window.toggleProfileDropdown = function() {
+      const dropdown = document.getElementById('profileDropdown');
+      profileDropdownOpen = !profileDropdownOpen;
+      dropdown.style.display = profileDropdownOpen ? 'block' : 'none';
+      const chevron = document.getElementById('profileChevron');
+      chevron.style.transform = profileDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      const userSection = document.querySelector('.user-section');
+      const dropdown = document.getElementById('profileDropdown');
+      if (dropdown && !userSection.contains(e.target)) {
+        dropdown.style.display = 'none';
+        profileDropdownOpen = false;
+        const chevron = document.getElementById('profileChevron');
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // ============================================
+    // PROFILE MODAL
+    // ============================================
+
+    window.openProfileModal = function() {
+      // Close dropdown first
+      const dropdown = document.getElementById('profileDropdown');
+      if (dropdown) dropdown.style.display = 'none';
+      profileDropdownOpen = false;
+
+      const user = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
+      document.getElementById('profileNameInput').value = user.name || '';
+
+      // Build avatar grid dynamically
+      const grid = document.getElementById('avatarGrid');
+      const currentAvatarId = user.avatarId || null;
+      grid.innerHTML = Object.entries(AVATARS).map(([id, av]) => `
+        <div class="avatar-option ${id === currentAvatarId ? 'selected' : ''}" data-avatar-id="${id}" onclick="selectAvatar('${id}')"
+          style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 6px;border-radius:12px;cursor:pointer;border:2px solid transparent;transition:all 150ms;">
+          <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;">${av.svg}</div>
+          <span style="font-size:11px;color:var(--gray-500);font-weight:500;">${av.label}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('profileModal').style.display = 'flex';
+    };
+
+    window.closeProfileModal = function() {
+      document.getElementById('profileModal').style.display = 'none';
+    };
+
+    window.selectAvatar = function(avatarId) {
+      document.querySelectorAll('.avatar-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.avatarId === avatarId);
+      });
+    };
+
+    window.saveProfile = async function() {
+      const user = JSON.parse(sessionStorage.getItem('pethologyUser') || '{}');
+      const newName = document.getElementById('profileNameInput').value.trim();
+      const selectedAvatarEl = document.querySelector('.avatar-option.selected');
+      const newAvatarId = selectedAvatarEl?.dataset?.avatarId || user.avatarId || null;
+
+      if (!newName) {
+        window.showToast('Please enter a name', 'error');
+        return;
+      }
+
+      try {
+        await PethologyFirebaseREST.updateUserProfile(user.id, {
+          name: newName,
+          avatarId: newAvatarId
+        });
+
+        // Update session
+        user.name = newName;
+        user.avatarId = newAvatarId;
+        sessionStorage.setItem('pethologyUser', JSON.stringify(user));
+
+        // Update UI
+        updateStudentProfile(user);
+        renderUserAvatar(user);
+
+        window.showToast('Profile updated!', 'success');
+        closeProfileModal();
+      } catch (error) {
+        console.error('Error saving profile:', error);
+        window.showToast('Failed to save profile', 'error');
+      }
+    };
+
   </script>
+
+  <!-- Profile Dropdown -->
+  <div id="profileDropdown" style="
+    display: none;
+    position: absolute;
+    left: 12px;
+    top: 80px;
+    width: 220px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    z-index: 1000;
+    overflow: hidden;
+  ">
+    <button onclick="openProfileModal()" style="
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 12px 16px;
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; color: var(--gray-700);
+      transition: background 150ms;
+    " onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='none'">
+      <i data-lucide="user" style="width:16px;height:16px;color:var(--gray-500);"></i>
+      Edit Profile
+    </button>
+    <div style="border-top: 1px solid var(--gray-100);"></div>
+    <button onclick="logout()" style="
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 12px 16px;
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; color: var(--error);
+      transition: background 150ms;
+    " onmouseover="this.style.background='var(--error-bg)'" onmouseout="this.style.background='none'">
+      <i data-lucide="log-out" style="width:16px;height:16px;"></i>
+      Logout
+    </button>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" style="
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4); z-index: 2000;
+    align-items: center; justify-content: center;
+  ">
+    <div style="
+      background: white; border-radius: 16px;
+      width: 100%; max-width: 460px; margin: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    ">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--gray-100);">
+        <h2 style="font-size:18px;font-weight:600;color:var(--gray-700);">Edit Profile</h2>
+        <button onclick="closeProfileModal()" style="background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;">
+          <i data-lucide="x" style="width:20px;height:20px;"></i>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div style="padding:24px;">
+        <!-- Name -->
+        <div style="margin-bottom:24px;">
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--gray-600);margin-bottom:8px;">Display Name</label>
+          <input id="profileNameInput" type="text" placeholder="Your name"
+            style="width:100%;padding:10px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;outline:none;transition:border 150ms;"
+            onfocus="this.style.borderColor='var(--blue-primary)'"
+            onblur="this.style.borderColor='var(--gray-200)'"
+          />
+        </div>
+
+        <!-- Avatar picker -->
+        <div>
+          <label style="display:block;font-size:13px;font-weight:500;color:var(--gray-600);margin-bottom:12px;">Choose Avatar</label>
+          <div id="avatarGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;"></div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div style="display:flex;gap:10px;justify-content:flex-end;padding:16px 24px;border-top:1px solid var(--gray-100);">
+        <button onclick="closeProfileModal()" style="padding:9px 18px;border-radius:8px;border:1px solid var(--gray-200);background:white;font-size:14px;cursor:pointer;color:var(--gray-600);">Cancel</button>
+        <button onclick="saveProfile()" style="padding:9px 18px;border-radius:8px;border:none;background:var(--blue-primary);color:white;font-size:14px;font-weight:500;cursor:pointer;">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .avatar-option:hover { background: var(--bg-hover); border-color: var(--gray-200) !important; }
+    .avatar-option.selected { border-color: var(--blue-primary) !important; background: var(--blue-light); }
+    #profileChevron { transition: transform 200ms ease; }
+  </style>
+
 </body>
 </html>

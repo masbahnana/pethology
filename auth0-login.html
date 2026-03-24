@@ -395,14 +395,23 @@
           localStorage.removeItem('learningStreak');
           localStorage.removeItem('pethologyUser');
 
-          // Salvar na sessão com a nova role
-          sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
-          console.log('✅ Session saved to sessionStorage:', userSession);
-
           // Salvar no Firebase para histórico
           console.log('🔥 Calling saveUserToFirebase...');
           await saveUserToFirebase(userSession);
           console.log('✅ After saveUserToFirebase');
+
+          // Load avatarId and other profile fields from Firebase
+          try {
+            const firebaseUser = await PethologyFirebaseREST.getUser(userSession.id);
+            if (firebaseUser?.avatarId) userSession.avatarId = firebaseUser.avatarId;
+            if (firebaseUser?.name) userSession.name = firebaseUser.name;
+          } catch (e) {
+            console.warn('Could not load Firebase profile fields:', e);
+          }
+
+          // Salvar na sessão com a nova role
+          sessionStorage.setItem('pethologyUser', JSON.stringify(userSession));
+          console.log('✅ Session saved to sessionStorage:', userSession);
 
           // Mostrar sucesso
           showSuccess(`Welcome, ${userSession.name}! Redirecting...`);
