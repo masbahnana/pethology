@@ -1113,7 +1113,9 @@ export class PethologyFirebaseREST {
       if (name !== undefined) fields.name = { stringValue: name };
       if (avatarId !== undefined) fields.avatarId = { stringValue: avatarId };
 
-      await this.request(`/users/${userId}`, 'PATCH', { fields });
+      // Use updateMask so Firestore creates the doc if it doesn't exist
+      const fieldPaths = Object.keys(fields).map(f => `updateMask.fieldPaths=${f}`).join('&');
+      await this.request(`/users/${userId}?${fieldPaths}`, 'PATCH', { fields });
       console.log('✅ User profile updated');
     } catch (error) {
       console.error('❌ Error updating user profile:', error);

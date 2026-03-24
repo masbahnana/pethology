@@ -872,8 +872,15 @@
 
     // Update user info in sidebar
     document.getElementById('userName').textContent = user.name;
-    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-    document.getElementById('userAvatar').textContent = initials;
+    const avatarEl = document.getElementById('userAvatar');
+    const AVATARS = { cat:'🐱', dog:'🐶', cow:'🐄', sheep:'🐑', snake:'🐍', fox:'🦊', crow:'🐦‍⬛' };
+    if (user.avatarId && AVATARS[user.avatarId]) {
+      avatarEl.textContent = AVATARS[user.avatarId];
+      avatarEl.style.fontSize = '20px';
+    } else {
+      const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      avatarEl.textContent = initials;
+    }
 
     // Global state
     let studentProgress = null;

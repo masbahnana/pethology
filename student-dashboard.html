@@ -3005,31 +3005,29 @@
       const newAvatarId = selectedAvatarEl?.dataset?.avatarId || user.avatarId || null;
 
       if (!newName) {
-        window.showToast('Please enter a name', 'error');
+        toast.show({ type: 'error', message: 'Please enter a name' });
         return;
       }
 
-      try {
-        await PethologyFirebaseREST.updateUserProfile(user.id, {
-          name: newName,
-          avatarId: newAvatarId
-        });
+      // Update session immediately regardless of Firebase result
+      user.name = newName;
+      user.avatarId = newAvatarId;
+      sessionStorage.setItem('pethologyUser', JSON.stringify(user));
 
-        // Update session
-        user.name = newName;
-        user.avatarId = newAvatarId;
-        sessionStorage.setItem('pethologyUser', JSON.stringify(user));
+      // Update UI immediately
+      document.querySelectorAll('.student-name, .user-name, #studentName, #displayName, #sidebarName').forEach(el => {
+        if (el) el.textContent = newName;
+      });
+      window.renderUserAvatar(user);
 
-        // Update UI
-        updateStudentProfile(user);
-        window.renderUserAvatar(user);
+      toast.show({ type: 'success', message: 'Profile updated!' });
+      closeProfileModal();
 
-        window.showToast('Profile updated!', 'success');
-        closeProfileModal();
-      } catch (error) {
-        console.error('Error saving profile:', error);
-        window.showToast('Failed to save profile', 'error');
-      }
+      // Persist to Firebase in background (non-blocking)
+      PethologyFirebaseREST.updateUserProfile(user.id, {
+        name: newName,
+        avatarId: newAvatarId
+      }).catch(err => console.warn('⚠️ Could not persist profile to Firebase:', err));
     };
 
   </script>

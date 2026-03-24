@@ -594,7 +594,14 @@
 
       // Update UI with user info
       document.getElementById('user-name').textContent = Auth0Service.formatDisplayName(user.name);
-      document.getElementById('user-avatar').textContent = user.name.charAt(0).toUpperCase();
+      const avatarEl = document.getElementById('user-avatar');
+      const AVATARS = { cat:'🐱', dog:'🐶', cow:'🐄', sheep:'🐑', snake:'🐍', fox:'🦊', crow:'🐦‍⬛' };
+      if (user.avatarId && AVATARS[user.avatarId]) {
+        avatarEl.textContent = AVATARS[user.avatarId];
+        avatarEl.style.fontSize = '20px';
+      } else {
+        avatarEl.textContent = user.name.charAt(0).toUpperCase();
+      }
 
       // Load glossary
       await loadGlossary();
