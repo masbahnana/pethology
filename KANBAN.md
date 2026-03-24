@@ -43,6 +43,7 @@
 
 ### 📝 Low Priority (Features)
 - [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker (cat, dog, cow, sheep, snake, fox, crow) + editar nome
+- [ ] **Timer configurável no Exam Mode** - Teacher define o tempo limite ao criar/configurar o exam (ex: 30min, 45min, 1h)
 
 ---
 
