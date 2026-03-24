@@ -10,7 +10,10 @@
   <script src="assets/js/analytics.js"></script>
 
   <link rel="stylesheet" href="assets/css/style.css?v=5.1" />
-  <link rel="stylesheet" href="assets/css/mobile-nav.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/public.css" />
   <style>
     :root {
       --bg: #fefefe;
@@ -241,28 +244,18 @@
 
 </head>
 <body>
-  <header>
-    <div>
-      <a href="index.html" class="logo">
-        <img src="assets/img/pethology-logo.jpg" alt="Pethology Logo">
-        <span class="logo-text">Pethology</span>
-      </a>
+  <nav class="pub-nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
+    </a>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="store.html">🛍️ Store</a>
+      <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
     </div>
-    <nav>
-      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="content.html">Content</a></li>
-        <li><a href="quiz.html">Quiz</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="auth0-login.html">Login</a></li>
-        <li><a href="support.html" class="support-button">Support Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li id="user-indicator" style="display: none; margin: 0;"></li>
-      </ul>
-    </nav>
-  </header>
+  </nav>
 
   <main class="layout-wrapper">
     <div class="quiz-container">

@@ -7,8 +7,10 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Login - Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="assets/css/mobile-nav.css?v=5.1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/public.css" />
   <style>
     .login-container {
       max-width: 400px;
@@ -196,28 +198,17 @@
   </style>
 </head>
 <body>
-  <header>
-    <div>
-      <a href="index.html" class="logo">
-        <img src="assets/img/pethology-logo.jpg" alt="Pethology Logo">
-        <span class="logo-text">Pethology</span>
-      </a>
+  <nav class="pub-nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
+    </a>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="index.html">← Back to home</a>
     </div>
-    <nav>
-      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="content.html">Content</a></li>
-        <li><a href="quiz.html">Quiz</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="students.html">For Students</a></li>
-        <li><a href="teachers.html">For Teachers</a></li>
-        <li><a href="support.html" class="support-button">Support Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+  </nav>
 
   <main>
     <div class="login-container">

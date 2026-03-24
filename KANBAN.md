@@ -45,6 +45,18 @@
 - [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker (cat, dog, cow, sheep, snake, fox, crow) + editar nome
 - [ ] **Timer dinâmico no Exam Mode** - Calcular timer baseado no histórico do aluno: média de (timeSpent / totalQuestions) × nº perguntas do exam. Default: 90s/pergunta se sem histórico. Min: 45s, Max: 3min por pergunta.
 
+### 🎨 Landing Page Redesign (24 Mar 2026)
+- [x] **index-mock.html** - ✅ Mock criado com nova UI (Notion/Tally style)
+- [x] **Try our Quiz section** - ✅ Secção interativa com pergunta sample na landing
+- [ ] **Aplicar mock no index.html** - Após aprovação final do mock
+- [ ] **Roadmap page** - Nova página roadmap.html com linha do tempo visual
+- [ ] **About page** - Remover/ocultar outros membros do team
+- [ ] **Content page** - Adicionar intro + "More modules coming soon"
+- [ ] **Blog page** - Intro + remover post fake + "Coming soon"
+- [ ] **Store page** - Nova store.html com coming soon (adesivos + modelos 3D anatomia)
+- [ ] **Support page** - Ajustar link (aguardar instrução)
+- [ ] **Padronizar layout** - Aplicar novo design em todas as páginas públicas
+
 ---
 
 ## 🟡 IN PROGRESS

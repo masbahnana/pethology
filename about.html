@@ -4,84 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About - Pethology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/public.css">
   <style>
-    :root {
-      --bg: #fefefe;
-      --accent: #111;
-      --gray: #666;
-      --border: #e5e5e5;
-      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: var(--font);
-      background-color: var(--bg);
-      color: var(--accent);
-      line-height: 1.6;
-    }
-
-    header {
-      padding: 40px 60px 24px 60px;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .logo img {
-      height: 32px;
-      width: auto;
-    }
-
-    .logo-text {
-      font-size: 1.8rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
-      margin: 0;
-      gap: 8px;
-    }
-
-    nav ul li {
-      margin: 0;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: var(--gray);
-      font-weight: 500;
-      font-size: 14px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      display: block;
-    }
-
-    nav a:hover {
-      background: #f7f6f3;
-      color: var(--accent);
-    }
-
     main {
       max-width: 800px;
       margin: 60px auto;
@@ -99,7 +26,7 @@
     }
 
     p {
-      color: var(--gray);
+      color: var(--gray, #666);
       font-size: 1.1rem;
       max-width: 700px;
       margin: 0 auto;
@@ -132,32 +59,6 @@
       margin-bottom: 10px;
     }
 
-    footer {
-      text-align: center;
-      padding: 60px 0 30px;
-      font-size: 0.9em;
-      color: #aaa;
-      border-top: 1px solid var(--border);
-      margin-top: 100px;
-    }
-    .support-button {
-      padding: 8px 16px;
-      font-weight: 600;
-     
-      border-image-slice: 1;
-      border-width: 2px;
-      border-image-source: linear-gradient(to right, #32CD32, #00a86b);
-      border-radius: 8px;
-      color: #00a86b;
-      background-color: transparent;
-      transition: all 0.3s ease;
-    }
-
-    .support-button:hover {
-      background: linear-gradient(to right, #32CD32, #00a86b);
-      color: white;
-    }
-
     /* Roadmap Styles - Soft & Minimal */
     .roadmap {
       max-width: 800px;
@@ -185,7 +86,7 @@
     .phase-content h3 {
       margin: 0 0 6px 0;
       font-size: 1.15rem;
-      color: var(--accent);
+      color: #111;
       font-weight: 600;
     }
 
@@ -254,22 +155,6 @@
     }
 
     @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-      }
-
-      nav ul {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
-
-      nav ul li {
-        margin-left: 0;
-      }
-
       h1, h2 {
         font-size: 1.6rem;
       }
@@ -298,24 +183,18 @@
   </style>
 </head>
 <body>
-  <header>
-    <a href="index.html" class="logo">
-      <img src="assets/img/pethology-logo.jpg" alt="Pethology Logo">
-      <span class="logo-text">Pethology</span>
+  <nav class="pub-nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
     </a>
-    <nav>
-      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="content.html">Content</a></li>
-        <li><a href="quiz.html">Quiz</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="support.html" class="support-button">Support Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="store.html">🛍️ Store</a>
+      <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+    </div>
+  </nav>
 
   <main>
     <section>
@@ -340,150 +219,39 @@
       </p>
     </section>
 
-    <section>
+    <section style="text-align: center; padding: 20px 0 40px;">
       <h2>🗺️ Our Roadmap</h2>
-      <p style="text-align: center; color: var(--gray); margin-bottom: 40px;">
-        Track our journey from concept to comprehensive learning platform
+      <p style="color: var(--gray); margin: 16px auto 24px; max-width: 480px;">
+        From a simple quiz tool to a full Animal Care learning platform — see where we've been and where we're headed.
       </p>
-
-      <div class="roadmap">
-        <!-- Phase 1: Foundation -->
-        <div class="roadmap-phase completed">
-          <div class="phase-content">
-            <h3>Phase 1: Foundation (v1.0 - v2.0)</h3>
-            <p class="phase-period">April 2025 - June 2025</p>
-            <ul class="phase-features">
-              <li>Initial platform launch</li>
-              <li>Basic quiz system with 200+ questions</li>
-              <li>10 module coverage (Biology, Anatomy, Grooming, etc.)</li>
-              <li>Simple progress tracking</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Phase 2: Authentication & Infrastructure -->
-        <div class="roadmap-phase completed">
-          <div class="phase-content">
-            <h3>Phase 2: Authentication & Infrastructure (v3.0 - v4.0)</h3>
-            <p class="phase-period">July 2025 - September 2025</p>
-            <ul class="phase-features">
-              <li>Auth0 integration for secure login</li>
-              <li>Teacher whitelist system</li>
-              <li>Student pre-registration</li>
-              <li>100% REST API (no Firebase SDK)</li>
-              <li>Dashboard redesign with stats</li>
-              <li>Announcements system</li>
-              <li>Calendar integration</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Phase 3: Student Experience -->
-        <div class="roadmap-phase completed">
-          <div class="phase-content">
-            <h3>Phase 3: Student Experience (v5.0 - Current)</h3>
-            <p class="phase-period">October 2025 - Present</p>
-            <ul class="phase-features">
-              <li>Achievements system (19 badges)</li>
-              <li>My Progress page with Chart.js graphs</li>
-              <li>Adaptive Quiz with AI algorithm</li>
-              <li>Performance analytics</li>
-              <li>Weak topic identification</li>
-              <li>Notion-inspired UI refresh</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Phase 4: Teacher Tools -->
-        <div class="roadmap-phase completed">
-          <div class="phase-content">
-            <h3>Phase 4: Teacher Tools (v5.0)</h3>
-            <p class="phase-period">October 2025</p>
-            <ul class="phase-features">
-              <li>CSV quiz import system</li>
-              <li>Multiple quizzes per module</li>
-              <li>Student import (CSV + manual)</li>
-              <li>Real-time progress monitoring</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Phase 5: Coming Soon -->
-        <div class="roadmap-phase upcoming">
-          <div class="phase-content">
-            <h3>Phase 5: Advanced Features (v6.0)</h3>
-            <p class="phase-period">Q1 2026</p>
-            <ul class="phase-features">
-              <li>Smart Review system</li>
-              <li>Exam mode with strict timing</li>
-              <li>Glossary & study materials</li>
-              <li>Skills demonstration checklist</li>
-              <li>Class management tools</li>
-            </ul>
-          </div>
-        </div>
-
-        <!-- Phase 6: Scale -->
-        <div class="roadmap-phase future">
-          <div class="phase-content">
-            <h3>Phase 6: Scale & Expand (v7.0+)</h3>
-            <p class="phase-period">Q2-Q3 2026</p>
-            <ul class="phase-features">
-              <li>Multi-college support</li>
-              <li>Mobile app (iOS/Android)</li>
-              <li>Advanced gamification</li>
-              <li>Video content library</li>
-              <li>Community features</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div style="text-align: center; margin-top: 40px; padding: 24px; background: #f7f6f3; border-radius: 12px;">
-        <p style="margin: 0; color: var(--gray); font-size: 14px;">
-          💡 <strong>Currently at v5.0</strong> - The platform is free while in active development. Help us shape the future of Animal Care education!
-        </p>
-      </div>
+      <a href="roadmap.html" style="display: inline-flex; align-items: center; gap: 6px; background: #f0fdf4; color: #16a34a; border: 1.5px solid #bbf7d0; padding: 10px 22px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: background 0.15s;">
+        View full roadmap →
+      </a>
     </section>
 
     <section>
       <h2>Our Team</h2>
       <div class="team-container">
         <div class="team-member">
-          <img src="./assets/img/otter.jpg" alt="Team Member 1">
-          <p><strong>Nana da silva</strong></p>
+          <img src="./assets/img/otter.jpg" alt="Nana da Silva">
+          <p><strong>Nana da Silva</strong></p>
           <p class="team-bio">
-            Animal Care Assistant with a love for Veterinary environment.
-          </p>
-        </div>
-        <div class="team-member">
-          <img src="./assets/img/seal.jpeg" alt="Team Member 2">
-          <p><strong>Rebecca Deegan</strong></p>
-          <p class="team-bio">
-            Animal Care Assistant with a love for Wildlife.
-          </p>
-        </div>
-        <div class="team-member">
-          <img src="./assets/img/dog.avif" alt="Team Member 3">
-          <p><strong>Rachael Kane</strong></p>
-          <p class="team-bio">
-            Animal Care Assistant with a love for Animal Behaviour.
-          </p>
-        </div>
-        <div class="team-member">
-          <img src="./assets/img/horse.jpg" alt="Team Member 4">
-          <p><strong>Eloise Creighton </strong></p>
-          <p class="team-bio">
-            Animal Care Assistant with a love for Large Animals.
+            Animal Care Assistant with a love for Veterinary environment. Founder & developer of Pethology.
           </p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    &copy; 2025 Pethology — Built with ❤️ by Animal Care Nerds
+  <footer class="pub-footer">
+    <span>© 2026 Pethology — Built with ❤️ for Animal Care students</span>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="store.html">Store</a>
+      <a href="contact.html">Contact</a>
+      <a href="support.html">Support us</a>
+    </div>
   </footer>
-  <script src="assets/js/mobile-nav.js"></script>
 </body>
 </html>

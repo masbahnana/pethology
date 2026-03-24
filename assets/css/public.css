@@ -1,0 +1,183 @@
+/* ── Pethology Public Pages — Shared Styles ── */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #666666;
+  --border: #e8e8e8;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --radius: 12px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+.pub-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pub-nav .nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.3px;
+}
+
+.pub-nav .nav-logo img {
+  height: 28px;
+  width: auto;
+  border-radius: 6px;
+}
+
+.pub-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pub-nav .nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.pub-nav .nav-links a:hover {
+  color: var(--text);
+  background: #f5f5f5;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s;
+  cursor: pointer;
+  border: none;
+  font-family: var(--font);
+}
+
+.btn-green {
+  background: var(--green-light);
+  color: var(--green);
+  border: 1.5px solid #bbf7d0;
+}
+.btn-green:hover { background: #dcfce7; border-color: #86efac; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}
+.btn-outline:hover { border-color: #aaa; background: #f9f9f9; }
+
+.btn-lg {
+  padding: 12px 28px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+/* ── FOOTER ── */
+.pub-footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 80px;
+}
+
+.pub-footer a { color: var(--muted); text-decoration: none; }
+.pub-footer a:hover { color: var(--text); }
+.pub-footer .footer-links { display: flex; gap: 20px; }
+
+/* ── PAGE HERO ── */
+.page-hero {
+  text-align: center;
+  padding: 72px 24px 48px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.page-hero .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 20px;
+}
+
+.page-hero h1 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  margin-bottom: 14px;
+}
+
+.page-hero p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .pub-nav { padding: 0 20px; }
+  .pub-nav .nav-links a:not(.btn) { display: none; }
+  .pub-footer { flex-direction: column; gap: 16px; text-align: center; padding: 24px 20px; }
+  .page-hero { padding: 48px 20px 32px; }
+}

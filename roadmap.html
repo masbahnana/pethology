@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roadmap — Pethology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --muted: #666666;
+      --border: #e8e8e8;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo img {
+      height: 28px;
+      width: auto;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--text); background: #f5f5f5; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-green {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1.5px solid #bbf7d0;
+    }
+    .btn-green:hover { background: #dcfce7; border-color: #86efac; }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 72px 24px 56px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 20px 24px 80px;
+      position: relative;
+    }
+
+    /* vertical line — aligns with center column (1fr + 16px gap + 24px = ~calc) */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: calc(50% - 1px);
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #bbf7d0, var(--border) 80%, transparent);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr;
+      gap: 0 16px;
+      align-items: flex-start;
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    /* odd: content left, dot center, spacer right */
+    .timeline-item:nth-child(odd) .timeline-content { grid-column: 1; }
+    .timeline-item:nth-child(odd) .timeline-dot     { grid-column: 2; }
+    .timeline-item:nth-child(odd) .timeline-spacer  { grid-column: 3; }
+
+    /* even: spacer left, dot center, content right */
+    .timeline-item:nth-child(even) .timeline-spacer  { grid-column: 1; }
+    .timeline-item:nth-child(even) .timeline-dot     { grid-column: 2; }
+    .timeline-item:nth-child(even) .timeline-content { grid-column: 3; }
+
+    .timeline-content {
+      flex: 1;
+      background: #fafafa;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+
+    .timeline-content:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+    /* arrow pointing to center */
+    .timeline-item:nth-child(odd) .timeline-content::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 20px;
+      width: 14px;
+      height: 14px;
+      background: #fafafa;
+      border-right: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      transform: rotate(45deg);
+    }
+
+    .timeline-item:nth-child(even) .timeline-content::after {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 20px;
+      width: 14px;
+      height: 14px;
+      background: #fafafa;
+      border-left: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transform: rotate(45deg);
+    }
+
+    /* dot in the center */
+    .timeline-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 1;
+      border: 3px solid #fff;
+      margin-top: 16px;
+      justify-self: center;
+    }
+
+    .dot-done   { background: var(--green); }
+    .dot-now    { background: #3b82f6; box-shadow: 0 0 0 4px #dbeafe; }
+    .dot-next   { background: #f59e0b; }
+    .dot-future { background: #e5e7eb; }
+
+    .timeline-spacer { display: block; }
+
+    .phase-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .label-done   { background: var(--green-light); color: var(--green); }
+    .label-now    { background: #dbeafe; color: #1d4ed8; }
+    .label-next   { background: #fef3c7; color: #b45309; }
+    .label-future { background: #f3f4f6; color: #6b7280; }
+
+    .timeline-content h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-period {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .timeline-content ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timeline-content ul li {
+      font-size: 0.875rem;
+      color: #444;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .timeline-content ul li::before {
+      content: '✓';
+      font-weight: 700;
+      font-size: 0.75rem;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .dot-done ~ .timeline-content ul li::before,
+    .label-done ~ * li::before { color: var(--green); }
+
+    li.pending::before { content: '·'; color: #aaa; font-size: 1.2rem; line-height: 1; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+    .footer-links { display: flex; gap: 20px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 0 20px; }
+      .nav-links a:not(.btn) { display: none; }
+
+      .timeline::before { left: 20px; }
+
+      .timeline-item,
+      .timeline-item:nth-child(even) {
+        flex-direction: column;
+        padding-left: 52px;
+      }
+
+      .timeline-dot {
+        left: 20px;
+        top: 0;
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+      }
+
+      .timeline-spacer { display: none; }
+
+      .timeline-item:nth-child(odd) .timeline-content::after,
+      .timeline-item:nth-child(even) .timeline-content::after { display: none; }
+
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
+    </a>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="auth0-login.html" class="btn btn-green">Log in</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🗺️ Where we're headed</div>
+    <h1>Our Roadmap</h1>
+    <p>From a simple quiz tool to a full Animal Care learning platform — here's the journey so far and what's coming next.</p>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+
+    <!-- Phase 1 -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="phase-label label-done">✓ Completed</span>
+        <h3>Phase 1 — Foundation</h3>
+        <p class="timeline-period">April 2025 – June 2025 · v1.0–v2.0</p>
+        <ul>
+          <li>Initial platform launch</li>
+          <li>200+ quiz questions across 10 modules</li>
+          <li>Biology, Anatomy, Grooming & more</li>
+          <li>Simple progress tracking</li>
+        </ul>
+      </div>
+      <div class="timeline-dot dot-done">🌱</div>
+      <div class="timeline-spacer"></div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="timeline-item">
+      <div class="timeline-spacer"></div>
+      <div class="timeline-dot dot-done">🔐</div>
+      <div class="timeline-content">
+        <span class="phase-label label-done">✓ Completed</span>
+        <h3>Phase 2 — Authentication & Infrastructure</h3>
+        <p class="timeline-period">July 2025 – September 2025 · v3.0–v4.0</p>
+        <ul>
+          <li>Auth0 secure login</li>
+          <li>Teacher & student whitelists</li>
+          <li>100% REST API (no Firebase SDK)</li>
+          <li>Announcements & calendar system</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="phase-label label-done">✓ Completed</span>
+        <h3>Phase 3 — Student Experience</h3>
+        <p class="timeline-period">October 2025 · v5.0</p>
+        <ul>
+          <li>19 achievements & badges</li>
+          <li>My Progress page with graphs</li>
+          <li>Adaptive quiz algorithm</li>
+          <li>Weak topic identification</li>
+        </ul>
+      </div>
+      <div class="timeline-dot dot-done">🎓</div>
+      <div class="timeline-spacer"></div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="timeline-item">
+      <div class="timeline-spacer"></div>
+      <div class="timeline-dot dot-done">👩‍🏫</div>
+      <div class="timeline-content">
+        <span class="phase-label label-done">✓ Completed</span>
+        <h3>Phase 4 — Teacher Tools</h3>
+        <p class="timeline-period">October 2025 – January 2026 · v5.0–v5.5</p>
+        <ul>
+          <li>CSV quiz & student import</li>
+          <li>Class management dashboard</li>
+          <li>Skills demonstrations tracking</li>
+          <li>Exam mode with strict timing</li>
+          <li>Custom quiz creation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Phase 5 — NOW -->
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <span class="phase-label label-now">● In Progress</span>
+        <h3>Phase 5 — Pilot Launch</h3>
+        <p class="timeline-period">Q1 2026 · v6.0</p>
+        <ul>
+          <li>Real classroom pilot at St Conleth's College</li>
+          <li>Performance optimization & caching</li>
+          <li>Student profile & avatar picker</li>
+          <li>Landing page redesign</li>
+          <li class="pending">Smart Review system</li>
+          <li class="pending">Dynamic exam timer</li>
+        </ul>
+      </div>
+      <div class="timeline-dot dot-now">🚀</div>
+      <div class="timeline-spacer"></div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="timeline-item">
+      <div class="timeline-spacer"></div>
+      <div class="timeline-dot dot-future">🌍</div>
+      <div class="timeline-content">
+        <span class="phase-label label-future">Coming soon</span>
+        <h3>Phase 6 — Scale & Expand</h3>
+        <p class="timeline-period">Q2–Q3 2026 · v7.0+</p>
+        <ul>
+          <li class="pending">Multi-college support</li>
+          <li class="pending">Mobile app (iOS & Android)</li>
+          <li class="pending">Advanced gamification & leaderboards</li>
+          <li class="pending">Video content library</li>
+          <li class="pending">Pethology Store (stickers & 3D anatomy models)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Pethology — Built with ❤️ for Animal Care students</span>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html">Contact</a>
+      <a href="support.html">Support us</a>
+    </div>
+  </footer>
+
+</body>
+</html>

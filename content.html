@@ -4,36 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Content | Pethology</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
-  <link rel="stylesheet" href="assets/css/mobile-nav.css?v=5.1" />
   <link rel="icon" href="assets/img/pethology-logo.jpg" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/public.css" />
 </head>
 
 <body>
-  <header>
-    <a href="index.html" class="logo">
-      <img src="assets/img/pethology-logo.jpg" alt="Pethology Logo">
-      <span class="logo-text">Pethology</span>
+  <nav class="pub-nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
     </a>
-    <nav>
-      <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">☰</button>
-      <ul id="nav-menu">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="content.html" class="active">Content</a></li>
-        <li><a href="quiz.html">Quiz</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="support.html" class="support-button">Support Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+    <div class="nav-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="store.html">🛍️ Store</a>
+      <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+    </div>
+  </nav>
 
   <main>
     <div class="page-container">
       <div class="card">
         <h1 class="page-title">Explore Our Modules</h1>
-  
+        <p style="color: #666; font-size: 1rem; margin-bottom: 8px; max-width: 560px;">
+          Study notes and reading materials organised by module. Select a topic below to start reading — more modules and content are added regularly.
+        </p>
+        <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 28px;">
+          🚧 More modules coming soon
+        </p>
+
         <div class="quiz-container">
           <button class="minimal-button" onclick="toggleTopics('biology-topics', this)">
             Biology <span class="arrow">⌄</span>
@@ -65,8 +68,15 @@
     </div>
   </main>
 
-  <footer>
-    &copy; 2025 Pethology — Built with ❤️ by Animal Care Nerds
+  <footer class="pub-footer">
+    <span>© 2026 Pethology — Built with ❤️ for Animal Care students</span>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="faq.html">FAQ</a>
+      <a href="store.html">Store</a>
+      <a href="contact.html">Contact</a>
+      <a href="support.html">Support us</a>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
