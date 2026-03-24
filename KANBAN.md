@@ -43,7 +43,7 @@
 
 ### 📝 Low Priority (Features)
 - [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker (cat, dog, cow, sheep, snake, fox, crow) + editar nome
-- [ ] **Timer configurável no Exam Mode** - Teacher define o tempo limite ao criar/configurar o exam (ex: 30min, 45min, 1h)
+- [ ] **Timer dinâmico no Exam Mode** - Calcular timer baseado no histórico do aluno: média de (timeSpent / totalQuestions) × nº perguntas do exam. Default: 90s/pergunta se sem histórico. Min: 45s, Max: 3min por pergunta.
 
 ---
 
