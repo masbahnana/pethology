@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started — Pethology</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f9fafb;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    .nav {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #e5e7eb;
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1a1a2e;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-logo img { height: 28px; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: white;
+      text-align: center;
+      padding: 80px 24px 64px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 4px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.85);
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, #4ade80, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      max-width: 760px;
+      margin: 64px auto;
+      padding: 0 24px;
+    }
+    .about-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      border: 1px solid #e5e7eb;
+    }
+    .about-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 3px solid #f0fdf4;
+    }
+    .about-card h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .about-card .role {
+      font-size: 0.85rem;
+      color: #16a34a;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .about-card p {
+      font-size: 0.95rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .about-card p:last-child { margin-bottom: 0; }
+
+    /* FREE BANNER */
+    .free-banner {
+      max-width: 760px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+    .free-banner-inner {
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .free-banner-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .free-banner h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #15803d;
+      margin-bottom: 4px;
+    }
+    .free-banner p {
+      font-size: 0.875rem;
+      color: #166534;
+    }
+
+    /* CHOOSE SECTION */
+    .choose {
+      max-width: 760px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      text-align: center;
+    }
+    .choose h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .choose p {
+      color: #6b7280;
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+    }
+    .choose-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .choose-card {
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 36px 28px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .choose-card:hover {
+      border-color: #16a34a;
+      box-shadow: 0 4px 20px rgba(22,163,74,0.12);
+      transform: translateY(-2px);
+    }
+    .choose-card .emoji { font-size: 3rem; margin-bottom: 16px; display: block; }
+    .choose-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .choose-card p { font-size: 0.875rem; color: #6b7280; line-height: 1.6; }
+    .choose-card .btn-guide {
+      display: inline-block;
+      margin-top: 20px;
+      background: #16a34a;
+      color: white;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    /* GUIDE SECTIONS */
+    .guide-section {
+      max-width: 760px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+      display: none;
+    }
+    .guide-section.active { display: block; }
+    .guide-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 32px;
+      align-items: flex-start;
+    }
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #1a1a2e;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-content h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+    .step-content .tip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fefce8;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      color: #92400e;
+      margin-top: 10px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px 18px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #374151;
+      margin-bottom: 32px;
+      transition: border-color 0.15s;
+    }
+    .back-btn:hover { border-color: #16a34a; color: #16a34a; }
+
+    .cta-box {
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      color: white;
+      margin-top: 40px;
+    }
+    .cta-box h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .cta-box p { color: rgba(255,255,255,0.75); margin-bottom: 24px; font-size: 0.95rem; }
+    .cta-box a {
+      display: inline-block;
+      background: #16a34a;
+      color: white;
+      border-radius: 8px;
+      padding: 12px 28px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .cta-box a:hover { background: #15803d; }
+
+    @media (max-width: 600px) {
+      .about-card { flex-direction: column; }
+      .choose-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.png" alt="Pethology" onerror="this.style.display='none'">
+      🐾 Pethology
+    </a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge">Welcome Guide</div>
+    <h1>Welcome to <span>Pethology</span> 🐾</h1>
+    <p>Your free study platform built for QQI Level 5 Animal Care students at St Conleth's Community College.</p>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about">
+    <div class="about-card">
+      <img src="assets/img/otter.jpg" alt="Nana da Silva" class="about-avatar">
+      <div>
+        <h2>Hi, I'm Nana 👋</h2>
+        <div class="role">Animal Care Assistant · Founder of Pethology</div>
+        <p>I built Pethology because I know how hard it can be to study for Animal Care exams without the right tools. I wanted to create something that actually helps — not just a pile of notes, but an interactive platform where you can test yourself, track your progress, and feel confident going into exams.</p>
+        <p>I'm a student too (or was recently!), so I built this with a student's perspective. Everything here was designed to make your studying easier, more engaging, and less stressful.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FREE BANNER -->
+  <section class="free-banner">
+    <div class="free-banner-inner">
+      <div class="free-banner-icon">💚</div>
+      <div>
+        <h3>Pethology is completely free — and always will be.</h3>
+        <p>No subscriptions, no paywalls, no ads. I built this out of love for the course and the community. If you'd like to support the platform and help keep it running, there's an option on the Support page — but it's entirely optional.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHOOSE -->
+  <section class="choose" id="chooseSection">
+    <h2>Who are you?</h2>
+    <p>Select your guide below to get started.</p>
+    <div class="choose-grid">
+      <a class="choose-card" onclick="showGuide('students'); return false;" href="#">
+        <span class="emoji">🎓</span>
+        <h3>I'm a Student</h3>
+        <p>Learn how to take quizzes, track your progress, use Smart Review and make the most of Pethology.</p>
+        <span class="btn-guide">Student Guide →</span>
+      </a>
+      <a class="choose-card" onclick="showGuide('teachers'); return false;" href="#">
+        <span class="emoji">📋</span>
+        <h3>I'm a Teacher</h3>
+        <p>Learn how to monitor your students, view their results and use the teacher dashboard.</p>
+        <span class="btn-guide">Teacher Guide →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- STUDENT GUIDE -->
+  <section class="guide-section" id="guide-students">
+    <button class="back-btn" onclick="showGuide(null)">← Back</button>
+    <h2>🎓 Student Guide</h2>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Log in for the first time</h3>
+        <p>Your teacher has already added you to the platform using your school email. Go to <strong>pethology.netlify.app</strong>, click <strong>🐾 Log in</strong> in the top right, and sign in with that same email. You'll be taken straight to your Student Dashboard — no sign-up needed.</p>
+        <div class="tip">💡 Make sure to use the same email your teacher registered you with, otherwise the system won't recognise you.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Take your first quiz</h3>
+        <p>From your dashboard, click <strong>Start Quiz</strong> or go directly to the Quiz page. Choose a module — like Animal Anatomy, Grooming, or Animal Welfare — and start answering. You'll get instant feedback on each question.</p>
+        <div class="tip">💡 Try to complete at least one quiz per module to unlock Smart Review!</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Use Smart Review</h3>
+        <p>Smart Review looks at your quiz history and automatically picks your weakest module to focus on. Click <strong>Start Review</strong> on your dashboard and it will launch a quiz on the topic you need the most practice with.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Try Exam Mode</h3>
+        <p>When you feel ready, try <strong>Exam Mode</strong>. It simulates real exam conditions — a timer, no hints, and no feedback until the end. It's a great way to test yourself before the real thing.</p>
+        <div class="tip">⏱ The timer is automatically adjusted based on how fast you've been answering in past quizzes.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <h3>Track your progress</h3>
+        <p>Your dashboard shows your total quizzes completed, average score, current streak and achievements. Head to <strong>My Progress</strong> in the sidebar to see a detailed breakdown by module.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">6</div>
+      <div class="step-content">
+        <h3>Unlock achievements</h3>
+        <p>As you study, you'll unlock achievements — from <em>First Steps</em> (complete your first quiz) to <em>Brain Master</em> (complete all 10 modules). Check the <strong>Achievements</strong> page to see what's waiting for you!</p>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Ready to start? 🐾</h3>
+      <p>Log in and take your first quiz. It only takes a minute!</p>
+      <a href="auth0-login.html">Log in to Pethology →</a>
+    </div>
+  </section>
+
+  <!-- TEACHER GUIDE -->
+  <section class="guide-section" id="guide-teachers">
+    <button class="back-btn" onclick="showGuide(null)">← Back</button>
+    <h2>📋 Teacher Guide</h2>
+
+    <div class="step">
+      <div class="step-number">1</div>
+      <div class="step-content">
+        <h3>Log in to your account</h3>
+        <p>Go to <strong>pethology.netlify.app</strong> and click <strong>🐾 Log in</strong> in the top right. Use your school email address. Since your email is on the approved teacher list, you'll be automatically redirected to the Teacher Dashboard.</p>
+        <div class="tip">💡 If you see a "Student Dashboard" instead of a Teacher one, contact Nana — your email may need to be added to the teacher list.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">2</div>
+      <div class="step-content">
+        <h3>Create your first class</h3>
+        <p>On your first login, a prompt will appear asking if you'd like to create a class. Click <strong>Yes</strong>. A form will open — enter your class name (e.g. <em>"Animal Care Year 1"</em>) and the academic year. Click <strong>Create Class</strong> to confirm.</p>
+        <div class="tip">💡 You can create multiple classes if you teach more than one group.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">3</div>
+      <div class="step-content">
+        <h3>Add your students</h3>
+        <p>Go to the <strong>Settings</strong> tab in the Teacher Dashboard. You'll see a student list for your class. Click <strong>+ Add Student</strong> and enter each student's name and school email address. Do this for every student in your class.</p>
+        <p style="margin-top:8px;">Once added, students can log in with that email and their progress will be automatically linked to your class.</p>
+        <div class="tip">⚠️ Make sure to use the exact email address the student will log in with — it's how the system recognises them.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">4</div>
+      <div class="step-content">
+        <h3>Share the student guide with your class</h3>
+        <p>Send your students this link so they can get started: <strong>pethology.netlify.app/guide.html</strong>. It walks them through logging in, taking quizzes, and using all the features. The platform works on phones too, so they can study anywhere.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">5</div>
+      <div class="step-content">
+        <h3>Monitor your students' progress</h3>
+        <p>Back on the main dashboard, you'll see all your students listed with their quiz count, average score, and last activity. Click on any student to see their full breakdown by module — which topics they're doing well in and which ones need more attention.</p>
+        <div class="tip">💡 Use this to focus class time on the modules where students are struggling the most.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-number">6</div>
+      <div class="step-content">
+        <h3>Check the class overview</h3>
+        <p>The top of your dashboard shows overall class stats — total quizzes completed, class average score, and active students. A quick way to see how engaged your class is at a glance.</p>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Questions or feedback?</h3>
+      <p>Pethology is always improving. If something isn't working or you'd like to suggest a feature, reach out directly.</p>
+      <a href="contact.html">Contact Nana →</a>
+    </div>
+  </section>
+
+  <script>
+    function showGuide(type) {
+      const chooseSection = document.getElementById('chooseSection');
+      const studentGuide = document.getElementById('guide-students');
+      const teacherGuide = document.getElementById('guide-teachers');
+
+      if (!type) {
+        chooseSection.style.display = 'block';
+        studentGuide.classList.remove('active');
+        teacherGuide.classList.remove('active');
+        return;
+      }
+
+      chooseSection.style.display = 'none';
+      studentGuide.classList.remove('active');
+      teacherGuide.classList.remove('active');
+
+      if (type === 'students') studentGuide.classList.add('active');
+      if (type === 'teachers') teacherGuide.classList.add('active');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>
