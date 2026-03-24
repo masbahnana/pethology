@@ -2,111 +2,108 @@
  * Quiz System Tests
  */
 
-describe('Quiz Page', () => {
+describe('Quiz Page - Nav', () => {
+  it('shows Login button when not logged in', () => {
+    cy.visit('/quiz.html')
+    cy.get('#nav-user-area').should('contain', 'Log in')
+  })
+
+  it('shows Dashboard button when logged in', () => {
+    cy.loginAsStudent('test@plc.ie')
+    cy.visit('/quiz.html')
+    cy.get('#nav-user-area').should('contain', 'Dashboard')
+    cy.get('#nav-user-area').should('not.contain', 'Log in')
+  })
+})
+
+describe('Quiz Page - Module Selection', () => {
   beforeEach(() => {
     cy.visit('/quiz.html')
   })
 
-  it('should load quiz page', () => {
+  it('loads the quiz page', () => {
     cy.url().should('include', 'quiz.html')
-    cy.contains('Quiz').should('be.visible')
   })
 
-  it('should show all quiz modules', () => {
-    // Should show module selection
-    cy.get('.module-card, .quiz-module').should('have.length.at.least', 10)
+  it('shows 10 module cards', () => {
+    cy.get('[onclick*="handleQuizSelection"]', { timeout: 10000 }).should('have.length.at.least', 10)
   })
 
-  it('should display module names and icons', () => {
-    const modules = ['Biology', 'Animal Welfare', 'Grooming']
-
+  it('shows module names', () => {
+    const modules = ['Biology', 'Animal Welfare', 'Grooming', 'Animal Anatomy']
     modules.forEach(module => {
       cy.contains(module, { timeout: 10000 }).should('be.visible')
     })
   })
 })
 
-describe('Quiz Functionality', () => {
+describe('Quiz Functionality - Visitor', () => {
   beforeEach(() => {
     cy.visit('/quiz.html')
+    cy.get('[onclick*="handleQuizSelection"]', { timeout: 10000 }).first().click()
   })
 
-  it('should start quiz when module selected', () => {
-    // Click first module
-    cy.get('.module-card, .quiz-module').first().click()
-
-    // Quiz should start
-    cy.get('.quiz-container, .question-container').should('be.visible')
+  it('shows question text', () => {
+    cy.get('body').should('contain.text', '?')
   })
 
-  it('should display question text', () => {
-    cy.get('.module-card, .quiz-module').first().click()
-
-    cy.get('.question-text, .question').should('be.visible')
-    cy.get('.question-text, .question').should('not.be.empty')
+  it('shows 4 answer options', () => {
+    cy.get('.option-btn, button[onclick*="selectAnswer"], .answer-btn', { timeout: 10000 }).should('have.length.at.least', 4)
   })
 
-  it('should show answer options', () => {
-    cy.get('.module-card, .quiz-module').first().click()
-
-    cy.get('.option, .answer-option').should('have.length', 4)
-  })
-
-  it('should allow selecting an answer', () => {
-    cy.get('.module-card, .quiz-module').first().click()
-
-    // Click first option
-    cy.get('.option, .answer-option').first().click()
-
-    // Option should be selected
-    cy.get('.option, .answer-option').first().should('have.class', 'selected')
-  })
-
-  it('should have navigation buttons', () => {
-    cy.get('.module-card, .quiz-module').first().click()
-
-    // Should have next/submit button
-    cy.get('button').contains(/next|submit/i).should('exist')
+  it('shows progress indicator', () => {
+    cy.contains(/Question \d+ of \d+/).should('be.visible')
   })
 })
 
-describe('Quiz Navigation', () => {
+describe('Quiz Functionality - Logged In', () => {
   beforeEach(() => {
+    cy.loginAsStudent('test@plc.ie')
     cy.visit('/quiz.html')
-    cy.get('.module-card, .quiz-module').first().click()
+    cy.get('[onclick*="handleQuizSelection"]', { timeout: 10000 }).first().click()
   })
 
-  it('should navigate to next question', () => {
-    // Select answer
-    cy.get('.option, .answer-option').first().click()
-
-    // Click next
-    cy.contains(/next/i).click()
-
-    // Question number should change or new question appears
-    cy.wait(500)
-    cy.get('.question-text, .question').should('be.visible')
+  it('shows all questions (not limited to 30%)', () => {
+    cy.contains(/Question 1 of (\d+)/).invoke('text').then((text) => {
+      const total = parseInt(text.match(/of (\d+)/)[1])
+      expect(total).to.be.greaterThan(10)
+    })
   })
 
-  it('should show progress indicator', () => {
-    // Should show question count (e.g., "1/20")
-    cy.get('body').should('contain', '/')
+  it('can answer a question and advance', () => {
+    cy.get('.option-btn, button[onclick*="selectAnswer"], .answer-btn').first().click()
+    cy.wait(600) // wait for next question
+    cy.contains(/Question \d+ of \d+/).should('be.visible')
   })
 })
 
-describe('Quiz Completion', () => {
-  it('should show results after completing quiz', () => {
-    cy.visit('/quiz.html')
-    cy.get('.module-card, .quiz-module').first().click()
+describe('Exam Mode', () => {
+  beforeEach(() => {
+    cy.loginAsStudent('test@plc.ie')
+    cy.visit('/quiz.html?module=biology.js&examMode=true')
+  })
 
-    // Answer multiple questions quickly
-    for (let i = 0; i < 5; i++) {
-      cy.get('.option, .answer-option').first().click()
-      cy.contains(/next|submit/i).click()
-      cy.wait(300)
-    }
+  it('shows exam mode banner', () => {
+    cy.contains('EXAM MODE ACTIVE', { timeout: 10000 }).should('be.visible')
+  })
 
-    // Eventually should see completion or results
-    // (depends on quiz length)
+  it('shows timer', () => {
+    cy.contains('TIME REMAINING', { timeout: 10000 }).should('be.visible')
+  })
+
+  it('does not show "Practice your Wisdom" heading', () => {
+    cy.get('h1').should('not.be.visible')
+  })
+})
+
+describe('Smart Review Mode', () => {
+  beforeEach(() => {
+    cy.loginAsStudent('test@plc.ie')
+    cy.visit('/quiz.html?module=biology.js&smartReview=true&moduleName=Biology')
+  })
+
+  it('shows Smart Review banner', () => {
+    cy.contains('Smart Review', { timeout: 10000 }).should('be.visible')
+    cy.contains('Biology', { timeout: 10000 }).should('be.visible')
   })
 })

@@ -19,6 +19,8 @@
   "author": "Pethology Team",
   "license": "MIT",
   "devDependencies": {
-    "cypress": "^13.6.0"
+    "cypress": "^13.6.0",
+    "serve": "^14.2.6",
+    "wait-on": "^9.0.4"
   }
 }
