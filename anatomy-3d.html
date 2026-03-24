@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3D Anatomy — Pethology</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/public.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #f9fafb; color: #111; -webkit-font-smoothing: antialiased; }
+
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: white;
+      text-align: center;
+      padding: 80px 24px 64px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 4px 16px;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
+      color: rgba(255,255,255,0.85);
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, #4ade80, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.75);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .content {
+      max-width: 800px;
+      margin: 64px auto 80px;
+      padding: 0 24px;
+      text-align: center;
+    }
+
+    .model-preview {
+      background: white;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 20px;
+      padding: 60px 40px;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .model-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+      opacity: 0.5;
+    }
+    .model-preview-inner { position: relative; }
+    .model-emoji { font-size: 6rem; margin-bottom: 16px; display: block; }
+    .model-preview h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; color: #1a1a2e; }
+    .model-preview p { color: #6b7280; font-size: 0.95rem; }
+
+    .coming-soon-badge {
+      display: inline-block;
+      background: #fef9c3;
+      border: 1.5px solid #fde68a;
+      border-radius: 100px;
+      padding: 6px 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 32px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+      text-align: left;
+    }
+    .feature-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .feature-card .icon { font-size: 1.8rem; margin-bottom: 12px; display: block; }
+    .feature-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; }
+    .feature-card p { font-size: 0.825rem; color: #6b7280; line-height: 1.6; }
+
+    .notify-box {
+      background: linear-gradient(135deg, #1a1a2e, #0f3460);
+      border-radius: 16px;
+      padding: 48px 40px;
+      color: white;
+      text-align: center;
+    }
+    .notify-box h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+    .notify-box p { color: rgba(255,255,255,0.75); margin-bottom: 28px; font-size: 0.95rem; }
+    .notify-form { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
+    .notify-form input {
+      flex: 1;
+      padding: 11px 16px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+    }
+    .notify-form button {
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 20px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .notify-form button:hover { background: #15803d; }
+    .notify-success { display: none; color: #4ade80; font-weight: 600; font-size: 0.95rem; margin-top: 12px; }
+
+    @media (max-width: 600px) {
+      .features { grid-template-columns: 1fr; }
+      .notify-form { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="pub-nav">
+    <a href="index.html" class="pub-nav-logo">🐾 Pethology</a>
+    <div class="pub-nav-links">
+      <a href="about.html">🌿 About</a>
+      <a href="blog.html">✍️ Blog</a>
+      <a href="store.html">🛍️ Store</a>
+    </div>
+    <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge">🔬 New Feature</div>
+    <h1>Interactive <span>3D Anatomy</span></h1>
+    <p>Explore animal anatomy like never before — click on any body part to learn its name, function, and clinical relevance.</p>
+  </div>
+
+  <div class="content">
+    <div class="coming-soon-badge">🚧 Coming Soon</div>
+
+    <div class="model-preview">
+      <div class="model-preview-inner">
+        <span class="model-emoji">🐕</span>
+        <h2>Interactive Animal Models</h2>
+        <p>Rotate, zoom, and click on organs, bones, and muscles — with annotations pulled straight from your course material.</p>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <span class="icon">🖱️</span>
+        <h3>Clickable Hotspots</h3>
+        <p>Click on any anatomical structure to see its name, function, and exam-relevant notes.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">🐾</span>
+        <h3>Multiple Animals</h3>
+        <p>Explore models for dogs, cats, rabbits and more — covering all QQI Level 5 content.</p>
+      </div>
+      <div class="feature-card">
+        <span class="icon">📚</span>
+        <h3>Linked to Your Quizzes</h3>
+        <p>Each structure links back to related quiz questions so you can test yourself instantly.</p>
+      </div>
+    </div>
+
+    <div class="notify-box">
+      <h3>Want to be notified when it launches?</h3>
+      <p>Drop your email and we'll let you know the moment 3D Anatomy goes live.</p>
+      <div class="notify-form">
+        <input type="email" id="notifyEmail" placeholder="your@email.com">
+        <button onclick="submitNotify()">Notify me</button>
+      </div>
+      <div class="notify-success" id="notifySuccess">🐾 You're on the list!</div>
+    </div>
+  </div>
+
+  <footer class="pub-footer">
+    <span>© 2026 Pethology — Built with ❤️ for Animal Care students</span>
+    <div class="footer-links">
+      <a href="about.html">🌿 About</a>
+      <a href="store.html">Store</a>
+      <a href="contact.html">Contact</a>
+      <a href="support.html">Support us</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </footer>
+
+  <script>
+    function submitNotify() {
+      const email = document.getElementById('notifyEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      document.querySelector('.notify-form').style.display = 'none';
+      document.getElementById('notifySuccess').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
