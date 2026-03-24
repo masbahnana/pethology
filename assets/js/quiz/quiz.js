@@ -1403,6 +1403,14 @@ function injectExamModeStyles() {
     body.exam-mode-active {
       background: #0f172a !important;
     }
+    body.exam-mode-active .layout-wrapper {
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    body.exam-mode-active .quiz-container > h1 {
+      display: none !important;
+    }
     body.exam-mode-active #quiz-buttons {
       background: #1e293b;
       border: 1px solid #334155;
