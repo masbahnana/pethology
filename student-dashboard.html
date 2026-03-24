@@ -1995,8 +1995,8 @@
       }
     }
 
-    // Avatar definitions
-    const AVATARS = {
+    // Avatar definitions (window scope so accessible from other scripts)
+    window.AVATARS = {
       cat:   { label: 'Cat',   bg: '#8b5cf6', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#8b5cf6"/><polygon points="9,12 13,6 15,13" fill="white" opacity="0.9"/><polygon points="27,12 23,6 21,13" fill="white" opacity="0.9"/><ellipse cx="18" cy="21" rx="9" ry="8" fill="white" opacity="0.9"/><ellipse cx="14.5" cy="19.5" rx="1.5" ry="2" fill="#8b5cf6"/><ellipse cx="21.5" cy="19.5" rx="1.5" ry="2" fill="#8b5cf6"/><ellipse cx="18" cy="23" rx="1.2" ry="0.8" fill="#f9a8d4"/><line x1="10" y1="22.5" x2="16" y2="23" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="10" y1="24" x2="16" y2="23.5" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="26" y1="22.5" x2="20" y2="23" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/><line x1="26" y1="24" x2="20" y2="23.5" stroke="#8b5cf6" stroke-width="0.6" opacity="0.5"/></svg>` },
       dog:   { label: 'Dog',   bg: '#f59e0b', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#f59e0b"/><ellipse cx="10" cy="15" rx="4" ry="6" fill="white" opacity="0.8" transform="rotate(-15 10 15)"/><ellipse cx="26" cy="15" rx="4" ry="6" fill="white" opacity="0.8" transform="rotate(15 26 15)"/><ellipse cx="18" cy="20" rx="9" ry="8" fill="white" opacity="0.9"/><circle cx="14.5" cy="18.5" r="1.5" fill="#f59e0b"/><circle cx="21.5" cy="18.5" r="1.5" fill="#f59e0b"/><ellipse cx="18" cy="23" rx="3" ry="2" fill="#fde68a" opacity="0.8"/><ellipse cx="18" cy="22" rx="1.5" ry="1" fill="#92400e"/></svg>` },
       cow:   { label: 'Cow',   bg: '#10b981', svg: `<svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="18" r="18" fill="#10b981"/><path d="M12 10 Q9 6 11 4" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/><path d="M24 10 Q27 6 25 4" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/><ellipse cx="9" cy="14" rx="3.5" ry="2.5" fill="white" opacity="0.9" transform="rotate(-20 9 14)"/><ellipse cx="27" cy="14" rx="3.5" ry="2.5" fill="white" opacity="0.9" transform="rotate(20 27 14)"/><ellipse cx="18" cy="21" rx="9" ry="8" fill="white" opacity="0.9"/><circle cx="14" cy="18" r="2.5" fill="#10b981" opacity="0.3"/><circle cx="22" cy="20" r="2" fill="#10b981" opacity="0.3"/><circle cx="14.5" cy="19" r="1.5" fill="#10b981"/><circle cx="21.5" cy="19" r="1.5" fill="#10b981"/><ellipse cx="18" cy="24" rx="3.5" ry="2.5" fill="#fce7f3" opacity="0.9"/><circle cx="16.5" cy="24" r="0.8" fill="#10b981" opacity="0.5"/><circle cx="19.5" cy="24" r="0.8" fill="#10b981" opacity="0.5"/></svg>` },
@@ -2007,7 +2007,7 @@
     };
 
     // Render avatar in sidebar (SVG or initials fallback)
-    function renderUserAvatar(user) {
+    window.renderUserAvatar = function renderUserAvatar(user) {
       const userAvatarEl = document.querySelector('.user-avatar');
       if (!userAvatarEl) return;
 
