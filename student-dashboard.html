@@ -1757,10 +1757,10 @@
             <i data-lucide="clipboard-check" class="stat-icon"></i>
             <span class="stat-label">Quizzes Completed</span>
           </div>
-          <div class="stat-value">24</div>
-          <div class="stat-change">
+          <div class="stat-value" id="stat-totalQuizzes">—</div>
+          <div class="stat-change" id="stat-totalQuizzes-sub">
             <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
-            +3 this week
+            Complete quizzes to start
           </div>
         </div>
 
@@ -1769,10 +1769,10 @@
             <i data-lucide="percent" class="stat-icon"></i>
             <span class="stat-label">Average Score</span>
           </div>
-          <div class="stat-value">87%</div>
-          <div class="stat-change">
+          <div class="stat-value" id="stat-averageScore">—</div>
+          <div class="stat-change" id="stat-averageScore-sub">
             <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
-            +5% improvement
+            No data yet
           </div>
         </div>
 
@@ -1781,7 +1781,7 @@
             <i data-lucide="flame" class="stat-icon"></i>
             <span class="stat-label">Current Streak</span>
           </div>
-          <div class="stat-value">7 days</div>
+          <div class="stat-value" id="stat-streak">—</div>
           <div class="stat-change">
             <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
             Keep it up!
@@ -1793,7 +1793,7 @@
             <i data-lucide="trophy" class="stat-icon"></i>
             <span class="stat-label">Achievements</span>
           </div>
-          <div class="stat-value">12/19</div>
+          <div class="stat-value" id="stat-achievements" ><span id="achievementCount">—</span></div>
           <div class="stat-change">
             <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
             +2 this month
@@ -2260,30 +2260,28 @@
     function updateOverallStats(stats) {
       console.log('🔄 Updating overall stats...');
 
-      // Total de quizzes
-      const totalQuizzesEl = document.querySelector('.total-quizzes, [data-stat="totalQuizzes"]');
-      if (totalQuizzesEl) {
-        totalQuizzesEl.textContent = stats.totalQuizzes || 0;
-      }
+      const total = stats.totalQuizzes || 0;
+      const avg = stats.averageScore || 0;
+      const streak = stats.streak || 0;
 
-      // Média de score (already in percentage 0-100 from firebase-rest.js)
-      const avgScoreEl = document.querySelector('.average-score, [data-stat="averageScore"]');
-      if (avgScoreEl) {
-        avgScoreEl.textContent = `${stats.averageScore || 0}%`;
-      }
+      const totalEl = document.getElementById('stat-totalQuizzes');
+      if (totalEl) totalEl.textContent = total;
 
-      // Streak
-      const streakEl = document.querySelector('.current-streak, [data-stat="streak"]');
-      if (streakEl) {
-        streakEl.textContent = stats.streak || 0;
-      }
+      const totalSubEl = document.getElementById('stat-totalQuizzes-sub');
+      if (totalSubEl) totalSubEl.innerHTML = total > 0
+        ? `<i data-lucide="trending-up" style="width:12px;height:12px;"></i> ${total} quiz${total !== 1 ? 'zes' : ''} done`
+        : `<i data-lucide="trending-up" style="width:12px;height:12px;"></i> Complete quizzes to start`;
 
-      // Tempo total (em minutos)
-      const timeEl = document.querySelector('.total-time, [data-stat="totalTime"]');
-      if (timeEl) {
-        const minutes = Math.round((stats.totalTimeSpent || 0) / 60);
-        timeEl.textContent = `${minutes} min`;
-      }
+      const avgEl = document.getElementById('stat-averageScore');
+      if (avgEl) avgEl.textContent = avg > 0 ? `${avg}%` : '—';
+
+      const avgSubEl = document.getElementById('stat-averageScore-sub');
+      if (avgSubEl) avgSubEl.innerHTML = avg > 0
+        ? `<i data-lucide="trending-up" style="width:12px;height:12px;"></i> Keep it up!`
+        : `<i data-lucide="trending-up" style="width:12px;height:12px;"></i> No data yet`;
+
+      const streakEl = document.getElementById('stat-streak');
+      if (streakEl) streakEl.textContent = streak > 0 ? `${streak} days` : '—';
 
       console.log('✅ Stats updated:', stats);
     }
