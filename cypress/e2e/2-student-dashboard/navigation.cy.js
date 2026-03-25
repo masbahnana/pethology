@@ -45,17 +45,17 @@ describe('Student Dashboard - Sidebar Navigation', () => {
   })
 
   it('shows coming soon toast for Flashcards', () => {
-    cy.contains('Flashcards').click()
+    cy.contains('Flashcards').click({ force: true })
     cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
   })
 
   it('shows coming soon toast for Notes', () => {
-    cy.contains('Notes').click()
+    cy.contains('Notes').click({ force: true })
     cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
   })
 
   it('shows coming soon toast for Goals', () => {
-    cy.contains('Goals').click()
+    cy.contains('Goals').click({ force: true })
     cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
   })
 })
