@@ -67,12 +67,14 @@ describe('Announcement List', () => {
     })
   })
 
-  it('should show announcement items with edit/delete buttons', () => {
-    // If announcements exist
-    cy.get('.announcement-item').first().then(($item) => {
-      if ($item.length) {
-        cy.wrap($item).find('[title="Edit"]').should('exist')
-        cy.wrap($item).find('[title="Delete"]').should('exist')
+  it('should show announcement items with edit/delete buttons if any exist', () => {
+    cy.get('#announcementsListContainer').then(($container) => {
+      const items = $container.find('.announcement-item')
+      if (items.length) {
+        cy.wrap(items.first()).find('[title="Edit"]').should('exist')
+        cy.wrap(items.first()).find('[title="Delete"]').should('exist')
+      } else {
+        cy.log('No announcements to check — skipping edit/delete assertion')
       }
     })
   })

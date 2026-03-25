@@ -85,7 +85,7 @@ describe('Student Dashboard - Avatar Dropdown', () => {
   it('closes profile modal on cancel', () => {
     cy.get('.user-section').click()
     cy.contains('Edit Profile').click()
-    cy.contains('Cancel').click()
+    cy.get('#profileModal').contains('Cancel').click()
     cy.get('#profileModal').should('not.be.visible')
   })
 })

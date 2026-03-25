@@ -48,7 +48,7 @@ describe('Quiz Functionality - Visitor', () => {
   })
 
   it('shows 4 answer options', () => {
-    cy.get('.option-btn, button[onclick*="selectAnswer"], .answer-btn', { timeout: 10000 }).should('have.length.at.least', 4)
+    cy.get('.answer-button', { timeout: 10000 }).should('have.length.at.least', 4)
   })
 
   it('shows progress indicator', () => {
@@ -71,7 +71,7 @@ describe('Quiz Functionality - Logged In', () => {
   })
 
   it('can answer a question and advance', () => {
-    cy.get('.option-btn, button[onclick*="selectAnswer"], .answer-btn').first().click()
+    cy.get('.answer-button').first().click()
     cy.wait(600) // wait for next question
     cy.contains(/Question \d+ of \d+/).should('be.visible')
   })
@@ -81,14 +81,16 @@ describe('Exam Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
     cy.visit('/quiz.html?module=biology.js&examMode=true')
+    // Wait for questions to load before asserting
+    cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
 
   it('shows exam mode banner', () => {
-    cy.contains('EXAM MODE ACTIVE', { timeout: 10000 }).should('be.visible')
+    cy.contains('Exam Mode Active', { timeout: 10000 }).should('be.visible')
   })
 
   it('shows timer', () => {
-    cy.contains('TIME REMAINING', { timeout: 10000 }).should('be.visible')
+    cy.contains('Time Remaining', { timeout: 10000 }).should('be.visible')
   })
 
   it('does not show "Practice your Wisdom" heading', () => {
@@ -100,6 +102,7 @@ describe('Smart Review Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
     cy.visit('/quiz.html?module=biology.js&smartReview=true&moduleName=Biology')
+    cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
 
   it('shows Smart Review banner', () => {
