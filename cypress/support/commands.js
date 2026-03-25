@@ -9,18 +9,27 @@
 Cypress.Commands.add('loginAsStudent', (email) => {
   cy.log(`🔐 Logging in as student: ${email}`)
 
-  // Mock sessionStorage with student data
-  cy.window().then((win) => {
-    const mockStudent = {
-      id: 'test-student-id',
-      email: email,
-      name: 'Test Student',
-      role: 'Student',
-      photo: '',
-      loginTime: new Date().toISOString(),
-      provider: 'auth0'
-    }
-    win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockStudent))
+  const mockStudent = {
+    id: 'test-student-id',
+    email: email,
+    name: 'Test Student',
+    role: 'Student',
+    photo: '',
+    loginTime: new Date().toISOString(),
+    provider: 'auth0'
+  }
+
+  cy.session(email, () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockStudent))
+      }
+    })
+  }, {
+    validate() {
+      cy.window().its('sessionStorage').invoke('getItem', 'pethologyUser').should('not.be.null')
+    },
+    cacheAcrossSpecs: true
   })
 })
 
@@ -31,18 +40,27 @@ Cypress.Commands.add('loginAsStudent', (email) => {
 Cypress.Commands.add('loginAsTeacher', (email) => {
   cy.log(`🔐 Logging in as teacher: ${email}`)
 
-  // Mock sessionStorage with teacher data
-  cy.window().then((win) => {
-    const mockTeacher = {
-      id: 'test-teacher-id',
-      email: email,
-      name: 'Test Teacher',
-      role: 'Teacher',
-      photo: '',
-      loginTime: new Date().toISOString(),
-      provider: 'auth0'
-    }
-    win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockTeacher))
+  const mockTeacher = {
+    id: 'test-teacher-id',
+    email: email,
+    name: 'Test Teacher',
+    role: 'Teacher',
+    photo: '',
+    loginTime: new Date().toISOString(),
+    provider: 'auth0'
+  }
+
+  cy.session(`teacher-${email}`, () => {
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockTeacher))
+      }
+    })
+  }, {
+    validate() {
+      cy.window().its('sessionStorage').invoke('getItem', 'pethologyUser').should('not.be.null')
+    },
+    cacheAcrossSpecs: true
   })
 })
 
