@@ -80,7 +80,7 @@ describe('Quiz Functionality - Logged In', () => {
 describe('Exam Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html?module=biology.js&examMode=true')
+    cy.visit('/quiz.html?module=biology&examMode=true')
     // Wait for questions to load before asserting
     cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
@@ -101,7 +101,7 @@ describe('Exam Mode', () => {
 describe('Smart Review Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html?module=biology.js&smartReview=true&moduleName=Biology')
+    cy.visit('/quiz.html?module=biology&smartReview=true&moduleName=Biology')
     cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
 
