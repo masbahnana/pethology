@@ -4,13 +4,13 @@
 
 describe('Quiz Page - Nav', () => {
   it('shows Login button when not logged in', () => {
-    cy.visit('/quiz.html')
+    cy.visit('/quiz')
     cy.get('#nav-user-area').should('contain', 'Log in')
   })
 
   it('shows Dashboard button when logged in', () => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html')
+    cy.visit('/quiz')
     cy.get('#nav-user-area').should('contain', 'Dashboard')
     cy.get('#nav-user-area').should('not.contain', 'Log in')
   })
@@ -18,7 +18,7 @@ describe('Quiz Page - Nav', () => {
 
 describe('Quiz Page - Module Selection', () => {
   beforeEach(() => {
-    cy.visit('/quiz.html')
+    cy.visit('/quiz')
   })
 
   it('loads the quiz page', () => {
@@ -39,7 +39,7 @@ describe('Quiz Page - Module Selection', () => {
 
 describe('Quiz Functionality - Visitor', () => {
   beforeEach(() => {
-    cy.visit('/quiz.html')
+    cy.visit('/quiz')
     cy.get('[onclick*="handleQuizSelection"]', { timeout: 15000 }).first().click()
   })
 
@@ -59,7 +59,7 @@ describe('Quiz Functionality - Visitor', () => {
 describe('Quiz Functionality - Logged In', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html')
+    cy.visit('/quiz')
     cy.get('[onclick*="handleQuizSelection"]', { timeout: 10000 }).first().click()
   })
 
@@ -80,7 +80,7 @@ describe('Quiz Functionality - Logged In', () => {
 describe('Exam Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html?module=biology&examMode=true')
+    cy.visit('/quiz?module=biology&examMode=true')
     cy.get('#quiz-buttons', { timeout: 15000 }).should('not.be.empty')
     cy.get('#quiz-buttons').then(($el) => cy.log('quiz-buttons HTML: ' + $el.html().substring(0, 300)))
   })
@@ -101,7 +101,7 @@ describe('Exam Mode', () => {
 describe('Smart Review Mode', () => {
   beforeEach(() => {
     cy.loginAsStudent('test@plc.ie')
-    cy.visit('/quiz.html?module=biology&smartReview=true&moduleName=Biology')
+    cy.visit('/quiz?module=biology&smartReview=true&moduleName=Biology')
     cy.get('#quiz-buttons', { timeout: 15000 }).should('not.be.empty')
   })
 
