@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.3.0
         with:
           node-version: 24
           cache: 'npm'
@@ -41,7 +41,7 @@ jobs:
           CYPRESS_teacherEmail: ${{ secrets.CYPRESS_TEACHER_EMAIL }}
 
       - name: Upload screenshots on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         if: failure()
         with:
           name: cypress-screenshots
@@ -49,9 +49,10 @@ jobs:
           retention-days: 7
 
       - name: Upload videos
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         if: always()
         with:
           name: cypress-videos
           path: cypress/videos
+          if-no-files-found: ignore
           retention-days: 7
