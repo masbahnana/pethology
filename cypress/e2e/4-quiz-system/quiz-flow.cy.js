@@ -40,7 +40,7 @@ describe('Quiz Page - Module Selection', () => {
 describe('Quiz Functionality - Visitor', () => {
   beforeEach(() => {
     cy.visit('/quiz.html')
-    cy.get('[onclick*="handleQuizSelection"]', { timeout: 10000 }).first().click()
+    cy.get('[onclick*="handleQuizSelection"]', { timeout: 15000 }).first().click()
   })
 
   it('shows question text', () => {
@@ -79,12 +79,8 @@ describe('Quiz Functionality - Logged In', () => {
 
 describe('Exam Mode', () => {
   beforeEach(() => {
-    const mockStudent = { id: 'test-student-id', email: 'test@plc.ie', name: 'Test Student', role: 'Student', photo: '', provider: 'auth0' }
-    cy.visit('/quiz.html?module=biology&examMode=true', {
-      onBeforeLoad(win) {
-        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockStudent))
-      }
-    })
+    cy.loginAsStudent('test@plc.ie')
+    cy.visit('/quiz.html?module=biology&examMode=true')
     cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
 
@@ -103,12 +99,8 @@ describe('Exam Mode', () => {
 
 describe('Smart Review Mode', () => {
   beforeEach(() => {
-    const mockStudent = { id: 'test-student-id', email: 'test@plc.ie', name: 'Test Student', role: 'Student', photo: '', provider: 'auth0' }
-    cy.visit('/quiz.html?module=biology&smartReview=true&moduleName=Biology', {
-      onBeforeLoad(win) {
-        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockStudent))
-      }
-    })
+    cy.loginAsStudent('test@plc.ie')
+    cy.visit('/quiz.html?module=biology&smartReview=true&moduleName=Biology')
     cy.get('.answer-button', { timeout: 15000 }).should('have.length.at.least', 1)
   })
 

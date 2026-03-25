@@ -19,18 +19,8 @@ Cypress.Commands.add('loginAsStudent', (email) => {
     provider: 'auth0'
   }
 
-  cy.session(email, () => {
-    cy.visit('/', {
-      onBeforeLoad(win) {
-        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockStudent))
-      }
-    })
-  }, {
-    validate() {
-      cy.window().its('sessionStorage').invoke('getItem', 'pethologyUser').should('not.be.null')
-    },
-    cacheAcrossSpecs: true
-  })
+  // Expose the mock data so the next cy.visit() can inject it via onBeforeLoad
+  Cypress.env('mockStudent', mockStudent)
 })
 
 /**
@@ -50,18 +40,7 @@ Cypress.Commands.add('loginAsTeacher', (email) => {
     provider: 'auth0'
   }
 
-  cy.session(`teacher-${email}`, () => {
-    cy.visit('/', {
-      onBeforeLoad(win) {
-        win.sessionStorage.setItem('pethologyUser', JSON.stringify(mockTeacher))
-      }
-    })
-  }, {
-    validate() {
-      cy.window().its('sessionStorage').invoke('getItem', 'pethologyUser').should('not.be.null')
-    },
-    cacheAcrossSpecs: true
-  })
+  Cypress.env('mockStudent', mockTeacher)
 })
 
 /**
