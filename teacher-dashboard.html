@@ -1402,14 +1402,6 @@
             <i data-lucide="home"></i>
             Home
           </a>
-          <a href="teacher-content-manager.html" class="btn btn-secondary">
-            <i data-lucide="plus-circle"></i>
-            Publish Content
-          </a>
-          <button onclick="openClassSettings()" class="btn btn-secondary">
-            <i data-lucide="settings"></i>
-            Settings
-          </button>
           <div class="dropdown" id="help-dropdown">
             <button class="dropdown-toggle" onclick="toggleHelpDropdown()">
               <i data-lucide="help-circle"></i>
@@ -1510,6 +1502,14 @@
           <li class="quick-action-item" onclick="openClassSettings('students')">
             <i data-lucide="user-plus" class="quick-action-icon"></i>
             <span class="quick-action-text">Add New Students</span>
+          </li>
+          <li class="quick-action-item" onclick="window.location.href='teacher-content-manager.html'">
+            <i data-lucide="plus-circle" class="quick-action-icon"></i>
+            <span class="quick-action-text">Publish Content</span>
+          </li>
+          <li class="quick-action-item" onclick="openClassSettings()">
+            <i data-lucide="settings" class="quick-action-icon"></i>
+            <span class="quick-action-text">Settings</span>
           </li>
           <li class="quick-action-item" onclick="showCreateAnnouncementModal()">
             <i data-lucide="megaphone" class="quick-action-icon"></i>
