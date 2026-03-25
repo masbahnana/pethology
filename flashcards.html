@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flashcards — Pethology</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --card-bg: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --radius: 16px;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    .nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-weight: 700; font-size: 1rem; text-decoration: none; color: var(--text); }
+    .nav-sep { color: var(--border); font-size: 1.2rem; }
+    .nav-title { font-size: 0.95rem; font-weight: 600; color: var(--muted); }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 0.875rem; font-family: var(--font);
+      color: var(--muted); cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-back:hover { background: var(--bg); color: var(--text); }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 24px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* MODULE PICKER */
+    #modulePicker { width: 100%; }
+    #modulePicker h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    #modulePicker p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 28px;
+    }
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .module-card {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .module-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+    }
+    .module-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .module-info h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 2px; }
+    .module-info span { font-size: 0.78rem; color: var(--muted); }
+
+    /* FLASHCARD VIEWER */
+    #flashcardViewer { width: 100%; display: none; flex-direction: column; align-items: center; }
+
+    .viewer-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .viewer-module {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .viewer-count {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 100px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 100px;
+      transition: width 0.3s ease;
+    }
+
+    /* CARD */
+    .card-wrap {
+      width: 100%;
+      perspective: 1200px;
+      margin-bottom: 24px;
+      cursor: pointer;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      min-height: 260px;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-inner.flipped { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .card-face.back {
+      transform: rotateY(180deg);
+      background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
+      border-color: #bbf7d0;
+    }
+
+    .card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .card-face.back .card-label { color: var(--green); }
+
+    .card-question {
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .card-answer {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+    .card-explanation {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+    .flip-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 20px;
+    }
+
+    /* ACTIONS */
+    .card-actions {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      margin-top: 4px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-knew {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1.5px solid #bbf7d0;
+    }
+    .btn-knew:hover { background: #dcfce7; }
+    .btn-didnt {
+      background: var(--red-light);
+      color: var(--red);
+      border: 1.5px solid #fecaca;
+    }
+    .btn-didnt:hover { background: #fee2e2; }
+
+    .actions-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* RESULTS */
+    #resultsScreen {
+      width: 100%;
+      text-align: center;
+      display: none;
+    }
+    .results-icon { font-size: 4rem; margin-bottom: 16px; display: block; }
+    .results-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+    .results-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 32px; }
+
+    .results-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .result-stat {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 12px;
+    }
+    .result-stat .num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .result-stat .lbl { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+    .result-stat.green .num { color: var(--green); }
+    .result-stat.red .num { color: var(--red); }
+    .result-stat.blue .num { color: var(--blue); }
+
+    .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--text);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary-outline {
+      background: white;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-secondary-outline:hover { border-color: var(--text); }
+
+    @media (max-width: 480px) {
+      .module-grid { grid-template-columns: 1fr; }
+      .results-stats { grid-template-columns: repeat(3, 1fr); }
+      .card-face { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <span class="nav-logo">🐾 Pethology</span>
+      <span class="nav-sep">/</span>
+      <span class="nav-title">Flashcards</span>
+    </div>
+    <a href="student-dashboard.html" class="btn-back">← Dashboard</a>
+  </nav>
+
+  <main class="main">
+
+    <!-- MODULE PICKER -->
+    <div id="modulePicker">
+      <h1>Flashcards</h1>
+      <p>Choose a module to start practising.</p>
+      <div class="module-grid" id="moduleGrid"></div>
+    </div>
+
+    <!-- FLASHCARD VIEWER -->
+    <div id="flashcardViewer">
+      <div class="viewer-header">
+        <span class="viewer-module" id="viewerModuleName"></span>
+        <span class="viewer-count" id="viewerCount"></span>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+
+      <div class="card-wrap" id="cardWrap" onclick="flipCard()">
+        <div class="card-inner" id="cardInner">
+          <div class="card-face front">
+            <div class="card-label">Question</div>
+            <div class="card-question" id="cardQuestion"></div>
+            <div class="flip-hint">👆 Tap to reveal answer</div>
+          </div>
+          <div class="card-face back">
+            <div class="card-label">Answer</div>
+            <div class="card-answer" id="cardAnswer"></div>
+            <div class="card-explanation" id="cardExplanation"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions" id="cardActions" style="display:none;">
+        <button class="action-btn btn-didnt" onclick="answer(false)">✗ Didn't know</button>
+        <button class="action-btn btn-knew"  onclick="answer(true)">✓ Knew it</button>
+      </div>
+      <div class="actions-hint" id="actionsHint">Flip the card first</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="resultsScreen">
+      <span class="results-icon" id="resultsIcon"></span>
+      <div class="results-title" id="resultsTitle"></div>
+      <div class="results-sub" id="resultsSub"></div>
+      <div class="results-stats">
+        <div class="result-stat green">
+          <div class="num" id="resKnew">0</div>
+          <div class="lbl">Knew it</div>
+        </div>
+        <div class="result-stat red">
+          <div class="num" id="resDidnt">0</div>
+          <div class="lbl">Didn't know</div>
+        </div>
+        <div class="result-stat blue">
+          <div class="num" id="resTotal">0</div>
+          <div class="lbl">Total cards</div>
+        </div>
+      </div>
+      <div class="results-actions">
+        <button class="btn-primary" onclick="restartModule()">Practice again</button>
+        <button class="btn-secondary-outline" onclick="practiceWeak()">Practice missed cards</button>
+        <button class="btn-secondary-outline" onclick="backToModules()">Choose module</button>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    const MODULES = [
+      { id: 'biology',           name: 'Biology',                      icon: '🧬', file: 'biology.js' },
+      { id: 'animal-welfare',    name: 'Animal Welfare',               icon: '🐾', file: 'animal-welfare.js' },
+      { id: 'grooming',          name: 'Grooming',                     icon: '✂️',  file: 'grooming.js' },
+      { id: 'animal-anatomy',    name: 'Animal Anatomy',               icon: '🦴', file: 'animal-anatomy.js' },
+      { id: 'animal-behaviour',  name: 'Animal Behaviour',             icon: '🐕', file: 'animal-behaviour.js' },
+      { id: 'small-animals',     name: 'Small Animals H&H',            icon: '🐇', file: 'small-animals.js' },
+      { id: 'word-processing',   name: 'Word Processing',              icon: '💻', file: 'word-processing.js' },
+      { id: 'vet-assistant',     name: 'Vet. Assistant Skills',        icon: '🩺', file: 'vet-assistant-skills.js' },
+      { id: 'communications',    name: 'Communications',               icon: '💬', file: 'communications.js' },
+      { id: 'work-experience',   name: 'Work Experience',              icon: '📋', file: 'work-experience.js' },
+    ];
+
+    let cards = [];
+    let weakCards = [];
+    let currentIndex = 0;
+    let knew = 0;
+    let didnt = 0;
+    let isFlipped = false;
+    let currentModuleName = '';
+
+    // ── Build module grid ────────────────────────────────────────────────────
+    const grid = document.getElementById('moduleGrid');
+    MODULES.forEach(m => {
+      const el = document.createElement('div');
+      el.className = 'module-card';
+      el.innerHTML = `
+        <div class="module-icon">${m.icon}</div>
+        <div class="module-info">
+          <h3>${m.name}</h3>
+          <span>Loading…</span>
+        </div>`;
+      el.onclick = () => loadModule(m);
+      grid.appendChild(el);
+
+      // Load question count
+      import(`./assets/js/quiz/${m.file}`)
+        .then(mod => {
+          el.querySelector('span').textContent = `${mod.questions.length} cards`;
+        })
+        .catch(() => {
+          el.querySelector('span').textContent = 'Unavailable';
+          el.style.opacity = '0.5';
+          el.style.pointerEvents = 'none';
+        });
+    });
+
+    // ── Load module ──────────────────────────────────────────────────────────
+    async function loadModule(m) {
+      try {
+        const mod = await import(`./assets/js/quiz/${m.file}`);
+        cards = shuffle([...mod.questions]);
+        weakCards = [];
+        currentIndex = 0;
+        knew = 0;
+        didnt = 0;
+        currentModuleName = m.name;
+        document.getElementById('viewerModuleName').textContent = m.name;
+        showViewer();
+        renderCard();
+      } catch (e) {
+        alert('Could not load module. Please try again.');
+      }
+    }
+
+    // ── Render card ──────────────────────────────────────────────────────────
+    function renderCard() {
+      const card = cards[currentIndex];
+      document.getElementById('cardQuestion').textContent    = card.question;
+      document.getElementById('cardAnswer').textContent      = card.options[card.answer];
+      document.getElementById('cardExplanation').textContent = card.explanation || '';
+      document.getElementById('viewerCount').textContent     = `${currentIndex + 1} / ${cards.length}`;
+
+      const pct = (currentIndex / cards.length) * 100;
+      document.getElementById('progressFill').style.width = pct + '%';
+
+      // Reset flip
+      isFlipped = false;
+      document.getElementById('cardInner').classList.remove('flipped');
+      document.getElementById('cardActions').style.display = 'none';
+      document.getElementById('actionsHint').textContent = 'Flip the card first';
+    }
+
+    // ── Flip ─────────────────────────────────────────────────────────────────
+    window.flipCard = function() {
+      if (isFlipped) return;
+      isFlipped = true;
+      document.getElementById('cardInner').classList.add('flipped');
+      document.getElementById('cardActions').style.display = 'flex';
+      document.getElementById('actionsHint').textContent = 'How did you do?';
+    };
+
+    // ── Answer ───────────────────────────────────────────────────────────────
+    window.answer = function(didKnow) {
+      if (!isFlipped) return;
+      if (didKnow) {
+        knew++;
+      } else {
+        didnt++;
+        weakCards.push(cards[currentIndex]);
+      }
+      currentIndex++;
+      if (currentIndex >= cards.length) {
+        showResults();
+      } else {
+        renderCard();
+      }
+    };
+
+    // ── Results ──────────────────────────────────────────────────────────────
+    function showResults() {
+      const total = knew + didnt;
+      const pct   = Math.round((knew / total) * 100);
+
+      let icon, title, sub;
+      if (pct === 100)      { icon = '🏆'; title = 'Perfect!';        sub = 'You knew every single card. Amazing work!'; }
+      else if (pct >= 80)   { icon = '🌟'; title = 'Great job!';      sub = `You knew ${pct}% of the cards. Almost there!`; }
+      else if (pct >= 60)   { icon = '💪'; title = 'Good effort!';    sub = `You knew ${pct}% of the cards. Keep practising the ones you missed.`; }
+      else                  { icon = '📚'; title = 'Keep studying!';  sub = `You knew ${pct}% of the cards. Practice makes perfect!`; }
+
+      document.getElementById('resultsIcon').textContent  = icon;
+      document.getElementById('resultsTitle').textContent = title;
+      document.getElementById('resultsSub').textContent   = sub;
+      document.getElementById('resKnew').textContent      = knew;
+      document.getElementById('resDidnt').textContent     = didnt;
+      document.getElementById('resTotal').textContent     = total;
+      document.getElementById('progressFill').style.width = '100%';
+
+      // Hide "practice missed" if none
+      document.querySelector('.btn-secondary-outline').style.display = weakCards.length ? '' : 'none';
+
+      document.getElementById('flashcardViewer').style.display = 'none';
+      document.getElementById('resultsScreen').style.display   = 'block';
+    }
+
+    // ── Navigation ───────────────────────────────────────────────────────────
+    window.restartModule = function() {
+      cards = shuffle([...cards, ...weakCards]);
+      weakCards = [];
+      currentIndex = 0;
+      knew = 0;
+      didnt = 0;
+      showViewer();
+      renderCard();
+    };
+
+    window.practiceWeak = function() {
+      if (!weakCards.length) return;
+      cards = shuffle([...weakCards]);
+      weakCards = [];
+      currentIndex = 0;
+      knew = 0;
+      didnt = 0;
+      showViewer();
+      renderCard();
+    };
+
+    window.backToModules = function() {
+      document.getElementById('resultsScreen').style.display   = 'none';
+      document.getElementById('flashcardViewer').style.display = 'none';
+      document.getElementById('modulePicker').style.display    = 'block';
+    };
+
+    function showViewer() {
+      document.getElementById('modulePicker').style.display    = 'none';
+      document.getElementById('resultsScreen').style.display   = 'none';
+      document.getElementById('flashcardViewer').style.display = 'flex';
+    }
+
+    // ── Keyboard shortcuts ───────────────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!isFlipped) { flipCard(); return; }
+      }
+      if (e.key === 'ArrowRight' || e.key === '1') answer(true);
+      if (e.key === 'ArrowLeft'  || e.key === '2') answer(false);
+    });
+
+    // ── Utils ────────────────────────────────────────────────────────────────
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+  </script>
+
+</body>
+</html>
