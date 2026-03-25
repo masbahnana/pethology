@@ -13,16 +13,14 @@ describe('Teacher Announcements', () => {
   })
 
   it('should open create announcement modal', () => {
-    // Find and click "New Announcement" button
-    cy.contains('New Announcement').click()
+    cy.contains('Create Announcement').click()
 
     // Modal should appear
     cy.get('#announcementModal').should('be.visible')
-    cy.contains('Create Announcement').should('be.visible')
   })
 
   it('should have announcement form fields', () => {
-    cy.contains('New Announcement').click()
+    cy.contains('Create Announcement').click()
 
     // Check form fields exist
     cy.get('#announcementTitle').should('exist')
@@ -31,7 +29,7 @@ describe('Teacher Announcements', () => {
   })
 
   it('should close modal on cancel', () => {
-    cy.contains('New Announcement').click()
+    cy.contains('Create Announcement').click()
     cy.get('#announcementModal').should('be.visible')
 
     // Close modal
@@ -40,7 +38,7 @@ describe('Teacher Announcements', () => {
   })
 
   it('should validate empty form submission', () => {
-    cy.contains('New Announcement').click()
+    cy.contains('Create Announcement').click()
 
     // Try to submit empty form
     cy.get('#announcementForm').submit()

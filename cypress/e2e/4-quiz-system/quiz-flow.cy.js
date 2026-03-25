@@ -22,7 +22,7 @@ describe('Quiz Page - Module Selection', () => {
   })
 
   it('loads the quiz page', () => {
-    cy.url().should('include', 'quiz.html')
+    cy.url().should('include', 'quiz')
   })
 
   it('shows 10 module cards', () => {

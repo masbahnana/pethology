@@ -14,7 +14,7 @@ describe('Authentication', () => {
 
   it('should navigate to login page', () => {
     cy.get('a[href*="auth0-login"]').first().click()
-    cy.url().should('include', 'auth0-login.html')
+    cy.url().should('include', 'auth0-login')
   })
 
   it('should show login options', () => {

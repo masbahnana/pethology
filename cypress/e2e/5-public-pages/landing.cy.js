@@ -10,7 +10,7 @@ describe('Landing Page', () => {
   })
 
   it('shows nav with correct links', () => {
-    cy.get('.pub-nav').should('be.visible')
+    cy.get('nav').should('be.visible')
     cy.contains('About').should('be.visible')
     cy.contains('Blog').should('be.visible')
     cy.contains('Store').should('be.visible')
@@ -30,7 +30,9 @@ describe('Landing Page', () => {
 
   it('interactive quiz sample works', () => {
     cy.get('.quiz-option').first().click()
-    cy.get('.quiz-option').first().should('have.class', 'selected')
+    cy.get('.quiz-option').first().should('satisfy', ($el) => {
+      return $el.hasClass('selected-right') || $el.hasClass('selected-wrong')
+    })
   })
 })
 
@@ -98,20 +100,20 @@ describe('Guide Page', () => {
 
   it('shows student guide on click', () => {
     cy.contains("I'm a Student").click()
-    cy.contains('Student Guide').should('be.visible')
-    cy.contains('Log in for the first time').should('be.visible')
+    cy.get('#guide-students').should('have.class', 'active')
+    cy.get('#guide-students').contains('Log in for the first time').should('be.visible')
   })
 
   it('shows teacher guide on click', () => {
     cy.contains("I'm a Teacher").click()
-    cy.contains('Teacher Guide').should('be.visible')
-    cy.contains('Create your first class').should('be.visible')
+    cy.get('#guide-teachers').should('have.class', 'active')
+    cy.get('#guide-teachers').contains('Create your first class').should('be.visible')
   })
 
   it('can go back from guide', () => {
     cy.contains("I'm a Student").click()
     cy.contains('← Back').click()
-    cy.contains("I'm a Student").should('be.visible')
+    cy.get('#chooseSection').should('be.visible')
   })
 })
 
