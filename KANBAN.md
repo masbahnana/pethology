@@ -1,465 +1,163 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 24 Março 2026 (sessão tarde)
-**Versão Atual:** v6.1
-**Status:** PILOT LAUNCH + UX Polish + Smart Review Complete
+**Última atualização:** 25 Março 2026
+**Versão Atual:** v6.2
+**Status:** CI/CD + Responsive Polish + 73 E2E Tests Passing
 
 ---
 
-## 🔴 TO DO (Urgente)
-
-### 🚨 Critical Bugs (Pilot Blockers)
-- [x] **Exam Mode não funciona** - ✅ FIXED (22 Jan) - Adicionado onchange ao checkbox
-- [x] **Quiz progress não salva** - ✅ FIXED (22 Jan) - getStudentProgress() agora calcula de quiz_results
-- [x] **Failed to load student data** - ✅ FIXED (22 Jan) - formatTimeAgo no escopo global
-- [x] **Dados misturados demo/real** - ✅ FIXED (22 Jan) - Filtragem por teacherId implementada
+## 🔴 TO DO
 
 ### ⚠️ High Priority
-- [x] **Quiz começa em 2%** - ✅ FIXED (22 Jan) - Agora começa em 0%
-- [x] **Module cards mostram 20 questões** - ✅ FIXED (23 Jan) - Agora mostra número real por módulo
-- [x] **Announcements mark as read** - ✅ FIXED (23 Jan) - Non-pinned desaparecem, pinned ficam verdes
-- [x] **Timer bar + pause no quiz** - ✅ FIXED (23 Jan) - Barra visual + botão pause implementados
-- [x] **Module cards mostravam score como completion** - ✅ FIXED (23 Jan) - Agora mostra "Best: X%"
-- [ ] **Collect teacher feedback** - Após testes iniciais - *ongoing*
+- [ ] **Collect teacher feedback** — Após testes iniciais com Mary + alunos
 
-### 📋 Medium Priority (This Week)
-- [x] **Deletar announcements** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar announcements
-- [x] **Editar/deletar eventos** - ✅ FIXED (23 Jan) - Teacher pode editar/deletar eventos do calendário
-- [x] **Limpar dados fake da Mary** - ✅ FIXED (23 Jan) - Filtragem por teacherId no REST API
-- [x] **Demo users só em dev** - ✅ FIXED (23 Jan) - Botões demo só aparecem em localhost:5500 ou 127.0.0.1:5500
-- [x] **Class Settings** - ✅ DONE (28 Jan) - Modal 3 abas + Manage Class page + quick action refatorado
-  - ✅ Modal básico criado
-  - ✅ Tabs navegáveis
-  - ✅ Atribuição de módulos por teacher
-  - ✅ Mover import CSV para aba Students (27 Jan)
-  - ✅ Refatorar quick action para "Manage Class" (28 Jan)
-- [x] **Exam Mode UI overhaul** - ✅ DONE (28 Jan) - Dark theme, top bar com timer, progress bar, warnings visuais
-- [x] **Coordenador adicionar professores** - ✅ DONE (30 Jan) - Dropdown com teachers existentes, modal para editar módulos
-- [x] **Performance optimization** - ✅ DONE (24 Mar) - Image compression (PNG→JPG, -1MB total), Lucide defer, in-memory cache (30-60s TTL) for students/classes/quiz results
+### 📋 Medium Priority
+- [ ] **Flashcards** — Gerar automaticamente das perguntas de quiz existentes (pergunta = frente, resposta = verso). Zero custo, zero API externa. Flip card animation.
+- [ ] **Notes** — Editor de texto simples por módulo. Aluno escreve notas enquanto estuda. Guarda no Firebase.
+- [ ] **Goals** — Meta semanal por módulo (ex: "Biology 80%+"). Dashboard mostra progresso vs meta. Badge ao atingir.
+- [ ] **3D Anatomy** — anatomy-3d.html criado (coming soon). Feature real a planear — modelo 3D interativo com hotspots ligados aos módulos de quiz.
 
-### 🐛 Minor Bugs
-- [x] **Average Score mostra decimais brutos** - ✅ FIXED (4 Feb) - Scores calculados dinamicamente de quiz_results, convertidos de decimal para %
-- [x] **Class indicator mostra "undefined"** - ✅ FIXED (23 Feb) - Class name setado ao abrir modal com fallback seguro
+### 📝 Low Priority
+- [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
+- [ ] **Export Grades** — CSV export de resultados por turma — *2-3h*
+- [ ] **Class Management P2** — Remove students, bulk actions — *3-4h*
+- [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
+- [ ] **Professional screenshots** — Para marketing — *30min*
 
-### 📝 Low Priority (Features)
-- [x] **Seta no sidebar student** - ✅ DONE (24 Mar) - Dropdown com Edit Profile + Logout. Modal com avatar picker + editar nome
-- [x] **Timer dinâmico no Exam Mode** - ✅ DONE (24 Mar) - Calcula baseado no histórico: avg timeSpent/totalQuestions, clamp 45s–180s/q, default 90s/q
-- [x] **Smart Review System** - ✅ DONE (24 Mar) - Analisa módulo mais fraco e lança quiz direto. Modal "no history yet" com CTA para começar quiz
-- [x] **Exam Mode layout** - ✅ DONE (24 Mar) - Esconde "Practice your Wisdom" h1, remove laterais pretas
-- [x] **Quiz nav login bug** - ✅ DONE (24 Mar) - Nav mostra Dashboard quando logado, Login quando não logado
-- [x] **Stat cards real data** - ✅ DONE (24 Mar) - Stats do dashboard agora mostram dados reais (não hardcoded)
-- [x] **Achievements real data** - ✅ DONE (24 Mar) - Grid de achievements agora usa dados reais do Firebase
-- [x] **Avatar bug** - ✅ DONE (24 Mar) - Banner "undefined" corrigido, avatar persiste entre páginas
-- [x] **Favicon 🐾** - ✅ DONE (24 Mar) - favicon.svg em todas as páginas (funciona no Netlify)
-
-### 🎨 Landing Page Redesign (24 Mar 2026)
-- [x] **index.html** - ✅ DONE - Nova UI completa (Notion/Tally style)
-- [x] **Try our Quiz section** - ✅ DONE - Secção interativa com pergunta sample
-- [x] **Roadmap page** - ✅ DONE - roadmap.html com linha do tempo visual
-- [x] **About page** - ✅ DONE - Só Nana, link para roadmap
-- [x] **Content page** - ✅ DONE - Intro + coming soon
-- [x] **Blog page** - ✅ DONE - Intro + coming soon card
-- [x] **Store page** - ✅ DONE - store.html com 3 produtos coming soon
-- [x] **Support page** - ✅ DONE - Nova UI, link placeholder
-- [x] **Padronizar layout** - ✅ DONE - pub-nav/pub-footer em todas as páginas públicas
-- [x] **Quiz module cards** - ✅ DONE - Cards com ícone centrado, título, "Start quiz →"
-- [x] **guide.html** - ✅ DONE - Página de onboarding (não pública) com guia aluno + professor
-
-### 🐛 Backlog Bugs
-- [ ] **Avatar banner "undefined"** - Testar com student demo amanhã após reset dos dados
+### 🔮 Future (v7.0+)
+- [ ] **Advanced Gamification** — XP, Levels, Leaderboards — *4-6h*
+- [ ] **PWA & Offline Support** — Service Worker, offline quizzes — *6-8h*
+- [ ] **Internship Journal** — Log work experience, photos, timeline — *4-6h*
+- [ ] **Content Manager Migration** — Migrate to REST API — *3-4h*
 
 ---
 
 ## 🟡 IN PROGRESS
 
-### 🏫 Class Settings Feature (23 Jan 2026)
-- Modal com 3 abas: Class Info, Students, Teachers
-- Teacher pode atribuir módulos específicos para outros professores
-- Próximos passos: mover import CSV para modal, refatorar fluxo
-
-### 🧪 Testing Phase - Pilot Launch
-- [x] **Mobile testing & Dashboard fixes** - COMPLETED (22 Jan 2026)
-  - ✅ Fixed index.html script errors
-  - ✅ Hamburger menu em TODAS as páginas
-  - ✅ Navegação funcional em landing pages
-  - ✅ Skills Demonstrations feature fully working
-  - ✅ Calendar events loading dynamically
-  - ✅ Dashboard loading and rendering correctly
-  - ✅ Quiz validation fixed
-  - ✅ Logout function working
-  - ✅ All core dashboards functional (student & teacher)
+- [ ] **Mobile Responsiveness** — Em progresso. Teacher dashboard ✅, Student dashboard ✅, iPad a testar
 
 ---
 
-## 🟢 DONE (Recent Completions)
+## 🟢 DONE
 
-### ✅ January 2026 - Full Feature Implementation & Bug Fixes (22 Jan 2026)
+### ✅ 25 Março 2026 — CI/CD + Responsive Polish
 
-#### Skills Demonstrations Feature - COMPLETE
-- [x] **Teacher Skills Demos Management**
-  - Create, edit, delete demonstrations with checklist items
-  - View student progress with completion tracking
-  - Firestore REST API integration working
+#### Cypress E2E — 73 Tests Passing
+- [x] GitHub Actions workflow (`.github/workflows/cypress.yml`) — Node 24, Chrome headless, `serve` + `wait-on`
+- [x] 5 test suites: authentication, student dashboard, teacher dashboard, quiz system, public pages
+- [x] Badge no README
+- [x] Fix: `cy.visit` overwrite para injetar `sessionStorage` via `onBeforeLoad` (ES module timing issue)
+- [x] Fix: URL params perdidos no 301 redirect do `serve` (`/quiz.html` → `/quiz`)
+- [x] Fix: selectors corrigidos — `.answer-button`, `.user-section`, `#profileModal`, `#guide-students`
+- [x] Fix: `cy.session` → `Cypress.Commands.overwrite('visit')` para autenticação consistente
+- [x] Fix: `force: true` nos sidebar links cobertos por `.nav-section`
+- [x] Fix: `module=biology` (não `biology.js`) no URL param do quiz
 
-- [x] **Student Skills Demos Interface**
-  - View assigned demonstrations
-  - Mark items as complete
-  - Submit progress and track completion
-  - Data persistence to Firebase
+#### Teacher Dashboard Responsive
+- [x] Header actions fazem wrap em mobile (`flex-wrap: wrap`)
+- [x] Class selector move para nova linha em mobile
+- [x] Publish Content + Settings movidos do header para Quick Actions
 
-#### Calendar System - COMPLETE
-- [x] **Dynamic Calendar Events**
-  - Load events from Firebase REST API
-  - Display current month calendar with event indicators
-  - Show upcoming events in dedicated section
-  - Event type color coding (quiz, assignment, exam, announcement)
-  - CSS layout fixes for grid rendering
+#### Student Dashboard Responsive
+- [x] Smart Learning Tools grid stack para 1 coluna em mobile (`smart-tools-grid`)
+- [x] Achievement filters fazem wrap em mobile
+- [x] Achievement header (título + filtros) stack verticalmente em mobile
 
-#### Critical Bug Fixes (22 Jan 2026)
-- [x] **Exam Mode Checkbox** - Added `onchange="toggleExamMode()"` to checkbox in quiz.html
-- [x] **Quiz Progress Not Saving** - Rewrote `getStudentProgress()` in firebase-rest.js to calculate from quiz_results
-  - Now computes: totalQuizzes, averageScore, streak, moduleProgress with completion %
-- [x] **Data Isolation (Demo vs Real)** - Teachers now only see their own students
-  - `getAllStudents(teacherId)` filters by pre_registered_students.addedBy
-  - `getAllStudentsProgress(teacherId)` passes filter through
-  - `getTeacherAnalytics(teacherId)` filters quiz results by student IDs
-  - Mary will only see students SHE imported, not demo/fake data
-- [x] **Calendar Parser Error** - Fixed malformed closing brace in renderCalendar() function
-- [x] **Logout Function Error** - Fixed ReferenceError by ensuring function in global scope
-- [x] **Dashboard Loading Hang** - Fixed by removing 404 API calls to non-existent /progress endpoint
-- [x] **Firestore Data Conversion** - Fixed nested array conversion in convertDocument()
-- [x] **Progress Save/Load** - Fixed API call patterns to use document IDs instead of query parameters
-- [x] **Teacher Student Progress** - Fixed loading from /users instead of empty whitelist
+#### README
+- [x] Criado `README.md` com badge CI, descrição, stack e features
 
-#### Additional Improvements (22 Jan 2026)
-- [x] **Security: Removed hardcoded emails** - Replaced with generic email-based role rules
-- [x] **Role Detection: Generic email rules** - @stconlethcc365.ie for Teachers, plc* for Students
-- [x] **Quiz Validation: Context-aware** - Only validates role when accessing quiz
-- [x] **Firestore REST API: Recursive conversion** - Properly handles nested structures
+---
 
-### ✅ January 2026 - Features & Bug Fixes
-- [x] **Teacher role detection fix** - Generic email-based role assignment (21 Jan 2026)
-  - Teachers: emails ending with @stconlethcc365.ie → Teacher Dashboard
-  - Students: emails starting with 'plc' → Student Dashboard
-  - Removed hardcoded emergency fixes (scalable for all users)
-  - Updated in: auth0-callback.html, auth0-login.html, auth0-service.js
-  - Added security check in student-dashboard.html to auto-redirect teachers
-  - Added session cleanup and cache busting to prevent stale role data
-- [x] **Google Analytics 4** - Basic analytics setup for pilot monitoring (21 Jan 2026)
-  - Created analytics.js helper with custom event tracking
-  - Integrated GA4 (G-BVVY1X67PX) into: index.html, student-dashboard.html, teacher-dashboard.html, quiz.html, auth0-callback.html
-  - Login tracking: automatically tracks user login with role (Teacher/Student)
-  - Custom events ready: quiz_start, quiz_complete, custom_quiz_create, student_import, achievement_unlock, support_ticket
-  - Free tier: 10 million events/month
-- [x] **Exam Mode** - Complete exam simulation with strict rules (20 Jan 2026)
+### ✅ 24 Março 2026 — UX Polish + Smart Review (v6.1)
 
-### ✅ v5.5 - Pilot Launch Materials (24 Oct 2025)
-- [x] for-teachers.html - Página explicativa para professores
-- [x] for-students.html - Página explicativa para estudantes
-- [x] quick-start.html - Guia rápido de início
-- [x] email-templates.html - Templates de email para comunicação
-- [x] Emergency fixes (Mary teacher access, dashboard loading, Lucide icons)
+- [x] **Smart Review System** — Analisa módulo mais fraco, lança quiz direto. Modal "no history yet" com CTA
+- [x] **Stat cards real data** — Dashboard mostra dados reais do Firebase (não hardcoded)
+- [x] **Achievements real data** — Grid usa dados reais do Firebase
+- [x] **Avatar bug** — Banner "undefined" corrigido, avatar persiste entre páginas
+- [x] **Favicon 🐾** — `favicon.svg` em todas as páginas (funciona no Netlify)
+- [x] **Exam Mode layout** — Esconde h1, remove laterais pretas, full width
+- [x] **Quiz nav** — Mostra Dashboard quando logado, Login quando não logado
+- [x] **Flashcards / Notes / Goals** — Coming soon toasts com mensagens divertidas
+- [x] **guide.html** — Página de onboarding com guia aluno + professor
+- [x] **anatomy-3d.html** — Coming soon page com 3 feature cards
+- [x] **3D Anatomy no sidebar** — Adicionado à secção Tools do student dashboard
+- [x] **Avatar dropdown** — Report Issue, Help & FAQ, Logout movidos para dropdown
+- [x] **Sidebar logo** — Substituído imagem por "🐾 Pethology" texto centrado
+- [x] **KANBAN v6.1** — Atualizado
 
-### ✅ v5.4 - Class Management (Oct 2025)
-- [x] Filter/Sort Table - Search, score filter, sortable columns
-- [x] Student Detail View - Stats, weak topics, quiz history
+---
 
-### ✅ v5.3 - Custom Quiz Support (Oct 2025)
-- [x] Custom Quiz Support in quiz.js
-- [x] Real Teacher Whitelist Verification (async Firebase check)
+### ✅ 24 Março 2026 — Performance + Landing Redesign (v6.0)
 
-### ✅ v5.2 - UI/UX Improvements (Oct 2025)
-- [x] Toast Notification System (4 types, auto-dismiss, mobile-friendly)
-- [x] Error Handler (centralized, retry logic, user-friendly)
-- [x] Mobile Responsiveness (touch-friendly, responsive grids)
+- [x] **Performance optimization** — Image compression (PNG→JPG, -1MB), Lucide defer, in-memory cache (30-60s TTL)
+- [x] **Landing page redesign** — Nova UI (Notion/Tally style), quiz interativo sample
+- [x] **Roadmap page** — roadmap.html com linha do tempo visual
+- [x] **Store page** — store.html com produtos coming soon
+- [x] **guide.html** — Onboarding page não pública
+- [x] **Padronizar layout público** — pub-nav/pub-footer em todas as páginas públicas
+- [x] **Quiz module cards** — Cards com ícone centrado, título, "Start quiz →"
+- [x] **FAQ no footer** — Adicionado link FAQ ao footer do index.html
 
-### ✅ v5.1 - Quiz Features (Oct 2025)
-- [x] Quiz Import System (CSV upload, validation)
-- [x] Multiple Quizzes Modal (standard + custom, deadline tracking)
+---
 
-### ✅ v5.0 - Core Features (Oct 2025)
-- [x] Achievements Page (standalone, 19 achievements, filters, stats)
-- [x] My Progress Page (graphs, module breakdown, quiz history)
-- [x] Adaptive Quiz System (AI-powered, 60/30/10 distribution)
+### ✅ Janeiro–Fevereiro 2026
 
-### ✅ v4.2 - Core System (Sep-Oct 2025)
+- [x] Exam Mode UI overhaul — Dark theme, top bar com timer, progress bar, tab warnings
+- [x] Timer dinâmico no Exam Mode — Calcula baseado no histórico (clamp 45s–180s/q)
+- [x] Class Settings modal — 3 abas: Class Info, Students, Teachers
+- [x] Coordenador adicionar professores — Dropdown + modal para editar módulos
+- [x] Average Score bug — Scores calculados dinamicamente de quiz_results
+- [x] Class indicator "undefined" — Fixed com fallback seguro
+- [x] Skills Demonstrations — Teacher cria, aluno submete, progresso guardado
+- [x] Calendar System — Eventos dinâmicos do Firebase, indicadores visuais
+- [x] Google Analytics 4 — Tracking de login, quiz_start, quiz_complete
+- [x] Demo users só em dev — Botões demo só em localhost
+
+---
+
+### ✅ Janeiro 2026 — Critical Fixes & Launch (v5.6)
+
+- [x] Chrome Login CORS — Convertido auth0-login.html para REST API
+- [x] John Doe name — Prioriza nome da whitelist
+- [x] Quiz navigation — 4 cascading fixes (collapsible, onclick, REST import, emoji syntax)
+- [x] Exam Mode checkbox fix
+- [x] Quiz progress saving — Recalculado de quiz_results
+- [x] Data isolation — Teachers só veem os seus próprios alunos
+- [x] Mobile testing — Dashboards + quiz pages responsive
+
+---
+
+### ✅ Outubro 2025 — Core Features (v4.2–v5.5)
+
 - [x] 100% REST API (zero Firebase SDK)
-- [x] Teacher Whitelist System
-- [x] Student Whitelist System (pre-registration)
-- [x] Announcements System (REST API)
-- [x] Dashboard Redesign (stats + calendar + quick actions)
-- [x] Calendar System (REST API)
-- [x] Achievement System (19 achievements)
-- [x] Import Students (CSV + Manual)
 - [x] Auth0 Authentication
+- [x] Teacher + Student Whitelist System
+- [x] Announcements System
+- [x] Achievement System (19 achievements)
+- [x] Adaptive Quiz System (AI-powered, 60/30/10 distribution)
+- [x] My Progress Page
+- [x] Quiz Import (CSV)
 - [x] 200 Quiz Questions (10 modules)
-- [x] Quiz Randomization
-- [x] Cypress E2E Testing Structure
-
-### ✅ Recent Fixes (Jan 2026)
-- [x] Quiz navigation complete fix - 4 cascading issues (21 Jan 2026)
-  - Course Modules collapsible now open by default
-  - Module cards clickable on dashboard
-  - Firebase REST API imported in quiz.html
-  - Emoji characters removed from JavaScript strings
-- [x] Teacher login whitelist check priority fix (19 Jan 2026)
-- [x] Hamburger navigation on all pages (Oct 2025)
-- [x] Mobile layout and script errors (Oct 2025)
-- [x] Demo data population system (Oct 2025)
+- [x] Class Management (filter, sort, student detail view)
+- [x] Toast Notification System
+- [x] Mobile Responsiveness (first pass)
+- [x] Pilot Launch Materials (for-teachers, for-students, quick-start, email-templates)
 
 ---
 
-## 📊 BACKLOG
-
-### 🎯 Low Priority (Can Wait)
-- [ ] **Video tutorial** - Screen recording walkthrough - *1-2h*
-- [ ] **Professional screenshots** - Para marketing - *30min*
-- [ ] **GitHub Kanban board** - Project management UI - *20min* 😄
-
-### 🔮 Future Features (v6.0+)
-
-#### Teacher Tools
-- [ ] **Microsoft Forms Import** - Import quizzes from MS Forms - *4-6h*
-- [ ] **Class Management P2/P3** - Export grades, remove students - *4-6h*
-
-#### Student Experience
-- [x] **Smart Review System** - ✅ DONE (24 Mar)
-- [ ] **Flashcards System** - Stand by — ideia: gerar de quiz questions existentes (zero custo)
-- [ ] **Notes** - Stand by (coming soon toast)
-- [ ] **Goals** - Stand by (coming soon toast)
-- [ ] **3D Anatomy** - anatomy-3d.html criado, feature real a planear
-
-#### Advanced Features
-- [ ] **Advanced Gamification** - XP, Levels, Leaderboards - *4-6h*
-- [ ] **PWA & Offline Support** - Service Worker, offline quizzes - *6-8h*
-- [ ] **Internship Journal** - Log work experience, photos, timeline - *4-6h*
-- [ ] **Content Manager Migration** - Migrate to REST API - *3-4h*
-
----
-
-## 📝 NOTES & REMINDERS
-
-### 🐛 Known Issues
-- Teacher whitelist check agora funciona corretamente (fix: 19 Jan 2026)
-- Mobile testing ainda em progresso (dashboards + quiz pages)
-
-### 💡 Ideas from Manual Testing (23 Oct 2025)
-**Página Inicial:**
-- Melhorar headers para ficar mais centralizado (tipo Notion)?
-- Páginas for-teacher/for-students: tornar mais realista, remover "free trial"
-- Página about: adicionar roadmap visual
-
-**Página Quiz:**
-- Usar mesmo layout dos dashboards (mesmos icons)
-
-**Página Login:**
-- Ajustar "how to login" para nossa realidade
-
-### 🎯 Success Criteria for Pilot Launch
-- ✅ Authentication working (Auth0 + Whitelist)
-- ✅ Teacher can add students
-- ✅ Students can take quizzes
-- ✅ Progress tracking works
-- ✅ Achievements unlock
-- ✅ Mobile responsive (completed 22 Jan 2026)
-- ✅ No critical bugs (all resolved 22 Jan 2026)
-- ✅ Skills Demonstrations working
-- ✅ Calendar events functional
+## 📝 NOTES
 
 ### 👥 Pilot Users
-- **Teacher:** Mary Deegan (mdeegan@stconlethcc365.ie) - ✅ IN WHITELIST
-- **Students:** 5 demo students created + real students to be imported
+- **Teacher:** Mary Deegan (mdeegan@stconlethcc365.ie) ✅ IN WHITELIST
+- **Students:** 5 demo students + real students a importar
 
----
+### 🧪 Testing
+- Cypress: `npx cypress open` (requer `npx serve . --listen 5500` em paralelo)
+- CI: GitHub Actions — corre em cada push/PR para main
+- Badge: [![Cypress E2E Tests](https://github.com/masbahnana/pethology/actions/workflows/cypress.yml/badge.svg)](https://github.com/masbahnana/pethology/actions/workflows/cypress.yml)
 
-## 🚀 QUICK REFERENCE
-
-### Files to Watch
-- `auth0-callback.html` - Login flow (JUST FIXED)
-- `teacher-dashboard.html` - Teacher main page
-- `student-dashboard.html` - Student main page
-- `assets/js/firebase-rest.js` - REST API service
-- `assets/js/auth0-service.js` - Auth service
-
-### Important Collections
-- `/teacher_whitelist` - Authorized teachers
-- `/student_whitelist` - Pre-registered students
-- `/users` - All user accounts
-- `/student_progress` - Quiz history + achievements
-- `/announcements` - Teacher announcements
-- `/calendar_events` - Calendar events
-- `/custom_quizzes` - Teacher-created quizzes
-
-### Testing
-- Cypress tests: `cypress/e2e/`
-- Manual test checklist: See TODO.md lines 700-711
-
----
-
-**🎉 v6.1 — Smart Review + UX Polish completos!**
-
-Próximos passos:
-1. ✅ Mary consegue logar (whitelist a funcionar)
-2. ✅ Smart Review implementado
-3. ✅ Landing page redesenhada
-4. ⏳ Teste manual completo com student demo (amanhã)
-5. ⏳ Coletar feedback da Mary + alunos
-6. ⏳ Planear 3D Anatomy + Flashcards
-
----
-
-## 🐛 RESOLVED BUGS (20 Jan 2026)
-
-### ✅ Chrome Login CORS Issue (CRITICAL)
-**Problem:** Chrome users couldn't log in - page hung after Auth0 redirect, never reached dashboard
-**Cause:** auth0-login.html used Firebase SDK (setDoc) which triggers WebChannel CORS in Chrome
-**Root Cause:** Chrome blocks WebChannel CORS when credentials mode is 'include'; Safari more lenient
-**Fix:** Converted auth0-login.html to use Firebase REST API instead of SDK
-**Files Modified:** auth0-login.html - replaced Firebase SDK imports with PethologyFirebaseREST
-**Testing:** ✅ Verified working in Chrome, Safari, and Firefox
-**Status:** ✅ FIXED - commit d04d17d
-
-### ✅ John Doe Name Issue
-**Problem:** Students logging in with PLC accounts saw "John Doe" instead of their real name
-**Cause:** Auth0 user.name returning placeholder; whitelist name not being used
-**Fix:** Modified auth0-callback.html to prioritize studentData.name from whitelist
-**Status:** ✅ FIXED - commit 4ad10df
-
-### ✅ Quiz Navigation Issues (21 Jan 2026)
-**Problem:** Clicking Biology module from dashboard did nothing - no navigation, blank page
-**Root Causes:** Multiple cascading issues discovered:
-1. Course Modules collapsible menu was closed by default (max-height: 0)
-2. Module cards on dashboard were not clickable (missing onclick handlers)
-3. quiz.html missing Firebase REST API import (quiz.js requires it)
-4. JavaScript syntax errors from emoji characters (⏰, ⚠️) in strings
-
-**Fixes Applied:**
-1. **Commit 20d052c** - Made "Course Modules" collapsible open by default
-   - Added "open" class to both collapsible content and icon
-   - Users can now immediately see and click module links in sidebar
-
-2. **Commit 2f7434b** - Made all 7 module cards clickable on dashboard
-   - Added onclick handlers: `window.location.href='quiz.html?module=X'`
-   - Added cursor: pointer for visual feedback
-   - Modules: biology, animal-welfare, grooming, animal-anatomy, small-animals, vet-assistant-skills, animal-behaviour
-
-3. **Commit 738ebce** - Added Firebase REST API import to quiz.html
-   - quiz.js was migrated to REST API but quiz.html wasn't updated
-   - Added script block to import and expose window.PethologyFirebaseREST
-   - Without this, quiz.js failed silently and page stayed blank
-
-4. **Commit 890c224** - Removed emoji characters causing JavaScript syntax errors
-   - UTF-8 emoji bytes (⏰ ⏱️ ⚠️) confused JavaScript parser
-   - Browser error: "Uncaught SyntaxError: missing ) after argument list (at quiz.js:1313:15)"
-   - Replaced all emojis in alerts/console.logs with plain text: "WARNING:", "Time is up!"
-   - Verified syntax with `node -c quiz.js`
-
-**Testing:** ✅ All module cards now clickable, Biology quiz loads and runs perfectly in Chrome
-**Status:** ✅ FULLY FIXED - 4 consecutive fixes completed
-
----
-
-## 🐛 RESOLVED BUGS (22 Jan 2026)
-
-### ✅ Dashboard Loading & Rendering Issues (CRITICAL - 22 Jan 2026)
-**Problems Found & Fixed:**
-
-1. **Calendar Parser Error**
-   - Problem: SyntaxError in calendar-rest.js at line 243
-   - Cause: Malformed closing brace breaking renderCalendar() function
-   - Fix: Removed extra `}` causing incorrect function structure
-   - Status: ✅ FIXED
-
-2. **Logout Function Undefined**
-   - Problem: ReferenceError "Can't find variable: logout" when clicking logout button
-   - Cause: Function defined as window.logout but onclick called as logout()
-   - Fix: Changed to standalone function declaration with window assignment
-   - Status: ✅ FIXED
-
-3. **Dashboard Hanging on Load**
-   - Problem: Student dashboard wouldn't load, page freeze
-   - Root Cause: getStudentProgress() making 404 requests to non-existent /progress/{userId} endpoint
-   - Fix: Simplified to return empty structure synchronously without API calls
-   - Status: ✅ FIXED - previous session
-
-### ✅ Previous Session Bugs (21 Jan 2026)
-
-#### Skills Demonstrations Data Conversion
-**Problem:** Teacher couldn't save/load student progress, data appeared corrupted
-**Cause 1:** convertDocument() wasn't recursively converting Firestore nested structures
-**Cause 2:** Code used `_id` but Firebase returns `id` field
-**Cause 3:** Progress save used query parameters instead of document IDs
-**Fixes Applied:**
-- Updated convertDocument() to recursively handle mapValue objects inside arrays
-- Changed all _id references to id
-- Modified saveProgress() to use PUT with studentId as document ID instead of query parameters
-- Status: ✅ FIXED
-
-#### Teacher Can't View Student Progress
-**Problem:** viewProgress() showed no students
-**Cause:** Loading from /student_whitelist (empty collection) instead of actual students
-**Fix:** Changed to load from /users and filter by role === 'Student'
-**Status:** ✅ FIXED
-
-### ✅ Quiz & Validation Issues (21 Jan 2026)
-**Problem:** Teachers on index.html got "Only students can access quizzes" alert
-**Cause:** Role validation enforced globally, not just in quiz context
-**Fix:** Moved role check to only run when accessing quiz (URL has module parameter)
-**Status:** ✅ FIXED
-
-### ✅ Calendar Layout Issues (21 Jan 2026)
-**Problem:** Calendar grid breaking layout, days not displaying correctly
-**Cause:** renderCalendar() used .calendar-grid class conflicting with outer layout
-**Fix:** Changed internal grid to .calendar-days, added CSS alias in teacher-dashboard.html
-**Status:** ✅ FIXED
-
-### ✅ Chrome Login CORS Issue (CRITICAL - 20 Jan 2026)
-**Problem:** Chrome users couldn't log in - page hung after Auth0 redirect, never reached dashboard
-**Cause:** auth0-login.html used Firebase SDK (setDoc) which triggers WebChannel CORS in Chrome
-**Root Cause:** Chrome blocks WebChannel CORS when credentials mode is 'include'; Safari more lenient
-**Fix:** Converted auth0-login.html to use Firebase REST API instead of SDK
-**Files Modified:** auth0-login.html - replaced Firebase SDK imports with PethologyFirebaseREST
-**Testing:** ✅ Verified working in Chrome, Safari, and Firefox
-**Status:** ✅ FIXED - commit d04d17d
-
-### ✅ John Doe Name Issue (20 Jan 2026)
-**Problem:** Students logging in with PLC accounts saw "John Doe" instead of their real name
-**Cause:** Auth0 user.name returning placeholder; whitelist name not being used
-**Fix:** Modified auth0-callback.html to prioritize studentData.name from whitelist
-**Status:** ✅ FIXED - commit 4ad10df
-
-### ✅ Quiz Navigation Issues (21 Jan 2026)
-**Problem:** Clicking Biology module from dashboard did nothing - no navigation, blank page
-**Root Causes:** Multiple cascading issues discovered:
-1. Course Modules collapsible menu was closed by default (max-height: 0)
-2. Module cards on dashboard were not clickable (missing onclick handlers)
-3. quiz.html missing Firebase REST API import (quiz.js requires it)
-4. JavaScript syntax errors from emoji characters (⏰, ⚠️) in strings
-
-**Fixes Applied:**
-1. **Commit 20d052c** - Made "Course Modules" collapsible open by default
-   - Added "open" class to both collapsible content and icon
-   - Users can now immediately see and click module links in sidebar
-
-2. **Commit 2f7434b** - Made all 7 module cards clickable on dashboard
-   - Added onclick handlers: `window.location.href='quiz.html?module=X'`
-   - Added cursor: pointer for visual feedback
-   - Modules: biology, animal-welfare, grooming, animal-anatomy, small-animals, vet-assistant-skills, animal-behaviour
-
-3. **Commit 738ebce** - Added Firebase REST API import to quiz.html
-   - quiz.js was migrated to REST API but quiz.html wasn't updated
-   - Added script block to import and expose window.PethologyFirebaseREST
-   - Without this, quiz.js failed silently and page stayed blank
-
-4. **Commit 890c224** - Removed emoji characters causing JavaScript syntax errors
-   - UTF-8 emoji bytes (⏰ ⏱️ ⚠️) confused JavaScript parser
-   - Browser error: "Uncaught SyntaxError: missing ) after argument list (at quiz.js:1313:15)"
-   - Replaced all emojis in alerts/console.logs with plain text: "WARNING:", "Time is up!"
-   - Verified syntax with `node -c quiz.js`
-
-**Testing:** ✅ All module cards now clickable, Biology quiz loads and runs perfectly in Chrome
-**Status:** ✅ FULLY FIXED - 4 consecutive fixes completed
-
----
-
-## 🐛 RESOLVED BUGS (21 Jan 2026)
+### 🎯 Próximos Passos
+1. ⏳ Teste manual com alunos reais
+2. ⏳ Coletar feedback da Mary
+3. ⏳ Decidir ordem: Flashcards vs Goals vs Notes
+4. ⏳ Planear 3D Anatomy (modelo + hotspots)
