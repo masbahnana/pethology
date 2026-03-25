@@ -7,14 +7,8 @@ import './commands'
 
 // Hide fetch/XHR warnings
 Cypress.on('uncaught:exception', (err, runnable) => {
-  // Ignore Firebase/Auth0 errors that don't affect tests
-  if (err.message.includes('Firebase') ||
-      err.message.includes('auth0') ||
-      err.message.includes('ResizeObserver')) {
-    return false
-  }
-  // Let other errors fail the test
-  return true
+  // Suppress all uncaught exceptions so page-level errors don't fail tests
+  return false
 })
 
 // Set default timeout

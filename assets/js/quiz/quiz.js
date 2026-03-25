@@ -1014,6 +1014,9 @@ function getModuleId(file) {
 
 // Auto-load quiz if module parameter is present in URL
 window.onload = function() {
+  // Re-evaluate login state at page load time (sessionStorage may have been set after module parse)
+  isLoggedIn = !!sessionStorage.getItem('pethologyUser');
+
   // Check if user is logged in (but don't force redirect - allow visitors!)
   const userSession = sessionStorage.getItem('pethologyUser');
 
