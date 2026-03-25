@@ -44,9 +44,9 @@ describe('Student Dashboard - Sidebar Navigation', () => {
     cy.get('.sidebar a').should('have.length.at.least', 3)
   })
 
-  it('shows coming soon toast for Flashcards', () => {
+  it('Flashcards link navigates to flashcards page', () => {
     cy.contains('Flashcards').click({ force: true })
-    cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
+    cy.url().should('include', 'flashcards')
   })
 
   it('shows coming soon toast for Notes', () => {

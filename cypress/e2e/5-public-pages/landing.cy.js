@@ -73,16 +73,20 @@ describe('Store Page', () => {
 })
 
 describe('3D Anatomy Page', () => {
-  beforeEach(() => cy.visit('/anatomy-3d.html'))
+  beforeEach(() => cy.visit('/anatomy-3d'))
 
   it('loads successfully', () => {
     cy.contains('3D Anatomy').should('be.visible')
-    cy.contains('Coming Soon').should('be.visible')
   })
 
-  it('shows feature cards', () => {
-    cy.contains('Clickable Hotspots').should('be.visible')
-    cy.contains('Multiple Animals').should('be.visible')
+  it('shows animal selector', () => {
+    cy.contains('Dog').should('be.visible')
+    cy.contains('Cat').should('be.visible')
+  })
+
+  it('shows structure list', () => {
+    cy.contains('Heart').should('be.visible')
+    cy.contains('Lungs').should('be.visible')
   })
 })
 
