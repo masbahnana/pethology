@@ -16,6 +16,8 @@
 - [ ] **Notes** — Editor de texto simples por módulo. Aluno escreve notas enquanto estuda. Guarda no Firebase.
 - [ ] **Goals** — Meta semanal por módulo (ex: "Biology 80%+"). Dashboard mostra progresso vs meta. Badge ao atingir.
 - [ ] **3D Anatomy** — anatomy-3d.html criado (coming soon). Feature real a planear — modelo 3D interativo com hotspots ligados aos módulos de quiz.
+  - **Stack:** Three.js via CDN (encaixa no stack vanilla JS, sem build system). Modelos GLTF gratuitos do Sketchfab (cão, gato, cavalo). Hotspots como divs posicionados sobre canvas com raycasting.
+  - **Alternativa simples:** embed Sketchfab via iframe — zero código, menos controlo.
 
 ### 📝 Low Priority
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
@@ -26,6 +28,7 @@
 
 ### 🔮 Future (v7.0+)
 - [ ] **Advanced Gamification** — XP, Levels, Leaderboards — *4-6h*
+  - **Stack:** Sem biblioteca externa. XP calculado dos `quiz_results` já no Firebase (pontos por score + bónus por streak). Levels por thresholds simples (0-100 = Beginner, 100-300 = Intermediate, etc.). Leaderboard via query dos `quiz_results` por classe ordenado por XP — dados já existem, só falta apresentar.
 - [ ] **PWA & Offline Support** — Service Worker, offline quizzes — *6-8h*
 - [ ] **Internship Journal** — Log work experience, photos, timeline — *4-6h*
 - [ ] **Content Manager Migration** — Migrate to REST API — *3-4h*
