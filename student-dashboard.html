@@ -1229,6 +1229,18 @@
       .calendar-grid {
         grid-template-columns: 1fr;
       }
+
+      /* Smart Learning Tools — stack to single column */
+      .smart-tools-grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Achievement filters — wrap and scroll */
+      .achievement-filters {
+        flex-wrap: wrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
     }
 
     /* Extra small phones */
@@ -1679,7 +1691,7 @@
       <!-- Smart Features Cards -->
       <div style="margin-bottom: 32px;">
         <h2 class="section-title">Smart Learning Tools</h2>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <div class="smart-tools-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
           <!-- Smart Review Card -->
           <div id="smart-review-card" class="card" style="cursor: pointer; transition: all 150ms ease; display: flex; flex-direction: column;" onmouseover="this.style.borderColor='var(--blue-primary)'" onmouseout="this.style.borderColor='var(--gray-100)'">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
