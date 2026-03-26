@@ -736,6 +736,10 @@
             <option value="">Loading...</option>
           </select>
         </div>
+        <button class="btn btn-secondary" onclick="exportGradesCSV()" title="Export grades as CSV">
+          <i data-lucide="download"></i>
+          Export Grades
+        </button>
         <button class="btn btn-secondary" onclick="openArchiveClassModal()" title="Archive this class">
           <i data-lucide="archive"></i>
           Archive Class
@@ -1334,6 +1338,80 @@
       } catch (error) {
         console.error('Error removing student:', error);
         showToast('Failed to remove student', 'error');
+      }
+    };
+
+    // Export Grades CSV
+    window.exportGradesCSV = async function() {
+      if (!currentClassId) {
+        showToast('Please select a class first', 'error');
+        return;
+      }
+
+      const cls = teacherClasses.find(c => c.id === currentClassId);
+      const className = cls?.name || 'class';
+      showToast('Preparing export...', 'info');
+
+      try {
+        const students = await PethologyFirebaseREST.getStudentsByClass(currentClassId);
+        if (!students.length) {
+          showToast('No students in this class', 'error');
+          return;
+        }
+
+        // Collect all module names across all students
+        const moduleSet = new Set();
+        const studentData = await Promise.all(students.map(async s => {
+          const progress = await PethologyFirebaseREST.getStudentProgress(s.id || s.userId);
+          Object.keys(progress.moduleProgress || {}).forEach(m => moduleSet.add(m));
+          return { student: s, progress };
+        }));
+
+        const modules = [...moduleSet].sort();
+
+        // Build CSV header
+        const headers = [
+          'Name', 'Email', 'Status',
+          'Total Quizzes', 'Average Score (%)', 'Questions Answered', 'Correct Answers',
+          ...modules.map(m => `${m} (%)`)
+        ];
+
+        // Build CSV rows
+        const rows = studentData.map(({ student, progress }) => {
+          const stats = progress.overallStats || {};
+          const modProg = progress.moduleProgress || {};
+          const moduleScores = modules.map(m => modProg[m] ? Math.round(modProg[m].averageScore) : '');
+          return [
+            student.name || '',
+            student.email || '',
+            student.status || 'registered',
+            stats.totalQuizzes || 0,
+            stats.averageScore || 0,
+            stats.totalQuestions || 0,
+            stats.correctAnswers || 0,
+            ...moduleScores
+          ];
+        });
+
+        // Generate CSV string
+        const csvContent = [headers, ...rows]
+          .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+
+        // Download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `${className.replace(/\s+/g, '-')}_grades_${date}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        showToast(`Exported ${students.length} students`, 'success');
+      } catch (e) {
+        console.error('Export error:', e);
+        showToast('Export failed', 'error');
       }
     };
 
