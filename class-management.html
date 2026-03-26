@@ -859,7 +859,7 @@
         const userSession = sessionStorage.getItem('pethologyUser');
         const user = JSON.parse(userSession);
 
-        teacherClasses = await PethologyFirebaseREST.getClassesByTeacher(user.email);
+        teacherClasses = await PethologyFirebaseREST.getTeacherClasses(user.id);
 
         const select = document.getElementById('classSelect');
 
