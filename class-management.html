@@ -723,6 +723,10 @@
             <option value="">Loading...</option>
           </select>
         </div>
+        <button class="btn btn-danger" onclick="openDeleteClassModal()" title="Delete this class">
+          <i data-lucide="trash-2"></i>
+          Delete Class
+        </button>
         <button class="btn btn-secondary" onclick="window.location.href='teacher-dashboard.html'">
           <i data-lucide="layout-dashboard"></i>
           Dashboard
@@ -816,6 +820,29 @@
           <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDeleteStudent()">
             <i data-lucide="trash-2"></i>
             Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Class Confirmation Modal -->
+  <div class="modal-overlay" id="deleteClassModal">
+    <div class="modal" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Delete Class</h3>
+        <button class="modal-close" onclick="closeDeleteClassModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 12px;">Are you sure you want to delete <strong id="deleteClassName"></strong>?</p>
+        <p style="font-size: 13px; color: var(--error); margin-bottom: 20px;">⚠️ This action cannot be undone. The class and all its settings will be permanently deleted. Student quiz history will be preserved.</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="closeDeleteClassModal()">Cancel</button>
+          <button class="btn btn-danger" onclick="confirmDeleteClass()">
+            <i data-lucide="trash-2"></i>
+            Delete Class
           </button>
         </div>
       </div>
@@ -1245,6 +1272,30 @@
       } catch (error) {
         console.error('Error removing student:', error);
         showToast('Failed to remove student', 'error');
+      }
+    };
+
+    // Delete class
+    window.openDeleteClassModal = function() {
+      const cls = teacherClasses.find(c => c.id === currentClassId);
+      document.getElementById('deleteClassName').textContent = cls?.name || 'this class';
+      document.getElementById('deleteClassModal').classList.add('active');
+      lucide.createIcons();
+    };
+
+    window.closeDeleteClassModal = function() {
+      document.getElementById('deleteClassModal').classList.remove('active');
+    };
+
+    window.confirmDeleteClass = async function() {
+      try {
+        await PethologyFirebaseREST.deleteClass(currentClassId);
+        closeDeleteClassModal();
+        showToast('Class deleted successfully', 'success');
+        setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 1500);
+      } catch (error) {
+        console.error('Error deleting class:', error);
+        showToast('Failed to delete class', 'error');
       }
     };
 
