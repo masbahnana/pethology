@@ -1326,8 +1326,9 @@
 
       try {
         const student = allStudents.find(s => s.email === studentToDelete);
-        if (student && student.id) {
-          await PethologyFirebaseREST.request(`/pre_registered_students/${student.id}`, 'DELETE');
+        if (student) {
+          const docId = student.id || encodeURIComponent(student.email);
+          await PethologyFirebaseREST.request(`/pre_registered_students/${docId}`, 'DELETE');
         }
 
         closeDeleteModal();
