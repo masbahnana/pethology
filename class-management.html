@@ -1289,6 +1289,18 @@
 
     window.confirmDeleteClass = async function() {
       try {
+        // Remove all students of this class from the whitelist
+        const studentsInClass = allStudents.filter(s => s.classId === currentClassId);
+        await Promise.all(
+          studentsInClass.map(s => {
+            const docId = s.id || s.email;
+            return PethologyFirebaseREST.request(`/pre_registered_students/${docId}`, 'DELETE').catch(e => {
+              console.warn(`Could not remove student ${docId}:`, e);
+            });
+          })
+        );
+
+        // Delete the class itself
         await PethologyFirebaseREST.deleteClass(currentClassId);
         closeDeleteClassModal();
         showToast('Class deleted successfully', 'success');
