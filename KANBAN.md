@@ -10,7 +10,7 @@
 
 ### ⚠️ High Priority
 - [ ] **Collect teacher feedback** — Após testes iniciais com Mary + alunos
-- [ ] **Archive Class** — Em vez de deletar, professora arquiva a turma. Alunos removidos da whitelist (não conseguem logar), mas quiz results/diary/goals preservados. Dashboard mostra só classes activas por defeito. Classe arquivada é read-only. Delete permanente só disponível dentro do arquivo, com aviso claro.
+- [x] **Archive Class** — ✅ DONE (26 Mar) — Em vez de deletar, professora arquiva a turma. Alunos removidos da whitelist (não conseguem logar), quiz results/diary/goals preservados. Dashboard mostra só classes activas. Modal com explicação clara antes de confirmar.
 
 ### 📋 Medium Priority
 - [x] **Flashcards** — ✅ DONE (26 Mar) — 10 módulos, flip card, Knew it / Didn't know, resultados, praticar cards errados. Sidebar Tools link activo.
