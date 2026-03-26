@@ -1509,7 +1509,7 @@
             <i data-lucide="plus-circle" class="quick-action-icon"></i>
             <span class="quick-action-text">Publish Content</span>
           </li>
-          <li class="quick-action-item" onclick="openClassSettings()">
+          <li class="quick-action-item" onclick="openTeacherSettings()">
             <i data-lucide="settings" class="quick-action-icon"></i>
             <span class="quick-action-text">Settings</span>
           </li>
@@ -2900,12 +2900,128 @@
       document.getElementById('studentDetailModal').style.display = 'none';
     };
 
+    // Teacher Settings Modal
+    window.openTeacherSettings = async function() {
+      const modal = document.getElementById('teacherSettingsModal');
+      modal.style.display = 'flex';
+      lucide.createIcons();
+
+      const user = JSON.parse(sessionStorage.getItem('pethologyUser'));
+      document.getElementById('ts-loginEmail').textContent = user.email || '';
+      document.getElementById('ts-displayName').value = user.name || '';
+
+      // Load saved profile from Firebase
+      const profile = await PethologyFirebaseREST.getTeacherProfile(user.id);
+      if (profile) {
+        document.getElementById('ts-displayName').value = profile.displayName || user.name || '';
+        document.getElementById('ts-contactEmail').value = profile.contactEmail || '';
+        document.getElementById('ts-notifyOnQuiz').checked = profile.notifyOnQuiz || false;
+        document.getElementById('ts-emailLanguage').value = profile.emailLanguage || 'en';
+      }
+    };
+
+    window.closeTeacherSettings = function() {
+      document.getElementById('teacherSettingsModal').style.display = 'none';
+    };
+
+    window.saveTeacherSettings = async function() {
+      const user = JSON.parse(sessionStorage.getItem('pethologyUser'));
+      const data = {
+        displayName: document.getElementById('ts-displayName').value.trim(),
+        contactEmail: document.getElementById('ts-contactEmail').value.trim(),
+        notifyOnQuiz: document.getElementById('ts-notifyOnQuiz').checked,
+        emailLanguage: document.getElementById('ts-emailLanguage').value,
+      };
+
+      try {
+        await PethologyFirebaseREST.saveTeacherProfile(user.id, data);
+
+        // Update name in session if changed
+        if (data.displayName) {
+          const updatedUser = { ...user, name: data.displayName };
+          sessionStorage.setItem('pethologyUser', JSON.stringify(updatedUser));
+          const nameEl = document.getElementById('userName');
+          if (nameEl) nameEl.textContent = data.displayName;
+        }
+
+        showToast('Settings saved', 'success');
+        closeTeacherSettings();
+      } catch (e) {
+        console.error('Error saving settings:', e);
+        showToast('Error saving settings', 'error');
+      }
+    };
+
     // Make functions globally available
     window.showCreateEventModal = showCreateEventModal;
     window.closeCalendarModal = closeCalendarModal;
     window.handleCalendarSubmit = handleCalendarSubmit;
     window.loadCalendarEvents = loadCalendarEvents;
   </script>
+
+  <!-- Teacher Settings Modal -->
+  <div id="teacherSettingsModal" class="modal" style="display:none;" onclick="if(event.target===this)closeTeacherSettings()">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <h2>My Settings</h2>
+        <button class="modal-close" onclick="closeTeacherSettings()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Profile section -->
+        <div style="margin-bottom:28px;">
+          <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Profile</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div>
+              <label style="font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:6px;">Display Name</label>
+              <input id="ts-displayName" type="text" class="form-input" placeholder="Your name as teachers see it" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:6px;">Contact Email</label>
+              <input id="ts-contactEmail" type="email" class="form-input" placeholder="Email students can reach you at" style="width:100%;">
+              <p style="font-size:12px;color:var(--gray-400);margin-top:4px;">Different from your login email if needed.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preferences section -->
+        <div style="margin-bottom:28px;">
+          <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;">Preferences</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <label style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <input id="ts-notifyOnQuiz" type="checkbox" style="width:16px;height:16px;accent-color:var(--primary);cursor:pointer;">
+              <div>
+                <div style="font-size:13px;font-weight:500;color:var(--gray-700);">Email me when a student completes a quiz</div>
+                <div style="font-size:12px;color:var(--gray-400);">One email per quiz attempt</div>
+              </div>
+            </label>
+            <div>
+              <label style="font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:6px;">Email Language</label>
+              <select id="ts-emailLanguage" class="form-input" style="width:100%;">
+                <option value="en">English</option>
+                <option value="pt">Portuguese</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account info (read-only) -->
+        <div style="background:var(--gray-50);border-radius:8px;padding:14px;margin-bottom:24px;">
+          <div style="font-size:11px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Account</div>
+          <div style="font-size:13px;color:var(--gray-500);margin-bottom:4px;">Login email: <span id="ts-loginEmail" style="color:var(--gray-700);font-weight:500;"></span></div>
+          <div style="font-size:13px;color:var(--gray-500);">Role: <span style="color:var(--primary);font-weight:500;">Teacher</span></div>
+        </div>
+
+        <div style="display:flex;gap:12px;justify-content:flex-end;">
+          <button class="btn btn-secondary" onclick="closeTeacherSettings()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveTeacherSettings()">
+            <i data-lucide="save"></i>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Student Detail Modal -->
   <div id="studentDetailModal" class="modal" style="display: none;" onclick="if(event.target===this)closeStudentDetailModal()">

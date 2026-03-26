@@ -799,6 +799,31 @@ export class PethologyFirebaseREST {
     }
   }
 
+  // Teacher profile (settings)
+  static async getTeacherProfile(userId) {
+    try {
+      const response = await this.request(`/teacher_profiles/${encodeURIComponent(userId)}`);
+      return this.convertDocument(response);
+    } catch (error) {
+      return null; // No profile yet — first time
+    }
+  }
+
+  static async saveTeacherProfile(userId, data) {
+    const fields = {};
+    if (data.displayName !== undefined) fields.displayName = { stringValue: data.displayName };
+    if (data.contactEmail !== undefined) fields.contactEmail = { stringValue: data.contactEmail };
+    if (data.notifyOnQuiz !== undefined) fields.notifyOnQuiz = { booleanValue: data.notifyOnQuiz };
+    if (data.emailLanguage !== undefined) fields.emailLanguage = { stringValue: data.emailLanguage };
+
+    const fieldPaths = Object.keys(fields).map(k => `updateMask.fieldPaths=${k}`).join('&');
+    await this.request(
+      `/teacher_profiles/${encodeURIComponent(userId)}?${fieldPaths}`,
+      'PATCH',
+      { fields }
+    );
+  }
+
   // Add teacher to class with module permissions
   static async addTeacherToClass(classId, teacherData) {
     try {
