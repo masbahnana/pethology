@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
 **Última atualização:** 26 Março 2026
-**Versão Atual:** v6.3
-**Status:** Flashcards + Goals + 3D Prototype + CI verde + Diary planeado
+**Versão Atual:** v6.4
+**Status:** Pilot activo — Diary + Terms & Privacy + 3D Skeleton live
 
 ---
 
@@ -14,15 +14,11 @@
 ### 📋 Medium Priority
 - [x] **Flashcards** — ✅ DONE (26 Mar) — 10 módulos, flip card, Knew it / Didn't know, resultados, praticar cards errados. Sidebar Tools link activo.
 - [x] **Goals** — ✅ DONE (26 Mar) — 10 goals pré-definidos (Overall + Module), progress bars do Firebase, celebration banner. Sidebar Tools link activo.
-- [ ] **Work Experience Diary** — Substitui Notes. Aluno preenche entrada por dia de estágio, guarda no Firebase. Pode editar entradas. Lembrete de fotos ao salvar. Professora vê data + "submitted" mas não lê conteúdo.
-  - **Campos:** Date (date picker), Local (nome do placement), Summary of Tasks, Key Skills Used or Developed, Challenges Faced and How They Were Managed, Reflection of the Day
-  - **Stack:** Firebase REST API. Date picker nativo HTML `<input type="date">`. Entradas indexadas por `userId/date`.
-- [x] **3D Anatomy prototype** — ✅ DONE (26 Mar) — Three.js viewer com Fox placeholder, 6 hotspots clicáveis (Heart, Lungs, Liver, Spine, Skull, Femur), info panel com relevância clínica e link para quiz.
-  - **Stack:** Three.js via CDN. Modelos GLTF gratuitos do Sketchfab (cão, gato, cavalo). Hotspots como divs posicionados sobre canvas com raycasting.
-  - **TODO:** substituir Fox GLB por modelo real de cão (`MODEL_URL` em anatomy-3d.html linha 1)
+- [x] **Work Experience Diary** — ✅ DONE (26 Mar) — 6 campos (date picker, local, summary, skills, challenges, reflection), lista de entradas no sidebar, edição, lembrete de fotos ao salvar. Firebase REST. Privado — só o aluno lê.
+- [x] **3D Anatomy prototype** — ✅ DONE (26 Mar) — Three.js viewer com esqueleto real de cão (nzfauna CC BY-SA, Sketchfab). Navegação por lista lateral (Skull, Vertebral Column, Ribcage, Pelvis, Femur, Scapula). Info panel com função, relevância clínica, módulo e link quiz. "More structures coming soon".
 
 ### 📝 Low Priority
-- [ ] **Terms & Privacy** — Páginas legais em falta no site. Terms of Service + Privacy Policy. Linked no footer. Necessário antes de qualquer crescimento de utilizadores. — *1-2h*
+- [x] **Terms & Privacy** — ✅ DONE (26 Mar) — `terms.html` (9 secções, direito irlandês) + `privacy.html` (GDPR compliant, tabela de dados, direitos do utilizador, contacto DPC Ireland). Links no footer de todas as páginas públicas.
 - [ ] **Newsletter** — Updates da plataforma para alunos e professores.
   - **Stack:** MailerLite (free até 1000 subscribers, 12k emails/mês). Embed de formulário na página de settings e no footer.
   - **Personal email field** — Na página de settings do perfil do aluno: campo de email pessoal opcional com mensagem *"Stay connected after graduation — add a personal email"*. Email da escola expira ao terminar o curso. GDPR: double opt-in via MailerLite, consentimento explícito.
@@ -58,6 +54,34 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 26 Março 2026 — Pilot Launch — Diary + Terms & Privacy + 3D Skeleton + Arch fixes
+
+#### Work Experience Diary
+- [x] `diary.html` — 6 campos: date picker, local, summary, skills, challenges, reflection
+- [x] Lista de entradas no sidebar ordenada por data, clicável para editar
+- [x] Lembrete de fotos após guardar
+- [x] Privado — só o aluno lê (professora vê data + submitted)
+- [x] Firebase REST API, isolado por userId
+- [x] Sidebar Tools link activo (substituiu Notes)
+
+#### Terms & Privacy
+- [x] `terms.html` — 9 secções, direito irlandês
+- [x] `privacy.html` — GDPR compliant, tabela de dados, direitos do utilizador, DPC Ireland
+- [x] Links no footer de todas as páginas públicas
+
+#### 3D Anatomy — Real Skeleton
+- [x] Modelo real de cão (nzfauna "3D Dog Bone Project", CC BY-SA 4.0, Sketchfab)
+- [x] Navegação por lista lateral em vez de hotspots flutuantes
+- [x] Estruturas ósseas: Skull, Vertebral Column, Ribcage, Pelvis, Femur, Scapula
+- [x] Atribuição CC BY-SA visível no viewer
+- [x] GLB em `.gitignore` (48MB — deploy separado)
+
+#### Architecture fixes
+- [x] Goals Cypress test corrigido (URL check em vez de coming-soon toast)
+- [x] `vet-assitant-skills.js` eliminado (typo duplicate)
+- [x] `firebase-config.js` requireAuth redirect corrigido (`/firebase-login.html` → `/index.html`)
+- [x] Cypress 3D anatomy test: `#li-skull` / `#li-femur` em vez de Heart/Lungs removidos
 
 ### ✅ 26 Março 2026 — Flashcards, Goals, 3D Prototype, Responsive
 
