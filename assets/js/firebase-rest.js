@@ -641,8 +641,9 @@ export class PethologyFirebaseREST {
 
       const allClasses = response.documents.map(doc => this.convertDocument(doc));
 
-      // Filter: classes where teacher is owner OR is in teachers array
+      // Filter: classes where teacher is owner OR is in teachers array, excluding archived
       const teacherClasses = allClasses.filter(cls => {
+        if (cls.archived) return false;
         if (cls.ownerId === teacherId) return true;
         if (cls.teachers && Array.isArray(cls.teachers)) {
           return cls.teachers.some(t => t.teacherId === teacherId);
@@ -750,6 +751,30 @@ export class PethologyFirebaseREST {
       return true;
     } catch (error) {
       console.error('❌ Error updating class:', error);
+      throw error;
+    }
+  }
+
+  // Archive a class (sets archived:true, preserves all data)
+  static async archiveClass(classId) {
+    try {
+      console.log('🏫 Archiving class:', classId);
+      const updateData = {
+        fields: {
+          archived: { booleanValue: true },
+          archivedAt: { stringValue: new Date().toISOString() }
+        }
+      };
+      await this.request(
+        `/classes/${classId}?updateMask.fieldPaths=archived&updateMask.fieldPaths=archivedAt`,
+        'PATCH',
+        updateData
+      );
+      this._cache.clear();
+      console.log('✅ Class archived successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Error archiving class:', error);
       throw error;
     }
   }

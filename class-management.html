@@ -723,9 +723,9 @@
             <option value="">Loading...</option>
           </select>
         </div>
-        <button class="btn btn-danger" onclick="openDeleteClassModal()" title="Delete this class">
-          <i data-lucide="trash-2"></i>
-          Delete Class
+        <button class="btn btn-secondary" onclick="openArchiveClassModal()" title="Archive this class">
+          <i data-lucide="archive"></i>
+          Archive Class
         </button>
         <button class="btn btn-secondary" onclick="window.location.href='teacher-dashboard.html'">
           <i data-lucide="layout-dashboard"></i>
@@ -826,23 +826,29 @@
     </div>
   </div>
 
-  <!-- Delete Class Confirmation Modal -->
-  <div class="modal-overlay" id="deleteClassModal">
-    <div class="modal" style="max-width: 420px;">
+  <!-- Archive Class Confirmation Modal -->
+  <div class="modal-overlay" id="archiveClassModal">
+    <div class="modal" style="max-width: 440px;">
       <div class="modal-header">
-        <h3 class="modal-title">Delete Class</h3>
-        <button class="modal-close" onclick="closeDeleteClassModal()">
+        <h3 class="modal-title">Archive Class</h3>
+        <button class="modal-close" onclick="closeArchiveClassModal()">
           <i data-lucide="x"></i>
         </button>
       </div>
       <div class="modal-body">
-        <p style="margin-bottom: 12px;">Are you sure you want to delete <strong id="deleteClassName"></strong>?</p>
-        <p style="font-size: 13px; color: var(--error); margin-bottom: 20px;">⚠️ This action cannot be undone. The class and all its settings will be permanently deleted. Student quiz history will be preserved.</p>
+        <p style="margin-bottom: 12px;">Are you sure you want to archive <strong id="archiveClassName"></strong>?</p>
+        <p style="font-size: 13px; color: var(--gray-500); margin-bottom: 8px;">📦 Archiving will:</p>
+        <ul style="font-size: 13px; color: var(--gray-500); margin-bottom: 16px; padding-left: 20px; line-height: 1.8;">
+          <li>Remove all students' access to the platform</li>
+          <li>Preserve all quiz results, diary entries and goals</li>
+          <li>Hide the class from your active dashboard</li>
+        </ul>
+        <p style="font-size: 12px; color: var(--gray-400); margin-bottom: 20px;">This can be undone by contacting support.</p>
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
-          <button class="btn btn-secondary" onclick="closeDeleteClassModal()">Cancel</button>
-          <button class="btn btn-danger" onclick="confirmDeleteClass()">
-            <i data-lucide="trash-2"></i>
-            Delete Class
+          <button class="btn btn-secondary" onclick="closeArchiveClassModal()">Cancel</button>
+          <button class="btn btn-danger" onclick="confirmArchiveClass()">
+            <i data-lucide="archive"></i>
+            Archive Class
           </button>
         </div>
       </div>
@@ -1275,41 +1281,39 @@
       }
     };
 
-    // Delete class
-    window.openDeleteClassModal = function() {
+    // Archive class
+    window.openArchiveClassModal = function() {
       const cls = teacherClasses.find(c => c.id === currentClassId);
-      document.getElementById('deleteClassName').textContent = cls?.name || 'this class';
-      document.getElementById('deleteClassModal').style.display = 'flex';
+      document.getElementById('archiveClassName').textContent = cls?.name || 'this class';
+      document.getElementById('archiveClassModal').style.display = 'flex';
       lucide.createIcons();
     };
 
-    window.closeDeleteClassModal = function() {
-      document.getElementById('deleteClassModal').style.display = 'none';
+    window.closeArchiveClassModal = function() {
+      document.getElementById('archiveClassModal').style.display = 'none';
     };
 
-    window.confirmDeleteClass = async function() {
+    window.confirmArchiveClass = async function() {
       try {
-        // Remove all students of this class from the whitelist
+        // Remove all students from whitelist (blocks login)
         const preRegistered = await PethologyFirebaseREST.getStudentsByClass(currentClassId);
         await Promise.all(
           preRegistered.map(s => {
-            // Documents are keyed by email — try raw email first, then encoded
-            const docId = s.email;
-            console.log(`🗑️ Removing student from whitelist: ${docId}`);
-            return PethologyFirebaseREST.request(`/pre_registered_students/${encodeURIComponent(docId)}`, 'DELETE').catch(e => {
-              console.warn(`Could not remove student ${docId}:`, e);
+            console.log(`🗑️ Removing student from whitelist: ${s.email}`);
+            return PethologyFirebaseREST.request(`/pre_registered_students/${encodeURIComponent(s.email)}`, 'DELETE').catch(e => {
+              console.warn(`Could not remove student ${s.email}:`, e);
             });
           })
         );
 
-        // Delete the class itself
-        await PethologyFirebaseREST.deleteClass(currentClassId);
-        closeDeleteClassModal();
-        showToast('Class deleted successfully', 'success');
+        // Archive the class (preserves all data)
+        await PethologyFirebaseREST.archiveClass(currentClassId);
+        closeArchiveClassModal();
+        showToast('Class archived successfully', 'success');
         setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 1500);
       } catch (error) {
-        console.error('Error deleting class:', error);
-        showToast('Failed to delete class', 'error');
+        console.error('Error archiving class:', error);
+        showToast('Failed to archive class', 'error');
       }
     };
 
