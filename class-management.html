@@ -1279,12 +1279,12 @@
     window.openDeleteClassModal = function() {
       const cls = teacherClasses.find(c => c.id === currentClassId);
       document.getElementById('deleteClassName').textContent = cls?.name || 'this class';
-      document.getElementById('deleteClassModal').classList.add('active');
+      document.getElementById('deleteClassModal').style.display = 'flex';
       lucide.createIcons();
     };
 
     window.closeDeleteClassModal = function() {
-      document.getElementById('deleteClassModal').classList.remove('active');
+      document.getElementById('deleteClassModal').style.display = 'none';
     };
 
     window.confirmDeleteClass = async function() {
