@@ -1651,7 +1651,7 @@
     window.toast = toast;
     window.errorHandler = errorHandler;
     window.PethologyFirebaseREST = PethologyFirebaseREST;
-    window.showToast = (message, type) => toast.show(message, type);
+    window.showToast = (message, type) => toast.show({ message, type: type || 'info' });
 
     // Module slider state
     let currentPage = 0;
