@@ -86,8 +86,8 @@ describe('3D Anatomy Page', () => {
 
   it('shows structure list', () => {
     cy.get('#structuresList').should('be.visible')
-    cy.get('#li-heart').should('be.visible')
-    cy.get('#li-lungs').should('be.visible')
+    cy.get('#li-skull').should('be.visible')
+    cy.get('#li-femur').should('be.visible')
   })
 })
 

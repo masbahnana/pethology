@@ -306,21 +306,14 @@
 
       <div class="canvas-overlay">
         <div class="canvas-badge">🐕 Dog — Canis lupus familiaris</div>
-        <div class="canvas-badge prototype">⚠️ Prototype — placeholder model</div>
+        <div class="canvas-badge prototype"><a href="https://skfb.ly/QsxD" target="_blank" style="color:inherit;text-decoration:underline">"3D Dog Bone Project" by nzfauna</a> — CC BY-SA 4.0</div>
       </div>
 
-      <!-- Hotspots (positioned over canvas) -->
-      <div class="hotspot" id="hs-heart"    style="left:52%; top:38%;" title="Heart"      onclick="selectStructure('heart')"></div>
-      <div class="hotspot" id="hs-liver"    style="left:55%; top:48%;" title="Liver"      onclick="selectStructure('liver')"></div>
-      <div class="hotspot" id="hs-spine"    style="left:50%; top:32%;" title="Spine"      onclick="selectStructure('spine')"></div>
-      <div class="hotspot" id="hs-skull"    style="left:78%; top:22%;" title="Skull"      onclick="selectStructure('skull')"></div>
-      <div class="hotspot" id="hs-lungs"    style="left:52%; top:42%;" title="Lungs"      onclick="selectStructure('lungs')"></div>
-      <div class="hotspot" id="hs-femur"    style="left:35%; top:60%;" title="Femur"      onclick="selectStructure('femur')"></div>
 
       <div class="controls-hint">
         <span>🖱️ Drag to rotate</span>
         <span>🔍 Scroll to zoom</span>
-        <span>🔵 Click dots to explore</span>
+        <span>👈 Select from list to explore</span>
       </div>
 
       <!-- Loading overlay -->
@@ -347,42 +340,24 @@
         <!-- Empty state -->
         <div class="info-empty" id="infoEmpty">
           <span class="info-icon">🔵</span>
-          <p>Click a blue dot on the model to explore anatomical structures.</p>
+          <p>Select a structure from the list below to explore its anatomy.</p>
         </div>
 
         <!-- Info cards -->
-        <div class="info-card" id="info-heart">
-          <div class="info-card-header"><div class="info-dot"></div><h3>Heart</h3></div>
+        <div class="info-card" id="info-skull">
+          <div class="info-card-header"><div class="info-dot" style="background:#10b981"></div><h3>Skull</h3></div>
           <div class="info-section">
             <h4>Function</h4>
-            <p>Pumps oxygenated blood to the body and returns deoxygenated blood to the lungs via a four-chambered structure.</p>
+            <p>Protects the brain and sense organs. Divided into cranium and facial bones. Jaw type varies by breed (dolichocephalic, mesocephalic, brachycephalic).</p>
           </div>
           <div class="info-section">
             <h4>Clinical relevance</h4>
-            <p>Dilated cardiomyopathy is common in large breeds. Auscultation over the left 4th–6th intercostal space.</p>
+            <p>Brachycephalic breeds (Bulldogs, Pugs) often suffer from Brachycephalic Obstructive Airway Syndrome (BOAS).</p>
           </div>
           <div class="info-section">
             <h4>Module</h4>
             <span class="info-tag">Animal Anatomy</span>
-            <span class="info-tag">Biology</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-liver">
-          <div class="info-card-header"><div class="info-dot" style="background:#f59e0b"></div><h3>Liver</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Largest internal organ. Detoxifies blood, produces bile for digestion, stores glycogen, and synthesises plasma proteins.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Hepatitis and portosystemic shunts are common conditions. Elevated ALT/AST enzymes indicate liver damage.</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-            <span class="info-tag">Vet. Assistant Skills</span>
+            <span class="info-tag">Animal Welfare</span>
           </div>
           <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
         </div>
@@ -404,40 +379,39 @@
           <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
         </div>
 
-        <div class="info-card" id="info-skull">
-          <div class="info-card-header"><div class="info-dot" style="background:#10b981"></div><h3>Skull</h3></div>
+        <div class="info-card" id="info-ribcage">
+          <div class="info-card-header"><div class="info-dot" style="background:#f59e0b"></div><h3>Ribcage</h3></div>
           <div class="info-section">
             <h4>Function</h4>
-            <p>Protects the brain and sense organs. Divided into cranium and facial bones. Jaw type varies by breed (dolichocephalic, mesocephalic, brachycephalic).</p>
+            <p>Protects the heart and lungs. Dogs have 13 pairs of ribs — 9 true ribs attached to the sternum and 4 false ribs. Forms the thoracic cavity.</p>
           </div>
           <div class="info-section">
             <h4>Clinical relevance</h4>
-            <p>Brachycephalic breeds (Bulldogs, Pugs) often suffer from Brachycephalic Obstructive Airway Syndrome (BOAS).</p>
+            <p>Rib fractures from trauma can cause pneumothorax. Palpation of the ribs is used to assess body condition score (BCS).</p>
           </div>
           <div class="info-section">
             <h4>Module</h4>
             <span class="info-tag">Animal Anatomy</span>
-            <span class="info-tag">Animal Welfare</span>
+            <span class="info-tag">Vet. Assistant Skills</span>
           </div>
           <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
         </div>
 
-        <div class="info-card" id="info-lungs">
-          <div class="info-card-header"><div class="info-dot" style="background:#06b6d4"></div><h3>Lungs</h3></div>
+        <div class="info-card" id="info-pelvis">
+          <div class="info-card-header"><div class="info-dot" style="background:#3b82f6"></div><h3>Pelvis</h3></div>
           <div class="info-section">
             <h4>Function</h4>
-            <p>Gas exchange organ. Dogs have a right lung with 4 lobes (cranial, middle, caudal, accessory) and a left lung with 2 lobes.</p>
+            <p>Ring of bones (ilium, ischium, pubis) that supports the hindlimbs and protects pelvic organs. Forms the hip joint with the femur.</p>
           </div>
           <div class="info-section">
             <h4>Clinical relevance</h4>
-            <p>Pneumonia, bronchitis, and lungworm (Angiostrongylus vasorum) are common respiratory conditions in dogs.</p>
+            <p>Pelvic fractures are common after road traffic accidents. Hip dysplasia affects the acetabulum and femoral head joint surface.</p>
           </div>
           <div class="info-section">
             <h4>Module</h4>
-            <span class="info-tag">Biology</span>
             <span class="info-tag">Animal Anatomy</span>
           </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=biology'">Practice quiz on Biology →</button>
+          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
         </div>
 
         <div class="info-card" id="info-femur">
@@ -457,15 +431,33 @@
           <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
         </div>
 
+        <div class="info-card" id="info-scapula">
+          <div class="info-card-header"><div class="info-dot" style="background:#06b6d4"></div><h3>Scapula</h3></div>
+          <div class="info-section">
+            <h4>Function</h4>
+            <p>Triangular flat bone that forms the shoulder joint with the humerus. Dogs have no clavicle, so the scapula is held by muscles only, allowing greater stride length.</p>
+          </div>
+          <div class="info-section">
+            <h4>Clinical relevance</h4>
+            <p>Osteochondrosis dissecans (OCD) of the shoulder joint affects the humeral head and is common in large, fast-growing breeds.</p>
+          </div>
+          <div class="info-section">
+            <h4>Module</h4>
+            <span class="info-tag">Animal Anatomy</span>
+          </div>
+          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
+        </div>
+
         <!-- Structure list -->
         <div class="structures-list" id="structuresList" style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
           <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.35); margin-bottom:8px;">All Structures</div>
-          <div class="structure-item" id="li-heart"  onclick="selectStructure('heart')"><div class="structure-dot" style="background:#3b82f6"></div>Heart</div>
-          <div class="structure-item" id="li-lungs"  onclick="selectStructure('lungs')"><div class="structure-dot" style="background:#06b6d4"></div>Lungs</div>
-          <div class="structure-item" id="li-liver"  onclick="selectStructure('liver')"><div class="structure-dot" style="background:#f59e0b"></div>Liver</div>
-          <div class="structure-item" id="li-spine"  onclick="selectStructure('spine')"><div class="structure-dot" style="background:#8b5cf6"></div>Vertebral Column</div>
-          <div class="structure-item" id="li-skull"  onclick="selectStructure('skull')"><div class="structure-dot" style="background:#10b981"></div>Skull</div>
-          <div class="structure-item" id="li-femur"  onclick="selectStructure('femur')"><div class="structure-dot" style="background:#f43f5e"></div>Femur</div>
+          <div class="structure-item" id="li-skull"    onclick="selectStructure('skull')"><div class="structure-dot" style="background:#10b981"></div>Skull</div>
+          <div class="structure-item" id="li-spine"    onclick="selectStructure('spine')"><div class="structure-dot" style="background:#8b5cf6"></div>Vertebral Column</div>
+          <div class="structure-item" id="li-ribcage"  onclick="selectStructure('ribcage')"><div class="structure-dot" style="background:#f59e0b"></div>Ribcage</div>
+          <div class="structure-item" id="li-pelvis"   onclick="selectStructure('pelvis')"><div class="structure-dot" style="background:#3b82f6"></div>Pelvis</div>
+          <div class="structure-item" id="li-femur"    onclick="selectStructure('femur')"><div class="structure-dot" style="background:#f43f5e"></div>Femur</div>
+          <div class="structure-item" id="li-scapula"  onclick="selectStructure('scapula')"><div class="structure-dot" style="background:#06b6d4"></div>Scapula</div>
+          <div style="margin-top:12px; font-size:11px; color:rgba(255,255,255,0.3); text-align:center; padding:8px 0; border-top:1px solid rgba(255,255,255,0.06);">🔬 More structures coming soon</div>
         </div>
 
       </div>
@@ -537,7 +529,7 @@
     // TODO: Replace with a real dog GLTF model when available.
     // Current placeholder: Fox GLB from KhronosGroup glTF-Sample-Models
     // (Fox is a quadruped canine — closest freely available model)
-    const MODEL_URL = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/main/2.0/Fox/glTF-Binary/Fox.glb';
+    const MODEL_URL = 'assets/models/3d_dog_bone_project_partial_dog_skeleton.glb';
 
     let mixer, clock = new THREE.Clock();
 
@@ -547,14 +539,17 @@
       (gltf) => {
         const model = gltf.scene;
 
+        // Rotate model upright (skeleton exports often face down on Z axis)
+        model.rotation.x = -Math.PI / 2;
+
         // Centre + scale the model
         const box = new THREE.Box3().setFromObject(model);
         const centre = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-        const scale = 2.0 / Math.max(size.x, size.y, size.z);
+        const scale = 3.5 / Math.max(size.x, size.y, size.z);
         model.scale.setScalar(scale);
         model.position.sub(centre.multiplyScalar(scale));
-        model.position.y += 0.05;
+        model.position.y += 0.2;
 
         model.traverse(child => {
           if (child.isMesh) {

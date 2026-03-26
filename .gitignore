@@ -32,3 +32,7 @@ build/
 # Temporary files
 *.tmp
 .cache/
+
+# 3D Models (large binary files — deploy separately)
+assets/models/*.glb
+assets/models/*.gltf

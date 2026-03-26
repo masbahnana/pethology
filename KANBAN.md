@@ -23,8 +23,14 @@
 
 ### 📝 Low Priority
 - [ ] **Terms & Privacy** — Páginas legais em falta no site. Terms of Service + Privacy Policy. Linked no footer. Necessário antes de qualquer crescimento de utilizadores. — *1-2h*
-- [ ] **Newsletter** — Updates da plataforma para alunos e professores. Avaliar Mailchimp (free tier) vs Resend vs formulário simples com Google Sheets. Link de subscrição no footer + após login. — *2-3h*
-- [ ] **Community** — Canal de comunidade para alunos/professores. A decidir: Discord (gratuito, fácil de moderar) vs Slack vs Circle. Adicionar link no sidebar/footer. — *a decidir*
+- [ ] **Newsletter** — Updates da plataforma para alunos e professores.
+  - **Stack:** MailerLite (free até 1000 subscribers, 12k emails/mês). Embed de formulário na página de settings e no footer.
+  - **Personal email field** — Na página de settings do perfil do aluno: campo de email pessoal opcional com mensagem *"Stay connected after graduation — add a personal email"*. Email da escola expira ao terminar o curso. GDPR: double opt-in via MailerLite, consentimento explícito.
+- [ ] **Community** — Servidor Discord para manter alunos conectados após a escola.
+  - **Stack:** Discord (gratuito, fácil de moderar, sem expiração de conta)
+  - **Canais:** `#announcements`, `#introductions`, `#questions`, `#study-together`, `#quiz-discussion`, `#work-experience`, `#pet-cases`, `#general`
+  - **Roles:** `@Student` (alunos activos), `@Teacher` (Mary + professores), `@Alumni` (formados — mantêm acesso pós-escola, chave para engagement a longo prazo)
+  - **Integração:** Link no sidebar do student dashboard + footer do site + guide.html
 - [ ] **Public Roadmap + Changelog** — Roadmap público estilo StoryGraph. Transparência, envolvimento dos utilizadores, mostra que o projeto está ativo.
   - **Roadmap:** `roadmap.html` estático com colunas "Up Next / In Progress / Shipped". Categorias educacionais: Novos Módulos, Melhorias ao Quiz, Conteúdo do Blog, Bugs. — *2-3h*
   - **Changelog:** `changelog.html` renderizado de `CHANGELOG.md` via `marked.js` (já no projeto). — *1h*
