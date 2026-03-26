@@ -465,16 +465,17 @@
 
       const emailLower = email.toLowerCase();
 
-      // 🎓 RULE 1: Teachers use @stconlethcc365.ie domain
-      if (emailLower.endsWith('@stconlethcc365.ie')) {
-        console.log('✅ [ROLE] Teacher detected - email ends with @stconlethcc365.ie:', emailLower);
-        return 'Teacher';
-      }
-
-      // � RULE 2: Students start with 'plc'
+      // 🎓 RULE 1: Students start with 'plc' — check BEFORE domain rule
+      // e.g. PLCNataliaDaSilvaRaythz@stconlethcc365.ie is a student, not a teacher
       if (emailLower.startsWith('plc')) {
         console.log('✅ [ROLE] Student detected - email starts with plc:', emailLower);
         return 'Student';
+      }
+
+      // 🎓 RULE 2: Teachers use @stconlethcc365.ie domain (non-PLC accounts)
+      if (emailLower.endsWith('@stconlethcc365.ie')) {
+        console.log('✅ [ROLE] Teacher detected - email ends with @stconlethcc365.ie:', emailLower);
+        return 'Teacher';
       }
 
       // RULE 3: Identificação automática por palavras-chave (fallback)
@@ -554,11 +555,17 @@
       const user = sessionStorage.getItem('pethologyUser');
       if (user) {
         const userData = JSON.parse(user);
+        // Re-validate role from email in case session has stale role
+        const freshRole = determineUserRole(userData.email);
+        if (freshRole !== userData.role) {
+          userData.role = freshRole;
+          sessionStorage.setItem('pethologyUser', JSON.stringify(userData));
+        }
         console.log('👤 User already logged in:', userData);
         showSuccess(`Already logged in as ${userData.name}. Redirecting...`);
 
         setTimeout(() => {
-          window.location.href = userData.role === 'Teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html'; // TEMPORARY: REST version
+          window.location.href = userData.role === 'Teacher' ? 'teacher-dashboard.html' : 'student-dashboard.html';
         }, 1500);
       }
     });
