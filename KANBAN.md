@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 25 Março 2026
-**Versão Atual:** v6.2
-**Status:** CI/CD + Responsive Polish + 73 E2E Tests Passing
+**Última atualização:** 26 Março 2026
+**Versão Atual:** v6.3
+**Status:** Flashcards + Goals + 3D Prototype + CI verde
 
 ---
 
@@ -12,12 +12,12 @@
 - [ ] **Collect teacher feedback** — Após testes iniciais com Mary + alunos
 
 ### 📋 Medium Priority
-- [ ] **Flashcards** — Gerar automaticamente das perguntas de quiz existentes (pergunta = frente, resposta = verso). Zero custo, zero API externa. Flip card animation.
-- [ ] **Notes** — Editor de texto simples por módulo. Aluno escreve notas enquanto estuda. Guarda no Firebase.
-- [ ] **Goals** — Meta semanal por módulo (ex: "Biology 80%+"). Dashboard mostra progresso vs meta. Badge ao atingir.
-- [ ] **3D Anatomy** — anatomy-3d.html criado (coming soon). Feature real a planear — modelo 3D interativo com hotspots ligados aos módulos de quiz.
-  - **Stack:** Three.js via CDN (encaixa no stack vanilla JS, sem build system). Modelos GLTF gratuitos do Sketchfab (cão, gato, cavalo). Hotspots como divs posicionados sobre canvas com raycasting.
-  - **Alternativa simples:** embed Sketchfab via iframe — zero código, menos controlo.
+- [x] **Flashcards** — ✅ DONE (26 Mar) — 10 módulos, flip card, Knew it / Didn't know, resultados, praticar cards errados. Sidebar Tools link activo.
+- [x] **Goals** — ✅ DONE (26 Mar) — 10 goals pré-definidos (Overall + Module), progress bars do Firebase, celebration banner. Sidebar Tools link activo.
+- [ ] **Notes** — Em avaliação — editor de texto simples por módulo, guarda no Firebase. A decidir se é necessário para o pilot.
+- [x] **3D Anatomy prototype** — ✅ DONE (26 Mar) — Three.js viewer com Fox placeholder, 6 hotspots clicáveis (Heart, Lungs, Liver, Spine, Skull, Femur), info panel com relevância clínica e link para quiz.
+  - **Stack:** Three.js via CDN. Modelos GLTF gratuitos do Sketchfab (cão, gato, cavalo). Hotspots como divs posicionados sobre canvas com raycasting.
+  - **TODO:** substituir Fox GLB por modelo real de cão (`MODEL_URL` em anatomy-3d.html linha 1)
 
 ### 📝 Low Priority
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
@@ -42,6 +42,33 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 26 Março 2026 — Flashcards, Goals, 3D Prototype, Responsive
+
+#### Flashcards
+- [x] `flashcards.html` — module picker, flip card animation, Knew it / Didn't know
+- [x] Keyboard shortcuts: space = flip, → / 1 = knew, ← / 2 = didn't know
+- [x] Results screen com score + opção de praticar só os cards errados
+- [x] Dados gerados automaticamente dos ficheiros de quiz existentes (zero custo)
+- [x] Sidebar Tools link activo
+
+#### Goals
+- [x] `goals.html` — 10 goals pré-definidos em 2 categorias (Overall + Module)
+- [x] Progress bars calculadas de quiz_results no Firebase
+- [x] Celebration banner para goals completados
+- [x] Empty state com CTA se sem dados de quiz
+- [x] Sidebar Tools link activo
+
+#### 3D Anatomy Prototype
+- [x] Three.js viewer com OrbitControls (drag, zoom, pan)
+- [x] Fox GLB animado via CDN (placeholder para cão)
+- [x] 6 hotspots clicáveis: Heart, Lungs, Liver, Spine, Skull, Femur
+- [x] Info panel: função, relevância clínica, módulo associado, botão quiz
+- [x] Animal selector (Cat/Rabbit → coming soon)
+
+#### Bug fixes & polish
+- [x] Communications + Work Experience ícones corrigidos no quiz
+- [x] Cypress tests actualizados para Flashcards link e 3D Anatomy viewer
 
 ### ✅ 25 Março 2026 — CI/CD + Responsive Polish
 
