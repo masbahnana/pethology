@@ -5,8 +5,8 @@ import { PethologyFirebaseREST } from '../firebase-rest.js';
 const quizTopics = [
   { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
   { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
-  { name: "Communications", file: "communications.js", icon: "assets/img/cell.png" },
-  { name: "Work Experience", file: "work-experience.js", icon: "assets/img/cell.png" },
+  { name: "Communications", file: "communications.js", icon: "assets/img/comms.png" },
+  { name: "Work Experience", file: "work-experience.js", icon: "assets/img/work-experience.png" },
   { name: "Vet. Assistant Skills", file: "vet-assistant-skills.js", icon: "assets/img/vas.png" },
   { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
   { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
