@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
 **Última atualização:** 26 Março 2026
-**Versão Atual:** v6.5
-**Status:** Pilot activo — Bug fixes: student modal, archived class read-only
+**Versão Atual:** v6.6
+**Status:** Pilot activo — Teacher Settings + bug fixes
 
 ---
 
@@ -55,6 +55,13 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 26 Março 2026 — Teacher Settings + Bug fixes (v6.6)
+
+- [x] **Teacher Settings modal** — Quick Actions > Settings abre perfil pessoal da professora: Display Name, Contact Email, notificação de quiz por email. Guardado em Firebase `teacher_profiles/{userId}`.
+- [x] **Settings vs Class Management separados** — Settings agora é perfil do professor. Class Management mantém gestão de turmas.
+
+---
 
 ### ✅ 26 Março 2026 — Bug fixes + Archived Class Read-Only (v6.5)
 
