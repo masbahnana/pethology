@@ -1371,6 +1371,8 @@
     }
   </style>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init('vgLtg2_3tuo-BF7vx');</script>
 </head>
 <body>
   <div class="dashboard-container">
@@ -3879,6 +3881,18 @@
         };
 
         await PethologyFirebaseREST.request(`/pre_registered_students/${email}`, 'PATCH', studentData);
+
+        // Send welcome email via EmailJS
+        try {
+          await emailjs.send('service_ls9jk9r', 'template_y6in4uh', {
+            student_name: name,
+            student_email: email,
+            teacher_name: teacher?.name || 'Your Teacher',
+          });
+        } catch (emailErr) {
+          console.warn('Welcome email failed (non-critical):', emailErr);
+        }
+
         window.showToast('Student added successfully!', 'success');
         hideAddStudentForm();
         loadStudentsForSettings();
