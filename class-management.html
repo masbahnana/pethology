@@ -212,6 +212,19 @@
       font-size: 13px;
     }
 
+    .archived-class-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 0; border-bottom: 1px solid var(--gray-100);
+    }
+    .archived-class-item:last-child { border-bottom: none; }
+    .archived-class-name { font-weight: 600; font-size: 14px; color: var(--gray-600); }
+    .archived-class-meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+    .archived-badge {
+      font-size: 11px; font-weight: 600; padding: 3px 8px;
+      background: var(--gray-100); color: var(--gray-500);
+      border-radius: 6px; margin-left: 8px;
+    }
+
     .btn-sm svg {
       width: 14px;
       height: 14px;
@@ -786,6 +799,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Archived Classes -->
+    <div class="card" style="margin-top: 24px;">
+      <div class="card-header" style="cursor:pointer;" onclick="toggleArchivedSection()">
+        <h2 class="card-title">
+          <i data-lucide="archive"></i>
+          Archived Classes
+        </h2>
+        <button class="btn btn-secondary btn-sm" id="archivedToggleBtn">Show</button>
+      </div>
+      <div id="archivedSection" style="display:none; padding: 0 24px 24px;">
+        <div id="archivedClassesContainer">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading archived classes...</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Student Report Modal -->
@@ -1316,6 +1348,70 @@
         showToast('Failed to archive class', 'error');
       }
     };
+
+    // Archived classes
+    let archivedLoaded = false;
+
+    window.toggleArchivedSection = async function() {
+      const section = document.getElementById('archivedSection');
+      const btn = document.getElementById('archivedToggleBtn');
+      const isVisible = section.style.display !== 'none';
+
+      if (isVisible) {
+        section.style.display = 'none';
+        btn.textContent = 'Show';
+      } else {
+        section.style.display = 'block';
+        btn.textContent = 'Hide';
+        if (!archivedLoaded) await loadArchivedClasses();
+      }
+    };
+
+    async function loadArchivedClasses() {
+      const container = document.getElementById('archivedClassesContainer');
+      try {
+        const userSession = JSON.parse(sessionStorage.getItem('pethologyUser'));
+        const response = await PethologyFirebaseREST.request('/classes');
+        const allClasses = response?.documents
+          ? response.documents.map(doc => PethologyFirebaseREST.convertDocument(doc))
+          : [];
+
+        const archived = allClasses.filter(cls => {
+          if (!cls.archived) return false;
+          if (cls.ownerId === userSession.id) return true;
+          if (cls.teachers && Array.isArray(cls.teachers)) {
+            return cls.teachers.some(t => t.teacherId === userSession.id);
+          }
+          return false;
+        });
+
+        archivedLoaded = true;
+
+        if (!archived.length) {
+          container.innerHTML = '<p style="color:var(--gray-400); font-size:14px; padding: 16px 0;">No archived classes yet.</p>';
+          return;
+        }
+
+        container.innerHTML = archived.map(cls => {
+          const archivedAt = cls.archivedAt ? new Date(cls.archivedAt).toLocaleDateString('en-IE') : 'Unknown date';
+          return `
+            <div class="archived-class-item">
+              <div>
+                <div class="archived-class-name">
+                  ${cls.name || 'Unnamed Class'}
+                  <span class="archived-badge">Archived</span>
+                </div>
+                <div class="archived-class-meta">Archived on ${archivedAt}${cls.academicYear ? ` · ${cls.academicYear}` : ''}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (e) {
+        console.error('Error loading archived classes:', e);
+        container.innerHTML = '<p style="color:var(--error); font-size:14px; padding:16px 0;">Error loading archived classes.</p>';
+      }
+    }
 
     // Open add student modal (redirect to dashboard)
     window.openAddStudentModal = function() {
