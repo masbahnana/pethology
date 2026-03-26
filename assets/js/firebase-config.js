@@ -90,7 +90,7 @@ class PethologyFirebaseAuth {
   static async requireAuth() {
     const user = this.getCurrentUser();
     if (!user) {
-      window.location.href = '/firebase-login.html';
+      window.location.href = '/index.html';
       return null;
     }
     return user;

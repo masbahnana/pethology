@@ -2,7 +2,7 @@
 
 **Última atualização:** 26 Março 2026
 **Versão Atual:** v6.3
-**Status:** Flashcards + Goals + 3D Prototype + CI verde
+**Status:** Flashcards + Goals + 3D Prototype + CI verde + Diary planeado
 
 ---
 
@@ -14,12 +14,22 @@
 ### 📋 Medium Priority
 - [x] **Flashcards** — ✅ DONE (26 Mar) — 10 módulos, flip card, Knew it / Didn't know, resultados, praticar cards errados. Sidebar Tools link activo.
 - [x] **Goals** — ✅ DONE (26 Mar) — 10 goals pré-definidos (Overall + Module), progress bars do Firebase, celebration banner. Sidebar Tools link activo.
-- [ ] **Notes** — Em avaliação — editor de texto simples por módulo, guarda no Firebase. A decidir se é necessário para o pilot.
+- [ ] **Work Experience Diary** — Substitui Notes. Aluno preenche entrada por dia de estágio, guarda no Firebase. Pode editar entradas. Lembrete de fotos ao salvar. Professora vê data + "submitted" mas não lê conteúdo.
+  - **Campos:** Date (date picker), Local (nome do placement), Summary of Tasks, Key Skills Used or Developed, Challenges Faced and How They Were Managed, Reflection of the Day
+  - **Stack:** Firebase REST API. Date picker nativo HTML `<input type="date">`. Entradas indexadas por `userId/date`.
 - [x] **3D Anatomy prototype** — ✅ DONE (26 Mar) — Three.js viewer com Fox placeholder, 6 hotspots clicáveis (Heart, Lungs, Liver, Spine, Skull, Femur), info panel com relevância clínica e link para quiz.
   - **Stack:** Three.js via CDN. Modelos GLTF gratuitos do Sketchfab (cão, gato, cavalo). Hotspots como divs posicionados sobre canvas com raycasting.
   - **TODO:** substituir Fox GLB por modelo real de cão (`MODEL_URL` em anatomy-3d.html linha 1)
 
 ### 📝 Low Priority
+- [ ] **Terms & Privacy** — Páginas legais em falta no site. Terms of Service + Privacy Policy. Linked no footer. Necessário antes de qualquer crescimento de utilizadores. — *1-2h*
+- [ ] **Newsletter** — Updates da plataforma para alunos e professores. Avaliar Mailchimp (free tier) vs Resend vs formulário simples com Google Sheets. Link de subscrição no footer + após login. — *2-3h*
+- [ ] **Community** — Canal de comunidade para alunos/professores. A decidir: Discord (gratuito, fácil de moderar) vs Slack vs Circle. Adicionar link no sidebar/footer. — *a decidir*
+- [ ] **Public Roadmap + Changelog** — Roadmap público estilo StoryGraph. Transparência, envolvimento dos utilizadores, mostra que o projeto está ativo.
+  - **Roadmap:** `roadmap.html` estático com colunas "Up Next / In Progress / Shipped". Categorias educacionais: Novos Módulos, Melhorias ao Quiz, Conteúdo do Blog, Bugs. — *2-3h*
+  - **Changelog:** `changelog.html` renderizado de `CHANGELOG.md` via `marked.js` (já no projeto). — *1h*
+  - **Feedback/Votação:** Google Form + Google Sheet exposta publicamente, ou GitHub Issues (upvotes via 👍, gratuito). Sem login extra para votar numa primeira fase.
+  - **Stack:** HTML estático + marked.js. Sem dependência externa. Canny.io como alternativa futura se votação estruturada for necessária.
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
 - [ ] **Export Grades** — CSV export de resultados por turma — *2-3h*
 - [ ] **Class Management P2** — Remove students, bulk actions — *3-4h*
@@ -30,7 +40,6 @@
 - [ ] **Advanced Gamification** — XP, Levels, Leaderboards — *4-6h*
   - **Stack:** Sem biblioteca externa. XP calculado dos `quiz_results` já no Firebase (pontos por score + bónus por streak). Levels por thresholds simples (0-100 = Beginner, 100-300 = Intermediate, etc.). Leaderboard via query dos `quiz_results` por classe ordenado por XP — dados já existem, só falta apresentar.
 - [ ] **PWA & Offline Support** — Service Worker, offline quizzes — *6-8h*
-- [ ] **Internship Journal** — Log work experience, photos, timeline — *4-6h*
 - [ ] **Content Manager Migration** — Migrate to REST API — *3-4h*
 
 ---

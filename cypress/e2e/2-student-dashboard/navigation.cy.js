@@ -54,9 +54,9 @@ describe('Student Dashboard - Sidebar Navigation', () => {
     cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
   })
 
-  it('shows coming soon toast for Goals', () => {
+  it('navigates to Goals page', () => {
     cy.contains('Goals').click({ force: true })
-    cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
+    cy.url().should('include', 'goals')
   })
 })
 
