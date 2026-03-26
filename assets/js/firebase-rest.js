@@ -761,6 +761,9 @@ export class PethologyFirebaseREST {
 
       await this.request(`/classes/${classId}`, 'DELETE');
 
+      // Invalidate all cache so dashboard reflects deletion immediately
+      this._cache.clear();
+
       console.log('✅ Class deleted successfully');
       return true;
     } catch (error) {
