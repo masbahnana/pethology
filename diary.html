@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Work Experience Diary — Pethology</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --radius: 14px;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    .nav {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-weight: 700; font-size: 1rem; text-decoration: none; color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 0.875rem; font-family: var(--font);
+      color: var(--muted); cursor: pointer;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .btn-back:hover { background: var(--bg); color: var(--text); }
+
+    /* MAIN */
+    .main { max-width: 780px; margin: 0 auto; padding: 36px 24px 64px; }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
+    .page-header p { color: var(--muted); font-size: 0.9rem; }
+
+    /* LOADING */
+    .loading { text-align: center; padding: 60px 0; color: var(--muted); font-size: 0.9rem; }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border); border-top-color: var(--blue);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* LAYOUT */
+    .layout { display: grid; grid-template-columns: 1fr 280px; gap: 24px; align-items: start; }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+    }
+    .form-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .form-card-title { font-size: 1rem; font-weight: 700; }
+    .form-card-subtitle { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: 0.8rem; font-weight: 600;
+      color: var(--text); margin-bottom: 6px;
+    }
+    .form-group label span { color: var(--muted); font-weight: 400; }
+    .form-group input, .form-group textarea {
+      width: 100%; font-family: var(--font); font-size: 0.9rem;
+      color: var(--text); background: var(--bg);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px 14px; transition: border-color 0.15s;
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none; border-color: var(--blue);
+      background: white;
+    }
+    .form-group textarea { min-height: 90px; line-height: 1.5; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    .form-actions { display: flex; gap: 10px; margin-top: 8px; }
+    .btn-save {
+      flex: 1; padding: 11px; background: var(--blue); color: white;
+      border: none; border-radius: 10px; font-size: 0.9rem;
+      font-weight: 600; font-family: var(--font);
+      cursor: pointer; transition: background 0.15s;
+    }
+    .btn-save:hover { background: #1d4ed8; }
+    .btn-save:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+    .btn-cancel {
+      padding: 11px 18px; background: none; color: var(--muted);
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.9rem; font-family: var(--font);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-cancel:hover { background: var(--bg); color: var(--text); }
+
+    /* PHOTO REMINDER */
+    .photo-reminder {
+      display: none; background: var(--amber-light);
+      border: 1.5px solid #fcd34d; border-radius: 10px;
+      padding: 12px 16px; margin-top: 16px;
+      font-size: 0.85rem; color: #92400e;
+      align-items: flex-start; gap: 10px;
+    }
+    .photo-reminder.visible { display: flex; }
+    .photo-reminder strong { display: block; margin-bottom: 2px; }
+
+    /* ENTRIES SIDEBAR */
+    .sidebar-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      position: sticky; top: 72px;
+    }
+    .sidebar-title {
+      font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); margin-bottom: 14px;
+    }
+    .btn-new {
+      width: 100%; padding: 9px; background: var(--blue-light);
+      color: var(--blue); border: 1.5px solid #bfdbfe;
+      border-radius: 10px; font-size: 0.85rem; font-weight: 600;
+      font-family: var(--font); cursor: pointer;
+      transition: all 0.15s; margin-bottom: 16px;
+    }
+    .btn-new:hover { background: #dbeafe; }
+
+    .entries-list { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow-y: auto; }
+    .entry-item {
+      padding: 12px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .entry-item:hover { border-color: #93c5fd; background: var(--blue-light); }
+    .entry-item.active { border-color: var(--blue); background: var(--blue-light); }
+    .entry-date { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .entry-local { font-size: 0.75rem; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .entries-empty { text-align: center; padding: 20px 0; color: var(--muted); font-size: 0.85rem; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius); padding: 48px 28px;
+      text-align: center;
+    }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 16px; }
+    .empty-state h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .empty-state p { color: var(--muted); font-size: 0.875rem; max-width: 320px; margin: 0 auto; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #1f2937; color: white; padding: 12px 20px;
+      border-radius: 10px; font-size: 0.875rem; font-weight: 500;
+      transition: transform 0.3s ease; z-index: 999; white-space: nowrap;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar-card { position: static; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <a href="student-dashboard.html" class="nav-logo">🐾 Pethology</a>
+      <span class="nav-sep">/</span>
+      <span class="nav-title">Work Experience Diary</span>
+    </div>
+    <a href="student-dashboard.html" class="btn-back">← Dashboard</a>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <h1>📔 Work Experience Diary</h1>
+      <p>Record your daily work placement experiences. Entries are private — only you can read them.</p>
+    </div>
+
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+      <p>Loading your diary...</p>
+    </div>
+
+    <div id="mainContent" style="display:none">
+      <div class="layout">
+
+        <!-- FORM -->
+        <div class="form-card" id="formCard">
+          <div class="form-card-header">
+            <div>
+              <div class="form-card-title" id="formTitle">New Entry</div>
+              <div class="form-card-subtitle" id="formSubtitle">Fill in your experience for today</div>
+            </div>
+          </div>
+
+          <form id="diaryForm" onsubmit="saveEntry(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="entryDate">Date</label>
+                <input type="date" id="entryDate" required />
+              </div>
+              <div class="form-group">
+                <label for="entryLocal">Placement Location</label>
+                <input type="text" id="entryLocal" placeholder="e.g. Cityvet Clinic" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="entrySummary">Summary of Tasks <span>— What did you do today?</span></label>
+              <textarea id="entrySummary" placeholder="Describe the tasks and procedures you were involved in..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="entrySkills">Key Skills Used or Developed</label>
+              <textarea id="entrySkills" placeholder="e.g. Animal handling, assisting with consultations, preparing medications..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="entryChallenges">Challenges Faced and How They Were Managed</label>
+              <textarea id="entryChallenges" placeholder="Describe any difficulties you encountered and how you dealt with them..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="entryReflection">Reflection of the Day</label>
+              <textarea id="entryReflection" placeholder="What did you learn? What would you do differently? How did this experience connect to your coursework?" required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-save" id="saveBtn">Save Entry</button>
+              <button type="button" class="btn-cancel" id="cancelBtn" style="display:none" onclick="cancelEdit()">Cancel</button>
+            </div>
+          </form>
+
+          <div class="photo-reminder" id="photoReminder">
+            <span style="font-size:1.4rem">📷</span>
+            <div>
+              <strong>Don't forget your photos!</strong>
+              Remember to add photos to your diary — they're an important part of your work experience record.
+            </div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar-card">
+          <div class="sidebar-title">Your Entries</div>
+          <button class="btn-new" onclick="newEntry()">+ New Entry</button>
+          <div class="entries-list" id="entriesList">
+            <div class="entries-empty">No entries yet.<br>Start by saving your first day!</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    const user = JSON.parse(sessionStorage.getItem('pethologyUser') || 'null');
+    if (!user) { window.location.href = 'index.html'; }
+
+    const userId = user?.uid || user?.localId || user?.userId;
+
+    let entries = [];
+    let editingId = null;
+
+    // ── Toast ────────────────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    // ── Format date ──────────────────────────────────────────────────────────
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${d} ${months[parseInt(m) - 1]} ${y}`;
+    }
+
+    // ── Load entries ─────────────────────────────────────────────────────────
+    async function loadEntries() {
+      try {
+        const response = await PethologyFirebaseREST.request(
+          `/diary_entries?orderBy="userId"&equalTo="${userId}"`
+        );
+
+        entries = [];
+        if (response?.documents) {
+          entries = response.documents.map(doc => PethologyFirebaseREST.convertDocument(doc));
+        }
+
+        entries.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+        renderEntries();
+      } catch (e) {
+        console.error('Failed to load diary entries', e);
+        entries = [];
+        renderEntries();
+      } finally {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+      }
+    }
+
+    // ── Render sidebar entries ────────────────────────────────────────────────
+    function renderEntries() {
+      const list = document.getElementById('entriesList');
+      if (!entries.length) {
+        list.innerHTML = '<div class="entries-empty">No entries yet.<br>Start by saving your first day!</div>';
+        return;
+      }
+      list.innerHTML = entries.map(e => `
+        <div class="entry-item ${editingId === e.id ? 'active' : ''}" onclick="loadEntry('${e.id}')">
+          <div class="entry-date">${formatDate(e.date)}</div>
+          <div class="entry-local">${e.local || '—'}</div>
+        </div>
+      `).join('');
+    }
+
+    // ── Load entry into form ──────────────────────────────────────────────────
+    window.loadEntry = function(id) {
+      const entry = entries.find(e => e.id === id);
+      if (!entry) return;
+
+      editingId = id;
+      document.getElementById('formTitle').textContent = 'Edit Entry';
+      document.getElementById('formSubtitle').textContent = formatDate(entry.date);
+      document.getElementById('entryDate').value = entry.date || '';
+      document.getElementById('entryLocal').value = entry.local || '';
+      document.getElementById('entrySummary').value = entry.summary || '';
+      document.getElementById('entrySkills').value = entry.skills || '';
+      document.getElementById('entryChallenges').value = entry.challenges || '';
+      document.getElementById('entryReflection').value = entry.reflection || '';
+      document.getElementById('cancelBtn').style.display = 'block';
+      document.getElementById('photoReminder').classList.remove('visible');
+      renderEntries();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // ── New entry ─────────────────────────────────────────────────────────────
+    window.newEntry = function() {
+      editingId = null;
+      document.getElementById('diaryForm').reset();
+      document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('formTitle').textContent = 'New Entry';
+      document.getElementById('formSubtitle').textContent = 'Fill in your experience for today';
+      document.getElementById('cancelBtn').style.display = entries.length ? 'block' : 'none';
+      document.getElementById('photoReminder').classList.remove('visible');
+      renderEntries();
+    };
+
+    // ── Cancel edit ───────────────────────────────────────────────────────────
+    window.cancelEdit = function() {
+      editingId = null;
+      document.getElementById('diaryForm').reset();
+      document.getElementById('formTitle').textContent = 'New Entry';
+      document.getElementById('formSubtitle').textContent = 'Fill in your experience for today';
+      document.getElementById('cancelBtn').style.display = 'none';
+      document.getElementById('photoReminder').classList.remove('visible');
+      renderEntries();
+    };
+
+    // ── Save entry ────────────────────────────────────────────────────────────
+    window.saveEntry = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveBtn');
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const data = {
+        userId: { stringValue: userId },
+        date:   { stringValue: document.getElementById('entryDate').value },
+        local:  { stringValue: document.getElementById('entryLocal').value.trim() },
+        summary:    { stringValue: document.getElementById('entrySummary').value.trim() },
+        skills:     { stringValue: document.getElementById('entrySkills').value.trim() },
+        challenges: { stringValue: document.getElementById('entryChallenges').value.trim() },
+        reflection: { stringValue: document.getElementById('entryReflection').value.trim() },
+        updatedAt:  { stringValue: new Date().toISOString() },
+      };
+
+      try {
+        if (editingId) {
+          // Update existing
+          await PethologyFirebaseREST.request(
+            `/diary_entries/${editingId}?updateMask.fieldPaths=date&updateMask.fieldPaths=local&updateMask.fieldPaths=summary&updateMask.fieldPaths=skills&updateMask.fieldPaths=challenges&updateMask.fieldPaths=reflection&updateMask.fieldPaths=updatedAt`,
+            'PATCH',
+            { fields: data }
+          );
+          showToast('✅ Entry updated!');
+        } else {
+          // Create new
+          await PethologyFirebaseREST.request('/diary_entries', 'POST', { fields: data });
+          showToast('✅ Entry saved!');
+        }
+
+        // Show photo reminder
+        document.getElementById('photoReminder').classList.add('visible');
+
+        await loadEntries();
+        editingId = null;
+        document.getElementById('diaryForm').reset();
+        document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('formTitle').textContent = 'New Entry';
+        document.getElementById('formSubtitle').textContent = 'Fill in your experience for today';
+        document.getElementById('cancelBtn').style.display = 'none';
+
+      } catch (err) {
+        console.error('Save failed', err);
+        showToast('❌ Failed to save. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Entry';
+      }
+    };
+
+    // Set today's date as default
+    document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+
+    loadEntries();
+  </script>
+
+</body>
+</html>

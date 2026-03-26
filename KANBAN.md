@@ -36,6 +36,7 @@
   - **Changelog:** `changelog.html` renderizado de `CHANGELOG.md` via `marked.js` (já no projeto). — *1h*
   - **Feedback/Votação:** Google Form + Google Sheet exposta publicamente, ou GitHub Issues (upvotes via 👍, gratuito). Sem login extra para votar numa primeira fase.
   - **Stack:** HTML estático + marked.js. Sem dependência externa. Canny.io como alternativa futura se votação estruturada for necessária.
+- [ ] **Funding** — Buy Me a Coffee. Setup da conta + link no footer e about.html. — *30min*
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
 - [ ] **Export Grades** — CSV export de resultados por turma — *2-3h*
 - [ ] **Class Management P2** — Remove students, bulk actions — *3-4h*
