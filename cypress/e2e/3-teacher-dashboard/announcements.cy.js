@@ -98,3 +98,34 @@ describe('Quick Actions', () => {
     cy.get('.quick-action-icon').should('have.length.at.least', 4)
   })
 })
+
+describe('Teacher Settings Modal', () => {
+  beforeEach(() => {
+    cy.loginAsTeacher('teacher@school.com')
+    cy.visit('/teacher-dashboard.html')
+  })
+
+  it('opens settings modal from Quick Actions', () => {
+    cy.contains('Settings').click({ force: true })
+    cy.get('#teacherSettingsModal').should('be.visible')
+  })
+
+  it('settings modal has profile fields', () => {
+    cy.contains('Settings').click({ force: true })
+    cy.get('#ts-displayName').should('exist')
+    cy.get('#ts-contactEmail').should('exist')
+    cy.get('#ts-notifyOnQuiz').should('exist')
+  })
+
+  it('closes settings modal on cancel', () => {
+    cy.contains('Settings').click({ force: true })
+    cy.get('#teacherSettingsModal').should('be.visible')
+    cy.get('#teacherSettingsModal').contains('Cancel').click()
+    cy.get('#teacherSettingsModal').should('not.be.visible')
+  })
+
+  it('shows Roadmap & Feedback in help dropdown', () => {
+    cy.get('.help-dropdown-toggle').click({ force: true })
+    cy.contains('Roadmap & Feedback').should('be.visible')
+  })
+})

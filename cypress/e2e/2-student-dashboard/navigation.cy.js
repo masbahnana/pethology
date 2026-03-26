@@ -49,9 +49,9 @@ describe('Student Dashboard - Sidebar Navigation', () => {
     cy.url().should('include', 'flashcards')
   })
 
-  it('shows coming soon toast for Notes', () => {
-    cy.contains('Notes').click({ force: true })
-    cy.get('.toast', { timeout: 5000 }).should('be.visible').and('contain', 'coming soon')
+  it('Diary link navigates to diary page', () => {
+    cy.contains('Diary').click({ force: true })
+    cy.url().should('include', 'diary')
   })
 
   it('navigates to Goals page', () => {
@@ -72,6 +72,7 @@ describe('Student Dashboard - Avatar Dropdown', () => {
     cy.contains('Edit Profile').should('be.visible')
     cy.contains('Report Issue').should('be.visible')
     cy.contains('Help & FAQ').should('be.visible')
+    cy.contains('Roadmap & Feedback').should('be.visible')
     cy.contains('Logout').should('be.visible')
   })
 
