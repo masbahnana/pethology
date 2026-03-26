@@ -425,6 +425,8 @@ export class PethologyFirebaseREST {
       const totalScore = quizHistory.reduce((sum, q) => sum + (q.score || 0), 0);
       // Convert average from fraction to percentage (0-100)
       const averageScore = Math.round((totalScore / totalQuizzes) * 100);
+      const totalQuestions = quizHistory.reduce((sum, q) => sum + (q.totalQuestions || 0), 0);
+      const correctAnswers = quizHistory.reduce((sum, q) => sum + (q.correctAnswers || 0), 0);
 
       // Calculate module progress
       const moduleProgress = {};
@@ -478,7 +480,7 @@ export class PethologyFirebaseREST {
       console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak`);
 
       return {
-        overallStats: { totalQuizzes, averageScore, streak },
+        overallStats: { totalQuizzes, averageScore, streak, totalQuestions, correctAnswers },
         moduleProgress,
         achievements: [] // TODO: Calculate achievements
       };

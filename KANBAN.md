@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
 **Última atualização:** 26 Março 2026
-**Versão Atual:** v6.4
-**Status:** Pilot activo — Diary + Terms & Privacy + 3D Skeleton live
+**Versão Atual:** v6.5
+**Status:** Pilot activo — Bug fixes: student modal, archived class read-only
 
 ---
 
@@ -55,6 +55,13 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 26 Março 2026 — Bug fixes + Archived Class Read-Only (v6.5)
+
+- [x] **Student profile modal** — Overlay duplo removido (estava bloqueando scroll e cliques). "0 Questions Answered" corrigido — `totalQuestions` e `correctAnswers` agora somados de `quiz_results` no `getStudentProgress()`
+- [x] **Archived class read-only** — Clicar numa classe arquivada abre modal com info da turma (ano, data de arquivo, nº alunos, módulos) + lista de alunos. Aviso de read-only. Fecha ao clicar fora.
+
+---
 
 ### ✅ 26 Março 2026 — Pilot Launch — Diary + Terms & Privacy + 3D Skeleton + Arch fixes
 

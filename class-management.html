@@ -858,6 +858,30 @@
     </div>
   </div>
 
+  <!-- Archived Class Read-Only Modal -->
+  <div class="modal-overlay" id="archivedClassDetailModal" style="display:none;" onclick="if(event.target===this)closeArchivedClassDetail()">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="archivedClassDetailName">Archived Class</h3>
+          <span class="archived-badge" style="margin-top:4px; display:inline-block;">Archived</span>
+        </div>
+        <button class="modal-close" onclick="closeArchivedClassDetail()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="archivedClassDetailBody">
+          <div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>
+        </div>
+        <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--gray-200); font-size:12px; color:var(--gray-400); display:flex; align-items:center; gap:6px;">
+          <i data-lucide="lock" style="width:13px;height:13px;"></i>
+          This class is archived — data is read-only. Students no longer have access.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Archive Class Confirmation Modal -->
   <div class="modal-overlay" id="archiveClassModal">
     <div class="modal" style="max-width: 440px;">
@@ -1395,7 +1419,7 @@
         container.innerHTML = archived.map(cls => {
           const archivedAt = cls.archivedAt ? new Date(cls.archivedAt).toLocaleDateString('en-IE') : 'Unknown date';
           return `
-            <div class="archived-class-item">
+            <div class="archived-class-item" style="cursor:pointer;" onclick="openArchivedClassDetail('${cls.id}')">
               <div>
                 <div class="archived-class-name">
                   ${cls.name || 'Unnamed Class'}
@@ -1403,15 +1427,90 @@
                 </div>
                 <div class="archived-class-meta">Archived on ${archivedAt}${cls.academicYear ? ` · ${cls.academicYear}` : ''}</div>
               </div>
+              <i data-lucide="chevron-right" style="color:var(--gray-400); flex-shrink:0;"></i>
             </div>
           `;
         }).join('');
+        lucide.createIcons();
 
       } catch (e) {
         console.error('Error loading archived classes:', e);
         container.innerHTML = '<p style="color:var(--error); font-size:14px; padding:16px 0;">Error loading archived classes.</p>';
       }
     }
+
+    // Archived class read-only detail
+    window.openArchivedClassDetail = async function(classId) {
+      const modal = document.getElementById('archivedClassDetailModal');
+      const body = document.getElementById('archivedClassDetailBody');
+      const title = document.getElementById('archivedClassDetailName');
+
+      modal.style.display = 'flex';
+      body.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Loading...</p></div>';
+
+      try {
+        // Find class from already-loaded list or fetch
+        const user = JSON.parse(sessionStorage.getItem('pethologyUser'));
+        const allClasses = await PethologyFirebaseREST.getAllClasses();
+        const cls = allClasses.find(c => c.id === classId);
+
+        if (!cls) {
+          body.innerHTML = '<p style="color:var(--error)">Class not found.</p>';
+          return;
+        }
+
+        title.textContent = cls.name || 'Archived Class';
+
+        const students = await PethologyFirebaseREST.getStudentsByClass(classId);
+        const archivedAt = cls.archivedAt ? new Date(cls.archivedAt).toLocaleDateString('en-IE') : 'Unknown';
+
+        body.innerHTML = `
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+            <div style="background:var(--gray-50); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:var(--gray-400); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Academic Year</div>
+              <div style="font-weight:600; color:var(--gray-700);">${cls.academicYear || '—'}</div>
+            </div>
+            <div style="background:var(--gray-50); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:var(--gray-400); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Archived On</div>
+              <div style="font-weight:600; color:var(--gray-700);">${archivedAt}</div>
+            </div>
+            <div style="background:var(--gray-50); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:var(--gray-400); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Students</div>
+              <div style="font-weight:600; color:var(--gray-700);">${students.length}</div>
+            </div>
+            <div style="background:var(--gray-50); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:var(--gray-400); text-transform:uppercase; letter-spacing:.5px; margin-bottom:4px;">Modules</div>
+              <div style="font-weight:600; color:var(--gray-700);">${(cls.modules || []).length || '—'}</div>
+            </div>
+          </div>
+
+          ${students.length > 0 ? `
+            <div style="font-size:13px; font-weight:600; color:var(--gray-600); margin-bottom:10px;">Students</div>
+            <div style="border:1px solid var(--gray-200); border-radius:8px; overflow:hidden;">
+              ${students.map((s, i) => `
+                <div style="display:flex; align-items:center; gap:12px; padding:12px 16px; ${i < students.length - 1 ? 'border-bottom:1px solid var(--gray-100);' : ''}">
+                  <div style="width:32px; height:32px; border-radius:50%; background:var(--gray-200); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--gray-500); flex-shrink:0;">
+                    ${(s.name || s.email || '?')[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <div style="font-size:13px; font-weight:500; color:var(--gray-700);">${s.name || 'Unknown'}</div>
+                    <div style="font-size:12px; color:var(--gray-400);">${s.email || ''}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : '<p style="font-size:13px; color:var(--gray-400);">No students were in this class.</p>'}
+        `;
+        lucide.createIcons();
+      } catch (e) {
+        console.error('Error loading archived class detail:', e);
+        body.innerHTML = '<p style="color:var(--error); font-size:13px;">Error loading class details.</p>';
+      }
+    };
+
+    window.closeArchivedClassDetail = function() {
+      document.getElementById('archivedClassDetailModal').style.display = 'none';
+    };
 
     // Open add student modal (redirect to dashboard)
     window.openAddStudentModal = function() {
