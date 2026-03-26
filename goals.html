@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Goals — Pethology</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --green-mid: #bbf7d0;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --yellow: #d97706;
+      --yellow-light: #fffbeb;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+      --radius: 14px;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    .nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { font-weight: 700; font-size: 1rem; text-decoration: none; color: var(--text); }
+    .nav-sep { color: var(--border); }
+    .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+    .btn-back {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 14px;
+      font-size: 0.875rem; font-family: var(--font);
+      color: var(--muted); cursor: pointer;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .btn-back:hover { background: var(--bg); color: var(--text); }
+
+    /* MAIN */
+    .main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 1.6rem; font-weight: 800; margin-bottom: 6px; }
+    .page-header p { color: var(--muted); font-size: 0.9rem; }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 60px 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SECTION */
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* GOALS GRID */
+    .goals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .goal-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: box-shadow 0.15s;
+    }
+    .goal-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .goal-card.completed {
+      border-color: var(--green-mid);
+      background: var(--green-light);
+    }
+
+    .goal-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 8px;
+    }
+    .goal-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .goal-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .badge-done {
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid var(--green-mid);
+    }
+    .badge-progress {
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid #bfdbfe;
+    }
+
+    .goal-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .goal-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
+    /* PROGRESS BAR */
+    .goal-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .goal-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .goal-fill {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.6s ease;
+    }
+    .goal-progress-text {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* CELEBRATION */
+    .celebration {
+      display: none;
+      text-align: center;
+      background: var(--green-light);
+      border: 1.5px solid var(--green-mid);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      animation: fadeIn 0.4s ease;
+    }
+    .celebration.show { display: block; }
+    .celebration-icon { font-size: 2.5rem; margin-bottom: 8px; display: block; }
+    .celebration h3 { font-size: 1.1rem; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+    .celebration p { font-size: 0.85rem; color: #166534; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* NO DATA */
+    .no-data {
+      text-align: center;
+      padding: 48px 24px;
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 32px;
+    }
+    .no-data-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+    .no-data h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .no-data p { font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; }
+    .btn-quiz {
+      display: inline-block;
+      background: var(--text);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .btn-quiz:hover { opacity: 0.85; }
+
+    @media (max-width: 520px) {
+      .goals-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-left">
+      <span class="nav-logo">🐾 Pethology</span>
+      <span class="nav-sep">/</span>
+      <span class="nav-title">Goals</span>
+    </div>
+    <a href="student-dashboard.html" class="btn-back">← Dashboard</a>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <h1>Your Goals</h1>
+      <p>Track your progress across key milestones. Keep going — you've got this!</p>
+    </div>
+
+    <div id="loadingState" class="loading">
+      <div class="spinner"></div>
+      <p>Loading your progress…</p>
+    </div>
+
+    <div id="contentState" style="display:none;">
+      <div class="celebration" id="celebration">
+        <span class="celebration-icon">🏆</span>
+        <h3 id="celebrationTitle"></h3>
+        <p id="celebrationText"></p>
+      </div>
+
+      <div id="noDataState" class="no-data" style="display:none;">
+        <span class="no-data-icon">🎯</span>
+        <h3>No quiz data yet</h3>
+        <p>Complete your first quiz to start tracking your goals.</p>
+        <a href="quiz.html" class="btn-quiz">Start a quiz →</a>
+      </div>
+
+      <div id="goalsContent">
+        <div class="section-title">Overall Goals</div>
+        <div class="goals-grid" id="overallGoals"></div>
+
+        <div class="section-title">Module Goals</div>
+        <div class="goals-grid" id="moduleGoals"></div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { PethologyFirebaseREST } from './assets/js/firebase-rest.js';
+
+    const GOALS = [
+      // Overall
+      {
+        id: 'first-quiz',   category: 'overall',
+        icon: '🎯', color: '#eff6ff', iconColor: '#2563eb',
+        name: 'First Steps',
+        desc: 'Complete your very first quiz.',
+        target: 1,
+        getValue: (stats) => Math.min(stats.totalQuizzes, 1),
+        format: (v, t) => `${v} / ${t} quiz`
+      },
+      {
+        id: 'five-quizzes', category: 'overall',
+        icon: '📚', color: '#f5f3ff', iconColor: '#7c3aed',
+        name: 'Quiz Enthusiast',
+        desc: 'Complete 5 quizzes.',
+        target: 5,
+        getValue: (stats) => Math.min(stats.totalQuizzes, 5),
+        format: (v, t) => `${v} / ${t} quizzes`
+      },
+      {
+        id: 'ten-quizzes',  category: 'overall',
+        icon: '🔥', color: '#fff7ed', iconColor: '#ea580c',
+        name: 'On a Roll',
+        desc: 'Complete 10 quizzes.',
+        target: 10,
+        getValue: (stats) => Math.min(stats.totalQuizzes, 10),
+        format: (v, t) => `${v} / ${t} quizzes`
+      },
+      {
+        id: 'avg-70',       category: 'overall',
+        icon: '⭐', color: '#fffbeb', iconColor: '#d97706',
+        name: 'Solid Foundation',
+        desc: 'Reach an average score of 70%.',
+        target: 70,
+        getValue: (stats) => Math.min(Math.round(stats.averageScore || 0), 70),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+      {
+        id: 'avg-85',       category: 'overall',
+        icon: '🌟', color: '#fffbeb', iconColor: '#d97706',
+        name: 'High Achiever',
+        desc: 'Reach an average score of 85%.',
+        target: 85,
+        getValue: (stats) => Math.min(Math.round(stats.averageScore || 0), 85),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+      {
+        id: 'streak-3',     category: 'overall',
+        icon: '📅', color: '#fdf4ff', iconColor: '#9333ea',
+        name: '3-Day Streak',
+        desc: 'Study 3 days in a row.',
+        target: 3,
+        getValue: (stats) => Math.min(stats.currentStreak || 0, 3),
+        format: (v, t) => `${v} / ${t} days`
+      },
+      // Module
+      {
+        id: 'biology-80',   category: 'module',
+        icon: '🧬', color: '#f0fdf4', iconColor: '#16a34a',
+        name: 'Biology Pro',
+        desc: 'Score 80%+ in Biology.',
+        module: 'biology',
+        target: 80,
+        getValue: (stats) => Math.min(Math.round(stats.moduleScores?.biology || 0), 80),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+      {
+        id: 'welfare-80',   category: 'module',
+        icon: '🐾', color: '#fdf4ff', iconColor: '#9333ea',
+        name: 'Welfare Expert',
+        desc: 'Score 80%+ in Animal Welfare.',
+        module: 'animal-welfare',
+        target: 80,
+        getValue: (stats) => Math.min(Math.round(stats.moduleScores?.['animal-welfare'] || 0), 80),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+      {
+        id: 'anatomy-80',   category: 'module',
+        icon: '🦴', color: '#fff7ed', iconColor: '#ea580c',
+        name: 'Anatomy Ace',
+        desc: 'Score 80%+ in Animal Anatomy.',
+        module: 'animal-anatomy',
+        target: 80,
+        getValue: (stats) => Math.min(Math.round(stats.moduleScores?.['animal-anatomy'] || 0), 80),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+      {
+        id: 'grooming-80',  category: 'module',
+        icon: '✂️', color: '#eff6ff', iconColor: '#2563eb',
+        name: 'Grooming Guru',
+        desc: 'Score 80%+ in Grooming.',
+        module: 'grooming',
+        target: 80,
+        getValue: (stats) => Math.min(Math.round(stats.moduleScores?.grooming || 0), 80),
+        format: (v, t) => `${v}% / ${t}%`
+      },
+    ];
+
+    // ── Load data ────────────────────────────────────────────────────────────
+    async function init() {
+      const session = sessionStorage.getItem('pethologyUser');
+      if (!session) { window.location.href = 'auth0-login.html'; return; }
+      const user = JSON.parse(session);
+
+      try {
+        const [history, progress] = await Promise.all([
+          PethologyFirebaseREST.getStudentQuizHistory(user.id),
+          PethologyFirebaseREST.getStudentProgress(user.id)
+        ]);
+
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('contentState').style.display = 'block';
+
+        if (!history || history.length === 0) {
+          document.getElementById('noDataState').style.display = 'block';
+          document.getElementById('goalsContent').style.display = 'none';
+          return;
+        }
+
+        const stats = buildStats(history, progress);
+        renderGoals(stats);
+        checkCelebration(stats);
+      } catch (e) {
+        console.error('Goals load error:', e);
+        document.getElementById('loadingState').innerHTML = '<p>Could not load data. Please try again.</p>';
+      }
+    }
+
+    // ── Build stats ──────────────────────────────────────────────────────────
+    function buildStats(history, progress) {
+      const totalQuizzes = history.length;
+      const scores = history.map(h => h.score || 0);
+      const averageScore = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
+
+      // Streak: count consecutive days up to today
+      const days = [...new Set(history.map(h => {
+        const d = new Date(h.completedAt || h.timestamp || 0);
+        return d.toDateString();
+      }))].sort((a, b) => new Date(b) - new Date(a));
+
+      let streak = 0;
+      let check = new Date();
+      check.setHours(0, 0, 0, 0);
+      for (const day of days) {
+        const d = new Date(day);
+        d.setHours(0, 0, 0, 0);
+        const diff = Math.round((check - d) / 86400000);
+        if (diff === 0 || diff === streak) { streak++; check = d; }
+        else break;
+      }
+
+      // Module best scores
+      const moduleScores = {};
+      history.forEach(h => {
+        const mod = h.module || h.quizModule || '';
+        const score = h.score || 0;
+        if (!moduleScores[mod] || score > moduleScores[mod]) moduleScores[mod] = score;
+      });
+
+      return { totalQuizzes, averageScore, currentStreak: streak, moduleScores };
+    }
+
+    // ── Render ───────────────────────────────────────────────────────────────
+    function renderGoals(stats) {
+      const overall = GOALS.filter(g => g.category === 'overall');
+      const module  = GOALS.filter(g => g.category === 'module');
+      document.getElementById('overallGoals').innerHTML = overall.map(g => goalCard(g, stats)).join('');
+      document.getElementById('moduleGoals').innerHTML  = module.map(g => goalCard(g, stats)).join('');
+    }
+
+    function goalCard(goal, stats) {
+      const value     = goal.getValue(stats);
+      const pct       = Math.min(100, Math.round((value / goal.target) * 100));
+      const done      = pct >= 100;
+      const fillColor = done ? '#16a34a' : goal.iconColor;
+
+      return `
+        <div class="goal-card ${done ? 'completed' : ''}">
+          <div class="goal-top">
+            <div class="goal-icon-wrap" style="background:${goal.color};">
+              <span style="font-size:1.2rem;">${goal.icon}</span>
+            </div>
+            <span class="goal-badge ${done ? 'badge-done' : 'badge-progress'}">
+              ${done ? '✓ Done' : `${pct}%`}
+            </span>
+          </div>
+          <div class="goal-name">${goal.name}</div>
+          <div class="goal-desc">${goal.desc}</div>
+          <div class="goal-progress-row">
+            <div class="goal-bar">
+              <div class="goal-fill" style="width:${pct}%; background:${fillColor};"></div>
+            </div>
+            <span class="goal-progress-text">${goal.format(value, goal.target)}</span>
+          </div>
+        </div>`;
+    }
+
+    // ── Celebration ──────────────────────────────────────────────────────────
+    function checkCelebration(stats) {
+      const justCompleted = GOALS.filter(g => g.getValue(stats) >= g.target);
+      if (!justCompleted.length) return;
+      const latest = justCompleted[justCompleted.length - 1];
+      document.getElementById('celebrationTitle').textContent = `You completed "${latest.name}"!`;
+      document.getElementById('celebrationText').textContent  = `${latest.desc} Keep up the great work!`;
+      document.getElementById('celebration').classList.add('show');
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
