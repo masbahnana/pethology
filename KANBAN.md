@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
 **Última atualização:** 26 Março 2026
-**Versão Atual:** v6.6
-**Status:** Pilot activo — Teacher Settings + bug fixes
+**Versão Atual:** v6.7
+**Status:** Pilot activo — Export Grades + Buy Me a Coffee + GitHub Projects
 
 ---
 
@@ -33,9 +33,9 @@
   - **Changelog:** `changelog.html` renderizado de `CHANGELOG.md` via `marked.js` (já no projeto). — *1h*
   - **Feedback/Votação:** Google Form + Google Sheet exposta publicamente, ou GitHub Issues (upvotes via 👍, gratuito). Sem login extra para votar numa primeira fase.
   - **Stack:** HTML estático + marked.js. Sem dependência externa. Canny.io como alternativa futura se votação estruturada for necessária.
-- [ ] **Funding** — Buy Me a Coffee. Setup da conta + link no footer e about.html. — *30min*
+- [x] **Funding** — ✅ DONE (26 Mar) — buymeacoffee.com/pethology. Botões no support.html activos.
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
-- [ ] **Export Grades** — CSV export de resultados por turma — *2-3h*
+- [x] **Export Grades** — ✅ DONE (26 Mar) — CSV com nome, email, status, total quizzes, avg score, questions answered, correct answers, score por módulo.
 - [ ] **Class Management P2** — Remove students, bulk actions — *3-4h*
 - [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
 - [ ] **Professional screenshots** — Para marketing — *30min*
@@ -55,6 +55,14 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 26 Março 2026 — Export Grades + Funding + GitHub Projects (v6.7)
+
+- [x] **Export Grades** — Botão no Class Management, descarrega CSV com todos os dados por aluno + coluna por módulo
+- [x] **Buy Me a Coffee** — buymeacoffee.com/pethology live, botões no support.html activos
+- [x] **GitHub Projects** — Kanban migrado para github.com/users/masbahnana/projects/2 (41 itens: 29 Done, 1 In Progress, 11 Todo)
+
+---
 
 ### ✅ 26 Março 2026 — Teacher Settings + Bug fixes (v6.6)
 
