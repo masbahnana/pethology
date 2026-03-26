@@ -1290,11 +1290,13 @@
     window.confirmDeleteClass = async function() {
       try {
         // Remove all students of this class from the whitelist
-        const studentsInClass = allStudents.filter(s => s.classId === currentClassId);
+        const preRegistered = await PethologyFirebaseREST.getStudentsByClass(currentClassId);
         await Promise.all(
-          studentsInClass.map(s => {
-            const docId = s.id || s.email;
-            return PethologyFirebaseREST.request(`/pre_registered_students/${docId}`, 'DELETE').catch(e => {
+          preRegistered.map(s => {
+            // Documents are keyed by email — try raw email first, then encoded
+            const docId = s.email;
+            console.log(`🗑️ Removing student from whitelist: ${docId}`);
+            return PethologyFirebaseREST.request(`/pre_registered_students/${encodeURIComponent(docId)}`, 'DELETE').catch(e => {
               console.warn(`Could not remove student ${docId}:`, e);
             });
           })
