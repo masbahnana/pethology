@@ -2916,7 +2916,6 @@
         document.getElementById('ts-displayName').value = profile.displayName || user.name || '';
         document.getElementById('ts-contactEmail').value = profile.contactEmail || '';
         document.getElementById('ts-notifyOnQuiz').checked = profile.notifyOnQuiz || false;
-        document.getElementById('ts-emailLanguage').value = profile.emailLanguage || 'en';
       }
     };
 
@@ -2930,7 +2929,6 @@
         displayName: document.getElementById('ts-displayName').value.trim(),
         contactEmail: document.getElementById('ts-contactEmail').value.trim(),
         notifyOnQuiz: document.getElementById('ts-notifyOnQuiz').checked,
-        emailLanguage: document.getElementById('ts-emailLanguage').value,
       };
 
       try {
@@ -2995,13 +2993,6 @@
                 <div style="font-size:12px;color:var(--gray-400);">One email per quiz attempt</div>
               </div>
             </label>
-            <div>
-              <label style="font-size:13px;font-weight:500;color:var(--gray-600);display:block;margin-bottom:6px;">Email Language</label>
-              <select id="ts-emailLanguage" class="form-input" style="width:100%;">
-                <option value="en">English</option>
-                <option value="pt">Portuguese</option>
-              </select>
-            </div>
           </div>
         </div>
 

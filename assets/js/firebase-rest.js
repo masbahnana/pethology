@@ -814,7 +814,6 @@ export class PethologyFirebaseREST {
     if (data.displayName !== undefined) fields.displayName = { stringValue: data.displayName };
     if (data.contactEmail !== undefined) fields.contactEmail = { stringValue: data.contactEmail };
     if (data.notifyOnQuiz !== undefined) fields.notifyOnQuiz = { booleanValue: data.notifyOnQuiz };
-    if (data.emailLanguage !== undefined) fields.emailLanguage = { stringValue: data.emailLanguage };
 
     const fieldPaths = Object.keys(fields).map(k => `updateMask.fieldPaths=${k}`).join('&');
     await this.request(
