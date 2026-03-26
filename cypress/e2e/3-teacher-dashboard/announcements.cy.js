@@ -125,7 +125,7 @@ describe('Teacher Settings Modal', () => {
   })
 
   it('shows Roadmap & Feedback in help dropdown', () => {
-    cy.get('.help-dropdown-toggle').click({ force: true })
+    cy.get('#help-dropdown .dropdown-toggle').click({ force: true })
     cy.contains('Roadmap & Feedback').should('be.visible')
   })
 })

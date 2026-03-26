@@ -38,7 +38,7 @@ describe('Class Management Page', () => {
   })
 
   it('has search and filter controls', () => {
-    cy.get('#studentSearch').should('exist')
+    cy.get('#searchInput').should('exist')
   })
 })
 
