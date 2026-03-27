@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 26 Março 2026
+**Última atualização:** 27 Março 2026
 **Versão Atual:** v6.7
-**Status:** Pilot activo — Export Grades + Buy Me a Coffee + GitHub Projects
+**Status:** Pilot activo — MailerLite integration pendente (aguarda embeds)
 
 ---
 
@@ -20,19 +20,18 @@
 
 ### 📝 Low Priority
 - [x] **Terms & Privacy** — ✅ DONE (26 Mar) — `terms.html` (9 secções, direito irlandês) + `privacy.html` (GDPR compliant, tabela de dados, direitos do utilizador, contacto DPC Ireland). Links no footer de todas as páginas públicas.
-- [ ] **Newsletter** — Updates da plataforma para alunos e professores.
-  - **Stack:** MailerLite (free até 1000 subscribers, 12k emails/mês). Embed de formulário na página de settings e no footer.
+- [ ] **MailerLite Integration** — Tudo via MailerLite (contact.html, store "Be the first to know", newsletter). 3 formulários a criar no painel: Contact (Nome + Email + Mensagem custom), Store Launch (Email), Newsletter (Email). Aguarda embeds do MailerLite para implementar.
+  - **Stack:** MailerLite (free até 1000 subscribers, 12k emails/mês).
+  - **Contact** — embed substitui form actual (`submit_form.php` não funciona)
+  - **Store** — embed na secção "Be the first to know", lista "Store Launch"
+  - **Newsletter** — embed em settings do aluno + footer do site
   - **Personal email field** — Na página de settings do perfil do aluno: campo de email pessoal opcional com mensagem *"Stay connected after graduation — add a personal email"*. Email da escola expira ao terminar o curso. GDPR: double opt-in via MailerLite, consentimento explícito.
 - [ ] **Community** — Servidor Discord para manter alunos conectados após a escola.
   - **Stack:** Discord (gratuito, fácil de moderar, sem expiração de conta)
   - **Canais:** `#announcements`, `#introductions`, `#questions`, `#study-together`, `#quiz-discussion`, `#work-experience`, `#pet-cases`, `#general`
   - **Roles:** `@Student` (alunos activos), `@Teacher` (Mary + professores), `@Alumni` (formados — mantêm acesso pós-escola, chave para engagement a longo prazo)
   - **Integração:** Link no sidebar do student dashboard + footer do site + guide.html
-- [ ] **Public Roadmap + Changelog** — Roadmap público estilo StoryGraph. Transparência, envolvimento dos utilizadores, mostra que o projeto está ativo.
-  - **Roadmap:** `roadmap.html` estático com colunas "Up Next / In Progress / Shipped". Categorias educacionais: Novos Módulos, Melhorias ao Quiz, Conteúdo do Blog, Bugs. — *2-3h*
-  - **Changelog:** `changelog.html` renderizado de `CHANGELOG.md` via `marked.js` (já no projeto). — *1h*
-  - **Feedback/Votação:** Google Form + Google Sheet exposta publicamente, ou GitHub Issues (upvotes via 👍, gratuito). Sem login extra para votar numa primeira fase.
-  - **Stack:** HTML estático + marked.js. Sem dependência externa. Canny.io como alternativa futura se votação estruturada for necessária.
+- [x] **Public Roadmap + Changelog** — ✅ DONE (27 Mar) — `roadmap.html` atualizado (Phase 5 Completed, Phase 6 In Progress, Phase 7 Future). `changelog.html` criado, renderiza `CHANGELOG.md` via marked.js CDN. Link "Changelog" adicionado no footer de todas as páginas públicas.
 - [x] **Funding** — ✅ DONE (26 Mar) — buymeacoffee.com/pethology. Botões no support.html activos.
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
 - [x] **Export Grades** — ✅ DONE (26 Mar) — CSV com nome, email, status, total quizzes, avg score, questions answered, correct answers, score por módulo.

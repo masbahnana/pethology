@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Changelog — Pethology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/public.css">
+  <style>
+    main {
+      max-width: 720px;
+      margin: 72px auto 100px;
+      padding: 0 24px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f0fdf4;
+      color: #16a34a;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      color: #666;
+      font-size: 1rem;
+      max-width: 440px;
+      margin: 0 auto 16px;
+    }
+
+    .hero a {
+      color: #16a34a;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+    }
+
+    /* ── CHANGELOG CONTENT ── */
+    #changelog-content h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 48px 0 4px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px solid #e8e8e8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #changelog-content h2::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #16a34a;
+      flex-shrink: 0;
+    }
+
+    #changelog-content h2:first-of-type {
+      margin-top: 0;
+    }
+
+    #changelog-content h3 {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #6b7280;
+      margin: 20px 0 8px;
+    }
+
+    #changelog-content h3:first-child { margin-top: 16px; }
+
+    #changelog-content ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    #changelog-content ul li {
+      font-size: 0.9rem;
+      color: #333;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+
+    #changelog-content ul li::before {
+      content: '·';
+      color: #16a34a;
+      font-size: 1.4rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: -1px;
+    }
+
+    #changelog-content ul li strong {
+      font-weight: 600;
+      color: #111;
+    }
+
+    #changelog-content hr {
+      border: none;
+      border-top: 1px solid #f0f0f0;
+      margin: 8px 0 0;
+    }
+
+    #changelog-content p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .loading {
+      text-align: center;
+      color: #999;
+      font-size: 0.9rem;
+      padding: 40px 0;
+    }
+
+    @media (max-width: 640px) {
+      main { margin: 48px auto 80px; }
+    }
+  </style>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <nav class="pub-nav">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/img/pethology-logo.jpg" alt="Pethology">
+      Pethology
+    </a>
+    <div class="nav-links">
+      <a href="about.html">🌿 About</a>
+      <a href="blog.html">✍️ Blog</a>
+      <a href="store.html">🛍️ Store</a>
+      <a href="auth0-login.html" class="btn btn-green">🐾 Log in</a>
+    </div>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="hero-badge">📋 Release History</div>
+      <h1>Changelog</h1>
+      <p>Every update, fix, and feature added to Pethology — from day one.</p>
+      <a href="roadmap.html">← View Roadmap</a>
+    </div>
+
+    <div id="changelog-content">
+      <p class="loading">Loading changelog…</p>
+    </div>
+  </main>
+
+  <footer class="pub-footer">
+    <span>© 2026 Pethology — Built with ❤️ for Animal Care students</span>
+    <div class="footer-links">
+      <a href="about.html">🌿 About</a>
+      <a href="store.html">Store</a>
+      <a href="contact.html">Contact</a>
+      <a href="support.html">Support us</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    fetch('CHANGELOG.md')
+      .then(r => r.text())
+      .then(md => {
+        document.getElementById('changelog-content').innerHTML = marked.parse(md);
+      })
+      .catch(() => {
+        document.getElementById('changelog-content').innerHTML =
+          '<p style="color:#999">Could not load changelog.</p>';
+      });
+  </script>
+
+</body>
+</html>
