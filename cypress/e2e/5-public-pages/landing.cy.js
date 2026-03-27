@@ -56,7 +56,28 @@ describe('Roadmap Page', () => {
   })
 
   it('shows timeline phases', () => {
-    cy.get('.timeline-dot').should('have.length.at.least', 4)
+    cy.get('.timeline-dot').should('have.length.at.least', 5)
+  })
+
+  it('has link to changelog', () => {
+    cy.contains('Changelog').should('be.visible')
+    cy.get('a[href="changelog.html"]').should('exist')
+  })
+})
+
+describe('Changelog Page', () => {
+  beforeEach(() => cy.visit('/changelog.html'))
+
+  it('loads successfully', () => {
+    cy.contains('Changelog').should('be.visible')
+  })
+
+  it('has link back to roadmap', () => {
+    cy.contains('Roadmap').should('exist')
+  })
+
+  it('renders changelog content', () => {
+    cy.get('#changelog-content', { timeout: 8000 }).should('not.be.empty')
   })
 })
 

@@ -35,7 +35,7 @@
 - [x] **Funding** — ✅ DONE (26 Mar) — buymeacoffee.com/pethology. Botões no support.html activos.
 - [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
 - [x] **Export Grades** — ✅ DONE (26 Mar) — CSV com nome, email, status, total quizzes, avg score, questions answered, correct answers, score por módulo.
-- [ ] **Class Management P2** — Remove students, bulk actions — *3-4h*
+- [x] **Class Management P2** — ✅ DONE (27 Mar) — Bulk select com checkboxes (Select All + individual), bulk action bar com contador, modal de confirmação, bulk remove via Firebase. Selection limpa ao mudar de turma.
 - [ ] **Canny Roadmap content** — Definir lista de items a publicar no pethology.canny.io (Under Review / Planned / In Progress / Live). A fazer em conjunto.
 - [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
 - [ ] **Professional screenshots** — Para marketing — *30min*

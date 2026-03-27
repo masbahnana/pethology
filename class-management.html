@@ -414,6 +414,49 @@
       margin-bottom: 4px;
     }
 
+    /* Bulk Actions */
+    .bulk-bar {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 24px;
+      background: #eff6ff;
+      border-bottom: 1px solid #bfdbfe;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .bulk-bar.visible {
+      display: flex;
+    }
+
+    .bulk-bar-count {
+      color: var(--blue-primary);
+      font-weight: 600;
+    }
+
+    .bulk-bar-spacer {
+      flex: 1;
+    }
+
+    /* Checkbox column */
+    th.col-check, td.col-check {
+      width: 40px;
+      padding-right: 0;
+    }
+
+    input[type="checkbox"].row-check {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--blue-primary);
+    }
+
+    tr.selected-row {
+      background: #eff6ff !important;
+    }
+
     .progress-fill {
       height: 100%;
       background: var(--blue-primary);
@@ -794,6 +837,17 @@
         </div>
       </div>
 
+      <!-- Bulk action bar -->
+      <div class="bulk-bar" id="bulkBar">
+        <span><span class="bulk-bar-count" id="bulkSelectedCount">0</span> students selected</span>
+        <div class="bulk-bar-spacer"></div>
+        <button class="btn btn-secondary btn-sm" onclick="clearSelection()">Deselect all</button>
+        <button class="btn btn-danger btn-sm" onclick="openBulkDeleteModal()">
+          <i data-lucide="trash-2"></i>
+          Remove selected
+        </button>
+      </div>
+
       <div class="table-container">
         <div id="studentsTableContainer">
           <div class="loading-state">
@@ -835,6 +889,29 @@
       </div>
       <div class="modal-body" id="reportModalBody">
         <!-- Report content loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Remove Confirmation Modal -->
+  <div class="modal-overlay" id="bulkDeleteModal">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Remove Students</h3>
+        <button class="modal-close" onclick="closeBulkDeleteModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 20px;">Remove <strong id="bulkDeleteCount"></strong> from this class?</p>
+        <p style="font-size: 13px; color: var(--gray-500); margin-bottom: 20px;">Their quiz history will be preserved.</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="closeBulkDeleteModal()">Cancel</button>
+          <button class="btn btn-danger" onclick="confirmBulkRemove()">
+            <i data-lucide="trash-2"></i>
+            Remove All
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -923,6 +1000,7 @@
     let teacherClasses = [];
     let allStudents = [];
     let studentToDelete = null;
+    let selectedEmails = new Set();
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1082,6 +1160,8 @@
 
     // Render students table
     function renderStudentsTable() {
+      selectedEmails.clear();
+      document.getElementById('bulkBar')?.classList.remove('visible');
       const container = document.getElementById('studentsTableContainer');
 
       if (allStudents.length === 0) {
@@ -1112,6 +1192,7 @@
         <table>
           <thead>
             <tr>
+              <th class="col-check"><input type="checkbox" class="row-check" id="selectAllCheck" onchange="toggleSelectAll(this)" title="Select all"></th>
               <th>Student</th>
               <th>Status</th>
               <th>Last Activity</th>
@@ -1143,7 +1224,8 @@
       const scoreClass = avgScore >= 80 ? 'score-high' : avgScore >= 60 ? 'score-medium' : 'score-low';
 
       return `
-        <tr>
+        <tr id="row-${encodedEmail}">
+          <td class="col-check"><input type="checkbox" class="row-check" data-email="${encodedEmail}" onchange="toggleStudentSelect(this)"></td>
           <td>
             <div class="student-name">${name}</div>
             <div class="student-email">${student.email}</div>
@@ -1305,6 +1387,93 @@
     window.closeReportModal = function() {
       document.getElementById('reportModal').style.display = 'none';
     };
+
+    // ── Bulk Select ──────────────────────────────────────────
+    window.toggleSelectAll = function(checkbox) {
+      const rows = document.querySelectorAll('.row-check[data-email]');
+      rows.forEach(cb => {
+        cb.checked = checkbox.checked;
+        const email = cb.dataset.email;
+        const row = document.getElementById('row-' + email);
+        if (checkbox.checked) {
+          selectedEmails.add(email);
+          row?.classList.add('selected-row');
+        } else {
+          selectedEmails.delete(email);
+          row?.classList.remove('selected-row');
+        }
+      });
+      updateBulkBar();
+    };
+
+    window.toggleStudentSelect = function(checkbox) {
+      const email = checkbox.dataset.email;
+      const row = document.getElementById('row-' + email);
+      if (checkbox.checked) {
+        selectedEmails.add(email);
+        row?.classList.add('selected-row');
+      } else {
+        selectedEmails.delete(email);
+        row?.classList.remove('selected-row');
+      }
+      // Update select-all checkbox state
+      const allChecks = document.querySelectorAll('.row-check[data-email]');
+      const selectAll = document.getElementById('selectAllCheck');
+      if (selectAll) selectAll.checked = allChecks.length > 0 && [...allChecks].every(c => c.checked);
+      updateBulkBar();
+    };
+
+    function updateBulkBar() {
+      const bar = document.getElementById('bulkBar');
+      const count = document.getElementById('bulkSelectedCount');
+      if (selectedEmails.size > 0) {
+        bar.classList.add('visible');
+        count.textContent = selectedEmails.size;
+        lucide.createIcons();
+      } else {
+        bar.classList.remove('visible');
+      }
+    }
+
+    window.clearSelection = function() {
+      selectedEmails.clear();
+      document.querySelectorAll('.row-check').forEach(cb => cb.checked = false);
+      document.querySelectorAll('.selected-row').forEach(row => row.classList.remove('selected-row'));
+      updateBulkBar();
+    };
+
+    window.openBulkDeleteModal = function() {
+      const n = selectedEmails.size;
+      document.getElementById('bulkDeleteCount').textContent =
+        n === 1 ? '1 student' : `${n} students`;
+      document.getElementById('bulkDeleteModal').style.display = 'flex';
+      lucide.createIcons();
+    };
+
+    window.closeBulkDeleteModal = function() {
+      document.getElementById('bulkDeleteModal').style.display = 'none';
+    };
+
+    window.confirmBulkRemove = async function() {
+      closeBulkDeleteModal();
+      const emails = [...selectedEmails];
+      let removed = 0;
+      for (const encodedEmail of emails) {
+        const email = decodeURIComponent(encodedEmail);
+        try {
+          const student = allStudents.find(s => s.email === email);
+          const docId = student?.id || encodeURIComponent(email);
+          await PethologyFirebaseREST.request(`/pre_registered_students/${docId}`, 'DELETE');
+          removed++;
+        } catch (e) {
+          console.error('Failed to remove', email, e);
+        }
+      }
+      selectedEmails.clear();
+      showToast(`${removed} student${removed !== 1 ? 's' : ''} removed`, 'success');
+      await loadStudents();
+    };
+    // ─────────────────────────────────────────────────────────
 
     // Open delete modal
     window.openDeleteModal = function(encodedEmail, name) {

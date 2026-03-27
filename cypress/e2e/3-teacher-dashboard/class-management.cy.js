@@ -67,3 +67,28 @@ describe('Archive Class Modal', () => {
     cy.get('#archiveClassModal').should('not.be.visible')
   })
 })
+
+describe('Bulk Student Selection', () => {
+  beforeEach(() => {
+    cy.loginAsTeacher('teacher@school.com')
+    cy.visit('/class-management.html')
+  })
+
+  it('bulk bar is hidden by default', () => {
+    cy.get('#bulkBar').should('not.have.class', 'visible')
+  })
+
+  it('has bulk remove modal', () => {
+    cy.get('#bulkDeleteModal').should('exist')
+  })
+
+  it('closes bulk remove modal on cancel', () => {
+    cy.window().then(win => {
+      win.document.getElementById('bulkDeleteCount').textContent = '2 students'
+      win.document.getElementById('bulkDeleteModal').style.display = 'flex'
+    })
+    cy.get('#bulkDeleteModal').should('be.visible')
+    cy.get('#bulkDeleteModal').contains('Cancel').click()
+    cy.get('#bulkDeleteModal').should('not.be.visible')
+  })
+})
