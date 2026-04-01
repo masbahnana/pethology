@@ -28,7 +28,7 @@
   - **Integração:** Link no sidebar do student dashboard + footer do site + guide.html
 - [x] **Public Roadmap + Changelog** — ✅ DONE (27 Mar) — `roadmap.html` atualizado (Phase 5 Completed, Phase 6 In Progress, Phase 7 Future). `changelog.html` criado, renderiza `CHANGELOG.md` via marked.js CDN. Link "Changelog" adicionado no footer de todas as páginas públicas.
 - [x] **Funding** — ✅ DONE (26 Mar) — buymeacoffee.com/pethology. Botões no support.html activos.
-- [ ] **Microsoft Forms Import** — Import quizzes from MS Forms — *4-6h*
+- [ ] **Microsoft Forms Import** — Import quizzes from MS Forms (Excel export → SheetJS parse) — movido para v7.0+
 - [x] **Export Grades** — ✅ DONE (26 Mar) — CSV com nome, email, status, total quizzes, avg score, questions answered, correct answers, score por módulo.
 - [x] **Class Management P2** — ✅ DONE (27 Mar) — Bulk select com checkboxes (Select All + individual), bulk action bar com contador, modal de confirmação, bulk remove via Firebase. Selection limpa ao mudar de turma.
 - [ ] **Canny Roadmap content** — Definir lista de items a publicar no pethology.canny.io (Under Review / Planned / In Progress / Live). A fazer em conjunto.
