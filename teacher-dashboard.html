@@ -3941,8 +3941,22 @@
           }
         }
 
-        // Get students for current class
-        const students = await PethologyFirebaseREST.getStudentsByClass(window.currentClassId);
+        // Get students from pre_registered_students (source of truth for class roster)
+        const preRegResp = await PethologyFirebaseREST.request(`/pre_registered_students`, 'GET');
+        const allDocs = preRegResp?.documents || [];
+        const students = allDocs
+          .filter(doc => (doc.fields?.classId?.stringValue || '') === window.currentClassId)
+          .map(doc => {
+            const f = doc.fields || {};
+            return {
+              email: f.email?.stringValue || '',
+              firstName: f.firstName?.stringValue || '',
+              lastName: f.lastName?.stringValue || '',
+              name: f.name?.stringValue || '',
+              registered: !!(f.registered?.booleanValue),
+              docId: doc.name.split('/').pop(),
+            };
+          });
 
         if (students.length === 0) {
           container.innerHTML = `
@@ -3955,11 +3969,9 @@
         }
 
         container.innerHTML = students.map(student => {
-          // Build name from firstName/lastName or fallback to name
           const displayName = student.firstName && student.lastName
             ? `${student.firstName} ${student.lastName}`
             : (student.name || 'Unknown');
-          // Encode email for use in onclick (handle special characters)
           const safeEmail = encodeURIComponent(student.email || '');
           return `
             <div class="settings-list-item">
