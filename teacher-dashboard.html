@@ -4068,14 +4068,42 @@
 
     window.editStudent = async function(encodedEmail) {
       const email = decodeURIComponent(encodedEmail);
-      // Find student in current list
       const userSession = sessionStorage.getItem('pethologyUser');
       const teacher = userSession ? JSON.parse(userSession) : null;
       if (!teacher || !window.currentClassId) return;
 
       try {
-        const students = await PethologyFirebaseREST.getStudentsByClass(window.currentClassId);
-        const student = students.find(s => s.email?.toLowerCase() === email.toLowerCase());
+        // Look in pre_registered_students first (covers pending + registered)
+        let student = null;
+        let docId = null;
+        const preRegResp = await PethologyFirebaseREST.request(`/pre_registered_students`, 'GET');
+        const docs = preRegResp?.documents || [];
+        for (const doc of docs) {
+          const fields = doc.fields || {};
+          const docEmail = fields.email?.stringValue || '';
+          const docClass = fields.classId?.stringValue || '';
+          if (docEmail.toLowerCase() === email.toLowerCase() && docClass === window.currentClassId) {
+            docId = doc.name.split('/').pop();
+            student = {
+              email: docEmail,
+              firstName: fields.firstName?.stringValue || '',
+              lastName: fields.lastName?.stringValue || '',
+              name: fields.name?.stringValue || '',
+            };
+            break;
+          }
+        }
+
+        // Fallback: check registered users
+        if (!student) {
+          const registeredStudents = await PethologyFirebaseREST.getStudentsByClass(window.currentClassId);
+          const found = registeredStudents.find(s => s.email?.toLowerCase() === email.toLowerCase());
+          if (found) {
+            student = found;
+            docId = found.id || encodeURIComponent(email);
+          }
+        }
+
         if (!student) { window.showToast('Student not found', 'error'); return; }
 
         // Populate modal
@@ -4083,7 +4111,7 @@
         document.getElementById('editStudentLastName').value = student.lastName || student.name?.split(' ').slice(1).join(' ') || '';
         document.getElementById('editStudentEmail').value = student.email || '';
         document.getElementById('editStudentModal')._originalEmail = email;
-        document.getElementById('editStudentModal')._docId = student.id || encodeURIComponent(email);
+        document.getElementById('editStudentModal')._docId = docId || encodeURIComponent(email);
         document.getElementById('editStudentModal').style.display = 'flex';
         lucide.createIcons();
       } catch (e) {
