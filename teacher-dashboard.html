@@ -4122,6 +4122,18 @@
               classId: { stringValue: window.currentClassId }
             }
           });
+          // Send welcome email to the corrected address
+          const userSession = sessionStorage.getItem('pethologyUser');
+          const teacher = userSession ? JSON.parse(userSession) : null;
+          try {
+            await emailjs.send('service_ls9jk9r', 'template_y6in4uh', {
+              student_name: `${firstName} ${lastName}`.trim(),
+              student_email: newEmail,
+              teacher_name: teacher?.name || 'Your Teacher',
+            });
+          } catch (emailErr) {
+            console.warn('Welcome email failed (non-critical):', emailErr);
+          }
         } else {
           // Just update name fields
           await PethologyFirebaseREST.request(`/pre_registered_students/${docId}?updateMask.fieldPaths=firstName&updateMask.fieldPaths=lastName&updateMask.fieldPaths=name`, 'PATCH', {
