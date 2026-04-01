@@ -20,12 +20,7 @@
 
 ### 📝 Low Priority
 - [x] **Terms & Privacy** — ✅ DONE (26 Mar) — `terms.html` (9 secções, direito irlandês) + `privacy.html` (GDPR compliant, tabela de dados, direitos do utilizador, contacto DPC Ireland). Links no footer de todas as páginas públicas.
-- [ ] **MailerLite Integration** — Tudo via MailerLite (contact.html, store "Be the first to know", newsletter). 3 formulários a criar no painel: Contact (Nome + Email + Mensagem custom), Store Launch (Email), Newsletter (Email). Aguarda embeds do MailerLite para implementar.
-  - **Stack:** MailerLite (free até 1000 subscribers, 12k emails/mês).
-  - **Contact** — embed substitui form actual (`submit_form.php` não funciona)
-  - **Store** — embed na secção "Be the first to know", lista "Store Launch"
-  - **Newsletter** — embed em settings do aluno + footer do site
-  - **Personal email field** — Na página de settings do perfil do aluno: campo de email pessoal opcional com mensagem *"Stay connected after graduation — add a personal email"*. Email da escola expira ao terminar o curso. GDPR: double opt-in via MailerLite, consentimento explícito.
+- [x] **MailerLite Integration** — ✅ DONE (1 Apr) — Contact form embed (data-form="GWt7Cj"), Store "Be the first to know" embed (data-form="uOSgZg"), Newsletter embed no index.html (data-form="5XAPTM"). Script universal em contact.html, store.html, index.html. Account: 2226298.
 - [ ] **Community** — Servidor Discord para manter alunos conectados após a escola.
   - **Stack:** Discord (gratuito, fácil de moderar, sem expiração de conta)
   - **Canais:** `#announcements`, `#introductions`, `#questions`, `#study-together`, `#quiz-discussion`, `#work-experience`, `#pet-cases`, `#general`

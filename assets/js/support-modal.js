@@ -467,10 +467,7 @@ class SupportModal {
       };
 
       // Submit to Firebase
-      const response = await window.PethologyFirebaseREST.request('/support_tickets', {
-        method: 'POST',
-        body: JSON.stringify(ticketData)
-      });
+      const response = await window.PethologyFirebaseREST.request('/support_tickets', 'POST', ticketData);
 
       if (response && response.name) {
         // Success
