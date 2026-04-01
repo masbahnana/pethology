@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 27 Março 2026
-**Versão Atual:** v6.7
-**Status:** Pilot activo — MailerLite integration pendente (aguarda embeds)
+**Última atualização:** 1 Abril 2026
+**Versão Atual:** v6.8
+**Status:** Pilot activo — bugs corrigidos, Tally forms integrados
 
 ---
 
@@ -20,7 +20,8 @@
 
 ### 📝 Low Priority
 - [x] **Terms & Privacy** — ✅ DONE (26 Mar) — `terms.html` (9 secções, direito irlandês) + `privacy.html` (GDPR compliant, tabela de dados, direitos do utilizador, contacto DPC Ireland). Links no footer de todas as páginas públicas.
-- [x] **MailerLite Integration** — ✅ DONE (1 Apr) — Contact form embed (data-form="GWt7Cj"), Store "Be the first to know" embed (data-form="uOSgZg"), Newsletter embed no index.html (data-form="5XAPTM"). Script universal em contact.html, store.html, index.html. Account: 2226298.
+- [x] **MailerLite Integration** — ✅ DONE (1 Apr) — Newsletter embed no about.html via Tally (QKYDN1). MailerLite account 2226298 para envio de campanhas.
+- [x] **Tally Forms** — ✅ DONE (1 Apr) — Contact (WOYNXL) em contact.html, Newsletter (QKYDN1) em about.html, Store "Be the first to know" (J9D6vX) em store.html. Substituíram MailerLite embeds. Integração com MailerLite via Zapier/Make a configurar.
 - [ ] **Community** — Servidor Discord para manter alunos conectados após a escola.
   - **Stack:** Discord (gratuito, fácil de moderar, sem expiração de conta)
   - **Canais:** `#announcements`, `#introductions`, `#questions`, `#study-together`, `#quiz-discussion`, `#work-experience`, `#pet-cases`, `#general`
@@ -56,6 +57,15 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 1 Abril 2026 — Bug fixes + Tally Forms (v6.8)
+
+- [x] **Edit Student Modal** — Lápis no Class Settings > Students abre modal para editar nome + email. Email corrigido envia welcome email via EmailJS ao aluno.
+- [x] **Pending students visíveis** — Alunos importados mas ainda não logados aparecem agora no teacher dashboard e no Class Settings > Students.
+- [x] **Class Management fix** — `renderStudentRow` corrigido (`encodedEmail` não definido). Nomes "Unknown" corrigidos com fallback para campo `name`. Empty state centrado.
+- [x] **Announcements empty state** — Centrado verticalmente.
+- [x] **Tally Forms** — Contact, Newsletter (about), Store substituídos por embeds Tally. MailerLite mantido só para envio de campanhas.
+- [x] **Edit Student z-index** — Modal de edição estava atrás do Class Settings modal. Movido para dentro do classSettingsModal para corrigir stacking context.
 
 ### ✅ 26 Março 2026 — Export Grades + Funding + GitHub Projects (v6.7)
 
