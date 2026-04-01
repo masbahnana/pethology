@@ -1977,11 +1977,9 @@
           console.log('📊 Analytics received:', analytics);
           console.log('👥 Students progress received:', students?.length || 0);
 
-          // CRITICAL FIX: Merge student progress with user data (name, email)
-          // Progress has userId, stats but NO name/email
-          // Users has name, email but NO progress
+          // Merge student progress with user data (name, email)
           const allUsers = await PethologyFirebaseService.getAllStudents(teacherId, classId);
-          console.log('👤 Users received:', allUsers?.length || 0, classId ? `(filtered for class)` : teacherId ? `(filtered for teacher)` : '');
+          console.log('👤 Users received:', allUsers?.length || 0);
 
           // Create a map of userId -> user data for quick lookup
           const userMap = new Map(allUsers.map(user => [user.id, user]));
@@ -1995,9 +1993,27 @@
               name: user?.name || 'Unknown',
               email: user?.email || 'unknown@example.com',
               lastLogin: user?.lastLogin,
-              progress: progressData // Nest progress data inside
+              progress: progressData
             };
           });
+
+          // Also include pending students (pre-registered but not yet logged in)
+          if (classId) {
+            const preRegistered = await PethologyFirebaseREST.getStudentsByClass(classId);
+            const registeredEmails = new Set(allUsers.map(u => u.email?.toLowerCase()));
+            const pendingStudents = preRegistered
+              .filter(s => !registeredEmails.has(s.email?.toLowerCase()))
+              .map(s => ({
+                id: s.id || s.email,
+                name: s.name || `${s.firstName || ''} ${s.lastName || ''}`.trim() || 'Pending Student',
+                email: s.email,
+                status: 'pending',
+                lastLogin: null,
+                progress: { overallStats: { totalQuizzes: 0, averageScore: 0, totalQuestions: 0, correctAnswers: 0 }, moduleProgress: {}, topicsNeedingAttention: [] }
+              }));
+            students = [...students, ...pendingStudents];
+            console.log(`✅ Added ${pendingStudents.length} pending students`);
+          }
 
           console.log('✅ Students merged:', students?.length || 0);
         } catch (error) {
@@ -2018,9 +2034,10 @@
           students = [];
         }
 
-        // Update statistics
+        // Update statistics (use merged student count including pending)
         try {
           console.log('📊 Updating statistics...');
+          analytics.overview.totalStudents = students.length;
           updateStatistics(analytics.overview);
           console.log('✅ Statistics updated!');
         } catch (error) {
@@ -2182,20 +2199,22 @@
               const stats = progress.overallStats || {};
               // averageScore is already in percentage (0-100) from firebase-rest.js
               const score = stats.averageScore || 0;
-              const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : new Date(student.lastLogin);
-              const lastActiveText = formatTimeAgo(lastLogin);
+              const isPending = student.status === 'pending';
+              const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : (student.lastLogin ? new Date(student.lastLogin) : null);
+              const lastActiveText = isPending ? '<span style="color:var(--warning);font-size:12px;font-weight:600;">Pending</span>' : formatTimeAgo(lastLogin);
 
               let scoreClass = 'score-medium';
               if (score >= 80) scoreClass = 'score-high';
               else if (score < 60) scoreClass = 'score-low';
 
               return `
-                <tr>
-                  <td class="student-name" onclick="viewStudentDetail('${student.id}')" style="cursor: pointer; color: var(--blue-primary); text-decoration: underline;">
+                <tr style="${isPending ? 'opacity:0.7;' : ''}">
+                  <td class="student-name" onclick="${isPending ? '' : `viewStudentDetail('${student.id}')`}" style="${isPending ? '' : 'cursor: pointer; color: var(--blue-primary); text-decoration: underline;'}">
                     ${student.name || student.email}
+                    ${isPending ? '<span style="font-size:11px;color:var(--warning);margin-left:6px;">(not logged in yet)</span>' : ''}
                   </td>
-                  <td>${stats.totalQuizzes || 0}</td>
-                  <td><span class="score-badge ${scoreClass}">${score}%</span></td>
+                  <td>${isPending ? '—' : (stats.totalQuizzes || 0)}</td>
+                  <td>${isPending ? '—' : `<span class="score-badge ${scoreClass}">${score}%</span>`}</td>
                   <td>${lastActiveText}</td>
                 </tr>
               `;
