@@ -172,10 +172,10 @@ export async function loadAnnouncementsList() {
 
     if (announcements.length === 0) {
       container.innerHTML = `
-        <div style="text-align: center; padding: 40px; color: var(--gray-500);">
-          <i data-lucide="megaphone" style="width: 48px; height: 48px; margin-bottom: 12px;"></i>
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:200px; text-align:center; padding:40px; color:var(--gray-500);">
+          <i data-lucide="megaphone" style="width:48px; height:48px; margin-bottom:12px;"></i>
           <p>No announcements yet</p>
-          <p style="font-size: 13px;">Create your first announcement to communicate with students!</p>
+          <p style="font-size:13px;">Create your first announcement to communicate with students!</p>
         </div>
       `;
       if (typeof lucide !== 'undefined') {
