@@ -1095,18 +1095,14 @@
           usersResponse.documents.map(doc => PethologyFirebaseREST.convertDocument(doc)) : [];
 
         // Combine and match students
-        allStudents = [];
-
-        for (const preReg of preRegistered) {
+        allStudents = await Promise.all(preRegistered.map(async preReg => {
           const matchedUser = allUsers.find(u =>
             u.email?.toLowerCase() === preReg.email?.toLowerCase() && u.role === 'Student'
           );
 
           if (matchedUser) {
-            // Get progress for this student
-            const progress = await PethologyFirebaseREST.getStudentProgress(matchedUser.id);
-
-            allStudents.push({
+            const progress = await PethologyFirebaseREST.getStudentProgress(matchedUser.id).catch(() => null);
+            return {
               id: preReg.id,
               oduid: matchedUser.id,
               firstName: preReg.firstName || matchedUser.firstName || '',
@@ -1115,10 +1111,9 @@
               status: 'active',
               lastLogin: matchedUser.lastLogin || null,
               progress: progress
-            });
+            };
           } else {
-            // Pre-registered but not yet signed up
-            allStudents.push({
+            return {
               id: preReg.id,
               oduid: null,
               firstName: preReg.firstName || '',
@@ -1127,9 +1122,9 @@
               status: 'pending',
               lastLogin: null,
               progress: null
-            });
+            };
           }
-        }
+        }));
 
         updateStats();
         renderStudentsTable();
