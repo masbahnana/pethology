@@ -1222,6 +1222,7 @@
 
       const scoreClass = avgScore >= 80 ? 'score-high' : avgScore >= 60 ? 'score-medium' : 'score-low';
 
+      const encodedEmail = encodeURIComponent(student.email);
       return `
         <tr id="row-${encodedEmail}">
           <td class="col-check"><input type="checkbox" class="row-check" data-email="${encodedEmail}" onchange="toggleStudentSelect(this)"></td>
