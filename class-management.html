@@ -1112,6 +1112,7 @@
               oduid: matchedUser.id,
               firstName: preReg.firstName || matchedUser.firstName || '',
               lastName: preReg.lastName || matchedUser.lastName || '',
+              name: preReg.name || matchedUser.name || '',
               email: preReg.email,
               status: 'active',
               lastLogin: matchedUser.lastLogin || null,
@@ -1123,6 +1124,7 @@
               oduid: null,
               firstName: preReg.firstName || '',
               lastName: preReg.lastName || '',
+              name: preReg.name || '',
               email: preReg.email,
               status: 'pending',
               lastLogin: null,
@@ -1212,7 +1214,7 @@
 
     // Render single student row
     function renderStudentRow(student) {
-      const name = `${student.firstName} ${student.lastName}`.trim() || 'Unknown';
+      const name = `${student.firstName} ${student.lastName}`.trim() || student.name || 'Unknown';
       const statusClass = student.status === 'active' ? 'status-active' : 'status-pending';
       const statusText = student.status === 'active' ? 'Active' : 'Pending';
       const statusIcon = student.status === 'active' ? 'check-circle' : 'clock';
