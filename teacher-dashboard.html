@@ -4081,7 +4081,6 @@
 
     window.editStudent = async function(encodedEmail) {
       const email = decodeURIComponent(encodedEmail);
-      console.log('✏️ editStudent called:', email, 'classId:', window.currentClassId);
       const userSession = sessionStorage.getItem('pethologyUser');
       const teacher = userSession ? JSON.parse(userSession) : null;
       if (!teacher) { window.showToast('Not authenticated', 'error'); return; }
@@ -4119,7 +4118,6 @@
           }
         }
 
-        console.log('🔍 student found:', student, 'docId:', docId);
         if (!student) { window.showToast('Student not found', 'error'); return; }
 
         // Populate modal
@@ -4128,10 +4126,8 @@
         document.getElementById('editStudentEmail').value = student.email || '';
         document.getElementById('editStudentModal')._originalEmail = email;
         document.getElementById('editStudentModal')._docId = docId || encodeURIComponent(email);
-        console.log('🪟 showing modal...');
         document.getElementById('editStudentModal').style.display = 'flex';
         lucide.createIcons();
-        console.log('✅ modal should be visible');
       } catch (e) {
         console.error('Error loading student for edit:', e);
         window.showToast('Failed to load student', 'error');
