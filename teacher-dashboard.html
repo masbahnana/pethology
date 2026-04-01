@@ -4118,6 +4118,7 @@
           }
         }
 
+        console.log('🔍 student found:', student, 'docId:', docId);
         if (!student) { window.showToast('Student not found', 'error'); return; }
 
         // Populate modal
@@ -4126,8 +4127,10 @@
         document.getElementById('editStudentEmail').value = student.email || '';
         document.getElementById('editStudentModal')._originalEmail = email;
         document.getElementById('editStudentModal')._docId = docId || encodeURIComponent(email);
+        console.log('🪟 showing modal...');
         document.getElementById('editStudentModal').style.display = 'flex';
         lucide.createIcons();
+        console.log('✅ modal should be visible');
       } catch (e) {
         console.error('Error loading student for edit:', e);
         window.showToast('Failed to load student', 'error');
