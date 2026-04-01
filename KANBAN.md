@@ -32,6 +32,7 @@
 - [x] **Export Grades** — ✅ DONE (26 Mar) — CSV com nome, email, status, total quizzes, avg score, questions answered, correct answers, score por módulo.
 - [x] **Class Management P2** — ✅ DONE (27 Mar) — Bulk select com checkboxes (Select All + individual), bulk action bar com contador, modal de confirmação, bulk remove via Firebase. Selection limpa ao mudar de turma.
 - [ ] **Canny Roadmap content** — Definir lista de items a publicar no pethology.canny.io (Under Review / Planned / In Progress / Live). A fazer em conjunto.
+- [ ] **Auth0 Production Keys** — Substituir dev keys do Auth0 por Google OAuth credentials próprias (Google Cloud Console → OAuth 2.0 → Auth0 Social Connection). Elimina o aviso "Dev Keys" no login.
 - [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
 - [ ] **Professional screenshots** — Para marketing — *30min*
 
@@ -40,6 +41,11 @@
   - **Stack:** Sem biblioteca externa. XP calculado dos `quiz_results` já no Firebase (pontos por score + bónus por streak). Levels por thresholds simples (0-100 = Beginner, 100-300 = Intermediate, etc.). Leaderboard via query dos `quiz_results` por classe ordenado por XP — dados já existem, só falta apresentar.
 - [ ] **PWA & Offline Support** — Service Worker, offline quizzes — *6-8h*
 - [ ] **Content Manager Migration** — Migrate to REST API — *3-4h*
+- [ ] **Own Email System** — Stack própria sem dependência de terceiros
+  - **Blog** — posts em Markdown no repo, renderizados com marked.js (como o CHANGELOG.md)
+  - **Subscribers** — emails guardados no Firebase (via Tally webhook)
+  - **Envio** — Resend ou Postmark (3000 emails/mês grátis), templates HTML próprios
+  - **Flow:** publica post → dispara campanha via Firebase → Resend envia para todos os subscribers
 
 ---
 
