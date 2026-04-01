@@ -4080,9 +4080,11 @@
 
     window.editStudent = async function(encodedEmail) {
       const email = decodeURIComponent(encodedEmail);
+      console.log('✏️ editStudent called:', email, 'classId:', window.currentClassId);
       const userSession = sessionStorage.getItem('pethologyUser');
       const teacher = userSession ? JSON.parse(userSession) : null;
-      if (!teacher || !window.currentClassId) return;
+      if (!teacher) { window.showToast('Not authenticated', 'error'); return; }
+      if (!window.currentClassId) { window.showToast('No class selected', 'error'); return; }
 
       try {
         // Look in pre_registered_students first (covers pending + registered)
