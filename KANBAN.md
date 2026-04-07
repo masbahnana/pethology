@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 1 Abril 2026
+**Última atualização:** 7 Abril 2026
 **Versão Atual:** v6.8
-**Status:** Pilot activo — bugs corrigidos, Tally forms integrados
+**Status:** Pilot activo — estável. A aguardar feedback da Mary + alunos.
 
 ---
 
@@ -52,7 +52,7 @@
 
 ## 🟡 IN PROGRESS
 
-- [ ] **Mobile Responsiveness** — Em progresso. Teacher dashboard ✅, Student dashboard ✅, iPad a testar
+- [x] **Mobile Responsiveness** — ✅ DONE (7 Apr) — Teacher dashboard ✅, Student dashboard ✅, iPad ✅
 
 ---
 
