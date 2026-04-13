@@ -367,6 +367,20 @@ export class PethologyFirebaseREST {
         ? Math.round((quizResults.reduce((sum, r) => sum + (r.score || 0), 0) / totalQuizzes) * 100)
         : 0;
 
+      // Calculate module performance from quiz results
+      const moduleMap = {};
+      for (const r of quizResults) {
+        const mod = r.module || r.moduleId || 'Unknown';
+        if (!moduleMap[mod]) moduleMap[mod] = { scores: [], count: 0 };
+        moduleMap[mod].scores.push(r.score || 0);
+        moduleMap[mod].count++;
+      }
+      const modulePerformance = Object.entries(moduleMap).map(([module, data]) => ({
+        module,
+        averageScore: Math.round((data.scores.reduce((a, b) => a + b, 0) / data.scores.length) * 100),
+        totalAttempts: data.count
+      })).sort((a, b) => b.totalAttempts - a.totalAttempts);
+
       const analytics = {
         overview: {
           totalStudents,
@@ -374,7 +388,7 @@ export class PethologyFirebaseREST {
           completedQuizzes,
           averageScore
         },
-        modulePerformance: [],
+        modulePerformance,
         recentActivity: quizResults
           .sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0))
           .slice(0, 10),
