@@ -217,6 +217,7 @@ function selectAnswer(index) {
     correctAnswersCount++;
     userAnswers.push({
       question: question.question,
+      options: question.options,
       selectedAnswer: index,
       correctAnswer: correct,
       isCorrect: true
@@ -264,6 +265,7 @@ function selectAnswer(index) {
     // RESPOSTA ERRADA ❌
     userAnswers.push({
       question: question.question,
+      options: question.options,
       selectedAnswer: index,
       correctAnswer: correct,
       isCorrect: false
@@ -468,11 +470,26 @@ async function showQuizCompleted() {
           🔄 Retake This Quiz
         </button>
       </div>
+
+      ${userAnswers.filter(a => !a.isCorrect).length > 0 && !isExamMode ? `
+        <div style="margin-top: 40px; border-top: 2px solid #f3f4f6; padding-top: 32px;">
+          <div style="display: flex; align-items: center; gap: 12px; justify-content: center; margin-bottom: 8px;">
+            <span style="font-size: 2rem;">😅</span>
+            <div>
+              <div style="font-size: 1.1rem; font-weight: 700; color: #111827;">You missed ${userAnswers.filter(a => !a.isCorrect).length} question${userAnswers.filter(a => !a.isCorrect).length > 1 ? 's' : ''}</div>
+              <div style="font-size: 0.9rem; color: #6b7280;">Want to practice them again?</div>
+            </div>
+          </div>
+          <button onclick="retryWrongAnswers()" class="minimal-button" style="background: #f59e0b; color: white; padding: 14px 28px; font-size: 1rem; font-weight: 600; margin-top: 16px; max-width: 400px; width: 100%;">
+            🔁 Practice wrong answers
+          </button>
+        </div>
+      ` : ''}
     </div>
   `;
 
-  // Save to Firebase (only for logged in users)
-  if (isLoggedIn) {
+  // Save to Firebase (only for logged in users, not practice rounds)
+  if (isLoggedIn && !window._isPracticeRound) {
     const quizData = {
       moduleName: currentQuizModule,
       totalQuestions: currentQuestions.length,
@@ -1914,6 +1931,36 @@ function hideNonExamElements() {
   });
 }
 
+function retryWrongAnswers() {
+  const wrongOnes = userAnswers.filter(a => !a.isCorrect);
+  if (!wrongOnes.length) return;
+
+  // Rebuild questions from wrong answers
+  const practiceQuestions = wrongOnes.map(a => ({
+    question: a.question,
+    options: a.options,
+    answer: a.options.indexOf(a.options[a.correctAnswer]),
+  }));
+
+  // Reset state for practice round
+  currentQuestions = practiceQuestions;
+  currentQuestionIndex = 0;
+  correctAnswersCount = 0;
+  userAnswers = [];
+  quizStartTime = Date.now();
+
+  // Flag so results don't save to Firebase
+  window._isPracticeRound = true;
+
+  const quizContainer = document.getElementById('quiz-buttons');
+  quizContainer.innerHTML = `
+    <div style="text-align:center; padding: 16px 0 24px; color: #f59e0b; font-weight: 600; font-size: 0.95rem;">
+      🔁 Practice round — ${practiceQuestions.length} question${practiceQuestions.length > 1 ? 's' : ''} to review
+    </div>
+  `;
+  showQuestion();
+}
+
 window.loadQuiz = loadQuiz;
 window.handleQuizSelection = handleQuizSelection;
 window.selectAnswer = selectAnswer;
@@ -1922,3 +1969,4 @@ window.goBackToMenu = goBackToMenu;
 window.saveProgressAndExit = saveProgressAndExit;
 window.finishQuizEarly = finishQuizEarly;
 window.loadAdaptiveQuiz = loadAdaptiveQuiz;
+window.retryWrongAnswers = retryWrongAnswers;
