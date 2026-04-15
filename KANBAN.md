@@ -1,7 +1,7 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 7 Abril 2026
-**Versão Atual:** v6.8
+**Última atualização:** 15 Abril 2026
+**Versão Atual:** v6.9
 **Status:** Pilot activo — estável. A aguardar feedback da Mary + alunos.
 
 ---
@@ -57,6 +57,11 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 15 Abril 2026 — Practice wrong answers + Module Performance (v6.9)
+
+- [x] **Practice wrong answers** — Duolingo-style: após o quiz, se há erros aparece secção "😅 You missed X questions" com botão "🔁 Practice wrong answers". Relança só as perguntas erradas em modo prática, não guarda no Firebase.
+- [x] **Module Performance fix** — `modulePerformance` estava sempre `[]` no teacher dashboard. Agora calcula score médio e total de tentativas por módulo a partir dos `quiz_results`.
 
 ### ✅ 1 Abril 2026 — Bug fixes + Tally Forms (v6.8)
 
