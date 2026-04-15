@@ -430,7 +430,7 @@ async function showQuizCompleted() {
     <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
       ${isPractice ? `
         <div style="display:flex; justify-content:center; margin-bottom: 8px;">
-          <dotlottie-wc src="https://lottie.host/76227a73-6d6a-4220-b3cb-87be6b06e7c2/qSQszEtwql.lottie" style="width:220px;height:220px" autoplay></dotlottie-wc>
+          <dotlottie-wc src="https://lottie.host/76227a73-6d6a-4220-b3cb-87be6b06e7c2/qSQszEtwql.lottie" style="width:220px;height:220px;background:transparent;" autoplay loop></dotlottie-wc>
         </div>
         <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Nice work! 🐾</h2>
         <p style="color:#6b7280; margin-bottom: 8px;">You reviewed your missed questions.</p>
