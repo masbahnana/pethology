@@ -218,6 +218,7 @@ function selectAnswer(index) {
     userAnswers.push({
       question: question.question,
       options: question.options,
+      explanation: question.explanation || '',
       selectedAnswer: index,
       correctAnswer: correct,
       isCorrect: true
@@ -266,6 +267,7 @@ function selectAnswer(index) {
     userAnswers.push({
       question: question.question,
       options: question.options,
+      explanation: question.explanation || '',
       selectedAnswer: index,
       correctAnswer: correct,
       isCorrect: false
@@ -1949,7 +1951,8 @@ function retryWrongAnswers() {
   const practiceQuestions = wrongOnes.map(a => ({
     question: a.question,
     options: a.options,
-    answer: a.options.indexOf(a.options[a.correctAnswer]),
+    answer: a.correctAnswer,
+    explanation: a.explanation || '',
   }));
 
   // Reset state for practice round
