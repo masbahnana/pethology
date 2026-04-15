@@ -421,11 +421,21 @@ async function showQuizCompleted() {
   const timeSpent = quizStartTime ? Math.floor((Date.now() - quizStartTime) / 1000) : 0;
   const scorePercentage = Math.round((correctAnswersCount / currentQuestions.length) * 100);
 
+  const isPractice = !!window._isPracticeRound;
+
   // Show completion message with better navigation
   quizContainer.innerHTML = `
     <div style="text-align: center; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
-      <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
-      <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Quiz Completed!</h2>
+      ${isPractice ? `
+        <div style="display:flex; justify-content:center; margin-bottom: 8px;">
+          <dotlottie-wc src="https://lottie.host/76227a73-6d6a-4220-b3cb-87be6b06e7c2/qSQszEtwql.lottie" style="width:220px;height:220px" autoplay></dotlottie-wc>
+        </div>
+        <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Nice work! 🐾</h2>
+        <p style="color:#6b7280; margin-bottom: 8px;">You reviewed your missed questions.</p>
+      ` : `
+        <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+        <h2 style="font-size: 2rem; margin-bottom: 16px; color: #111827;">Quiz Completed!</h2>
+      `}
 
       <div style="background: #f3f4f6; border-radius: 16px; padding: 24px; margin: 24px 0;">
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px;">
