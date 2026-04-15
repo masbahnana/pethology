@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Public pages
+Allow: /index.html
+Allow: /about.html
+Allow: /blog.html
+Allow: /store.html
+Allow: /contact.html
+Allow: /faq.html
+Allow: /roadmap.html
+Allow: /changelog.html
+
+# Block private app pages
+Disallow: /student-dashboard.html
+Disallow: /teacher-dashboard.html
+Disallow: /class-management.html
+Disallow: /admin-support.html
+Disallow: /auth0-login.html
+Disallow: /auth0-callback.html
+
+Sitemap: https://pethology.netlify.app/sitemap.xml
