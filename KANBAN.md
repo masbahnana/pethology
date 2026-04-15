@@ -37,6 +37,11 @@
 - [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
 - [ ] **Professional screenshots** — Para marketing — *30min*
 
+### 🎯 Level 6 Support (próxima feature)
+- [ ] **Level 6 modules** — 3 módulos novos: Animal Behaviour L6, Animal Health and Science, Kennel and Cattery Management. Perguntas a criar pela professora.
+- [ ] **Level filter** — campo `level: 6` nos alunos L6 no Firebase. Student dashboard filtra módulos por level.
+- [ ] **Alunos L6** — plcleahkenny@stconlethcc365.ie, PLCNataliaDaSilvaRaythz@stconlethcc365.ie + 2 a confirmar. Mary cria classe "Animal Care L6" no dashboard.
+
 ### 🔮 Future (v7.0+)
 - [ ] **Advanced Gamification** — XP, Levels, Leaderboards — *4-6h*
   - **Stack:** Sem biblioteca externa. XP calculado dos `quiz_results` já no Firebase (pontos por score + bónus por streak). Levels por thresholds simples (0-100 = Beginner, 100-300 = Intermediate, etc.). Leaderboard via query dos `quiz_results` por classe ordenado por XP — dados já existem, só falta apresentar.
