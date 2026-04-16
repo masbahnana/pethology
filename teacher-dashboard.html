@@ -1777,12 +1777,19 @@
         document.getElementById('className').value = '';
         document.getElementById('academicYear').value = '';
         document.getElementById('classDescription').value = '';
+        const l5Radio = document.querySelector('input[name="classLevel"][value="5"]');
+        if (l5Radio) l5Radio.checked = true;
+
+        // Store original classId and temporarily clear it so saveClassInfo creates instead of updates
+        window._savedClassId = window.currentClassId;
+        window.currentClassId = null;
 
         // Change save button to "Create Class"
-        const saveBtn = document.querySelector('#settingsTabClassInfo .btn-primary');
+        const saveBtn = document.querySelector('#tab-class-info .btn-primary');
         if (saveBtn) {
-          saveBtn.textContent = 'Create Class';
+          saveBtn.innerHTML = '<i data-lucide="plus"></i> Create Class';
           saveBtn.onclick = createNewClass;
+          lucide.createIcons();
         }
       }, 100);
     };
@@ -1817,7 +1824,8 @@
 
         console.log('✅ Class created:', newClass);
 
-        // Close modal
+        // Close modal (will restore _savedClassId, but we override below)
+        window._savedClassId = null;
         closeClassSettings();
 
         // Reload classes and select the new one
@@ -3835,6 +3843,18 @@
 
     window.closeClassSettings = function() {
       document.getElementById('classSettingsModal').style.display = 'none';
+      // Restore classId if we were in "create new class" mode
+      if (window.currentClassId === null && window._savedClassId) {
+        window.currentClassId = window._savedClassId;
+      }
+      window._savedClassId = null;
+      // Reset save button back to "Save Changes"
+      const saveBtn = document.querySelector('#tab-class-info .btn-primary');
+      if (saveBtn && saveBtn.onclick === window.createNewClass) {
+        saveBtn.innerHTML = '<i data-lucide="save"></i> Save Changes';
+        saveBtn.onclick = window.saveClassInfo;
+        lucide.createIcons();
+      }
     };
 
     window.switchSettingsTab = function(tabName, event) {
