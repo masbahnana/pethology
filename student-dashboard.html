@@ -1365,46 +1365,7 @@
             </div>
           </div>
           <div class="collapsible-content open" id="modules-content">
-            <a href="quiz.html?module=biology" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="dna"></i>
-              Biology
-            </a>
-            <a href="quiz.html?module=animal-welfare" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="heart"></i>
-              Animal Welfare
-            </a>
-            <a href="quiz.html?module=grooming" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="scissors"></i>
-              Grooming
-            </a>
-            <a href="quiz.html?module=animal-anatomy" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="bone"></i>
-              Animal Anatomy
-            </a>
-            <a href="quiz.html?module=small-animals" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="rabbit"></i>
-              Small Animals H&H
-            </a>
-            <a href="quiz.html?module=vet-assistant" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="stethoscope"></i>
-              Vet Assistant Skills
-            </a>
-            <a href="quiz.html?module=animal-behaviour" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="dog"></i>
-              Animal Behaviour
-            </a>
-            <a href="quiz.html?module=communications" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="message-circle"></i>
-              Communications
-            </a>
-            <a href="quiz.html?module=word-processing" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="file-text"></i>
-              Word Processing
-            </a>
-            <a href="quiz.html?module=work-experience" class="nav-item" style="padding-left: 32px;">
-              <i data-lucide="briefcase"></i>
-              Work Experience
-            </a>
+            <!-- Populated dynamically based on student level -->
           </div>
         </div>
 
@@ -2030,6 +1991,7 @@
 
         // Atualizar UI
         updateStudentProfile(user);
+        buildSidebarModules(user.level || 5);
         updateProgressCircles(progress.moduleProgress, quizHistory);
         updateOverallStats(progress.overallStats);
         updateAchievements(progress.achievements);
@@ -2120,6 +2082,42 @@
     }
 
     // Atualizar perfil do estudante
+    function buildSidebarModules(level) {
+      const sidebarModules = {
+        5: [
+          { module: 'biology', icon: 'dna', name: 'Biology' },
+          { module: 'animal-welfare', icon: 'heart', name: 'Animal Welfare' },
+          { module: 'grooming', icon: 'scissors', name: 'Grooming' },
+          { module: 'animal-anatomy', icon: 'bone', name: 'Animal Anatomy' },
+          { module: 'small-animals', icon: 'rabbit', name: 'Small Animals H&H' },
+          { module: 'vet-assistant', icon: 'stethoscope', name: 'Vet Assistant Skills' },
+          { module: 'animal-behaviour', icon: 'dog', name: 'Animal Behaviour' },
+          { module: 'communications', icon: 'message-circle', name: 'Communications' },
+          { module: 'word-processing', icon: 'file-text', name: 'Word Processing' },
+          { module: 'work-experience', icon: 'briefcase', name: 'Work Experience' },
+        ],
+        6: [
+          { module: 'grooming-l6', icon: 'scissors', name: 'Grooming (L6)' },
+          { module: 'animal-behaviour-l6', icon: 'dog', name: 'Animal Behaviour (L6)' },
+          { module: 'animal-health-science', icon: 'stethoscope', name: 'Animal Health & Science' },
+          { module: 'kennel-cattery-management', icon: 'home', name: 'Kennel & Cattery Management' },
+        ]
+      };
+
+      const modules = sidebarModules[level] || sidebarModules[5];
+      const container = document.getElementById('modules-content');
+      if (!container) return;
+
+      container.innerHTML = modules.map(m => `
+        <a href="quiz.html?module=${m.module}" class="nav-item" style="padding-left: 32px;">
+          <i data-lucide="${m.icon}"></i>
+          ${m.name}
+        </a>
+      `).join('');
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
     function updateStudentProfile(user) {
       // Extrair apenas nome e sobrenome (não o email todo)
       let displayName = user.name;
