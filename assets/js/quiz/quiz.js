@@ -2,18 +2,30 @@ import { getAvailableQuizzes, showQuizSelectionModal, loadSelectedQuiz } from '.
 import { calculateConfidenceScores, categorizeModules, selectAdaptiveQuestions, saveAdaptiveMetadata } from '../adaptive-quiz-ai.js';
 import { PethologyFirebaseREST } from '../firebase-rest.js';
 
-const quizTopics = [
-  { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
-  { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
-  { name: "Communications", file: "communications.js", icon: "assets/img/comms.png" },
-  { name: "Work Experience", file: "work-experience.js", icon: "assets/img/work-experience.png" },
-  { name: "Vet. Assistant Skills", file: "vet-assistant-skills.js", icon: "assets/img/vas.png" },
-  { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
-  { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
-  { name: "Grooming", file: "grooming.js", icon: "assets/img/grooming.png" },
-  { name: "Animal Behaviour", file: "animal-behaviour.js", icon: "assets/img/animal-behaviour.png" },
-  { name: "Word Processing", file: "word-processing.js", icon: "assets/img/word-processing.png" },
-];
+const quizTopicsByLevel = {
+  5: [
+    { name: "Animal Anatomy and Physiology", file: "animal-anatomy.js", icon: "assets/img/animal-anatomy.png" },
+    { name: "Animal Welfare", file: "animal-welfare.js", icon: "assets/img/animal-care-welfare.png" },
+    { name: "Communications", file: "communications.js", icon: "assets/img/comms.png" },
+    { name: "Work Experience", file: "work-experience.js", icon: "assets/img/work-experience.png" },
+    { name: "Vet. Assistant Skills", file: "vet-assistant-skills.js", icon: "assets/img/vas.png" },
+    { name: "Small Animals H&H", file: "small-animals.js", icon: "assets/img/small-animals.png" },
+    { name: "Biology", file: "biology.js", icon: "assets/img/cell.png" },
+    { name: "Grooming", file: "grooming.js", icon: "assets/img/grooming.png" },
+    { name: "Animal Behaviour", file: "animal-behaviour.js", icon: "assets/img/animal-behaviour.png" },
+    { name: "Word Processing", file: "word-processing.js", icon: "assets/img/word-processing.png" },
+  ],
+  6: [
+    { name: "Grooming (L6)", file: "grooming-l6.js", icon: "assets/img/grooming.png" },
+    { name: "Animal Behaviour (L6)", file: "animal-behaviour-l6.js", icon: "assets/img/animal-behaviour.png" },
+    { name: "Animal Health & Science", file: "animal-health-science.js", icon: "assets/img/vas.png" },
+    { name: "Kennel & Cattery Management", file: "kennel-cattery-management.js", icon: "assets/img/small-animals.png" },
+  ]
+};
+
+const userSession = sessionStorage.getItem('pethologyUser');
+const _sessionLevel = userSession ? (JSON.parse(userSession).level || 5) : 5;
+const quizTopics = quizTopicsByLevel[_sessionLevel] || quizTopicsByLevel[5];
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
