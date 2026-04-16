@@ -1824,17 +1824,15 @@
 
         console.log('✅ Class created:', newClass);
 
-        // Close modal (will restore _savedClassId, but we override below)
+        // Set new class as current BEFORE closing modal
         window._savedClassId = null;
-        closeClassSettings();
-
-        // Reload classes and select the new one
-        await loadTeacherClasses();
-
-        // Select the new class
         window.currentClassId = newClass.id;
         localStorage.setItem('pethology_selectedClassId', newClass.id);
 
+        closeClassSettings();
+
+        // Reload classes and update dropdown
+        await loadTeacherClasses();
         const select = document.getElementById('classSelect');
         if (select) select.value = newClass.id;
 
