@@ -1119,7 +1119,12 @@ window.onload = function() {
       'word-processing': { file: 'word-processing.js', name: 'Word Processing' },
       'vet-assistant': { file: 'vet-assistant-skills.js', name: 'Vet. Assistant Skills' },
       'communications': { file: 'communications.js', name: 'Communications' },
-      'work-experience': { file: 'work-experience.js', name: 'Work Experience' }
+      'work-experience': { file: 'work-experience.js', name: 'Work Experience' },
+      // Level 6 modules
+      'grooming-l6': { file: 'grooming-l6.js', name: 'Grooming (L6)' },
+      'animal-behaviour-l6': { file: 'animal-behaviour-l6.js', name: 'Animal Behaviour (L6)' },
+      'animal-health-science': { file: 'animal-health-science.js', name: 'Animal Health & Science' },
+      'kennel-cattery-management': { file: 'kennel-cattery-management.js', name: 'Kennel & Cattery Management' }
     };
 
     const quizInfo = moduleMap[module.toLowerCase()];

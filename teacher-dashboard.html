@@ -3370,10 +3370,17 @@
             <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">Last Name</label>
             <input type="text" id="editStudentLastName" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:14px;font-family:inherit;" />
           </div>
-          <div class="form-group" style="margin-bottom:24px;">
+          <div class="form-group" style="margin-bottom:16px;">
             <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">Email</label>
             <input type="email" id="editStudentEmail" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:14px;font-family:inherit;" />
             <p style="font-size:12px;color:var(--gray-500);margin-top:6px;">Changing the email will update their login access.</p>
+          </div>
+          <div class="form-group" style="margin-bottom:24px;">
+            <label style="display:block;font-size:13px;font-weight:500;margin-bottom:6px;">Level</label>
+            <select id="editStudentLevel" style="width:100%;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:14px;font-family:inherit;background:#fff;">
+              <option value="5">Level 5</option>
+              <option value="6">Level 6</option>
+            </select>
           </div>
           <div style="display:flex;gap:10px;justify-content:flex-end;">
             <button class="btn btn-secondary" onclick="closeEditStudentModal()">Cancel</button>
@@ -4103,6 +4110,7 @@
               firstName: fields.firstName?.stringValue || '',
               lastName: fields.lastName?.stringValue || '',
               name: fields.name?.stringValue || '',
+              level: fields.level?.integerValue ? parseInt(fields.level.integerValue) : 5,
             };
             break;
           }
@@ -4124,6 +4132,7 @@
         document.getElementById('editStudentFirstName').value = student.firstName || student.name?.split(' ')[0] || '';
         document.getElementById('editStudentLastName').value = student.lastName || student.name?.split(' ').slice(1).join(' ') || '';
         document.getElementById('editStudentEmail').value = student.email || '';
+        document.getElementById('editStudentLevel').value = String(student.level || 5);
         document.getElementById('editStudentModal')._originalEmail = email;
         document.getElementById('editStudentModal')._docId = docId || encodeURIComponent(email);
         document.getElementById('editStudentModal').style.display = 'flex';
@@ -4145,6 +4154,7 @@
       const firstName = document.getElementById('editStudentFirstName').value.trim();
       const lastName = document.getElementById('editStudentLastName').value.trim();
       const newEmail = document.getElementById('editStudentEmail').value.trim().toLowerCase();
+      const newLevel = parseInt(document.getElementById('editStudentLevel').value) || 5;
 
       if (!firstName || !newEmail) {
         window.showToast('First name and email are required', 'error');
@@ -4161,7 +4171,8 @@
               lastName: { stringValue: lastName },
               name: { stringValue: `${firstName} ${lastName}`.trim() },
               email: { stringValue: newEmail },
-              classId: { stringValue: window.currentClassId }
+              classId: { stringValue: window.currentClassId },
+              level: { integerValue: newLevel }
             }
           });
           // Send welcome email to the corrected address
@@ -4177,12 +4188,13 @@
             console.warn('Welcome email failed (non-critical):', emailErr);
           }
         } else {
-          // Just update name fields
-          await PethologyFirebaseREST.request(`/pre_registered_students/${docId}?updateMask.fieldPaths=firstName&updateMask.fieldPaths=lastName&updateMask.fieldPaths=name`, 'PATCH', {
+          // Just update name, level fields
+          await PethologyFirebaseREST.request(`/pre_registered_students/${docId}?updateMask.fieldPaths=firstName&updateMask.fieldPaths=lastName&updateMask.fieldPaths=name&updateMask.fieldPaths=level`, 'PATCH', {
             fields: {
               firstName: { stringValue: firstName },
               lastName: { stringValue: lastName },
-              name: { stringValue: `${firstName} ${lastName}`.trim() }
+              name: { stringValue: `${firstName} ${lastName}`.trim() },
+              level: { integerValue: newLevel }
             }
           });
         }

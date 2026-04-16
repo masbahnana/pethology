@@ -148,7 +148,8 @@
           photo: user.picture || '',
           loginTime: new Date().toISOString(),
           provider: 'auth0',
-          ...(studentData && studentData.classId ? { classId: studentData.classId } : {})
+          ...(studentData && studentData.classId ? { classId: studentData.classId } : {}),
+          ...(studentData && studentData.level ? { level: studentData.level } : { level: 5 })
         };
 
         // Salvar no Firebase usando REST API

@@ -1918,6 +1918,11 @@
       'vet-assistant': { file: 'vet-assistant', name: 'Vet. Assistant Skills' },
       'communications': { file: 'communications', name: 'Communications' },
       'work-experience': { file: 'work-experience', name: 'Work Experience' },
+      // Level 6
+      'grooming-l6': { file: 'grooming-l6', name: 'Grooming (L6)' },
+      'animal-behaviour-l6': { file: 'animal-behaviour-l6', name: 'Animal Behaviour (L6)' },
+      'animal-health-science': { file: 'animal-health-science', name: 'Animal Health & Science' },
+      'kennel-cattery-management': { file: 'kennel-cattery-management', name: 'Kennel & Cattery Management' },
     };
 
     window.startSmartReview = async function() {
@@ -2173,18 +2178,33 @@
       console.log('🔄 Updating module cards...');
       console.log('📊 Module progress data:', moduleProgress);
 
-      const moduleNames = {
-        'animal-welfare': { name: 'Animal Welfare', icon: 'heart', color: 'welfare', questionCount: 23 },
-        'biology': { name: 'Biology', icon: 'dna', color: 'biology', questionCount: 51 },
-        'grooming': { name: 'Grooming', icon: 'scissors', color: 'grooming', questionCount: 18 },
-        'animal-anatomy': { name: 'Animal Anatomy', icon: 'bone', color: 'anatomy', questionCount: 48 },
-        'small-animals': { name: 'Small Animals H&H', icon: 'rabbit', color: 'small-animals', questionCount: 20 },
-        'vet-assistant': { name: 'Vet Assistant Skills', icon: 'stethoscope', color: 'vet-skills', questionCount: 20 },
-        'animal-behaviour': { name: 'Animal Behaviour', icon: 'dog', color: 'behaviour', questionCount: 20 },
-        'communications': { name: 'Communications', icon: 'message-circle', color: 'communications', questionCount: 20 },
-        'word-processing': { name: 'Word Processing', icon: 'file-text', color: 'word-processing', questionCount: 20 },
-        'work-experience': { name: 'Work Experience', icon: 'briefcase', color: 'communications', questionCount: 20 }
+      const allModuleNames = {
+        5: {
+          'animal-welfare': { name: 'Animal Welfare', icon: 'heart', color: 'welfare', questionCount: 23 },
+          'biology': { name: 'Biology', icon: 'dna', color: 'biology', questionCount: 51 },
+          'grooming': { name: 'Grooming', icon: 'scissors', color: 'grooming', questionCount: 18 },
+          'animal-anatomy': { name: 'Animal Anatomy', icon: 'bone', color: 'anatomy', questionCount: 48 },
+          'small-animals': { name: 'Small Animals H&H', icon: 'rabbit', color: 'small-animals', questionCount: 20 },
+          'vet-assistant': { name: 'Vet Assistant Skills', icon: 'stethoscope', color: 'vet-skills', questionCount: 20 },
+          'animal-behaviour': { name: 'Animal Behaviour', icon: 'dog', color: 'behaviour', questionCount: 20 },
+          'communications': { name: 'Communications', icon: 'message-circle', color: 'communications', questionCount: 20 },
+          'word-processing': { name: 'Word Processing', icon: 'file-text', color: 'word-processing', questionCount: 20 },
+          'work-experience': { name: 'Work Experience', icon: 'briefcase', color: 'communications', questionCount: 20 }
+        },
+        6: {
+          'grooming-l6': { name: 'Grooming (L6)', icon: 'scissors', color: 'grooming', questionCount: 34 },
+          'animal-behaviour-l6': { name: 'Animal Behaviour (L6)', icon: 'dog', color: 'behaviour', questionCount: 45 },
+          'animal-health-science': { name: 'Animal Health & Science', icon: 'stethoscope', color: 'vet-skills', questionCount: 67 },
+          'kennel-cattery-management': { name: 'Kennel & Cattery Management', icon: 'home', color: 'small-animals', questionCount: 54 }
+        }
       };
+
+      // Determine student level from session
+      const _sessionForLevel = sessionStorage.getItem('pethologyUser');
+      const _sessionUser = _sessionForLevel ? JSON.parse(_sessionForLevel) : null;
+      const studentLevel = _sessionUser?.level || 5;
+
+      const moduleNames = allModuleNames[studentLevel] || allModuleNames[5];
 
       // Get the container
       const modulesGrid = document.getElementById('modulesGrid');

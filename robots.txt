@@ -19,4 +19,4 @@ Disallow: /admin-support.html
 Disallow: /auth0-login.html
 Disallow: /auth0-callback.html
 
-Sitemap: https://pethology.netlify.app/sitemap.xml
+Sitemap: https://pethology.app/sitemap.xml

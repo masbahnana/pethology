@@ -1172,6 +1172,22 @@ export class PethologyFirebaseREST {
     }
   }
 
+  // Set level on a pre-registered student (by email)
+  static async setStudentLevel(email, level) {
+    try {
+      const encodedEmail = encodeURIComponent(email.toLowerCase());
+      await this.request(
+        `/pre_registered_students/${encodedEmail}?updateMask.fieldPaths=level`,
+        'PATCH',
+        { fields: { level: { integerValue: level } } }
+      );
+      console.log(`✅ Level ${level} set for ${email}`);
+    } catch (error) {
+      console.error('❌ Error setting student level:', error);
+      throw error;
+    }
+  }
+
   // Update user profile (name and avatarId)
   static async updateUserProfile(userId, { name, avatarId }) {
     try {
