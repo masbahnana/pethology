@@ -1842,6 +1842,10 @@
         // Re-open settings on Students tab so teacher can add students immediately
         openClassSettings('students');
 
+        // Update class name indicator with the new class name
+        const classNameEl = document.getElementById('currentClassName');
+        if (classNameEl) classNameEl.textContent = newClass.name || 'New Class';
+
       } catch (error) {
         console.error('Error creating class:', error);
         alert('Error creating class: ' + error.message);
