@@ -1838,10 +1838,11 @@
         const select = document.getElementById('classSelect');
         if (select) select.value = newClass.id;
 
-        // Reload dashboard
+        // Reload dashboard data
         await loadTeacherDashboard();
 
-        alert('Class created successfully!');
+        // Re-open settings on Students tab so teacher can add students immediately
+        openClassSettings('students');
 
       } catch (error) {
         console.error('Error creating class:', error);
