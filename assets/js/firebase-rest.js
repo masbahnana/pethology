@@ -547,9 +547,10 @@ export class PethologyFirebaseREST {
   // Check if student email is pre-registered (whitelist check)
   static async checkStudentWhitelisted(email) {
     try {
+      const normalizedEmail = encodeURIComponent(email.toLowerCase());
       console.log(`🔍 Checking student whitelist for: ${email}`);
 
-      const response = await this.request(`/pre_registered_students/${email}`);
+      const response = await this.request(`/pre_registered_students/${normalizedEmail}`);
 
       if (response && response.fields) {
         const studentData = this.convertDocument(response);
