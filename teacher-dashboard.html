@@ -1769,38 +1769,25 @@
 
     // Open modal to create a new class
     window.openCreateClassModal = function() {
-      // Open class settings on the Class Info tab for creating new class
-      openClassSettings('class-info');
+      document.getElementById('newClassName').value = '';
+      document.getElementById('newAcademicYear').value = '';
+      document.getElementById('newClassDescription').value = '';
+      document.getElementById('newClassLevelL5').checked = true;
+      document.getElementById('createClassModal').style.display = 'flex';
+      lucide.createIcons();
+    };
 
-      // Clear form for new class
-      setTimeout(() => {
-        document.getElementById('className').value = '';
-        document.getElementById('academicYear').value = '';
-        document.getElementById('classDescription').value = '';
-        const l5Radio = document.querySelector('input[name="classLevel"][value="5"]');
-        if (l5Radio) l5Radio.checked = true;
-
-        // Store original classId and temporarily clear it so saveClassInfo creates instead of updates
-        window._savedClassId = window.currentClassId;
-        window.currentClassId = null;
-
-        // Change save button to "Create Class"
-        const saveBtn = document.querySelector('#tab-class-info .btn-primary');
-        if (saveBtn) {
-          saveBtn.innerHTML = '<i data-lucide="plus"></i> Create Class';
-          saveBtn.onclick = createNewClass;
-          lucide.createIcons();
-        }
-      }, 100);
+    window.closeCreateClassModal = function() {
+      document.getElementById('createClassModal').style.display = 'none';
     };
 
     // Create a new class
     window.createNewClass = async function() {
       try {
-        const name = document.getElementById('className').value.trim();
-        const academicYear = document.getElementById('academicYear').value.trim();
-        const description = document.getElementById('classDescription').value.trim();
-        const level = parseInt(document.querySelector('input[name="classLevel"]:checked')?.value || '5');
+        const name = document.getElementById('newClassName').value.trim();
+        const academicYear = document.getElementById('newAcademicYear').value.trim();
+        const description = document.getElementById('newClassDescription').value.trim();
+        const level = parseInt(document.querySelector('input[name="newClassLevel"]:checked')?.value || '5');
 
         if (!name) {
           alert('Please enter a class name');
@@ -1824,13 +1811,11 @@
 
         console.log('✅ Class created:', newClass);
 
-        // Set new class as current BEFORE closing modal
-        // Mark _savedClassId as undefined so closeClassSettings doesn't restore the old one
-        window._savedClassId = undefined;
+        closeCreateClassModal();
+
+        // Set new class as current
         window.currentClassId = newClass.id;
         localStorage.setItem('pethology_selectedClassId', newClass.id);
-
-        closeClassSettings();
 
         // Reload classes and update dropdown
         await loadTeacherClasses();
@@ -1840,10 +1825,10 @@
         // Reload dashboard data
         await loadTeacherDashboard();
 
-        // Re-open settings on Students tab so teacher can add students immediately
+        // Open settings on Students tab so teacher can add students immediately
         openClassSettings('students');
 
-        // Update class name indicator with the new class name
+        // Update class name indicator
         const classNameEl = document.getElementById('currentClassName');
         if (classNameEl) classNameEl.textContent = newClass.name || 'New Class';
 
@@ -3183,6 +3168,49 @@
     }
   </style>
 
+  <!-- Create Class Modal (dedicated, does not touch currentClassId until success) -->
+  <div id="createClassModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;" onclick="if(event.target===this)closeCreateClassModal()">
+    <div style="background:#fff; border-radius:12px; max-width:440px; width:100%; margin:0 16px; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+      <div class="modal-header">
+        <h2 class="modal-title">Create New Class</h2>
+        <button class="modal-close" onclick="closeCreateClassModal()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Class Name</label>
+          <input type="text" id="newClassName" class="form-input" placeholder="e.g., Animal Care Level 5 - 2025/2026">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Academic Year</label>
+          <input type="text" id="newAcademicYear" class="form-input" placeholder="e.g., 2025/2026">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Level</label>
+          <div style="display:flex;gap:12px;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;">
+              <input type="radio" name="newClassLevel" value="5" id="newClassLevelL5" checked style="width:16px;height:16px;">
+              Level 5
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;">
+              <input type="radio" name="newClassLevel" value="6" id="newClassLevelL6" style="width:16px;height:16px;">
+              Level 6
+            </label>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:24px;">
+          <label class="form-label">Description / Notes</label>
+          <textarea id="newClassDescription" class="form-input" rows="2" placeholder="Optional notes..."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button class="btn btn-secondary" onclick="closeCreateClassModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="createNewClass()">
+            <i data-lucide="plus"></i> Create Class
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Class Settings Modal -->
   <div id="classSettingsModal" class="modal" style="display: none;">
     <div class="modal-overlay" onclick="closeClassSettings()"></div>
@@ -3847,18 +3875,6 @@
 
     window.closeClassSettings = function() {
       document.getElementById('classSettingsModal').style.display = 'none';
-      // If cancelled during new class creation, restore original classId
-      if (window._savedClassId !== undefined && window._savedClassId !== null) {
-        window.currentClassId = window._savedClassId;
-      }
-      window._savedClassId = undefined;
-      // Reset save button back to "Save Changes"
-      const saveBtn = document.querySelector('#tab-class-info .btn-primary');
-      if (saveBtn && saveBtn.onclick === window.createNewClass) {
-        saveBtn.innerHTML = '<i data-lucide="save"></i> Save Changes';
-        saveBtn.onclick = window.saveClassInfo;
-        lucide.createIcons();
-      }
     };
 
     window.switchSettingsTab = function(tabName, event) {
@@ -3934,8 +3950,7 @@
         }
 
         if (!window.currentClassId) {
-          // Create new class instead
-          await createNewClass();
+          window.showToast('No class selected', 'error');
           return;
         }
 
