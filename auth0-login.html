@@ -401,12 +401,20 @@
             console.warn('Could not load Firebase profile fields:', e);
           }
 
-          // Mark student as registered in pre_registered_students
+          // Load level and classId from pre_registered_students
           if (userSession.role === 'Student') {
             try {
+              const studentData = await PethologyFirebaseREST.checkStudentWhitelisted(userSession.email);
+              if (studentData) {
+                if (studentData.classId) userSession.classId = studentData.classId;
+                userSession.level = studentData.level || 5;
+              } else {
+                userSession.level = 5;
+              }
               await PethologyFirebaseREST.markStudentAsRegistered(userSession.email, userSession.id);
             } catch (e) {
-              console.warn('Could not mark student as registered:', e);
+              console.warn('Could not load student data:', e);
+              userSession.level = 5;
             }
           }
 
