@@ -1825,7 +1825,8 @@
         console.log('✅ Class created:', newClass);
 
         // Set new class as current BEFORE closing modal
-        window._savedClassId = null;
+        // Mark _savedClassId as undefined so closeClassSettings doesn't restore the old one
+        window._savedClassId = undefined;
         window.currentClassId = newClass.id;
         localStorage.setItem('pethology_selectedClassId', newClass.id);
 
@@ -3846,11 +3847,11 @@
 
     window.closeClassSettings = function() {
       document.getElementById('classSettingsModal').style.display = 'none';
-      // Restore classId if we were in "create new class" mode
-      if (window.currentClassId === null && window._savedClassId) {
+      // If cancelled during new class creation, restore original classId
+      if (window._savedClassId !== undefined && window._savedClassId !== null) {
         window.currentClassId = window._savedClassId;
       }
-      window._savedClassId = null;
+      window._savedClassId = undefined;
       // Reset save button back to "Save Changes"
       const saveBtn = document.querySelector('#tab-class-info .btn-primary');
       if (saveBtn && saveBtn.onclick === window.createNewClass) {
