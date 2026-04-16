@@ -370,7 +370,7 @@ export class PethologyFirebaseREST {
       // Calculate module performance from quiz results
       const moduleMap = {};
       for (const r of quizResults) {
-        const mod = r.module || r.moduleId || 'Unknown';
+        const mod = r.quizId || r.module || r.moduleId || 'Unknown';
         if (!moduleMap[mod]) moduleMap[mod] = { scores: [], count: 0 };
         moduleMap[mod].scores.push(r.score || 0);
         moduleMap[mod].count++;
