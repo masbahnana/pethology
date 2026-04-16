@@ -1793,6 +1793,7 @@
         const name = document.getElementById('className').value.trim();
         const academicYear = document.getElementById('academicYear').value.trim();
         const description = document.getElementById('classDescription').value.trim();
+        const level = parseInt(document.querySelector('input[name="classLevel"]:checked')?.value || '5');
 
         if (!name) {
           alert('Please enter a class name');
@@ -1809,6 +1810,7 @@
           name,
           academicYear,
           description,
+          level,
           ownerId: teacher.id,
           ownerName: teacher.name
         });
@@ -3207,6 +3209,19 @@
             <input type="text" id="academicYear" class="form-input" placeholder="e.g., 2025/2026">
           </div>
           <div class="form-group">
+            <label class="form-label">Level</label>
+            <div style="display:flex;gap:12px;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;">
+                <input type="radio" name="classLevel" value="5" id="classLevelL5" checked style="width:16px;height:16px;">
+                Level 5
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:500;">
+                <input type="radio" name="classLevel" value="6" id="classLevelL6" style="width:16px;height:16px;">
+                Level 6
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
             <label class="form-label">Description / Notes</label>
             <textarea id="classDescription" class="form-input" rows="3" placeholder="Optional notes about this class..."></textarea>
           </div>
@@ -3872,6 +3887,9 @@
           document.getElementById('className').value = cls.name || '';
           document.getElementById('academicYear').value = cls.academicYear || '';
           document.getElementById('classDescription').value = cls.description || '';
+          const level = cls.level || 5;
+          const radio = document.querySelector(`input[name="classLevel"][value="${level}"]`);
+          if (radio) radio.checked = true;
           console.log('✅ Loaded class info:', cls.name);
         }
       } catch (error) {
@@ -3884,6 +3902,7 @@
         const name = document.getElementById('className').value.trim();
         const academicYear = document.getElementById('academicYear').value.trim();
         const description = document.getElementById('classDescription').value.trim();
+        const level = parseInt(document.querySelector('input[name="classLevel"]:checked')?.value || '5');
 
         if (!name) {
           window.showToast('Please enter a class name', 'error');
@@ -3900,7 +3919,8 @@
         await PethologyFirebaseREST.updateClass(window.currentClassId, {
           name,
           academicYear,
-          description
+          description,
+          level
         });
 
         // Update the select dropdown text
@@ -4038,11 +4058,19 @@
           return;
         }
 
+        // Inherit level from current class
+        let classLevel = 5;
+        try {
+          const cls = await PethologyFirebaseREST.getClass(window.currentClassId);
+          classLevel = cls?.level || 5;
+        } catch (_) {}
+
         const studentData = {
           fields: {
             name: { stringValue: name },
             email: { stringValue: email },
             classId: { stringValue: window.currentClassId },
+            level: { integerValue: classLevel },
             addedBy: { stringValue: teacher?.id || 'unknown' },
             addedByName: { stringValue: teacher?.name || 'Unknown Teacher' },
             addedAt: { timestampValue: new Date().toISOString() },
@@ -4370,6 +4398,13 @@
         const userSession = sessionStorage.getItem('pethologyUser');
         const teacher = userSession ? JSON.parse(userSession) : null;
 
+        // Inherit level from current class for all CSV imports
+        let csvClassLevel = 5;
+        try {
+          const cls = await PethologyFirebaseREST.getClass(window.currentClassId);
+          csvClassLevel = cls?.level || 5;
+        } catch (_) {}
+
         let savedCount = 0;
         let errorCount = 0;
 
@@ -4382,6 +4417,7 @@
                 firstName: { stringValue: student.firstName },
                 lastName: { stringValue: student.lastName },
                 classId: { stringValue: window.currentClassId },
+                level: { integerValue: csvClassLevel },
                 addedBy: { stringValue: teacher?.id || 'unknown' },
                 addedByName: { stringValue: teacher?.name || 'Unknown Teacher' },
                 addedAt: { timestampValue: new Date().toISOString() },

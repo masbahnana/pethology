@@ -707,6 +707,7 @@ export class PethologyFirebaseREST {
           name: { stringValue: classData.name },
           academicYear: { stringValue: classData.academicYear || '' },
           description: { stringValue: classData.description || '' },
+          level: { integerValue: classData.level || 5 },
           ownerId: { stringValue: classData.ownerId },
           ownerName: { stringValue: classData.ownerName || '' },
           createdAt: { timestampValue: new Date().toISOString() },
@@ -756,6 +757,10 @@ export class PethologyFirebaseREST {
       if (updates.description !== undefined) {
         fields.description = { stringValue: updates.description };
         updateMask.push('description');
+      }
+      if (updates.level !== undefined) {
+        fields.level = { integerValue: updates.level };
+        updateMask.push('level');
       }
 
       const updateData = { fields };
