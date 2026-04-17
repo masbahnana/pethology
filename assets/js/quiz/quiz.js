@@ -23,8 +23,8 @@ const quizTopicsByLevel = {
   ]
 };
 
-const userSession = sessionStorage.getItem('pethologyUser');
-const _sessionLevel = userSession ? (JSON.parse(userSession).level || 5) : 5;
+const _quizUserSession = sessionStorage.getItem('pethologyUser');
+const _sessionLevel = _quizUserSession ? (JSON.parse(_quizUserSession).level || 5) : 5;
 const quizTopics = quizTopicsByLevel[_sessionLevel] || quizTopicsByLevel[5];
 
 let currentQuestions = [];
