@@ -565,7 +565,12 @@ function normalizeModuleName(moduleName) {
     'Grooming': 'grooming',
     'Small Animals H&H': 'small-animals',
     'Word Processing': 'word-processing',
-    'Vet. Assistant Skills': 'vet-assistant'
+    'Vet. Assistant Skills': 'vet-assistant',
+    // Level 6
+    'Grooming (L6)': 'grooming-l6',
+    'Animal Behaviour (L6)': 'animal-behaviour-l6',
+    'Animal Health & Science': 'animal-health-science',
+    'Kennel & Cattery Management': 'kennel-cattery-management',
   };
 
   // Se existe no mapa, retornar o valor mapeado
@@ -573,8 +578,8 @@ function normalizeModuleName(moduleName) {
     return moduleNameMap[moduleName];
   }
 
-  // Fallback: converter para lowercase e substituir espaços por hífens
-  return moduleName.toLowerCase().replace(/\s+/g, '-');
+  // Fallback: converter para lowercase, substituir espaços por hífens, remover caracteres especiais
+  return moduleName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
 // Save quiz result using REST API
