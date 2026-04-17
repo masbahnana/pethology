@@ -491,12 +491,78 @@ export class PethologyFirebaseREST {
         }
       }
 
-      console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak`);
+      // Calculate achievement stats
+      const completedModulesList = Object.keys(moduleProgress);
+      const perfectScores = quizHistory.filter(q => (q.score || 0) >= 1).length;
+      const excellentScores = quizHistory.filter(q => (q.score || 0) >= 0.9).length;
+      const morningQuizzes = quizHistory.filter(q => {
+        if (!q.completedAt) return false;
+        const h = new Date(q.completedAt).getHours();
+        return h < 12;
+      }).length;
+      const fastAndAccurate = quizHistory.filter(q => (q.timeSpent || 999) <= 300 && (q.score || 0) >= 0.8).length;
+
+      // Count quizzes per day
+      const quizzesByDay = {};
+      quizHistory.forEach(q => {
+        if (!q.completedAt) return;
+        const day = new Date(q.completedAt).toDateString();
+        quizzesByDay[day] = (quizzesByDay[day] || 0) + 1;
+      });
+      const maxQuizzesInDay = Math.max(0, ...Object.values(quizzesByDay));
+
+      // Module best scores (as percentage 0-100)
+      const moduleScores = {};
+      Object.entries(moduleProgress).forEach(([mod, data]) => {
+        moduleScores[mod] = Math.round((data.bestScore || 0) * 100);
+      });
+
+      const achievementStats = {
+        totalQuizzes,
+        completedModules: completedModulesList.length,
+        completedModulesList,
+        perfectScores,
+        excellentScores,
+        currentStreak: streak,
+        morningQuizzes,
+        fastAndAccurate,
+        maxQuizzesInDay,
+        moduleScores,
+        averageScore
+      };
+
+      // Evaluate which achievements are unlocked
+      const achievementConditions = {
+        first_steps: s => s.totalQuizzes >= 1,
+        knowledge_seeker: s => s.totalQuizzes >= 5,
+        dedicated_learner: s => s.totalQuizzes >= 10,
+        quiz_master: s => s.totalQuizzes >= 25,
+        brain_master: s => s.completedModules >= 10,
+        perfect_score: s => s.perfectScores >= 1,
+        excellence: s => s.excellentScores >= 5,
+        perfectionist: s => s.perfectScores >= 3,
+        early_bird: s => s.morningQuizzes >= 3,
+        streak_master: s => s.currentStreak >= 7,
+        speed_demon: s => s.fastAndAccurate >= 1,
+        focused: s => s.maxQuizzesInDay >= 3,
+        animal_lover: s => ['small-animals', 'animal-behaviour', 'animal-welfare'].every(m => s.completedModulesList.includes(m)),
+        vet_pro: s => ['vet-assistant', 'animal-anatomy'].every(m => s.completedModulesList.includes(m)),
+        nutrition_expert: s => (s.moduleScores['nutrition'] || 0) >= 90,
+        grooming_guru: s => (s.moduleScores['grooming'] || s.moduleScores['grooming-l6'] || 0) >= 90,
+        communication_pro: s => (s.moduleScores['communications'] || 0) >= 90,
+        biology_boss: s => (s.moduleScores['biology'] || 0) >= 90,
+      };
+
+      const achievements = Object.entries(achievementConditions)
+        .filter(([, condition]) => { try { return condition(achievementStats); } catch { return false; } })
+        .map(([id]) => id);
+
+      console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak, ${achievements.length} achievements`);
 
       return {
         overallStats: { totalQuizzes, averageScore, streak, totalQuestions, correctAnswers },
         moduleProgress,
-        achievements: [] // TODO: Calculate achievements
+        achievements
       };
     } catch (error) {
       console.error('❌ Error calculating student progress:', error);
