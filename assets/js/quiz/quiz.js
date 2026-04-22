@@ -66,6 +66,8 @@ function shuffleArray(array) {
 }
 
 async function loadQuiz(file, topicName) {
+  const hero = document.querySelector('.quiz-page-hero');
+  if (hero) hero.style.display = 'none';
   try {
     console.log('🎯 Loading quiz:', topicName || file);
     const module = await import('./' + file);
@@ -193,11 +195,11 @@ function showQuestion() {
       `).join('')}
     </ul>
     <div id="feedback" style="text-align: center;"></div>
-    <div class="quiz-navigation" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
-      ${!isExamMode ? `<button onclick="goBackToMenu()" class="quiz-navigation" style="background: #6b7280;">← Back to Menu</button>` : ''}
+    <div style="margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+      ${!isExamMode ? `<button onclick="goBackToMenu()" style="padding: 10px 20px; background: #6b7280; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">← Back to Menu</button>` : ''}
       ${isLoggedIn && !isExamMode ? `
-        <button onclick="saveProgressAndExit()" class="quiz-navigation" style="background: #f59e0b;">💾 Save Progress & Exit</button>
-        <button onclick="finishQuizEarly()" class="quiz-navigation" style="background: #10b981;">✓ Finish Quiz Now</button>
+        <button onclick="saveProgressAndExit()" style="padding: 10px 20px; background: #f59e0b; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">💾 Save Progress & Exit</button>
+        <button onclick="finishQuizEarly()" style="padding: 10px 20px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">✓ Finish Quiz Now</button>
       ` : ''}
     </div>
   `;
@@ -974,6 +976,8 @@ function goBackToMenu() {
   correctAnswersCount = 0;
   userAnswers = [];
   quizStartTime = null;
+  const hero = document.querySelector('.quiz-page-hero');
+  if (hero) hero.style.display = '';
   loadQuizButtons();
 }
 

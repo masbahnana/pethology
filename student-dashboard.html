@@ -2199,7 +2199,7 @@
           'animal-health-science': { name: 'Animal Health & Science', icon: 'stethoscope', color: 'vet-skills', questionCount: 67 },
           'kennel-cattery-management': { name: 'Kennel & Cattery Management', icon: 'home', color: 'small-animals', questionCount: 54 },
           'wild-animal-management': { name: 'Wild Animal Management', icon: 'feather', color: 'animal-welfare', questionCount: 20 },
-          'large-animal-husbandry': { name: 'Large Animal Husbandry', icon: 'box', color: 'small-animals', questionCount: 0 },
+          'large-animal-husbandry': { name: 'Large Animal Husbandry', icon: 'box', color: 'small-animals', questionCount: 0, comingSoon: true },
         }
       };
 
@@ -2240,14 +2240,17 @@
 
         const moduleCard = document.createElement('div');
         moduleCard.className = `module-card ${moduleInfo.color}`;
-        moduleCard.style.cursor = 'pointer';
-        moduleCard.onclick = () => {
-          openQuizModal(moduleName, moduleInfo.name);
-        };
+        if (moduleInfo.comingSoon) {
+          moduleCard.style.cursor = 'default';
+          moduleCard.style.opacity = '0.6';
+        } else {
+          moduleCard.style.cursor = 'pointer';
+          moduleCard.onclick = () => openQuizModal(moduleName, moduleInfo.name);
+        }
 
         // Build progress text based on whether user has done any quizzes
-        let progressText = 'Not started';
-        if (quizzesDone > 0) {
+        let progressText = moduleInfo.comingSoon ? 'Coming soon' : 'Not started';
+        if (!moduleInfo.comingSoon && quizzesDone > 0) {
           progressText = `Best: ${bestScore}%`;
         }
 
@@ -2258,7 +2261,7 @@
             </div>
             <div>
               <div class="module-title">${moduleInfo.name}</div>
-              <div class="module-questions">${totalQuestions} questions</div>
+              <div class="module-questions">${moduleInfo.comingSoon ? 'Coming soon' : `${totalQuestions} questions`}</div>
             </div>
           </div>
           <div class="module-progress">
