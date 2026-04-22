@@ -20,12 +20,14 @@ const quizTopicsByLevel = {
     { name: "Animal Behaviour (L6)", file: "animal-behaviour-l6.js", icon: "assets/img/animal-behaviour.png" },
     { name: "Animal Health & Science", file: "animal-health-science.js", icon: "assets/img/vas.png" },
     { name: "Kennel & Cattery Management", file: "kennel-cattery-management.js", icon: "assets/img/small-animals.png" },
+    { name: "Wild Animal Management", file: "wild-animal-management.js", icon: "assets/img/wild-animals.png" }, // Icon by Chattapat - Flaticon
+    { name: "Large Animal Husbandry", file: "large-animal-husbandry.js", icon: "assets/img/horse.png" }, // Icon by Freepik - Flaticon
   ]
 };
 
 const _quizUserSession = sessionStorage.getItem('pethologyUser');
 const _sessionLevel = _quizUserSession ? (JSON.parse(_quizUserSession).level || 5) : 5;
-const quizTopics = quizTopicsByLevel[_sessionLevel] || quizTopicsByLevel[5];
+let quizTopics = quizTopicsByLevel[_sessionLevel] || quizTopicsByLevel[5];
 
 let currentQuestions = [];
 let currentQuestionIndex = 0;
@@ -571,6 +573,8 @@ function normalizeModuleName(moduleName) {
     'Animal Behaviour (L6)': 'animal-behaviour-l6',
     'Animal Health & Science': 'animal-health-science',
     'Kennel & Cattery Management': 'kennel-cattery-management',
+    'Wild Animal Management': 'wild-animal-management',
+    'Large Animal Husbandry': 'large-animal-husbandry',
   };
 
   // Se existe no mapa, retornar o valor mapeado
@@ -1030,26 +1034,114 @@ function loadQuizButtons() {
     return;
   }
 
-  quizContainer.innerHTML = `
-    <div style="max-width:900px;margin:0 auto;padding:48px 24px 80px;">
-      <p style="font-size:0.75rem;font-weight:700;color:#16a34a;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Choose a module</p>
-      <h1 style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:8px;">Practice your wisdom</h1>
-      <p style="color:#666;font-size:1rem;margin-bottom:40px;">Select a module below and start a quiz — no login needed for a free sample.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;">
-        ${quizTopics.map((topic) => `
+  // Re-read level at render time (session may have loaded after module parse)
+  const _liveSession = sessionStorage.getItem('pethologyUser');
+  const _liveLevel = _liveSession ? (JSON.parse(_liveSession).level || 5) : 5;
+  const _isLoggedIn = !!_liveSession;
+
+  // If logged in, show only their level. If visitor, show all levels.
+  const topicsToRender = _isLoggedIn
+    ? [{ level: _liveLevel, topics: quizTopicsByLevel[_liveLevel] || quizTopicsByLevel[5] }]
+    : [
+        { level: 5, topics: quizTopicsByLevel[5] },
+        { level: 6, topics: quizTopicsByLevel[6] },
+      ];
+
+  console.log(`📚 Quiz topics for Level ${_liveLevel} (logged in: ${_isLoggedIn})`);
+
+  const badgeStyle = (level) => level === 6
+    ? 'background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe;'
+    : 'background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;';
+
+  const sectionsHTML = topicsToRender.map(({ level, topics }) => `
+    <div style="margin-top: 40px;">
+      ${!_isLoggedIn ? `<p style="font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${level === 6 ? '#7c3aed' : '#16a34a'};margin-bottom:14px;">Level ${level} modules</p>` : ''}
+      <div class="qm-grid">
+        ${topics.map((topic) => `
           <div
+            class="qm-card"
             onclick="handleQuizSelection('${topic.file}', '${topic.name}', '${getModuleId(topic.file)}')"
-            style="background:#fff;border:1.5px solid #e8e8e8;border-radius:12px;padding:24px;cursor:pointer;transition:box-shadow 0.15s,border-color 0.15s;"
-            onmouseover="this.style.boxShadow='0 4px 20px rgba(0,0,0,0.08)';this.style.borderColor='#aaa';"
-            onmouseout="this.style.boxShadow='none';this.style.borderColor='#e8e8e8';"
+            role="button"
+            tabindex="0"
+            onkeydown="if(event.key==='Enter')handleQuizSelection('${topic.file}','${topic.name}','${getModuleId(topic.file)}')"
           >
-            ${topic.icon ? `<img src="${topic.icon}" alt="${topic.name}" style="height:36px;width:36px;object-fit:contain;margin-bottom:14px;display:block;margin-left:auto;margin-right:auto;">` : `<div style="font-size:1.8rem;margin-bottom:14px;text-align:center;">📚</div>`}
-            <div style="font-size:0.95rem;font-weight:700;color:#111;margin-bottom:6px;letter-spacing:-0.3px;">${topic.name}</div>
-            <div style="font-size:0.8rem;color:#16a34a;font-weight:600;">Start quiz →</div>
+            <span class="qm-badge" style="${badgeStyle(level)}">Level ${level}</span>
+            ${topic.icon
+              ? `<img src="${topic.icon}" alt="${topic.name}" class="qm-icon">`
+              : `<div style="font-size:2rem;margin-bottom:16px;">📚</div>`
+            }
+            <div class="qm-name">${topic.name.replace(' (L6)', '').replace(' (L5)', '')}</div>
+            <div class="qm-cta">Start quiz →</div>
           </div>
         `).join('')}
       </div>
     </div>
+  `).join('');
+
+  quizContainer.innerHTML = `
+    <style>
+      .qm-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .qm-card {
+        background: #fff;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 14px;
+        padding: 24px 20px 20px;
+        cursor: pointer;
+        transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+      }
+      .qm-card:hover {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+        border-color: #bbb;
+        transform: translateY(-2px);
+      }
+      .qm-card:active { transform: translateY(0); }
+      .qm-badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 100px;
+        letter-spacing: 0.3px;
+      }
+      .qm-icon {
+        height: 40px;
+        width: 40px;
+        object-fit: contain;
+        margin-bottom: 16px;
+      }
+      .qm-name {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111;
+        letter-spacing: -0.3px;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+      .qm-cta {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #16a34a;
+        margin-top: auto;
+      }
+      @media (max-width: 768px) {
+        .qm-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      }
+      @media (max-width: 480px) {
+        .qm-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+        .qm-card { padding: 16px 12px 14px; }
+      }
+    </style>
+    ${sectionsHTML}
   `;
 }
 
@@ -1141,7 +1233,9 @@ window.onload = function() {
       'grooming-l6': { file: 'grooming-l6.js', name: 'Grooming (L6)' },
       'animal-behaviour-l6': { file: 'animal-behaviour-l6.js', name: 'Animal Behaviour (L6)' },
       'animal-health-science': { file: 'animal-health-science.js', name: 'Animal Health & Science' },
-      'kennel-cattery-management': { file: 'kennel-cattery-management.js', name: 'Kennel & Cattery Management' }
+      'kennel-cattery-management': { file: 'kennel-cattery-management.js', name: 'Kennel & Cattery Management' },
+      'wild-animal-management': { file: 'wild-animal-management.js', name: 'Wild Animal Management' },
+      'large-animal-husbandry': { file: 'large-animal-husbandry.js', name: 'Large Animal Husbandry' },
     };
 
     const quizInfo = moduleMap[module.toLowerCase()];
