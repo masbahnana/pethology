@@ -136,7 +136,7 @@ function showQuestion() {
   // Percentage shows how many questions have been ANSWERED (0% at start, 100% at end)
   const percentage = Math.round((currentQuestionIndex / total) * 100);
 
-  quizContainer.innerHTML = `
+  quizContainer.innerHTML = `<div style="max-width: 640px; margin: 40px auto 0; padding: 0 8px;">
     ${isExamMode ? `
     <!-- Exam Mode Banner -->
     <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); border: 2px solid #6366f1; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
@@ -186,23 +186,27 @@ function showQuestion() {
       </div>
     </div>
 
-    <h2 style="text-align: center; margin-bottom: 24px;">${question.question}</h2>
-    <ul style="list-style: none; padding: 0; text-align: center;">
+    <h2 style="text-align: center; font-size: clamp(1.1rem, 2.5vw, 1.4rem); font-weight: 700; line-height: 1.4; margin-bottom: 28px; color: #111;">${question.question}</h2>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
       ${question.options.map((opt, i) => `
-        <li style="margin-bottom: 10px;">
-          <button class="minimal-button answer-button" onclick="selectAnswer(${i})" style="width: 100%; text-align: center;">${opt}</button>
-        </li>
+        <button
+          class="answer-button"
+          onclick="selectAnswer(${i})"
+          style="width: 100%; padding: 14px 20px; background: #fff; border: 1.5px solid #e8e8e8; border-radius: 10px; font-size: 0.95rem; font-weight: 500; color: #111; cursor: pointer; text-align: center; transition: border-color 0.15s, background 0.15s; font-family: inherit; line-height: 1.4;"
+          onmouseover="this.style.borderColor='#aaa';this.style.background='#f9f9f9';"
+          onmouseout="this.style.borderColor='#e8e8e8';this.style.background='#fff';"
+        >${opt}</button>
       `).join('')}
-    </ul>
-    <div id="feedback" style="text-align: center;"></div>
-    <div style="margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-      ${!isExamMode ? `<button onclick="goBackToMenu()" style="padding: 10px 20px; background: #6b7280; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">← Back to Menu</button>` : ''}
+    </div>
+    <div id="feedback" style="text-align: center; margin-top: 16px;"></div>
+    <div style="margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; padding-bottom: 40px;">
+      ${!isExamMode ? `<button onclick="goBackToMenu()" style="padding: 10px 20px; background: #6b7280; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: inherit;">← Back to Menu</button>` : ''}
       ${isLoggedIn && !isExamMode ? `
-        <button onclick="saveProgressAndExit()" style="padding: 10px 20px; background: #f59e0b; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">💾 Save Progress & Exit</button>
-        <button onclick="finishQuizEarly()" style="padding: 10px 20px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap;">✓ Finish Quiz Now</button>
+        <button onclick="saveProgressAndExit()" style="padding: 10px 20px; background: #f59e0b; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: inherit;">💾 Save Progress & Exit</button>
+        <button onclick="finishQuizEarly()" style="padding: 10px 20px; background: #10b981; color: #fff; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; font-family: inherit;">✓ Finish Quiz Now</button>
       ` : ''}
     </div>
-  `;
+  </div>`;
 }
 
 function selectAnswer(index) {
