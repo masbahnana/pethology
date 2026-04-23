@@ -637,25 +637,46 @@ export class PethologyFirebaseREST {
   // Check if student email is pre-registered (whitelist check)
   static async checkStudentWhitelisted(email) {
     try {
-      const normalizedEmail = encodeURIComponent(email.toLowerCase());
+      const lowerEmail = email.toLowerCase();
       console.log(`🔍 Checking student whitelist for: ${email}`);
 
-      const response = await this.request(`/pre_registered_students/${normalizedEmail}`);
+      // Try with literal @ first (most common doc ID format), then encoded
+      const attempts = [
+        encodeURIComponent(lowerEmail),
+        lowerEmail.replace('@', '%40'),
+      ];
 
-      if (response && response.fields) {
-        const studentData = this.convertDocument(response);
-        console.log(`✅ Student is whitelisted:`, studentData);
-        return studentData;
+      for (const docId of attempts) {
+        try {
+          const response = await this.request(`/pre_registered_students/${docId}`);
+          if (response && response.fields) {
+            const studentData = this.convertDocument(response);
+            console.log(`✅ Student is whitelisted:`, studentData);
+            return studentData;
+          }
+        } catch (e) {
+          if (!e.message.includes('404')) throw e;
+        }
+      }
+
+      // Fallback: scan all documents and match by email field
+      console.log(`🔍 Falling back to full scan for: ${email}`);
+      const allResp = await this.request(`/pre_registered_students`);
+      if (allResp?.documents) {
+        const found = allResp.documents.find(doc => {
+          const docEmail = doc.fields?.email?.stringValue || '';
+          return docEmail.toLowerCase() === lowerEmail;
+        });
+        if (found) {
+          const studentData = this.convertDocument(found);
+          console.log(`✅ Student found via scan:`, studentData);
+          return studentData;
+        }
       }
 
       console.log(`❌ Student NOT in whitelist: ${email}`);
       return null;
     } catch (error) {
-      // 404 means not found (not whitelisted)
-      if (error.message.includes('404')) {
-        console.log(`❌ Student NOT in whitelist: ${email}`);
-        return null;
-      }
       console.error('❌ Error checking student whitelist:', error);
       return null;
     }
