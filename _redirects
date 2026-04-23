@@ -1,0 +1,2 @@
+# Redirect netlify.app subdomain to custom domain
+https://pethology.netlify.app/* https://pethology.app/:splat 301!
