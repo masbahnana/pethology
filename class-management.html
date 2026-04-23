@@ -1524,9 +1524,22 @@
     window.saveEditStudent = async function() {
       if (!studentToEdit) return;
       const newLevel = parseInt(document.getElementById('editStudentLevelSelect').value);
-      const encodedEmail = encodeURIComponent(studentToEdit);
       try {
-        await PethologyFirebaseREST.request(`/pre_registered_students/${encodedEmail}?updateMask.fieldPaths=level`, 'PATCH', {
+        // Find the real document ID by scanning pre_registered_students
+        const preRegResp = await PethologyFirebaseREST.request(`/pre_registered_students`, 'GET');
+        let docId = encodeURIComponent(studentToEdit);
+        if (preRegResp?.documents) {
+          const found = preRegResp.documents.find(doc => {
+            const fields = doc.fields || {};
+            const docEmail = fields.email?.stringValue || '';
+            return docEmail.toLowerCase() === studentToEdit.toLowerCase();
+          });
+          if (found) {
+            docId = found.name.split('/').pop();
+          }
+        }
+
+        await PethologyFirebaseREST.request(`/pre_registered_students/${docId}?updateMask.fieldPaths=level`, 'PATCH', {
           fields: { level: { integerValue: newLevel } }
         });
         closeEditModal();
