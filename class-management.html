@@ -922,6 +922,30 @@
   </div>
 
   <!-- Delete Confirmation Modal -->
+  <!-- Edit Student Modal -->
+  <div class="modal-overlay" id="editStudentModal" style="display:none;">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Student</h3>
+        <button class="modal-close" onclick="closeEditModal()">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: 16px; font-weight: 600;" id="editStudentName"></p>
+        <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px;">Level</label>
+        <select id="editStudentLevelSelect" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:6px;font-size:14px;font-family:inherit;background:#fff;margin-bottom:20px;">
+          <option value="5">Level 5</option>
+          <option value="6">Level 6</option>
+        </select>
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveEditStudent()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="deleteModal">
     <div class="modal" style="max-width: 400px;">
       <div class="modal-header">
@@ -1249,6 +1273,9 @@
               <button class="btn btn-secondary btn-sm btn-icon" onclick="viewStudentReport('${student.email}')" title="View Report" ${student.status !== 'active' ? 'disabled' : ''}>
                 <i data-lucide="bar-chart-2"></i>
               </button>
+              <button class="btn btn-secondary btn-sm btn-icon" onclick="openEditModal('${encodedEmail}', '${name}', ${student.level || 5})" title="Edit">
+                <i data-lucide="pencil"></i>
+              </button>
               <button class="btn btn-danger btn-sm btn-icon" onclick="openDeleteModal('${encodeURIComponent(student.email)}', '${name}')" title="Remove">
                 <i data-lucide="trash-2"></i>
               </button>
@@ -1477,6 +1504,39 @@
       await loadStudents();
     };
     // ─────────────────────────────────────────────────────────
+
+    // Edit student modal
+    let studentToEdit = null;
+
+    window.openEditModal = function(encodedEmail, name, level) {
+      studentToEdit = decodeURIComponent(encodedEmail);
+      document.getElementById('editStudentName').textContent = name;
+      document.getElementById('editStudentLevelSelect').value = String(level);
+      document.getElementById('editStudentModal').style.display = 'flex';
+      lucide.createIcons();
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('editStudentModal').style.display = 'none';
+      studentToEdit = null;
+    };
+
+    window.saveEditStudent = async function() {
+      if (!studentToEdit) return;
+      const newLevel = parseInt(document.getElementById('editStudentLevelSelect').value);
+      const encodedEmail = encodeURIComponent(studentToEdit);
+      try {
+        await PethologyFirebaseREST.request(`/pre_registered_students/${encodedEmail}?updateMask.fieldPaths=level`, 'PATCH', {
+          fields: { level: { integerValue: newLevel } }
+        });
+        closeEditModal();
+        showToast(`Level updated to L${newLevel}`, 'success');
+        await loadStudents();
+      } catch (e) {
+        console.error('Error updating level:', e);
+        showToast('Failed to update level', 'error');
+      }
+    };
 
     // Open delete modal
     window.openDeleteModal = function(encodedEmail, name) {
