@@ -1138,6 +1138,7 @@
               lastName: preReg.lastName || matchedUser.lastName || '',
               name: preReg.name || matchedUser.name || '',
               email: preReg.email,
+              level: preReg.level || 5,
               status: 'active',
               lastLogin: matchedUser.lastLogin || null,
               progress: progress
@@ -1150,6 +1151,7 @@
               lastName: preReg.lastName || '',
               name: preReg.name || '',
               email: preReg.email,
+              level: preReg.level || 5,
               status: 'pending',
               lastLogin: null,
               progress: null
