@@ -574,32 +574,56 @@ export class PethologyFirebaseREST {
     }
   }
 
-  // Get student quiz history
+  // Get student quiz history — queries Firestore directly by userId (no 100-doc limit)
   static async getStudentQuizHistory(userId) {
     try {
       console.log(`📝 Fetching quiz history for userId: "${userId}"`);
 
-      const allResults = await this.getAllQuizResults();
-      console.log(`📝 Total quiz results in DB: ${allResults.length}`);
-
-      // Debug: show all userIds in results
-      if (allResults.length > 0) {
-        const uniqueUserIds = [...new Set(allResults.map(r => r.userId))];
-        console.log(`📝 Unique userIds in DB:`, uniqueUserIds);
+      const cacheKey = `quizHistory_${userId}`;
+      const cached = this._cacheGet(cacheKey);
+      if (cached) {
+        console.log('📝 Quiz history from cache');
+        return cached;
       }
 
-      // Filter results for this user
-      const userResults = allResults.filter(result => result.userId === userId);
+      const queryUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_CONFIG.projectId}/databases/(default)/documents:runQuery?key=${FIREBASE_CONFIG.apiKey}`;
 
-      // Sort by date (most recent first)
-      userResults.sort((a, b) => {
+      const query = {
+        structuredQuery: {
+          from: [{ collectionId: 'quiz_results' }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: 'userId' },
+              op: 'EQUAL',
+              value: { stringValue: userId }
+            }
+          },
+          orderBy: [{ field: { fieldPath: 'completedAt' }, direction: 'DESCENDING' }],
+          limit: 500
+        }
+      };
+
+      const response = await fetch(queryUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(query)
+      });
+
+      const data = await response.json();
+
+      const results = (Array.isArray(data) ? data : [])
+        .filter(r => r.document)
+        .map(r => this.convertDocument(r.document));
+
+      results.sort((a, b) => {
         const dateA = a.completedAt || new Date(0);
         const dateB = b.completedAt || new Date(0);
         return dateB - dateA;
       });
 
-      console.log(`✅ Loaded ${userResults.length} quiz results for this student`);
-      return userResults;
+      console.log(`✅ Loaded ${results.length} quiz results for this student`);
+      this._cacheSet(cacheKey, results, 60000);
+      return results;
     } catch (error) {
       console.error('❌ Error getting student quiz history:', error);
       return [];

@@ -2190,6 +2190,7 @@
               <th onclick="sortStudentsBy('lastActive')" style="cursor: pointer; user-select: none;">
                 Last Active ${getSortIcon('lastActive')}
               </th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -2215,6 +2216,11 @@
                   <td>${isPending ? '—' : (stats.totalQuizzes || 0)}</td>
                   <td>${isPending ? '—' : `<span class="score-badge ${scoreClass}">${score}%</span>`}</td>
                   <td>${lastActiveText}</td>
+                  <td>
+                    <button onclick="editStudent('${encodeURIComponent(student.email)}')" style="padding:5px 10px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:#374151;" title="Edit student">
+                      ✏️ Edit
+                    </button>
+                  </td>
                 </tr>
               `;
             }).join('')}
