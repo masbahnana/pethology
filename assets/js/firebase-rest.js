@@ -687,6 +687,23 @@ export class PethologyFirebaseREST {
     try {
       console.log(`✅ Marking student as registered: ${email} → ${userId}`);
 
+      const lowerEmail = email.toLowerCase();
+
+      // Find the real document ID
+      let docId = encodeURIComponent(lowerEmail);
+      try {
+        const allResp = await this.request(`/pre_registered_students`);
+        if (allResp?.documents) {
+          const found = allResp.documents.find(doc => {
+            const docEmail = doc.fields?.email?.stringValue || '';
+            return docEmail.toLowerCase() === lowerEmail;
+          });
+          if (found) docId = found.name.split('/').pop();
+        }
+      } catch (e) {
+        console.warn('⚠️ Could not scan pre_registered_students, using encoded email as docId');
+      }
+
       const updateData = {
         fields: {
           registered: { booleanValue: true },
@@ -696,12 +713,12 @@ export class PethologyFirebaseREST {
       };
 
       await this.request(
-        `/pre_registered_students/${email}?updateMask.fieldPaths=registered&updateMask.fieldPaths=userId&updateMask.fieldPaths=registeredAt`,
+        `/pre_registered_students/${docId}?updateMask.fieldPaths=registered&updateMask.fieldPaths=userId&updateMask.fieldPaths=registeredAt`,
         'PATCH',
         updateData
       );
 
-      console.log(`✅ Student marked as registered: ${email}`);
+      console.log(`✅ Student marked as registered: ${email} (docId: ${docId})`);
       return true;
     } catch (error) {
       console.error('❌ Error marking student as registered:', error);
