@@ -7,6 +7,14 @@ import { loadDogModel } from './models/DogModel.js';
 
 
 // ======================
+// RAYCASTER
+// ======================
+
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+
+// ======================
 // SETUP
 // ======================
 
@@ -38,7 +46,48 @@ controls.enableDamping = true;
 // MODELO
 // ======================
 
-loadDogModel(scene, camera, controls);
+let dogModel = null;
+
+loadDogModel(scene, camera, controls, (model) => {
+    dogModel = model;
+});
+
+
+// ======================
+// INTERAÇÃO
+// ======================
+
+window.addEventListener("click", onMouseClick);
+
+function onMouseClick(event) {
+
+    if (!dogModel) return;
+
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersects = raycaster.intersectObjects(
+        dogModel.children,
+        true
+    );
+
+    if (intersects.length > 0) {
+
+        intersects.forEach((hit, index) => {
+
+            console.log(
+                index,
+                hit.object.name,
+                hit.distance
+            );
+
+        });
+
+    }
+
+}
 
 
 // ======================

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export function loadDogModel(scene, camera, controls) {
+export function loadDogModel(scene, camera, controls, onLoaded) {
     const loader = new GLTFLoader();
 
     loader.load(
@@ -25,12 +25,12 @@ export function loadDogModel(scene, camera, controls) {
             controls.target.set(0, 0, 0);
             controls.update();
 
-            window.dog = dog;
-
             console.log('🐕 Modelo carregado');
             dog.traverse((part) => {
                 if (part.isMesh) console.log('🦴', part.name);
             });
+
+            if (onLoaded) onLoaded(dog);
         },
 
         undefined,
