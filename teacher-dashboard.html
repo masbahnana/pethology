@@ -2187,6 +2187,9 @@
               <th onclick="sortStudentsBy('score')" style="cursor: pointer; user-select: none;">
                 Average Score ${getSortIcon('score')}
               </th>
+              <th onclick="sortStudentsBy('xp')" style="cursor: pointer; user-select: none;">
+                XP ${getSortIcon('xp')}
+              </th>
               <th onclick="sortStudentsBy('lastActive')" style="cursor: pointer; user-select: none;">
                 Last Active ${getSortIcon('lastActive')}
               </th>
@@ -2199,6 +2202,8 @@
               const stats = progress.overallStats || {};
               // averageScore is already in percentage (0-100) from firebase-rest.js
               const score = stats.averageScore || 0;
+              const xp = stats.totalXP || 0;
+              const xpLevel = stats.xpLevel || 'Beginner';
               const isPending = student.status === 'pending';
               const lastLogin = student.lastLogin?.toDate ? student.lastLogin.toDate() : (student.lastLogin ? new Date(student.lastLogin) : null);
               const lastActiveText = isPending ? '<span style="color:var(--warning);font-size:12px;font-weight:600;">Pending</span>' : formatTimeAgo(lastLogin);
@@ -2206,6 +2211,9 @@
               let scoreClass = 'score-medium';
               if (score >= 80) scoreClass = 'score-high';
               else if (score < 60) scoreClass = 'score-low';
+
+              const xpColors = { Beginner: '#6b7280', Intermediate: '#2563eb', Advanced: '#059669', Expert: '#7c3aed' };
+              const xpColor = xpColors[xpLevel] || '#6b7280';
 
               return `
                 <tr style="${isPending ? 'opacity:0.7;' : ''}">
@@ -2215,6 +2223,7 @@
                   </td>
                   <td>${isPending ? '—' : (stats.totalQuizzes || 0)}</td>
                   <td>${isPending ? '—' : `<span class="score-badge ${scoreClass}">${score}%</span>`}</td>
+                  <td>${isPending ? '—' : `<span style="font-size:12px;font-weight:700;color:${xpColor};">${xp > 0 ? xp.toLocaleString() + ' XP' : '—'}</span>${xp > 0 ? `<br><span style="font-size:10px;color:#9ca3af;">${xpLevel}</span>` : ''}`}</td>
                   <td>${lastActiveText}</td>
                   <td>
                     <button onclick="editStudent('${encodeURIComponent(student.email)}')" style="padding:5px 10px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;color:#374151;" title="Edit student">
@@ -2704,6 +2713,8 @@
           comparison = (aStats.totalQuizzes || 0) - (bStats.totalQuizzes || 0);
         } else if (window.currentSortColumn === 'score') {
           comparison = (aStats.averageScore || 0) - (bStats.averageScore || 0);
+        } else if (window.currentSortColumn === 'xp') {
+          comparison = (aStats.totalXP || 0) - (bStats.totalXP || 0);
         } else if (window.currentSortColumn === 'lastActive') {
           const aLogin = a.lastLogin?.toDate ? a.lastLogin.toDate() : new Date(a.lastLogin);
           const bLogin = b.lastLogin?.toDate ? b.lastLogin.toDate() : new Date(b.lastLogin);

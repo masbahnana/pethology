@@ -1286,6 +1286,7 @@
         <div class="user-info">
           <div class="user-name">John Doe</div>
           <div class="user-role">Student</div>
+          <div id="xp-badge" style="display:none;font-size:10px;font-weight:700;letter-spacing:0.5px;padding:2px 7px;border-radius:20px;margin-top:3px;background:#7c3aed;color:#fff;width:fit-content;"></div>
         </div>
         <i data-lucide="chevron-down" id="profileChevron" style="width: 16px; height: 16px; color: var(--gray-400);"></i>
       </div>
@@ -1766,6 +1767,18 @@
           <div class="stat-change">
             <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
             +2 this month
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <i data-lucide="zap" class="stat-icon"></i>
+            <span class="stat-label">Total XP</span>
+          </div>
+          <div class="stat-value" id="stat-xp">—</div>
+          <div class="stat-change" id="stat-xp-sub">
+            <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
+            <span id="stat-xp-level">—</span>
           </div>
         </div>
       </div>
@@ -2317,6 +2330,21 @@
 
       const streakEl = document.getElementById('stat-streak');
       if (streakEl) streakEl.textContent = streak > 0 ? `${streak} days` : '—';
+
+      const xp = stats.totalXP || 0;
+      const xpLevel = stats.xpLevel || 'Beginner';
+      const xpEl = document.getElementById('stat-xp');
+      if (xpEl) xpEl.textContent = xp > 0 ? `${xp.toLocaleString()} XP` : '—';
+      const xpLevelEl = document.getElementById('stat-xp-level');
+      if (xpLevelEl) xpLevelEl.textContent = xpLevel;
+
+      const xpBadge = document.getElementById('xp-badge');
+      if (xpBadge && xp > 0) {
+        const colors = { Beginner: '#6b7280', Intermediate: '#2563eb', Advanced: '#059669', Expert: '#7c3aed' };
+        xpBadge.style.background = colors[xpLevel] || '#6b7280';
+        xpBadge.textContent = xpLevel;
+        xpBadge.style.display = 'block';
+      }
 
       console.log('✅ Stats updated:', stats);
     }

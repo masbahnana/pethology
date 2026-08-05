@@ -272,6 +272,12 @@ export class PethologyFirebaseREST {
         // Score is stored as fraction (0-1), convert to percentage (0-100)
         const totalScore = studentQuizzes.reduce((sum, q) => sum + (q.score || 0), 0);
         const averageScore = Math.round((totalScore / totalQuizzes) * 100);
+        const correctAnswers = studentQuizzes.reduce((sum, q) => sum + (q.correctAnswers || 0), 0);
+        const totalXP = correctAnswers * 10;
+        let xpLevel = 'Beginner';
+        if (totalXP >= 3000) xpLevel = 'Expert';
+        else if (totalXP >= 1500) xpLevel = 'Advanced';
+        else if (totalXP >= 500) xpLevel = 'Intermediate';
 
         // Calculate module progress
         const moduleProgress = {};
@@ -294,7 +300,7 @@ export class PethologyFirebaseREST {
 
         return {
           ...baseProgress,
-          overallStats: { totalQuizzes, averageScore, streak: 0 },
+          overallStats: { totalQuizzes, averageScore, streak: 0, correctAnswers, totalXP, xpLevel },
           moduleProgress
         };
       });
@@ -557,10 +563,17 @@ export class PethologyFirebaseREST {
         .filter(([, condition]) => { try { return condition(achievementStats); } catch { return false; } })
         .map(([id]) => id);
 
-      console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak, ${achievements.length} achievements`);
+      // Calculate XP: 10 points per correct answer
+      const totalXP = correctAnswers * 10;
+      let xpLevel = 'Beginner';
+      if (totalXP >= 3000) xpLevel = 'Expert';
+      else if (totalXP >= 1500) xpLevel = 'Advanced';
+      else if (totalXP >= 500) xpLevel = 'Intermediate';
+
+      console.log(`📊 Calculated progress for ${userId}: ${totalQuizzes} quizzes, ${averageScore}% avg, ${streak} streak, ${achievements.length} achievements, ${totalXP} XP (${xpLevel})`);
 
       return {
-        overallStats: { totalQuizzes, averageScore, streak, totalQuestions, correctAnswers },
+        overallStats: { totalQuizzes, averageScore, streak, totalQuestions, correctAnswers, totalXP, xpLevel },
         moduleProgress,
         achievements
       };

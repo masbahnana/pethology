@@ -1,8 +1,8 @@
 # 📋 KANBAN - Pethology
 
-**Última atualização:** 15 Abril 2026
-**Versão Atual:** v6.9
-**Status:** Pilot activo — estável. A aguardar feedback da Mary + alunos.
+**Última atualização:** 19 Maio 2026
+**Versão Atual:** v7.0
+**Status:** Pilot activo — feedback da Mary positivo ✅. Novo batch de testes em Agosto com novas turmas.
 
 ---
 
@@ -37,10 +37,14 @@
 - [ ] **Video tutorial** — Screen recording walkthrough — *1-2h*
 - [ ] **Professional screenshots** — Para marketing — *30min*
 
-### 🎯 Level 6 Support (próxima feature)
-- [ ] **Level 6 modules** — 3 módulos novos: Animal Behaviour L6, Animal Health and Science, Kennel and Cattery Management. Perguntas a criar pela professora.
-- [ ] **Level filter** — campo `level: 6` nos alunos L6 no Firebase. Student dashboard filtra módulos por level.
-- [ ] **Alunos L6** — plcleahkenny@stconlethcc365.ie, PLCNataliaDaSilvaRaythz@stconlethcc365.ie + 2 a confirmar. Mary cria classe "Animal Care L6" no dashboard.
+### 🎯 Level 6 Support
+- [x] **Level 6 modules** — ✅ DONE (19 Mai) — Wild Animal Management (20q) + Large Animal Husbandry (placeholder). Quiz público mostra L5 e L6 em secções separadas.
+- [x] **Level filter** — ✅ DONE (19 Mai) — campo `level: 6` em Firebase. Student dashboard filtra módulos por level. Visitor vê ambos os níveis.
+- [x] **Alunos L6** — ✅ DONE (19 Mai) — Leah Kenny corrigida (email typo no Firebase: `stconlethcc` → `stconlethscc`). Natalia activa. Edit modal em class-management.html permite mudar level.
+- [ ] **Lottie animations** — Animações para cards do quiz público — a fazer quando houver tempo
+
+### 🔮 Future — Pet Owner Public Portal
+- [ ] **Pet Owner Education** — Conteúdo educativo público para pet owners (cuidados, saúde preventiva, sinais de alerta). Possíveis formas: portal de artigos, quizzes adaptados (linguagem menos técnica), decision tree de sintomas. Camada pública separada da plataforma de estudantes.
 
 ### 🔮 Future (v7.0+)
 - [ ] **Advanced Gamification** — XP, Levels, Leaderboards — *4-6h*
@@ -62,6 +66,19 @@
 ---
 
 ## 🟢 DONE
+
+### ✅ 19 Maio 2026 — L6 Full Support + Quiz Redesign + Bug fixes (v7.0)
+
+- [x] **Wild Animal Management module** — 20 perguntas (release protocol, oil birds, zoonosis, PPE, quarantine, welfare indicators). Ficheiro `wild-animal-management.js` criado.
+- [x] **Large Animal Husbandry placeholder** — Módulo criado, 0 perguntas, "Coming Soon" no student dashboard e quiz público.
+- [x] **Quiz public page redesign** — Grid 4 colunas (2 mobile). Level badge nos cards (verde L5, roxo L6). Secção L6 para visitantes. Hero esconde durante quiz.
+- [x] **Horse + Wild Animals icons** — `assets/img/horse.png` e `assets/img/wild-animals.png` adicionados aos cards L6.
+- [x] **Quiz question layout** — Conteúdo centrado (`max-width: 640px; margin: auto`). Answer buttons com inline styles (sem herança CSS problemática). Nav buttons com font-family correcto.
+- [x] **Firebase 100-doc limit fix** — `getStudentQuizHistory()` reescrito com Firestore `runQuery` structured query (limite 500). Histórico de Natalia + Leah agora carrega completo.
+- [x] **Edit student modal in class-management** — Botão lápis na tabela de alunos. Modal com dropdown de Level (L5/L6). `saveEditStudent` faz scan da colecção para encontrar real docId antes de PATCH.
+- [x] **Student level shown in class-management** — `loadStudents()` passou a incluir campo `level` nos objectos de aluno.
+- [x] **Leah Kenny L6 fix** — Email typo no Firebase (`stconlethcc` → `stconlethscc`). Documento correcto criado via console. `checkStudentWhitelisted` e `markStudentAsRegistered` corrigidos para tentar múltiplos formatos de docId + fallback scan.
+- [x] **Netlify redirect** — `_redirects` criado: `pethology.netlify.app` → `pethology.app` (301 permanente).
 
 ### ✅ 15 Abril 2026 — Practice wrong answers + Module Performance (v6.9)
 
