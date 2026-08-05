@@ -22,5 +22,8 @@
     "cypress": "^13.6.0",
     "serve": "^14.2.6",
     "wait-on": "^9.0.4"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
   }
 }
