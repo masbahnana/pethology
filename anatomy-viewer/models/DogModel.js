@@ -25,10 +25,12 @@ export function loadDogModel(scene, camera, controls, onLoaded) {
             controls.target.set(0, 0, 0);
             controls.update();
 
-            console.log('🐕 Modelo carregado');
-            dog.traverse((part) => {
-                if (part.isMesh) console.log('🦴', part.name);
+            dog.traverse((object) => {
+                if (!object.isMesh) return;
+                object.userData.originalMaterial = object.material;
             });
+
+            console.log('🐕 Modelo carregado');
 
             if (onLoaded) onLoaded(dog);
         },

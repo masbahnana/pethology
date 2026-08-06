@@ -5,7 +5,7 @@ import { createScene } from './core/Scene.js';
 import { createCamera } from './core/Camera.js';
 import { loadDogModel } from './models/DogModel.js';
 import { initSelectionManager } from './interaction/SelectionManager.js';
-import { showStructureInfo } from './ui/InfoPanel.js';
+import { showStructureInfo, clearStructureInfo } from './ui/InfoPanel.js';
 
 
 // ======================
@@ -69,6 +69,7 @@ initSelectionManager(
     camera,
     () => dogModel,
     (bone) => showStructureInfo(bone),
+    () => clearStructureInfo(),
     canvas
 );
 

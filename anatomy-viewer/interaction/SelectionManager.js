@@ -1,52 +1,110 @@
 import * as THREE from 'three';
 import { boneDictionary } from '../anatomy/BoneDictionary.js';
+import {
+    hoverStructure,
+    clearHover,
+    highlightStructure,
+    clearSelection
+} from './HighlightManager.js';
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-function isSelectable(object) {
-    const ignored = ["low_poly_doggy", "Lamp", "Root"];
-    return !ignored.some(name => object.name.startsWith(name));
+const bonePatterns = [
+    { pattern: "Dog_upper_skull",  key: "skull" },
+    { pattern: "Dog_lower_jaw",    key: "mandible" },
+    { pattern: "Scapula",          key: "scapula" },
+    { pattern: "Left_humerus",     key: "humerus" },
+    { pattern: "Lefr_radius",      key: "radius" },  // typo do autor
+    { pattern: "Left__ulna",       key: "ulna" },
+    { pattern: "Hip_bone",         key: "pelvis" },
+    { pattern: "Femur",            key: "femur" },
+    { pattern: "Left_tibia",       key: "tibia" },
+    { pattern: "Left_fibula",      key: "fibula" },
+    { pattern: "C1_C1",            key: "atlas" },
+    { pattern: "C7_T7",            key: "cervicothoracic-spine" },
+    { pattern: "L1_L1",            key: "lumbar-vertebra" },
+    { pattern: "R1_R13",           key: "ribcage" },
+    { pattern: "R4_R4",            key: "rib-4" },
+    { pattern: "R9_R1",            key: "rib-group-1" },
+    { pattern: "R13_R9",           key: "rib-group-2" }
+];
+
+export function normalizeBoneName(name) {
+    const match = bonePatterns.find(({ pattern }) => name.includes(pattern));
+    return match?.key ?? null;
 }
 
-function normalizeBoneName(name) {
-    if (name.includes("Dog_upper_skull")) return "Dog_upper_skull";
-    if (name.includes("Dog_lower_jaw"))  return "Dog_lower_jaw";
-    if (name.includes("Femur"))          return "Femur";
-    if (name.includes("Tibia"))          return "Tibia";
-    if (name.includes("Fibula"))         return "Fibula";
-    if (name.includes("Radius"))         return "Radius";
-    if (name.includes("Humerus"))        return "Humerus";
-    return name;
+function getStructureKeyAtPointer(event, domElement, camera, dogModel) {
+    if (!dogModel) return null;
+
+    const rect = domElement.getBoundingClientRect();
+
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+
+    const intersections = raycaster.intersectObject(dogModel, true);
+
+    const hit = intersections.find(({ object }) =>
+        !object.name.startsWith("low_poly_doggy") &&
+        normalizeBoneName(object.name) !== null
+    );
+
+    return hit ? normalizeBoneName(hit.object.name) : null;
 }
 
-export function initSelectionManager(camera, getDogModel, onBoneSelected, domElement) {
+export function initSelectionManager(camera, getDogModel, onBoneSelected, onBoneDeselected, domElement) {
+
+    let pointerDownPosition = null;
+
+    domElement.addEventListener("pointerdown", (event) => {
+        pointerDownPosition = { x: event.clientX, y: event.clientY };
+    });
+
+    domElement.addEventListener("pointermove", (event) => {
+        const dogModel = getDogModel();
+        const key = getStructureKeyAtPointer(event, domElement, camera, dogModel);
+
+        hoverStructure(dogModel, key, normalizeBoneName);
+
+        domElement.style.cursor = key ? "pointer" : "grab";
+    });
+
+    domElement.addEventListener("pointerleave", () => {
+        clearHover();
+        domElement.style.cursor = "grab";
+    });
 
     domElement.addEventListener("click", (event) => {
-
-        const dogModel = getDogModel();
-        if (!dogModel) return;
-
-        const rect = domElement.getBoundingClientRect();
-
-        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-
-        const intersects = raycaster.intersectObject(dogModel, true);
-
-        const selected = intersects.find(hit => isSelectable(hit.object));
-
-        if (!selected) return;
-
-        const key = normalizeBoneName(selected.object.name);
-        const bone = boneDictionary[key];
-
-        if (bone) {
-            onBoneSelected(bone);
+        if (pointerDownPosition) {
+            const movement = Math.hypot(
+                event.clientX - pointerDownPosition.x,
+                event.clientY - pointerDownPosition.y
+            );
+            pointerDownPosition = null;
+            if (movement > 5) return;
         }
 
+        const dogModel = getDogModel();
+        const key = getStructureKeyAtPointer(event, domElement, camera, dogModel);
+
+        if (!key) {
+            clearSelection();
+            onBoneDeselected();
+            return;
+        }
+
+        const structure = boneDictionary[key];
+        if (!structure) {
+            console.warn("Estrutura sem dados no dicionário:", key);
+            return;
+        }
+
+        const isSelected = highlightStructure(dogModel, key, normalizeBoneName);
+
+        isSelected ? onBoneSelected(structure) : onBoneDeselected();
     });
 
 }
