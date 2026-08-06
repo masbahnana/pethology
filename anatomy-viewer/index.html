@@ -2,14 +2,63 @@
 <html>
 
 <head>
-    <title>Pethology Anatomy</title>
-    <link rel="stylesheet" href="style.css">
+  <title>Pethology Anatomy</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <header class="topbar">
+    <a class="brand" href="/">🦴 Pethology</a>
 
-<script type="module" src="main.js"></script>
+    <nav>
+      <a href="#">About</a>
+      <a href="#">Quiz</a>
+    </nav>
 
+    <button class="login-button">Log in</button>
+  </header>
+
+  <main class="anatomy-app">
+    <section class="viewer-area">
+      <div class="model-badges">
+        <span>🐕 Dog — Canis lupus familiaris</span>
+        <a href="#">"3D Dog Bone Project" by nzfauna — CC BY-SA 4.0</a>
+      </div>
+
+      <canvas id="anatomy-canvas"></canvas>
+
+      <div class="viewer-help">
+        <span>🖱 Drag to rotate</span>
+        <span>🔍 Scroll to zoom</span>
+        <span>👆 Click a structure</span>
+      </div>
+    </section>
+
+    <aside class="info-panel">
+      <section class="panel-header">
+        <span class="eyebrow">Animal</span>
+        <h1>3D Anatomy Viewer</h1>
+
+        <div class="species-tabs">
+          <button class="active">🐕 Dog</button>
+          <button disabled>🐈 Cat</button>
+          <button disabled>🐇 Rabbit</button>
+        </div>
+      </section>
+
+      <section id="structure-info" class="structure-info empty">
+        <div class="structure-icon">🦴</div>
+        <p>Select a structure from the model or the list below.</p>
+      </section>
+
+      <section class="structure-list-section">
+        <span class="eyebrow">All structures</span>
+        <ul id="structure-list" class="structure-list"></ul>
+      </section>
+    </aside>
+  </main>
+
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>

@@ -4,14 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createScene } from './core/Scene.js';
 import { createCamera } from './core/Camera.js';
 import { loadDogModel } from './models/DogModel.js';
-
-
-// ======================
-// RAYCASTER
-// ======================
-
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+import { initSelectionManager } from './interaction/SelectionManager.js';
+import { showStructureInfo } from './ui/InfoPanel.js';
 
 
 // ======================
@@ -21,23 +15,37 @@ const mouse = new THREE.Vector2();
 const scene = createScene();
 const camera = createCamera();
 
+const canvas = document.querySelector("#anatomy-canvas");
+const viewerArea = document.querySelector(".viewer-area");
+
 
 // ======================
 // RENDER
 // ======================
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: true,
+    alpha: true
+});
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+function resizeRenderer() {
+    const width = viewerArea.clientWidth;
+    const height = viewerArea.clientHeight;
+    renderer.setSize(width, height, false);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}
 
-document.body.appendChild(renderer.domElement);
+window.addEventListener("resize", resizeRenderer);
+resizeRenderer();
 
 
 // ======================
 // CONTROLES
 // ======================
 
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, canvas);
 
 controls.enableDamping = true;
 
@@ -57,37 +65,12 @@ loadDogModel(scene, camera, controls, (model) => {
 // INTERAÇÃO
 // ======================
 
-window.addEventListener("click", onMouseClick);
-
-function onMouseClick(event) {
-
-    if (!dogModel) return;
-
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    const intersects = raycaster.intersectObjects(
-        dogModel.children,
-        true
-    );
-
-    if (intersects.length > 0) {
-
-        intersects.forEach((hit, index) => {
-
-            console.log(
-                index,
-                hit.object.name,
-                hit.distance
-            );
-
-        });
-
-    }
-
-}
+initSelectionManager(
+    camera,
+    () => dogModel,
+    (bone) => showStructureInfo(bone),
+    canvas
+);
 
 
 // ======================
