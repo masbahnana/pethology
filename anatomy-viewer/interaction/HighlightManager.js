@@ -93,3 +93,7 @@ export function highlightStructure(model, structureKey, normalizeName) {
 export function getSelectedStructureKey() {
     return selectedStructureKey;
 }
+
+export function getSelectedMeshes() {
+    return selectedMeshes;
+}

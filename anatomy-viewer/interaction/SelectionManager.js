@@ -4,7 +4,8 @@ import {
     hoverStructure,
     clearHover,
     highlightStructure,
-    clearSelection
+    clearSelection,
+    getSelectedStructureKey
 } from './HighlightManager.js';
 
 const raycaster = new THREE.Raycaster();
@@ -35,27 +36,42 @@ export function normalizeBoneName(name) {
     return match?.key ?? null;
 }
 
-function getStructureKeyAtPointer(event, domElement, camera, dogModel) {
-    if (!dogModel) return null;
-
-    const rect = domElement.getBoundingClientRect();
-
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    const intersections = raycaster.intersectObject(dogModel, true);
-
-    const hit = intersections.find(({ object }) =>
-        !object.name.startsWith("low_poly_doggy") &&
-        normalizeBoneName(object.name) !== null
-    );
-
-    return hit ? normalizeBoneName(hit.object.name) : null;
-}
-
 export function initSelectionManager(camera, getDogModel, onBoneSelected, onBoneDeselected, domElement) {
+
+    function getStructureKeyAtPointer(event) {
+        const dogModel = getDogModel();
+        if (!dogModel) return null;
+
+        const rect = domElement.getBoundingClientRect();
+
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        const intersections = raycaster.intersectObject(dogModel, true);
+
+        const validHits = intersections
+            .map((hit) => ({
+                ...hit,
+                structureKey: normalizeBoneName(hit.object.name)
+            }))
+            .filter(
+                (hit) =>
+                    !hit.object.name.startsWith("low_poly_doggy") &&
+                    hit.structureKey !== null
+            );
+
+        const currentSelectedKey = getSelectedStructureKey();
+
+        const selectedHit = validHits.find(
+            (hit) => hit.structureKey === currentSelectedKey
+        );
+
+        if (selectedHit) return currentSelectedKey;
+
+        return validHits[0]?.structureKey ?? null;
+    }
 
     let pointerDownPosition = null;
 
@@ -65,7 +81,7 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
 
     domElement.addEventListener("pointermove", (event) => {
         const dogModel = getDogModel();
-        const key = getStructureKeyAtPointer(event, domElement, camera, dogModel);
+        const key = getStructureKeyAtPointer(event);
 
         hoverStructure(dogModel, key, normalizeBoneName);
 
@@ -88,7 +104,7 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
         }
 
         const dogModel = getDogModel();
-        const key = getStructureKeyAtPointer(event, domElement, camera, dogModel);
+        const key = getStructureKeyAtPointer(event);
 
         if (!key) {
             clearSelection();
@@ -104,7 +120,7 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
 
         const isSelected = highlightStructure(dogModel, key, normalizeBoneName);
 
-        isSelected ? onBoneSelected(structure) : onBoneDeselected();
+        isSelected ? onBoneSelected(structure, key) : onBoneDeselected();
     });
 
 }

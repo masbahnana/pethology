@@ -4,8 +4,18 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { createScene } from './core/Scene.js';
 import { createCamera } from './core/Camera.js';
 import { loadDogModel } from './models/DogModel.js';
-import { initSelectionManager } from './interaction/SelectionManager.js';
-import { showStructureInfo, clearStructureInfo } from './ui/InfoPanel.js';
+import { initSelectionManager, normalizeBoneName } from './interaction/SelectionManager.js';
+import { hoverStructure, clearHover, highlightStructure, getSelectedMeshes } from './interaction/HighlightManager.js';
+import {
+    renderStructureList,
+    showStructureInfo,
+    clearStructureInfo,
+    setActiveStructureItem,
+    clearActiveStructureItem
+} from './ui/InfoPanel.js';
+import { boneDictionary } from './anatomy/BoneDictionary.js';
+import { calculateFocusView } from './core/CameraFocus.js';
+import { createCameraController } from './core/CameraController.js';
 
 
 // ======================
@@ -46,8 +56,14 @@ resizeRenderer();
 // ======================
 
 const controls = new OrbitControls(camera, canvas);
-
 controls.enableDamping = true;
+
+
+// ======================
+// CÂMERA CONTROLLER
+// ======================
+
+const cameraController = createCameraController(camera, controls);
 
 
 // ======================
@@ -58,18 +74,60 @@ let dogModel = null;
 
 loadDogModel(scene, camera, controls, (model) => {
     dogModel = model;
+    cameraController.saveHome();
 });
 
 
 // ======================
-// INTERAÇÃO
+// HELPERS
+// ======================
+
+function selectStructure(key, structure) {
+    showStructureInfo(structure);
+    setActiveStructureItem(key);
+
+    const focus = calculateFocusView(getSelectedMeshes(), structure.cameraView);
+    if (focus) cameraController.focus(focus.position, focus.target);
+}
+
+function deselectStructure() {
+    clearStructureInfo();
+    clearActiveStructureItem();
+    cameraController.reset();
+}
+
+
+// ======================
+// LISTA DE ESTRUTURAS
+// ======================
+
+renderStructureList(boneDictionary, {
+
+    onHover: (key) => {
+        hoverStructure(dogModel, key, normalizeBoneName);
+    },
+
+    onLeave: () => {
+        clearHover();
+    },
+
+    onSelect: (key, structure) => {
+        const isSelected = highlightStructure(dogModel, key, normalizeBoneName);
+        isSelected ? selectStructure(key, structure) : deselectStructure();
+    }
+
+});
+
+
+// ======================
+// INTERAÇÃO (canvas)
 // ======================
 
 initSelectionManager(
     camera,
     () => dogModel,
-    (bone) => showStructureInfo(bone),
-    () => clearStructureInfo(),
+    (structure, key) => selectStructure(key, structure),
+    () => deselectStructure(),
     canvas
 );
 

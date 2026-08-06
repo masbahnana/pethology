@@ -281,10 +281,16 @@ a {
   font-size: 14px;
 }
 
-.structure-list button:hover,
-.structure-list button.active {
+.structure-list button:hover {
   background: var(--accent-light);
   color: var(--accent);
+}
+
+.structure-list button.active {
+  background: rgba(35, 131, 226, 0.12);
+  box-shadow: inset 3px 0 0 var(--accent);
+  color: #37352f;
+  font-weight: 600;
 }
 
 .structure-dot {
