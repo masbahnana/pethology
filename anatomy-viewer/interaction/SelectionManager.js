@@ -11,12 +11,16 @@ import {
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
+/**
+ * Maps mesh name substrings to their canonical structure keys.
+ * "Lefr_radius" is a typo in the original GLB — intentional.
+ */
 const bonePatterns = [
     { pattern: "Dog_upper_skull",  key: "skull" },
     { pattern: "Dog_lower_jaw",    key: "mandible" },
     { pattern: "Scapula",          key: "scapula" },
     { pattern: "Left_humerus",     key: "humerus" },
-    { pattern: "Lefr_radius",      key: "radius" },  // typo do autor
+    { pattern: "Lefr_radius",      key: "radius" },
     { pattern: "Left__ulna",       key: "ulna" },
     { pattern: "Hip_bone",         key: "pelvis" },
     { pattern: "Femur",            key: "femur" },
@@ -31,46 +35,51 @@ const bonePatterns = [
     { pattern: "R13_R9",           key: "rib-group-2" }
 ];
 
+/**
+ * Maps a raw GLB mesh name to a canonical structure key.
+ *
+ * @param {string} name - Raw mesh name from the GLB.
+ * @returns {string | null} Structure key, or null if unmapped.
+ */
 export function normalizeBoneName(name) {
     const match = bonePatterns.find(({ pattern }) => name.includes(pattern));
     return match?.key ?? null;
 }
 
+/**
+ * Initializes pointer event listeners on the canvas for hover and click selection.
+ *
+ * @param {THREE.PerspectiveCamera} camera
+ * @param {() => THREE.Object3D | null} getDogModel
+ * @param {(structure: object, key: string) => void} onBoneSelected
+ * @param {() => void} onBoneDeselected
+ * @param {HTMLElement} domElement
+ */
 export function initSelectionManager(camera, getDogModel, onBoneSelected, onBoneDeselected, domElement) {
 
+    /**
+     * Resolves the structure key under the pointer.
+     * Prioritizes the currently selected structure to ensure reliable toggle/deselect.
+     */
     function getStructureKeyAtPointer(event) {
         const dogModel = getDogModel();
         if (!dogModel) return null;
 
         const rect = domElement.getBoundingClientRect();
-
         mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
         mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
 
-        const intersections = raycaster.intersectObject(dogModel, true);
-
-        const validHits = intersections
-            .map((hit) => ({
-                ...hit,
-                structureKey: normalizeBoneName(hit.object.name)
-            }))
-            .filter(
-                (hit) =>
-                    !hit.object.name.startsWith("low_poly_doggy") &&
-                    hit.structureKey !== null
-            );
+        const validHits = raycaster
+            .intersectObject(dogModel, true)
+            .map((hit) => ({ ...hit, structureKey: normalizeBoneName(hit.object.name) }))
+            .filter((hit) => !hit.object.name.startsWith("low_poly_doggy") && hit.structureKey !== null);
 
         const currentSelectedKey = getSelectedStructureKey();
+        const selectedHit = validHits.find((hit) => hit.structureKey === currentSelectedKey);
 
-        const selectedHit = validHits.find(
-            (hit) => hit.structureKey === currentSelectedKey
-        );
-
-        if (selectedHit) return currentSelectedKey;
-
-        return validHits[0]?.structureKey ?? null;
+        return selectedHit ? currentSelectedKey : (validHits[0]?.structureKey ?? null);
     }
 
     let pointerDownPosition = null;
@@ -82,9 +91,7 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
     domElement.addEventListener("pointermove", (event) => {
         const dogModel = getDogModel();
         const key = getStructureKeyAtPointer(event);
-
         hoverStructure(dogModel, key, normalizeBoneName);
-
         domElement.style.cursor = key ? "pointer" : "grab";
     });
 
@@ -119,8 +126,6 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
         }
 
         const isSelected = highlightStructure(dogModel, key, normalizeBoneName);
-
         isSelected ? onBoneSelected(structure, key) : onBoneDeselected();
     });
-
 }

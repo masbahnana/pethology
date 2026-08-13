@@ -22,31 +22,45 @@ let selectedMeshes = [];
 let hoveredStructureKey = null;
 let hoveredMeshes = [];
 
+/**
+ * Returns all meshes in the model that belong to a given structure key.
+ *
+ * @param {THREE.Object3D} model
+ * @param {string} structureKey
+ * @param {(name: string) => string | null} normalizeName
+ * @returns {THREE.Mesh[]}
+ */
 function getStructureMeshes(model, structureKey, normalizeName) {
     const meshes = [];
     model.traverse((object) => {
         if (!object.isMesh) return;
-        if (normalizeName(object.name) === structureKey) {
-            meshes.push(object);
-        }
+        if (normalizeName(object.name) === structureKey) meshes.push(object);
     });
     return meshes;
 }
 
+/** Restores meshes to their original material saved at load time. */
 function restoreMeshes(meshes) {
     meshes.forEach((mesh) => {
-        if (mesh.userData.originalMaterial) {
-            mesh.material = mesh.userData.originalMaterial;
-        }
+        if (mesh.userData.originalMaterial) mesh.material = mesh.userData.originalMaterial;
     });
 }
 
+/** Clears hover highlight and restores original materials. */
 export function clearHover() {
     restoreMeshes(hoveredMeshes);
     hoveredMeshes = [];
     hoveredStructureKey = null;
 }
 
+/**
+ * Applies hover highlight to all meshes of a structure.
+ * Skips if the structure is already selected.
+ *
+ * @param {THREE.Object3D} model
+ * @param {string | null} structureKey
+ * @param {(name: string) => string | null} normalizeName
+ */
 export function hoverStructure(model, structureKey, normalizeName) {
     if (hoveredStructureKey === structureKey) return;
 
@@ -55,13 +69,12 @@ export function hoverStructure(model, structureKey, normalizeName) {
     if (!structureKey || structureKey === selectedStructureKey) return;
 
     hoveredMeshes = getStructureMeshes(model, structureKey, normalizeName);
-    hoveredMeshes.forEach((mesh) => {
-        mesh.material = hoverMaterial;
-    });
+    hoveredMeshes.forEach((mesh) => { mesh.material = hoverMaterial; });
 
     hoveredStructureKey = structureKey;
 }
 
+/** Clears selection highlight and restores original materials. */
 export function clearSelection() {
     clearHover();
     restoreMeshes(selectedMeshes);
@@ -69,6 +82,15 @@ export function clearSelection() {
     selectedStructureKey = null;
 }
 
+/**
+ * Toggles selection highlight on a structure.
+ * Clicking the same structure again deselects it.
+ *
+ * @param {THREE.Object3D} model
+ * @param {string} structureKey
+ * @param {(name: string) => string | null} normalizeName
+ * @returns {boolean} true if selected, false if deselected
+ */
 export function highlightStructure(model, structureKey, normalizeName) {
     clearHover();
 
@@ -82,18 +104,18 @@ export function highlightStructure(model, structureKey, normalizeName) {
     restoreMeshes(selectedMeshes);
 
     selectedMeshes = getStructureMeshes(model, structureKey, normalizeName);
-    selectedMeshes.forEach((mesh) => {
-        mesh.material = selectedMaterial;
-    });
+    selectedMeshes.forEach((mesh) => { mesh.material = selectedMaterial; });
 
     selectedStructureKey = structureKey;
     return true;
 }
 
+/** @returns {string | null} The currently selected structure key. */
 export function getSelectedStructureKey() {
     return selectedStructureKey;
 }
 
+/** @returns {THREE.Mesh[]} The meshes of the currently selected structure. */
 export function getSelectedMeshes() {
     return selectedMeshes;
 }

@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-import { createScene } from './core/Scene.js';
-import { createCamera } from './core/Camera.js';
+import { createScene } from './camera/Scene.js';
+import { createCamera } from './camera/Camera.js';
+import { calculateFocusView } from './camera/CameraFocus.js';
+import { createCameraController } from './camera/CameraController.js';
 import { loadDogModel } from './models/DogModel.js';
 import { initSelectionManager, normalizeBoneName } from './interaction/SelectionManager.js';
 import { hoverStructure, clearHover, highlightStructure, getSelectedMeshes } from './interaction/HighlightManager.js';
@@ -14,8 +16,6 @@ import {
     clearActiveStructureItem
 } from './ui/InfoPanel.js';
 import { boneDictionary } from './anatomy/BoneDictionary.js';
-import { calculateFocusView } from './core/CameraFocus.js';
-import { createCameraController } from './core/CameraController.js';
 
 
 // ======================
