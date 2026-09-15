@@ -1,5 +1,11 @@
 # Netlify configuration
 
+# Serve the built anatomy viewer as /anatomy-viewer/*
+[[redirects]]
+  from = "/anatomy-viewer/*"
+  to = "/anatomy-viewer-dist/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

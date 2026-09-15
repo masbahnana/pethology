@@ -5,636 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>3D Anatomy — Pethology</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/public.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', -apple-system, sans-serif; background: #0f172a; color: #f1f5f9; -webkit-font-smoothing: antialiased; }
 
-    /* NAV */
-    .pub-nav { background: rgba(15,23,42,0.95); border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .pub-nav-logo { color: #f1f5f9 !important; }
-    .pub-nav-links a { color: rgba(255,255,255,0.7) !important; }
-    .pub-nav-links a:hover { color: #fff !important; }
+    html, body { height: 100%; overflow: hidden; background: #f7f6f3; }
 
-    /* LAYOUT */
-    .viewer-layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      height: calc(100vh - 60px);
-    }
-
-    /* 3D CANVAS */
-    .canvas-wrap {
-      position: relative;
-      background: radial-gradient(ellipse at center, #1e293b 0%, #0f172a 100%);
-      overflow: hidden;
-    }
-    #three-canvas {
+    #viewer-frame {
+      display: block;
       width: 100%;
       height: 100%;
-      display: block;
-    }
-
-    .canvas-overlay {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
-    }
-    .canvas-badge {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.6);
-      width: fit-content;
-    }
-    .canvas-badge.prototype {
-      background: rgba(251,191,36,0.15);
-      border-color: rgba(251,191,36,0.3);
-      color: #fbbf24;
-    }
-
-    .controls-hint {
-      position: absolute;
-      bottom: 16px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 16px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 100px;
-      padding: 8px 20px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-    }
-    .controls-hint span { display: flex; align-items: center; gap: 6px; }
-
-    /* HOTSPOTS */
-    .hotspot {
-      position: absolute;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: #3b82f6;
-      border: 2px solid white;
-      cursor: pointer;
-      transform: translate(-50%, -50%);
-      transition: transform 0.15s, background 0.15s;
-      box-shadow: 0 0 0 4px rgba(59,130,246,0.3);
-      z-index: 10;
-    }
-    .hotspot:hover, .hotspot.active {
-      transform: translate(-50%, -50%) scale(1.3);
-      background: #2563eb;
-    }
-    .hotspot::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 2px solid rgba(59,130,246,0.4);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0; }
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-      background: #1e293b;
-      border-left: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .sidebar-header {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .sidebar-header h2 {
-      font-size: 14px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 4px;
-    }
-    .animal-selector {
-      display: flex;
-      gap: 6px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .animal-btn {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      color: rgba(255,255,255,0.6);
-      cursor: pointer;
-      transition: all 0.15s;
-      font-family: inherit;
-    }
-    .animal-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .animal-btn.active {
-      background: rgba(59,130,246,0.2);
-      border-color: rgba(59,130,246,0.5);
-      color: #93c5fd;
-    }
-
-    .info-panel {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .info-empty {
-      text-align: center;
-      padding: 40px 0;
-      color: rgba(255,255,255,0.3);
-    }
-    .info-empty .info-icon { font-size: 2.5rem; margin-bottom: 12px; display: block; }
-    .info-empty p { font-size: 13px; line-height: 1.6; }
-
-    .info-card { display: none; }
-    .info-card.visible { display: block; }
-
-    .info-card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-    .info-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #3b82f6;
-      flex-shrink: 0;
-    }
-    .info-card h3 {
-      font-size: 18px;
-      font-weight: 700;
-      color: #f1f5f9;
-    }
-    .info-section {
-      margin-bottom: 16px;
-    }
-    .info-section h4 {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 6px;
-    }
-    .info-section p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.75);
-      line-height: 1.7;
-    }
-    .info-tag {
-      display: inline-block;
-      background: rgba(59,130,246,0.15);
-      border: 1px solid rgba(59,130,246,0.3);
-      border-radius: 6px;
-      padding: 3px 8px;
-      font-size: 11px;
-      color: #93c5fd;
-      margin: 3px 3px 3px 0;
-    }
-    .quiz-btn {
-      width: 100%;
-      margin-top: 16px;
-      background: #3b82f6;
-      color: white;
       border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-    }
-    .quiz-btn:hover { background: #2563eb; }
-
-    .structures-list {
-      margin-top: 8px;
-    }
-    .structure-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.15s;
-      font-size: 13px;
-      color: rgba(255,255,255,0.7);
-      border: 1px solid transparent;
-    }
-    .structure-item:hover { background: rgba(255,255,255,0.06); }
-    .structure-item.active {
-      background: rgba(59,130,246,0.1);
-      border-color: rgba(59,130,246,0.2);
-      color: #93c5fd;
-    }
-    .structure-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #3b82f6;
-      flex-shrink: 0;
     }
 
-    /* LOADING */
-    .loading-overlay {
-      position: absolute;
+    /* Auth gate — shown while checking session */
+    #auth-gate {
+      position: fixed;
       inset: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(ellipse at center, #1e293b 0%, #0f172a 100%);
-      z-index: 20;
+      background: #f7f6f3;
+      z-index: 100;
     }
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid rgba(255,255,255,0.1);
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-overlay p { color: rgba(255,255,255,0.5); font-size: 13px; }
 
-    @media (max-width: 768px) {
-      .viewer-layout { grid-template-columns: 1fr; grid-template-rows: 60vh 1fr; height: auto; }
-      .sidebar { border-left: none; border-top: 1px solid rgba(255,255,255,0.06); }
-    }
+    #auth-gate.hidden { display: none; }
   </style>
 </head>
 <body>
 
-  <nav class="pub-nav">
-    <a href="index.html" class="pub-nav-logo">🐾 Pethology</a>
-    <div class="pub-nav-links">
-      <a href="about.html">About</a>
-      <a href="quiz.html">Quiz</a>
-    </div>
-    <a href="auth0-login.html" class="btn btn-green">Log in</a>
-  </nav>
-
-  <div class="viewer-layout">
-
-    <!-- 3D VIEWER -->
-    <div class="canvas-wrap" id="canvasWrap">
-      <canvas id="three-canvas"></canvas>
-
-      <div class="canvas-overlay">
-        <div class="canvas-badge">🐕 Dog — Canis lupus familiaris</div>
-        <div class="canvas-badge prototype"><a href="https://skfb.ly/QsxD" target="_blank" style="color:inherit;text-decoration:underline">"3D Dog Bone Project" by nzfauna</a> — CC BY-SA 4.0</div>
-      </div>
-
-
-      <div class="controls-hint">
-        <span>🖱️ Drag to rotate</span>
-        <span>🔍 Scroll to zoom</span>
-        <span>👈 Select from list to explore</span>
-      </div>
-
-      <!-- Loading overlay -->
-      <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner"></div>
-        <p>Loading 3D model...</p>
-      </div>
-    </div>
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <h2>Animal</h2>
-        <div style="font-size:16px; font-weight:700; color:#f1f5f9; margin-top:4px;">3D Anatomy Viewer</div>
-        <div class="animal-selector">
-          <button class="animal-btn active" onclick="selectAnimal(this, 'dog')">🐕 Dog</button>
-          <button class="animal-btn" onclick="selectAnimal(this, 'cat')" title="Coming soon">🐈 Cat</button>
-          <button class="animal-btn" onclick="selectAnimal(this, 'rabbit')" title="Coming soon">🐇 Rabbit</button>
-        </div>
-      </div>
-
-      <div class="info-panel">
-
-        <!-- Empty state -->
-        <div class="info-empty" id="infoEmpty">
-          <span class="info-icon">🔵</span>
-          <p>Select a structure from the list below to explore its anatomy.</p>
-        </div>
-
-        <!-- Info cards -->
-        <div class="info-card" id="info-skull">
-          <div class="info-card-header"><div class="info-dot" style="background:#10b981"></div><h3>Skull</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Protects the brain and sense organs. Divided into cranium and facial bones. Jaw type varies by breed (dolichocephalic, mesocephalic, brachycephalic).</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Brachycephalic breeds (Bulldogs, Pugs) often suffer from Brachycephalic Obstructive Airway Syndrome (BOAS).</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-            <span class="info-tag">Animal Welfare</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-spine">
-          <div class="info-card-header"><div class="info-dot" style="background:#8b5cf6"></div><h3>Vertebral Column</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Provides structural support, protects the spinal cord, and allows flexible movement. Dogs have 7 cervical, 13 thoracic, 7 lumbar, 3 sacral vertebrae.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Intervertebral disc disease (IVDD) is especially common in Dachshunds and other chondrodystrophic breeds.</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-ribcage">
-          <div class="info-card-header"><div class="info-dot" style="background:#f59e0b"></div><h3>Ribcage</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Protects the heart and lungs. Dogs have 13 pairs of ribs — 9 true ribs attached to the sternum and 4 false ribs. Forms the thoracic cavity.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Rib fractures from trauma can cause pneumothorax. Palpation of the ribs is used to assess body condition score (BCS).</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-            <span class="info-tag">Vet. Assistant Skills</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-pelvis">
-          <div class="info-card-header"><div class="info-dot" style="background:#3b82f6"></div><h3>Pelvis</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Ring of bones (ilium, ischium, pubis) that supports the hindlimbs and protects pelvic organs. Forms the hip joint with the femur.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Pelvic fractures are common after road traffic accidents. Hip dysplasia affects the acetabulum and femoral head joint surface.</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-femur">
-          <div class="info-card-header"><div class="info-dot" style="background:#f43f5e"></div><h3>Femur</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Longest bone in the body. Forms the hip joint (ball-and-socket) proximally and the stifle joint (knee) distally with the tibia and patella.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Hip dysplasia and cranial cruciate ligament (CCL) rupture are among the most common orthopaedic conditions in dogs.</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <div class="info-card" id="info-scapula">
-          <div class="info-card-header"><div class="info-dot" style="background:#06b6d4"></div><h3>Scapula</h3></div>
-          <div class="info-section">
-            <h4>Function</h4>
-            <p>Triangular flat bone that forms the shoulder joint with the humerus. Dogs have no clavicle, so the scapula is held by muscles only, allowing greater stride length.</p>
-          </div>
-          <div class="info-section">
-            <h4>Clinical relevance</h4>
-            <p>Osteochondrosis dissecans (OCD) of the shoulder joint affects the humeral head and is common in large, fast-growing breeds.</p>
-          </div>
-          <div class="info-section">
-            <h4>Module</h4>
-            <span class="info-tag">Animal Anatomy</span>
-          </div>
-          <button class="quiz-btn" onclick="window.location.href='quiz.html?module=animal-anatomy'">Practice quiz on Anatomy →</button>
-        </div>
-
-        <!-- Structure list -->
-        <div class="structures-list" id="structuresList" style="margin-top:24px; border-top:1px solid rgba(255,255,255,0.06); padding-top:16px;">
-          <div style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.35); margin-bottom:8px;">All Structures</div>
-          <div class="structure-item" id="li-skull"    onclick="selectStructure('skull')"><div class="structure-dot" style="background:#10b981"></div>Skull</div>
-          <div class="structure-item" id="li-spine"    onclick="selectStructure('spine')"><div class="structure-dot" style="background:#8b5cf6"></div>Vertebral Column</div>
-          <div class="structure-item" id="li-ribcage"  onclick="selectStructure('ribcage')"><div class="structure-dot" style="background:#f59e0b"></div>Ribcage</div>
-          <div class="structure-item" id="li-pelvis"   onclick="selectStructure('pelvis')"><div class="structure-dot" style="background:#3b82f6"></div>Pelvis</div>
-          <div class="structure-item" id="li-femur"    onclick="selectStructure('femur')"><div class="structure-dot" style="background:#f43f5e"></div>Femur</div>
-          <div class="structure-item" id="li-scapula"  onclick="selectStructure('scapula')"><div class="structure-dot" style="background:#06b6d4"></div>Scapula</div>
-          <div style="margin-top:12px; font-size:11px; color:rgba(255,255,255,0.3); text-align:center; padding:8px 0; border-top:1px solid rgba(255,255,255,0.06);">🔬 More structures coming soon</div>
-        </div>
-
-      </div>
-    </div>
+  <!-- Shown until auth check passes -->
+  <div id="auth-gate">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2383E2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+      <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+    </svg>
   </div>
 
-  <!-- THREE.JS -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
-    }
-  }
-  </script>
-
-  <script type="module">
-    import * as THREE from 'three';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-    // ── Scene setup ──────────────────────────────────────────────────────────
-    const canvas  = document.getElementById('three-canvas');
-    const wrap    = document.getElementById('canvasWrap');
-    const loading = document.getElementById('loadingOverlay');
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.shadowMap.enabled = true;
-
-    const scene  = new THREE.Scene();
-    scene.background = new THREE.Color(0x0f172a);
-    scene.fog = new THREE.FogExp2(0x0f172a, 0.04);
-
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-    camera.position.set(0, 1.5, 4.5);
-
-    const controls = new OrbitControls(camera, canvas);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
-    controls.minDistance = 2;
-    controls.maxDistance = 8;
-    controls.target.set(0, 0.8, 0);
-    controls.update();
-
-    // ── Lights ────────────────────────────────────────────────────────────────
-    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    keyLight.position.set(3, 4, 3);
-    keyLight.castShadow = true;
-    scene.add(keyLight);
-
-    const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.4);
-    fillLight.position.set(-3, 2, -2);
-    scene.add(fillLight);
-
-    const rimLight = new THREE.DirectionalLight(0xfbbf24, 0.3);
-    rimLight.position.set(0, -1, -4);
-    scene.add(rimLight);
-
-    // ── Grid ──────────────────────────────────────────────────────────────────
-    const grid = new THREE.GridHelper(10, 20, 0x1e293b, 0x1e293b);
-    grid.position.y = -0.01;
-    scene.add(grid);
-
-    // ── Load model ────────────────────────────────────────────────────────────
-    // TODO: Replace with a real dog GLTF model when available.
-    // Current placeholder: Fox GLB from KhronosGroup glTF-Sample-Models
-    // (Fox is a quadruped canine — closest freely available model)
-    const MODEL_URL = 'assets/models/3d_dog_bone_project_partial_dog_skeleton.glb';
-
-    let mixer, clock = new THREE.Clock();
-
-    const loader = new GLTFLoader();
-    loader.load(
-      MODEL_URL,
-      (gltf) => {
-        const model = gltf.scene;
-
-        // Rotate model upright (skeleton exports often face down on Z axis)
-        model.rotation.x = -Math.PI / 2;
-
-        // Centre + scale the model
-        const box = new THREE.Box3().setFromObject(model);
-        const centre = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const scale = 3.5 / Math.max(size.x, size.y, size.z);
-        model.scale.setScalar(scale);
-        model.position.sub(centre.multiplyScalar(scale));
-        model.position.y += 0.2;
-
-        model.traverse(child => {
-          if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
-        });
-
-        scene.add(model);
-
-        // Play idle/walk animation if available
-        if (gltf.animations.length) {
-          mixer = new THREE.AnimationMixer(model);
-          // Fox has: Survey(0), Walk(1), Run(2) — play Survey (idle)
-          const idle = mixer.clipAction(gltf.animations[0]);
-          idle.play();
-        }
-
-        loading.style.display = 'none';
-        resize();
-      },
-      (xhr) => {
-        const pct = Math.round((xhr.loaded / xhr.total) * 100);
-        loading.querySelector('p').textContent = `Loading model… ${pct}%`;
-      },
-      (err) => {
-        console.error('Model load error:', err);
-        loading.querySelector('p').textContent = 'Failed to load model.';
-      }
-    );
-
-    // ── Resize ────────────────────────────────────────────────────────────────
-    function resize() {
-      const w = wrap.clientWidth;
-      const h = wrap.clientHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // ── Animate ───────────────────────────────────────────────────────────────
-    function animate() {
-      requestAnimationFrame(animate);
-      const delta = clock.getDelta();
-      if (mixer) mixer.update(delta);
-      controls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-  </script>
+  <iframe id="viewer-frame" src="anatomy-viewer/index.html" title="3D Anatomy Viewer" allowfullscreen></iframe>
 
   <script>
-    // ── Hotspot / structure selection ────────────────────────────────────────
-    let activeStructure = null;
+    (function () {
+      const raw = sessionStorage.getItem('pethologyUser');
 
-    function selectStructure(id) {
-      // Deactivate previous
-      if (activeStructure) {
-        document.getElementById('info-' + activeStructure)?.classList.remove('visible');
-        document.getElementById('hs-' + activeStructure)?.classList.remove('active');
-        document.getElementById('li-' + activeStructure)?.classList.remove('active');
+      if (!raw) {
+        window.location.href = 'auth0-login.html';
+        return;
       }
 
-      // Activate new
-      activeStructure = id;
-      document.getElementById('infoEmpty').style.display = 'none';
-      document.getElementById('info-' + id)?.classList.add('visible');
-      document.getElementById('hs-' + id)?.classList.add('active');
-      document.getElementById('li-' + id)?.classList.add('active');
-    }
-
-    function selectAnimal(btn, animal) {
-      document.querySelectorAll('.animal-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (animal !== 'dog') {
-        alert('🚧 ' + btn.textContent.trim() + ' model coming soon!');
-        btn.classList.remove('active');
-        document.querySelector('.animal-btn').classList.add('active');
+      try {
+        const user = JSON.parse(raw);
+        if (!user || !user.id) throw new Error('invalid session');
+      } catch (_) {
+        sessionStorage.removeItem('pethologyUser');
+        window.location.href = 'auth0-login.html';
+        return;
       }
-    }
 
-    window.selectStructure = selectStructure;
-    window.selectAnimal = selectAnimal;
+      // Session valid — show viewer
+      document.getElementById('auth-gate').classList.add('hidden');
+    })();
   </script>
 
 </body>

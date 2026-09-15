@@ -29,6 +29,9 @@ npm-debug.log*
 dist/
 build/
 
+# Anatomy viewer — node_modules only, dist is committed for Netlify
+anatomy-viewer/node_modules/
+
 # Temporary files
 *.tmp
 .cache/
