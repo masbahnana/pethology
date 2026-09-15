@@ -30,7 +30,7 @@ export function loadDogModel(scene, camera, controls, onLoaded) {
                 object.userData.originalMaterial = object.material;
             });
 
-            console.log('🐕 Modelo carregado');
+            console.log('🐕 Model loaded');
 
             if (onLoaded) onLoaded(dog);
         },
@@ -38,7 +38,7 @@ export function loadDogModel(scene, camera, controls, onLoaded) {
         undefined,
 
         (error) => {
-            console.error('❌ Erro ao carregar modelo:', error);
+            console.error('❌ Error loading model:', error);
         }
     );
 }

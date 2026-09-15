@@ -121,7 +121,7 @@ export function initSelectionManager(camera, getDogModel, onBoneSelected, onBone
 
         const structure = boneDictionary[key];
         if (!structure) {
-            console.warn("Estrutura sem dados no dicionário:", key);
+            console.warn("Structure not found in dictionary:", key);
             return;
         }
 

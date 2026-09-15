@@ -1,56 +1,56 @@
 export const boneDictionary = {
 
     skull: {
-        name: "Crânio",
+        name: "Skull",
         english: "Skull",
         latin: "Cranium",
-        system: "Sistema esquelético",
-        region: "Cabeça",
-        description: "Protege o encéfalo e participa da formação das cavidades orbitais, nasais e oral.",
+        system: "Skeletal system",
+        region: "Head",
+        description: "Protects the brain and forms the orbital, nasal, and oral cavities.",
         color: "#22c7a7",
         cameraView: { direction: [0.7, 0.1, 1], distanceMultiplier: 2.2 }
     },
 
     mandible: {
-        name: "Mandíbula",
+        name: "Mandible",
         english: "Mandible",
         latin: "Mandibula",
-        system: "Sistema esquelético",
-        region: "Cabeça",
-        description: "Forma a porção inferior da mandíbula e participa da mastigação.",
+        system: "Skeletal system",
+        region: "Head",
+        description: "Forms the lower jaw and plays a key role in mastication.",
         color: "#4c93ff",
         cameraView: { direction: [0.6, -0.1, 1], distanceMultiplier: 2.0 }
     },
 
     scapula: {
-        name: "Escápula",
+        name: "Scapula",
         english: "Scapula",
         latin: "Scapula",
-        system: "Sistema esquelético",
-        region: "Membro torácico",
-        description: "Osso plano que conecta o membro torácico ao tronco por meio de músculos.",
+        system: "Skeletal system",
+        region: "Thoracic limb",
+        description: "Flat bone that connects the thoracic limb to the trunk via muscles.",
         color: "#f5a623",
         cameraView: { direction: [1, 0.15, 0.25], distanceMultiplier: 2.4 }
     },
 
     humerus: {
-        name: "Úmero",
+        name: "Humerus",
         english: "Humerus",
         latin: "Humerus",
-        system: "Sistema esquelético",
-        region: "Membro torácico",
-        description: "Osso longo localizado entre a escápula e o rádio e a ulna.",
+        system: "Skeletal system",
+        region: "Thoracic limb",
+        description: "Long bone located between the scapula and the radius and ulna.",
         color: "#e05c5c",
         cameraView: { direction: [1, 0.1, 0.2], distanceMultiplier: 2.5 }
     },
 
     radius: {
-        name: "Rádio",
+        name: "Radius",
         english: "Radius",
         latin: "Radius",
-        system: "Sistema esquelético",
-        region: "Membro torácico",
-        description: "Osso do antebraço que participa das articulações do cotovelo e do carpo.",
+        system: "Skeletal system",
+        region: "Thoracic limb",
+        description: "Forearm bone that participates in the elbow and carpal joints.",
         color: "#e07b5c",
         cameraView: { direction: [1, 0.1, 0.2], distanceMultiplier: 2.5 }
     },
@@ -59,53 +59,53 @@ export const boneDictionary = {
         name: "Ulna",
         english: "Ulna",
         latin: "Ulna",
-        system: "Sistema esquelético",
-        region: "Membro torácico",
-        description: "Osso do antebraço que forma grande parte da articulação do cotovelo.",
+        system: "Skeletal system",
+        region: "Thoracic limb",
+        description: "Forearm bone that forms the greater part of the elbow joint.",
         color: "#c45ce0",
         cameraView: { direction: [1, 0.1, 0.2], distanceMultiplier: 2.5 }
     },
 
     pelvis: {
-        name: "Pelve",
+        name: "Pelvis",
         english: "Pelvis",
         latin: "Pelvis",
-        system: "Sistema esquelético",
-        region: "Cintura pélvica",
-        description: "Estrutura óssea que conecta os membros pélvicos ao esqueleto axial.",
+        system: "Skeletal system",
+        region: "Pelvic girdle",
+        description: "Bony structure that connects the pelvic limbs to the axial skeleton.",
         color: "#5ce0b8",
         cameraView: { direction: [-1, 0.2, 0.3], distanceMultiplier: 2.6 }
     },
 
     femur: {
-        name: "Fêmur",
+        name: "Femur",
         english: "Femur",
         latin: "Femur",
-        system: "Sistema esquelético",
-        region: "Membro pélvico",
-        description: "Osso longo localizado entre a pelve e a tíbia.",
+        system: "Skeletal system",
+        region: "Pelvic limb",
+        description: "Long bone located between the pelvis and the tibia.",
         color: "#2383E2",
         cameraView: { direction: [1, 0.1, 0.15], distanceMultiplier: 2.5 }
     },
 
     tibia: {
-        name: "Tíbia",
+        name: "Tibia",
         english: "Tibia",
         latin: "Tibia",
-        system: "Sistema esquelético",
-        region: "Membro pélvico",
-        description: "Principal osso de suporte da porção distal do membro pélvico.",
+        system: "Skeletal system",
+        region: "Pelvic limb",
+        description: "Primary weight-bearing bone of the distal pelvic limb.",
         color: "#5ca8e0",
         cameraView: { direction: [1, 0.1, 0.15], distanceMultiplier: 2.5 }
     },
 
     fibula: {
-        name: "Fíbula",
+        name: "Fibula",
         english: "Fibula",
         latin: "Fibula",
-        system: "Sistema esquelético",
-        region: "Membro pélvico",
-        description: "Osso fino localizado lateralmente à tíbia.",
+        system: "Skeletal system",
+        region: "Pelvic limb",
+        description: "Slender bone located lateral to the tibia.",
         color: "#22c7e0",
         cameraView: { direction: [1, 0.1, 0.15], distanceMultiplier: 2.5 }
     },
@@ -114,75 +114,75 @@ export const boneDictionary = {
         name: "Atlas",
         english: "Atlas",
         latin: "Atlas",
-        system: "Sistema esquelético",
-        region: "Coluna cervical",
-        description: "Primeira vértebra cervical, responsável pela articulação com o crânio.",
+        system: "Skeletal system",
+        region: "Cervical spine",
+        description: "First cervical vertebra, responsible for articulation with the skull.",
         color: "#9b7fe0",
         cameraView: { direction: [1, 0.2, 0.3], distanceMultiplier: 2.8 }
     },
 
     "cervicothoracic-spine": {
-        name: "Vértebras cervicais e torácicas",
+        name: "Cervical & thoracic vertebrae",
         english: "Cervical and thoracic vertebrae",
         latin: "Vertebrae cervicales et thoracicae",
-        system: "Sistema esquelético",
-        region: "Coluna vertebral",
-        description: "Segmentos da coluna que sustentam o pescoço e a porção torácica.",
+        system: "Skeletal system",
+        region: "Vertebral column",
+        description: "Spinal segments that support the neck and thoracic region.",
         color: "#b07fe0",
         cameraView: { direction: [1, 0.3, 0.2], distanceMultiplier: 3.0 }
     },
 
     "lumbar-vertebra": {
-        name: "Vértebra lombar",
+        name: "Lumbar vertebra",
         english: "Lumbar vertebra",
         latin: "Vertebra lumbalis",
-        system: "Sistema esquelético",
-        region: "Coluna lombar",
-        description: "Vértebra da região lombar, envolvida no suporte do tronco.",
+        system: "Skeletal system",
+        region: "Lumbar spine",
+        description: "Vertebra of the lumbar region, involved in trunk support.",
         color: "#c07fe0",
         cameraView: { direction: [1, 0.3, 0.1], distanceMultiplier: 2.8 }
     },
 
     ribcage: {
-        name: "Caixa torácica",
+        name: "Rib cage",
         english: "Rib cage",
         latin: "Cavea thoracis",
-        system: "Sistema esquelético",
-        region: "Tórax",
-        description: "Conjunto de costelas que protege estruturas do tórax.",
+        system: "Skeletal system",
+        region: "Thorax",
+        description: "Set of ribs that protects the thoracic organs.",
         color: "#7fb8e0",
         cameraView: { direction: [1, 0.1, 0.1], distanceMultiplier: 2.8 }
     },
 
     "rib-4": {
-        name: "Quarta costela",
+        name: "Fourth rib",
         english: "Fourth rib",
         latin: "Costa quarta",
-        system: "Sistema esquelético",
-        region: "Tórax",
-        description: "Uma das costelas que compõem a parede torácica.",
+        system: "Skeletal system",
+        region: "Thorax",
+        description: "One of the ribs forming the thoracic wall.",
         color: "#7fd0e0",
         cameraView: { direction: [1, 0.1, 0.1], distanceMultiplier: 2.6 }
     },
 
     "rib-group-1": {
-        name: "Grupo de costelas",
+        name: "Rib group",
         english: "Rib group",
         latin: "Costae",
-        system: "Sistema esquelético",
-        region: "Tórax",
-        description: "Grupo parcial de costelas incluído no modelo.",
+        system: "Skeletal system",
+        region: "Thorax",
+        description: "Partial group of ribs included in the model.",
         color: "#7fe0cc",
         cameraView: { direction: [1, 0.1, 0.1], distanceMultiplier: 2.6 }
     },
 
     "rib-group-2": {
-        name: "Grupo de costelas",
+        name: "Rib group",
         english: "Rib group",
         latin: "Costae",
-        system: "Sistema esquelético",
-        region: "Tórax",
-        description: "Grupo parcial de costelas incluído no modelo.",
+        system: "Skeletal system",
+        region: "Thorax",
+        description: "Partial group of ribs included in the model.",
         color: "#7fe0b8",
         cameraView: { direction: [1, 0.1, 0.1], distanceMultiplier: 2.6 }
     }
